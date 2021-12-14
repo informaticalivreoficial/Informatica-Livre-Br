@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<navigation>
-  <index1>
-    <label>Configurações</label>
-    <icon>fa fa-gears</icon>
-    <permissao>2</permissao>
-    <link>config</link>    
-  </index1>   
-</navigation>

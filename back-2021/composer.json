@@ -1,5 +1,0 @@
-{
-    "autoload" : {
-       "classmap" : ["app/Conn","app/Helpers","app/Models"]
-    }
-}

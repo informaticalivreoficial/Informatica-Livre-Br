@@ -1,1 +1,0 @@
-Copyright&copy; <?php echo ANODEINICIO;?> - <?php echo ''.date('Y').'';?> <strong><?php echo SITENAME;?></strong> Todos os direitos reservados. Desenvolvido por <a href="<?php echo ''.DESENVOLVEDORURL.'';?>" target="_blank"> &nbsp;<img src="<?php echo ''.DESENVOLVEDORLOGO.'';?>" alt="<?php echo ''.DESENVOLVEDOR.'';?>" title="<?php echo ''.DESENVOLVEDOR.'';?>" width="62" /></a>
