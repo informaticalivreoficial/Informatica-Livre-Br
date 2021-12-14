@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<navigation>
+  <index1>
+    <label>Artigos</label>
+    <icon>fa fa-pencil</icon>
+    <permissao>2</permissao>
+    <link>artigos</link>    
+  </index1>
+  <index>
+    <label>Listar Artigos</label>
+    <link>artigos</link>    
+  </index>
+  <index>
+    <label>Cadastrar Artigo</label>
+    <link>artigos-create</link>    
+  </index>
+  <index>
+    <label>Categorias</label>
+    <link>categorias</link>    
+  </index> 
+</navigation>

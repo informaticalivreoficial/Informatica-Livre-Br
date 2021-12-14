@@ -1,0 +1,10 @@
+.whatsapp-footer {
+    width: 64px;
+    display: block;
+    position: fixed;
+    bottom: 40px;
+    left: 20px;
+    text-align: center;
+    padding-top: 10px;
+    z-index: 999;
+}

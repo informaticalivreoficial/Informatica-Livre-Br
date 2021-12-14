@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<navigation>
+  <index1>
+    <label>Usuários</label>
+    <icon>fa fa-users</icon>
+    <permissao>2</permissao>
+    <link>usuarios</link>    
+  </index1>
+  <index>
+    <label>Listar Usuários</label>
+    <link>usuarios</link>    
+  </index>
+  <index>
+    <label>Cadastrar Usuário</label>
+    <link>usuarios-create</link>    
+  </index>
+</navigation>

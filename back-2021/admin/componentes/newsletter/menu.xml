@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<navigation>
+  <index1>
+    <label>Newsletter</label>
+    <icon>fa fa-suitcase</icon>
+    <permissao>2</permissao>
+    <link>newsletter</link>    
+  </index1>
+  <index>
+    <label>Listas</label>
+    <link>listas</link>    
+  </index>  
+  <index>
+    <label>Cadastrar E-mail</label>
+    <link>newsletter-create</link>    
+  </index>   
+</navigation>

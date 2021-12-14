@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <url>
+     <loc>https://localhost/Imobiliaria-Ubatuba/</loc>
+     <lastmod>2020-11-11</lastmod>
+     <changefreq>daily</changefreq>
+     <priority>1.0</priority>
+  </url>
+  <url>
+     <loc>https://localhost/Imobiliaria-Ubatuba/pagina/simulador</loc>
+     <lastmod>2020-11-11</lastmod>
+     <changefreq>monthly</changefreq>
+     <priority>0.2</priority>
+  </url>
+  <url>
+     <loc>https://localhost/Imobiliaria-Ubatuba/pagina/atendimento</loc>
+     <lastmod>2020-11-11</lastmod>
+     <changefreq>monthly</changefreq>
+     <priority>0.2</priority>
+  </url>
+  <url>
+     <loc>https://localhost/Imobiliaria-Ubatuba/imoveis/index</loc>
+     <lastmod>2020-11-11</lastmod>
+     <changefreq>monthly</changefreq>
+     <priority>0.2</priority>
+  </url>
+  <url>
+     <loc>https://localhost/Imobiliaria-Ubatuba/imoveis/busca-por-referencia</loc>
+     <lastmod>2020-11-11</lastmod>
+     <changefreq>monthly</changefreq>
+     <priority>0.2</priority>
+  </url>
+  <url>
+     <loc>https://localhost/Imobiliaria-Ubatuba/imoveis/cadastrar</loc>
+     <lastmod>2020-11-11</lastmod>
+     <changefreq>monthly</changefreq>
+     <priority>0.2</priority>
+  </url>
+  <url>
+     <loc>https://localhost/Imobiliaria-Ubatuba/blog/artigos</loc>
+     <lastmod>2020-11-11</lastmod>
+     <changefreq>monthly</changefreq>
+     <priority>0.2</priority>
+  </url>
+  <url>
+     <loc>https://localhost/Imobiliaria-Ubatuba/pagina/quem-somos</loc>
+     <lastmod>2019-04-14</lastmod>
+     <changefreq>monthly</changefreq>
+     <priority>0.2</priority>
+  </url>
+
+</urlset>
