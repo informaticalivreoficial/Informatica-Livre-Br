@@ -32,9 +32,9 @@
                     @endif
                 </div>            
             </div>
-            @if(!empty($users) && $users->count() > 0)
+            @if(!empty($team) && $team->count() > 0)
                 <div class="row d-flex align-items-stretch">
-                @foreach($users as $user)  
+                @foreach($team as $user)  
                 <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch">
                   <div class="card bg-light" style="{{ ($user->status == '1' ? '' : 'background: #fffed8 !important;')  }}">
                     <div class="card-header text-muted border-bottom-0">
@@ -136,7 +136,7 @@
         </div>
         <!-- /.card-body -->
         <div class="card-footer paginacao">  
-            {{ $users->links() }}
+            {{ $team->links() }}
         </div>
           
       </div>

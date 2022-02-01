@@ -3,31 +3,39 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Admin\Produto as ProdutoRequest;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
-use Image;
-use App\Support\Cropper;
-use App\Models\CatProduto;
-use App\Models\Produto;
 use App\Models\ProdutoGb;
+use App\Services\CatProdutoService;
+use App\Services\ProdutoService;
 use Illuminate\Http\Request;
 
 class ProdutoController extends Controller
 {
+    private $produtoService, $catProdutoService;
+
+    public function __construct(ProdutoService $produtoService, CatProdutoService $catProdutoService)
+    {
+        $this->produtoService = $produtoService;
+        $this->catProdutoService = $catProdutoService;
+    }
+
     public function index()
     {
-        $produtos = Produto::orderBy('created_at', 'DESC')->orderBy('status', 'ASC')->paginate(25);
+        $produtos = $this->produtoService->getProdutos();
+
         return view('admin.produtos.index', [
-            'produtos' => $produtos,
+            'produtos' => $produtos
         ]);
     }
 
     public function create()
     {
-        $catProdutos = CatProduto::orderBy('created_at', 'DESC')->whereNull('id_pai')->available()->get();
+        $catProdutos = $this->catProdutoService->getCategorias();
+
         return view('admin.produtos.create',[
             'catProdutos' => $catProdutos
         ]);
@@ -35,56 +43,12 @@ class ProdutoController extends Controller
 
     public function store(ProdutoRequest $request)
     {
-        $produtoCreate = Produto::create($request->all());
-        $produtoCreate->fill($request->all());
+        $produtoCreate = $this->produtoService->createProduto($request->all());        
 
         $validator = Validator::make($request->only('files'), ['files.*' => 'image']);
 
         if ($validator->fails() === true) {
-            return redirect()->back()->withInput()->with([
-                'color' => 'orange',
-                'message' => 'Todas as imagens devem ser do tipo jpg, jpeg ou png.',
-            ]);
-        }
-
-        if ($request->allFiles()) {
-            foreach ($request->allFiles()['files'] as $image) {
-                $produtoGb = new ProdutoGb();
-                $produtoGb->produto = $produtoCreate->id;
-                $produtoGb->path = $image->storeAs('produtos/' . $produtoCreate->id, Str::slug($request->name) . '-' . str_replace('.', '', microtime(true)) . '.' . $image->extension());
-                $produtoGb->save();
-                unset($produtoGb);
-            }
-        }
-        
-        return redirect()->route('produtos.edit', $produtoCreate->id)->with([
-            'color' => 'success', 
-            'message' => 'Produto cadastrado com sucesso!'
-        ]);        
-    }
-
-    public function edit($id)
-    {
-        $catProdutos = CatProduto::orderBy('created_at', 'DESC')->whereNull('id_pai')->available()->get();
-        $produto = Produto::where('id', $id)->first();    
-        return view('admin.produtos.edit', [
-            'produto' => $produto,
-            'catProdutos' => $catProdutos
-        ]);
-    }
-
-    public function update(ProdutoRequest $request, $id)
-    {     
-        $produto = Produto::where('id', $id)->first();
-        $produto->fill($request->all());
-
-        $produto->save();
-        $produto->setSlug();
-
-        $validator = Validator::make($request->only('files'), ['files.*' => 'image']);
-
-        if ($validator->fails() === true) {
-            return redirect()->back()->withInput()->with([
+            return Redirect::back()->withInput()->with([
                 'color' => 'orange',
                 'message' => 'Todas as imagens devem ser do tipo jpg, jpeg ou png.',
             ]);
@@ -93,97 +57,125 @@ class ProdutoController extends Controller
         if ($request->allFiles()) {
             foreach ($request->allFiles()['files'] as $image) {
                 $produtoImage = new ProdutoGb();
-                $produtoImage->produto_id = $produto->id;
-                $produtoImage->path = $image->storeAs('produtos/' . $produto->id, Str::slug($request->name) . '-' . str_replace('.', '', microtime(true)) . '.' . $image->extension());
+                $produtoImage->produto = $produtoCreate->id;
+                $produtoImage->path = $image->storeAs('produtos/' . $produtoCreate->id, Str::slug($request->name) . '-' . str_replace('.', '', microtime(true)) . '.' . $image->extension());
+                $produtoImage->save();
+                unset($produtoImage);
+            }
+        }
+        
+        return Redirect::route('produtos.edit', $produtoCreate->id)->with([
+            'color' => 'success', 
+            'message' => 'Produto cadastrado com sucesso!'
+        ]);        
+    }
+
+    public function edit($id)
+    {
+        $catProdutos = $this->catProdutoService->getCategorias();
+        $produto = $this->produtoService->getProduto($id);    
+        return view('admin.produtos.edit', [
+            'produto' => $produto,
+            'catProdutos' => $catProdutos
+        ]);
+    }
+
+    public function update(ProdutoRequest $request, $id)
+    {     
+        $produtoUpdate = $this->produtoService->updateProduto($request->all(), $id);
+
+        $validator = Validator::make($request->only('files'), ['files.*' => 'image']);
+
+        if ($validator->fails() === true) {
+            return Redirect::back()->withInput()->with([
+                'color' => 'orange',
+                'message' => 'Todas as imagens devem ser do tipo jpg, jpeg ou png.',
+            ]);
+        }
+
+        if ($request->allFiles()) {
+            foreach ($request->allFiles()['files'] as $image) {
+                $produtoImage = new ProdutoGb();
+                $produtoImage->produto = $produtoUpdate->id;
+                $produtoImage->path = $image->storeAs('produtos/' . $produtoUpdate->id, Str::slug($request->name) . '-' . str_replace('.', '', microtime(true)) . '.' . $image->extension());
                 $produtoImage->save();
                 unset($produtoImage);
             }
         }
 
-        return redirect()->route('produtos.edit', [
-            'id' => $produto->id,
+        return Redirect::route('produtos.edit', [
+            'id' => $produtoUpdate->id
         ])->with(['color' => 'success', 'message' => 'Produto atualizado com sucesso!']);
     } 
 
+    public function search(Request $request)
+    {
+        $filters = $request->only('filter');
+
+        $produtos = $this->produtoService->searchProduto($request->filter);
+
+        return view('admin.produtos.index',[
+            'produtos' => $produtos,
+            'filters' => $filters
+        ]);
+    }
+
     public function imageSetCover(Request $request)
     {
-        $imageSetCover = ProdutoGb::where('id', $request->image)->first();
-        $allImage = ProdutoGb::where('produto', $imageSetCover->produto)->get();
-
-        foreach ($allImage as $image) {
-            $image->cover = null;
-            $image->save();
-        }
-
-        $imageSetCover->cover = true;
-        $imageSetCover->save();
-
-        $json = [
-            'success' => true,
-        ];
-
-        return response()->json($json);
+        $imageSetCover = $this->produtoService->setCover($request->image);
+        return response()->json($imageSetCover);
     }
 
     public function imageRemove(Request $request)
     {
-        $imageDelete = ProdutoGb::where('id', $request->image)->first();
-        Storage::delete($imageDelete->path);
-        Cropper::flush($imageDelete->path);
-        $imageDelete->delete();
-
-        $json = [
-            'success' => true,
-        ];
-        return response()->json($json);
+        $imageDelete = $this->produtoService->imageRemoveGb($request->image);
+        return response()->json($imageDelete);
     }
     
     public function produtoSetStatus(Request $request)
-    {        
-        $produto = Produto::find($request->id);
-        $produto->status = $request->status;
-        $produto->save();
-        return response()->json(['success' => true]);
+    {   
+        $produtoSetStatus = $this->produtoService->produtoSetStatus($request->id, $request->status);       
+        return response()->json($produtoSetStatus);
     }
 
     public function delete(Request $request)
     {
-        $produtodelete = Produto::where('id', $request->id)->first();
-        $produtoGb = ProdutoGb::where('produto', $produtodelete->id)->first();
+        $produtodelete = $this->produtoService->getProduto($request->id);
+        $produtoGb = $this->produtoService->getGbImage($produtodelete->id);
         $nome = getPrimeiroNome(Auth::user()->name);
 
         if(!empty($produtodelete)){
             if(!empty($produtoGb)){
-                $json = "<b>$nome</b> você tem certeza que deseja excluir este produto? Existem imagens adicionadas e todas serão excluídas!";
-                return response()->json(['error' => $json,'id' => $produtodelete->id]);
+                $json = [
+                    'error' => "<b>$nome</b> você tem certeza que deseja excluir este produto? Existem imagens adicionadas e todas serão excluídas!",
+                    'id' => $produtodelete->id
+                ];                
             }else{
-                $json = "<b>$nome</b> você tem certeza que deseja excluir este produto?";
-                return response()->json(['error' => $json,'id' => $produtodelete->id]);
+                $json = [
+                    'error' => "<b>$nome</b> você tem certeza que deseja excluir este produto?",
+                    'id' => $produtodelete->id
+                ]; 
             }            
         }else{
-            return response()->json(['error' => 'Erro ao excluir']);
+            $json = ['error' => 'Erro ao excluir'];
         }
+        return response()->json($json);
     }
     
     public function deleteon(Request $request)
     {
-        $produtodelete = Produto::where('id', $request->produto_id)->first();  
-        $imageDelete = ProdutoGb::where('produto', $produtodelete->id)->first();
-        $postR = $produtodelete->name;
-
+        $produtodelete = $this->produtoService->getProduto($request->produto_id); 
+        $imageDelete = $this->produtoService->getGbImage($produtodelete->id);
+        
         if(!empty($produtodelete)){
             if(!empty($imageDelete)){
-                Storage::delete($imageDelete->path);
-                Cropper::flush($imageDelete->path);
-                $imageDelete->delete();
-                Storage::deleteDirectory('produtos/'.$produtodelete->id);
-                $produtodelete->delete();
+                $this->produtoService->imageRemoveGbAll($produtodelete->id);                
             }
-            $produtodelete->delete();
+            $this->produtoService->deleteProduto($produtodelete->id);
         }
-        return redirect()->route('produtos.index')->with([
+        return Redirect::route('produtos.index')->with([
             'color' => 'success', 
-            'message' => 'O produto '.$postR.' foi removido com sucesso!'
+            'message' => 'O produto '.$produtodelete->name.' foi removido com sucesso!'
         ]);
     }
 }

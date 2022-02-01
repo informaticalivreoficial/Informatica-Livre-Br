@@ -103,7 +103,7 @@ $config = [
             </div> 
             <div class="col-12 col-sm-5 col-md-5 col-lg-4">
                 <div class="form-group">
-                    <label class="labelforms text-muted"><b>*Categoria:</b> <a style="font-size:11px;" href="{{route('produtos-categorias.create')}}">(Criar categoria)</a></label>
+                    <label class="labelforms text-muted"><b>*Categoria:</b> <a style="font-size:11px;" href="{{route('catprodutos.index')}}">(Criar categoria)</a></label>
                     <select name="categoria" class="form-control categoria">
                         @if(!empty($catProdutos) && $catProdutos->count() > 0)
                             <option value="">Selecione a Categoria</option>
@@ -148,41 +148,43 @@ $config = [
                         <label for="tiporecorrente" class="form-check-label">Recorrente</label>
                     </div>
                 </div>
-            </div>
-            <div class="row mb-2">
-                <div class="col-12 col-sm-4 col-md-4 col-lg-2">
-                    <label class="labelforms text-muted"><b>Valor</b></label>
-                    <input type="text" class="form-control mask-money v" name="valor" value="{{ old('valor') ?? $produto->valor }}">
-                </div>
-                <div class="col-12 col-sm-4 col-md-4 col-lg-2">
-                    <label class="labelforms text-muted"><b>Mensal</b></label>
-                    <input type="text" class="form-control mask-money m" name="valor_mensal" value="{{ old('valor_mensal') ?? $produto->valor_mensal }}">
-                </div>
-                <div class="col-12 col-sm-4 col-md-4 col-lg-2">
-                    <label class="labelforms text-muted"><b>Trimestral</b></label>
-                    <input type="text" class="form-control mask-money t" name="valor_trimestral" value="{{ old('valor_trimestral') ?? $produto->valor_trimestral }}">
-                </div>
-                <div class="col-12 col-sm-4 col-md-4 col-lg-2">
-                    <label class="labelforms text-muted"><b>Semestral</b></label>
-                    <input type="text" class="form-control mask-money s" name="valor_semestral" value="{{ old('valor_semestral') ?? $produto->valor_semestral }}">
-                </div>
-                <div class="col-12 col-sm-4 col-md-4 col-lg-2">
-                    <label class="labelforms text-muted"><b>Anual</b></label>
-                    <input type="text" class="form-control mask-money a" name="valor_anual" value="{{ old('valor_anual') ?? $produto->valor_anual }}">
-                </div>
-                <div class="col-12 col-sm-4 col-md-4 col-lg-2">
-                    <label class="labelforms text-muted"><b>Bi-anual</b></label>
-                    <input type="text" class="form-control mask-money b" name="valor_bianual" value="{{ old('valor_bianual') ?? $produto->valor_bianual }}">
-                </div>
-            </div>            
+            </div>                        
         </div>
-        <div class="col-12 mb-1"> 
-            <div class="form-group">
-                <label class="labelforms text-muted"><b>MetaTags</b></label>
-                <input id="tags_1" class="tags" rows="5" name="tags" value="{{ old('tags') ?? $produto->tags }}">
-            </div>
-        </div>
+
         <div class="row mb-2">
+            <div class="col-12 col-sm-4 col-md-4 col-lg-2">
+                <label class="labelforms text-muted"><b>Valor</b></label>
+                <input type="text" class="form-control mask-money v" name="valor" value="{{ old('valor') ?? $produto->valor }}">
+            </div>
+            <div class="col-12 col-sm-4 col-md-4 col-lg-2">
+                <label class="labelforms text-muted"><b>Mensal</b></label>
+                <input type="text" class="form-control mask-money m" name="valor_mensal" value="{{ old('valor_mensal') ?? $produto->valor_mensal }}">
+            </div>
+            <div class="col-12 col-sm-4 col-md-4 col-lg-2">
+                <label class="labelforms text-muted"><b>Trimestral</b></label>
+                <input type="text" class="form-control mask-money t" name="valor_trimestral" value="{{ old('valor_trimestral') ?? $produto->valor_trimestral }}">
+            </div>
+            <div class="col-12 col-sm-4 col-md-4 col-lg-2">
+                <label class="labelforms text-muted"><b>Semestral</b></label>
+                <input type="text" class="form-control mask-money s" name="valor_semestral" value="{{ old('valor_semestral') ?? $produto->valor_semestral }}">
+            </div>
+            <div class="col-12 col-sm-4 col-md-4 col-lg-2">
+                <label class="labelforms text-muted"><b>Anual</b></label>
+                <input type="text" class="form-control mask-money a" name="valor_anual" value="{{ old('valor_anual') ?? $produto->valor_anual }}">
+            </div>
+            <div class="col-12 col-sm-4 col-md-4 col-lg-2">
+                <label class="labelforms text-muted"><b>Bi-anual</b></label>
+                <input type="text" class="form-control mask-money b" name="valor_bianual" value="{{ old('valor_bianual') ?? $produto->valor_bianual }}">
+            </div>
+        </div>
+        
+        <div class="row mb-2">
+            <div class="col-12 mb-1"> 
+                <div class="form-group">
+                    <label class="labelforms text-muted"><b>MetaTags</b></label>
+                    <input id="tags_1" class="tags" rows="5" name="tags" value="{{ old('tags') ?? $produto->tags }}">
+                </div>
+            </div>
             <div class="col-12">   
                 <label class="labelforms text-muted"><b>Descrição do Produto</b></label>
                 <x-adminlte-text-editor name="content" v placeholder="Descrição do produto..." :config="$config">{{ old('content') ?? $produto->content }}</x-adminlte-text-editor>                                                                                     
@@ -200,7 +202,7 @@ $config = [
             <div class="col-12 col-sm-12 col-md-6 col-lg-6">   
                 <div class="form-group">
                     <label class="labelforms text-muted"><b>Legenda da Imagem de Capa</b></label>
-                    <input type="text" class="form-control"  name="legendaimgcapa" value="{{ old('legendaimgcapa') ?? $produto->legendaimgcapa }}">
+                    <input type="text" class="form-control"  name="thumb_legenda" value="{{ old('thumb_legenda') ?? $produto->thumb_legenda }}">
                 </div>                                                    
             </div>
             <div class="col-sm-12">                                        
@@ -219,8 +221,8 @@ $config = [
                         <img src="{{ $image->url_cropped }}" alt="">
                         </a>
                         <div class="property_image_actions">
-                            <a href="javascript:void(0)" class="btn btn-xs {{ ($image->cover == true ? 'btn-success' : 'btn-default') }} icon-notext image-set-cover px-2" data-action="{{ route('$produtos.imageSetCover', ['image' => $image->id]) }}"><i class="nav-icon fas fa-check"></i> </a>
-                            <a href="javascript:void(0)" class="btn btn-danger btn-xs image-remove px-2" data-action="{{ route('$produtos.imageRemove', ['image' => $image->id]) }}"><i class="nav-icon fas fa-times"></i> </a>
+                            <a href="javascript:void(0)" class="btn btn-xs {{ ($image->cover == true ? 'btn-success' : 'btn-default') }} icon-notext image-set-cover px-2" data-action="{{ route('produtos.imageSetCover', ['image' => $image->id]) }}"><i class="nav-icon fas fa-check"></i> </a>
+                            <a href="javascript:void(0)" class="btn btn-danger btn-xs image-remove px-2" data-action="{{ route('produtos.imageRemove', ['image' => $image->id]) }}"><i class="nav-icon fas fa-times"></i> </a>
                         </div>
                     </div>
                     @endforeach
@@ -232,7 +234,7 @@ $config = [
 
 </div>
 <div class="row text-right">
-    <div class="col-12 my-3">
+    <div class="col-12 my-2">
         <button type="submit" class="btn btn-lg btn-success"><i class="nav-icon fas fa-check mr-2"></i> Atualizar Agora</button>
     </div>
 </div> 
@@ -256,6 +258,25 @@ $config = [
         div.tagsinput span.tag a {
             color: #43886e;    
         }
+        /* Lista de ImÃ³veis */
+        img {
+            max-width: 100%;
+        }
+        .realty_list_item  {    
+            border: 1px solid #F3F3F3;
+            -webkit-border-radius: 4px;
+            -moz-border-radius: 4px;
+            border-radius: 4px;
+        }
+
+        .border-item-imovel{
+            -webkit-border-radius: 4px;
+            -moz-border-radius: 4px;
+            border-radius: 4px;
+            border: 1px solid #F3F3F3;  
+            background-color: #F3F3F3;
+        }
+       
         .property_image, .content_image {
             width: 100%;
             flex-basis: 100%;
@@ -364,6 +385,44 @@ $config = [
                 reader.readAsDataURL(value);
             });
         });
+
+        $('.image-set-cover').click(function (event) {
+                event.preventDefault();
+                var button = $(this);
+                $.post(button.data('action'), {}, function (response) {
+                    if (response.success === true) {
+                        $('.property_image').find('a.btn-success').removeClass('btn-success');
+                        button.addClass('btn-success');
+                    }
+                    if(response.success === false){
+                        button.addClass('btn-default');
+                    }
+                }, 'json');
+            });
+            
+            $('.image-remove').click(function(event){
+                event.preventDefault();
+                var button = $(this);
+                $.ajax({
+                    url: button.data('action'),
+                    type: 'DELETE',
+                    dataType: 'json',
+                    success: function(response){
+                        if(response.success === true) {
+                            button.closest('.property_image_item').fadeOut(function(){
+                                $(this).remove();
+                            });
+                        }
+                    }
+                });
+            });
+            
+            $(document).on('click', '[data-toggle="lightbox"]', function(event) {
+              event.preventDefault();
+              $(this).ekkoLightbox({
+                alwaysShowClose: true
+              });
+            });
         
         //tag input
         function onAddTag(tag) {

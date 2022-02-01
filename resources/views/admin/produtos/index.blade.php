@@ -25,7 +25,7 @@
                     <div style="width: 250px;">
                         <form class="input-group input-group-sm" action="{{route('produtos.search')}}" method="post">
                             @csrf   
-                            <input type="text" name="filter" value="{{ $filters['search'] ?? '' }}" class="form-control float-right" placeholder="Pesquisar">
+                            <input type="text" name="filter" value="{{ $filters['filter'] ?? '' }}" class="form-control float-right" placeholder="Pesquisar">
             
                             <div class="input-group-append">
                                 <button type="submit" class="btn btn-default">
@@ -60,6 +60,7 @@
                         <th>Produto</th>
                         <th class="text-center">Imagens</th>
                         <th class="text-center">Views</th>
+                        <th class="text-center">Valor</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
@@ -74,6 +75,17 @@
                         <td>{{$produto->name}}</td>
                         <td class="text-center">{{$produto->countimages()}}</td>
                         <td class="text-center">{{$produto->views}}</td>
+                        <td class="text-center">
+                            @if ($produto->tipo_pagamento == 1)
+                                R${{$produto->valor}}
+                            @else
+                                {{($produto->valor_mensal ? 'Mensal: R$'.$produto->valor_mensal : '')}}
+                                {!!($produto->valor_trimestral ? '<br>Trimestral: R$'.$produto->valor_trimestral : '')!!}
+                                {!!($produto->valor_semestral ? '<br>Semestral: R$'.$produto->valor_semestral : '')!!}
+                                {!!($produto->valor_anual ? '<br>Anual: R$'.$produto->valor_anual : '')!!}
+                                {!!($produto->valor_bianual ? '<br>Bianual: R$'.$produto->valor_bianual : '')!!}
+                            @endif
+                        </td>
                         <td>
                             <input type="checkbox" data-onstyle="success" data-offstyle="warning" data-size="mini" class="toggle-class" data-id="{{ $produto->id }}" data-toggle="toggle" data-style="slow" data-on="<i class='fas fa-check'></i>" data-off="<i style='color:#fff !important;' class='fas fa-exclamation-triangle'></i>" {{ $produto->status == true ? 'checked' : ''}}>
                             <a href="{{route('produtos.edit',['id' => $produto->id])}}" class="btn btn-xs btn-default"><i class="fas fa-pen"></i></a>
@@ -194,7 +206,7 @@
                 $.ajax({
                     type: 'GET',
                     dataType: 'JSON',
-                    url: '{{ route('produtos.produtoSetStatus') }}',
+                    url: "{{ route('produtos.produtoSetStatus') }}",
                     data: {
                         'status': status,
                         'id': produto_id

@@ -96,7 +96,7 @@ $config = [
             </div> 
             <div class="col-12 col-sm-5 col-md-5 col-lg-4">
                 <div class="form-group">
-                    <label class="labelforms text-muted"><b>*Categoria:</b> <a style="font-size:11px;" href="{{route('produtos-categorias.create')}}">(Criar categoria)</a></label>
+                    <label class="labelforms text-muted"><b>*Categoria:</b> <a style="font-size:11px;" href="{{route('catprodutos.index')}}">(Criar categoria)</a></label>
                     <select name="categoria" class="form-control categoria">
                         @if(!empty($catProdutos) && $catProdutos->count() > 0)
                             <option value="">Selecione a Categoria</option>
@@ -126,10 +126,7 @@ $config = [
                 </div>
             </div>                          
         </div>
-        <div class="row mb-2">
-            
-            
-        </div>
+        
         <div class="row mb-2">
             <div class="col-12"> 
                 <div class="form-group">
@@ -141,41 +138,43 @@ $config = [
                         <label for="tiporecorrente" class="form-check-label">Recorrente</label>
                     </div>
                 </div>
-            </div>
-            <div class="row mb-2">
-                <div class="col-12 col-sm-4 col-md-4 col-lg-2">
-                    <label class="labelforms text-muted"><b>Valor</b></label>
-                    <input type="text" class="form-control mask-money v" name="valor" value="{{ old('valor') }}">
-                </div>
-                <div class="col-12 col-sm-4 col-md-4 col-lg-2">
-                    <label class="labelforms text-muted"><b>Mensal</b></label>
-                    <input type="text" class="form-control mask-money m" name="valor_mensal" value="{{ old('valor_mensal') }}">
-                </div>
-                <div class="col-12 col-sm-4 col-md-4 col-lg-2">
-                    <label class="labelforms text-muted"><b>Trimestral</b></label>
-                    <input type="text" class="form-control mask-money t" name="valor_trimestral" value="{{ old('valor_trimestral') }}">
-                </div>
-                <div class="col-12 col-sm-4 col-md-4 col-lg-2">
-                    <label class="labelforms text-muted"><b>Semestral</b></label>
-                    <input type="text" class="form-control mask-money s" name="valor_semestral" value="{{ old('valor_semestral') }}">
-                </div>
-                <div class="col-12 col-sm-4 col-md-4 col-lg-2">
-                    <label class="labelforms text-muted"><b>Anual</b></label>
-                    <input type="text" class="form-control mask-money a" name="valor_anual" value="{{ old('valor_anual') }}">
-                </div>
-                <div class="col-12 col-sm-4 col-md-4 col-lg-2">
-                    <label class="labelforms text-muted"><b>Bi-anual</b></label>
-                    <input type="text" class="form-control mask-money b" name="valor_bianual" value="{{ old('valor_bianual') }}">
-                </div>
-            </div>            
+            </div>                        
         </div>
-        <div class="col-12 mb-1"> 
-            <div class="form-group">
-                <label class="labelforms text-muted"><b>MetaTags</b></label>
-                <input id="tags_1" class="tags" rows="5" name="tags" value="{{ old('tags') }}">
-            </div>
-        </div>
+
         <div class="row mb-2">
+            <div class="col-12 col-sm-4 col-md-4 col-lg-2">
+                <label class="labelforms text-muted"><b>Valor</b></label>
+                <input type="text" class="form-control mask-money v" name="valor" value="{{ old('valor') }}">
+            </div>
+            <div class="col-12 col-sm-4 col-md-4 col-lg-2">
+                <label class="labelforms text-muted"><b>Mensal</b></label>
+                <input type="text" class="form-control mask-money m" name="valor_mensal" value="{{ old('valor_mensal') }}">
+            </div>
+            <div class="col-12 col-sm-4 col-md-4 col-lg-2">
+                <label class="labelforms text-muted"><b>Trimestral</b></label>
+                <input type="text" class="form-control mask-money t" name="valor_trimestral" value="{{ old('valor_trimestral') }}">
+            </div>
+            <div class="col-12 col-sm-4 col-md-4 col-lg-2">
+                <label class="labelforms text-muted"><b>Semestral</b></label>
+                <input type="text" class="form-control mask-money s" name="valor_semestral" value="{{ old('valor_semestral') }}">
+            </div>
+            <div class="col-12 col-sm-4 col-md-4 col-lg-2">
+                <label class="labelforms text-muted"><b>Anual</b></label>
+                <input type="text" class="form-control mask-money a" name="valor_anual" value="{{ old('valor_anual') }}">
+            </div>
+            <div class="col-12 col-sm-4 col-md-4 col-lg-2">
+                <label class="labelforms text-muted"><b>Bi-anual</b></label>
+                <input type="text" class="form-control mask-money b" name="valor_bianual" value="{{ old('valor_bianual') }}">
+            </div>
+        </div>
+        
+        <div class="row mb-2">
+            <div class="col-12 mb-1"> 
+                <div class="form-group">
+                    <label class="labelforms text-muted"><b>MetaTags</b></label>
+                    <input id="tags_1" class="tags" rows="5" name="tags" value="{{ old('tags') }}">
+                </div>
+            </div>
             <div class="col-12">   
                 <label class="labelforms text-muted"><b>Descrição do Produto</b></label>
                 <x-adminlte-text-editor name="content" v placeholder="Descrição do produto..." :config="$config">{{ old('content') }}</x-adminlte-text-editor>                                                                                     
@@ -193,7 +192,7 @@ $config = [
             <div class="col-12 col-sm-12 col-md-6 col-lg-6">   
                 <div class="form-group">
                     <label class="labelforms text-muted"><b>Legenda da Imagem de Capa</b></label>
-                    <input type="text" class="form-control"  name="legendaimgcapa" value="{{ old('legendaimgcapa') }}">
+                    <input type="text" class="form-control"  name="thumb_legenda" value="{{ old('thumb_legenda') }}">
                 </div>                                                    
             </div>
             <div class="col-sm-12">                                        

@@ -116,15 +116,19 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('pedidos', [PedidoController::class, 'index'])->name('pedidos.index');
 
     //*************************** Produtos Categorias **********************************/
-    Route::get('produtos-categorias/create', [CatProdutoController::class, 'create'])->name('produtos-categorias.create');
-    Route::post('produtos-categorias/store', [CatProdutoController::class, 'store'])->name('produtos-categorias.store');
-    Route::get('produtos-categorias', [CatProdutoController::class, 'index'])->name('catprodutos.index');
+    Route::get('produtos/categorias/delete', [CatProdutoController::class, 'delete'])->name('produtos-categorias.delete');
+    Route::delete('produtos/categorias/deleteon', [CatProdutoController::class, 'deleteon'])->name('produtos-categorias.deleteon');
+    Route::get('produtos/categorias/{id}/edit', [CatProdutoController::class, 'edit'])->name('produtos-categorias.edit');
+    Route::put('produtos/categorias/{id}', [CatProdutoController::class, 'update'])->name('produtos-categorias.update');
+    Route::match(['post', 'get'],'produtos/categorias/create/{catpai}', [CatProdutoController::class, 'create'])->name('produtos-categorias.create');
+    Route::post('produtos/categorias/store', [CatProdutoController::class, 'store'])->name('produtos-categorias.store');
+    Route::get('produtos/categorias', [CatProdutoController::class, 'index'])->name('catprodutos.index');
 
     //*************************** Produtos *********************************************/
     Route::match(['get', 'post'], 'produtos/pesquisa', [ProdutoController::class, 'search'])->name('produtos.search');
     Route::get('produtos/set-status', [ProdutoController::class, 'produtoSetStatus'])->name('produtos.produtoSetStatus');
-    Route::post('posts/image-set-cover', [ProdutoController::class, 'imageSetCover'])->name('produtos.imageSetCover');
-    Route::delete('posts/image-remove', [ProdutoController::class, 'imageRemove'])->name('produtos.imageRemove');
+    Route::post('produtos/image-set-cover', [ProdutoController::class, 'imageSetCover'])->name('produtos.imageSetCover');
+    Route::delete('produtos/image-remove', [ProdutoController::class, 'imageRemove'])->name('produtos.imageRemove');
     Route::delete('produtos/deleteon', [ProdutoController::class, 'deleteon'])->name('produtos.deleteon');
     Route::get('produtos/delete', [ProdutoController::class, 'delete'])->name('produtos.delete');
     Route::put('produtos/{id}', [ProdutoController::class, 'update'])->name('produtos.update');
