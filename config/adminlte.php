@@ -323,6 +323,24 @@ return [
             'text' => 'Pedidos',
             'url'  => 'admin/pedidos',
             'icon' => 'fas fa-money-check',
+        ],
+        [
+            'text' => 'Portifólio',            
+            'icon' => 'fas fa-project-diagram',
+            'submenu' => [
+                [
+                    'text' => 'Listar Todos',
+                    'url'  => 'admin/portifolio',
+                ],                
+                [
+                    'text' => 'Cadastrar Novo',
+                    'url'  => 'admin/portifolio/create',
+                ],                
+                [
+                    'text' => 'Categorias',
+                    'url'  => 'admin/portifolio/categorias',
+                ]
+            ]
         ], 
         
     ],

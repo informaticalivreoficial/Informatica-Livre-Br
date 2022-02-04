@@ -12,12 +12,9 @@
     <meta name="publisher" content="Renato Montanari">
     <meta name="url" content="{{$configuracoes->dominio}}" />
     <meta name="keywords" content="{{$configuracoes->metatags}}">
-    <meta name="description" content="{{$configuracoes->descricao}}"/>
     <meta name="distribution" content="web">
     <meta name="rating" content="general">
     <meta name="date" content="Dec 26">
-
-    <link rel="canonical" href="{{$configuracoes->dominio}}">
 
     {!! $head ?? '' !!}
 
@@ -107,7 +104,7 @@
                                 </div>
                                 <ul class="rd-navbar-nav">
                                     <li class="rd-nav-item">
-                                        <a class="rd-nav-link" href="index.php?v=sobre" title="Informática Livre">Informática Livre</a>
+                                        <a class="rd-nav-link" href="{{route('web.quemsomos')}}" title="Informática Livre">Informática Livre</a>
                                     </li>
                                     <li class="rd-nav-item active"><a class="rd-nav-link" href="#">Serviços</a>
                                         <ul class="rd-menu rd-navbar-dropdown">

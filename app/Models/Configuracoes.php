@@ -72,7 +72,7 @@ class Configuracoes extends Model
     /**
      * Accerssors and Mutators
      */
-    
+        
     public function getmetaimg()
     {
         $image = $this->metaimg;        

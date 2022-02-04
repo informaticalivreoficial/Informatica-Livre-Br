@@ -120,8 +120,7 @@
           </div>
       </div>
   </div>
-</section>
-  
+</section>  
 @endsection
 
 @section('css')

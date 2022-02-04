@@ -24,12 +24,12 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
     
     /** Página Inicial */   
     Route::get('teste-qrcode', [WebController::class, 'qrcode'])->name('qrcode'); 
-    Route::get('/', [WebController::class, 'home'])->name('home');
-    Route::post('reservar-roteiro', [WebController::class, 'reservarRoteiro'])->name('roteiro.do'); 
+    Route::get('/', [WebController::class, 'home'])->name('home');     
 
     //****************************** Política de Privacidade ******************************/
     Route::get('/politica-de-privacidade', [WebController::class, 'politica'])->name('politica');
     Route::get('/consultoria', [WebController::class, 'orcamento'])->name('orcamento');
+    Route::get('/quem-somos', [WebController::class, 'quemsomos'])->name('quemsomos');
 
     //** Página Destaque */
     Route::get('/destaque', 'WebController@spotlight')->name('spotlight');
