@@ -61,7 +61,7 @@ $config = [
             <div class="card-body">
                 <div class="tab-content" id="custom-tabs-four-tabContent">
                     <div class="tab-pane fade show active" id="custom-tabs-four-home" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
-                       <div class="row mb-4">
+                       <div class="row">
                             <div class="col-12 col-sm-8 col-md-6 col-lg-6">   
                                 <div class="form-group">
                                     <label class="labelforms text-muted"><b>*Título</b></label>
@@ -88,13 +88,23 @@ $config = [
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12 col-sm-8 col-md-3 col-lg-3">   
+                       </div>
+                       <div class="row">
+                            <div class="col-12 col-sm-8 col-md-9 col-lg-9">
+                                <div class="form-group">
+                                    <label class="labelforms text-muted"><b>Sub Título</b></label>
+                                    <input type="text" class="form-control" name="subtitulo" value="{{old('subtitulo')}}">
+                                </div> 
+                            </div>
+                            <div class="col-12 col-sm-4 col-md-3 col-lg-3">   
                                 <div class="form-group">
                                     <label class="labelforms text-muted"><b>Categoria</b></label>
                                     <input type="text" class="form-control" name="categoria" value="{{old('categoria')}}">
                                 </div>                                                    
                             </div>
-                            <div class="col-12 col-sm-6 col-md-6 col-lg-6">   
+                       </div>
+                       <div class="row mb-4">                            
+                            <div class="col-12 col-sm-12 col-md-6 col-lg-6">   
                                 <div class="form-group">
                                     <label class="labelforms text-muted"><b>Url</b> <small class="text-info">(Ex: http://www.dominio.com)</small></label>
                                     <input type="text" class="form-control" name="link" value="{{old('link')}}">
@@ -108,12 +118,18 @@ $config = [
                                         <option value="0" {{ (old('target') == '0' ? 'selected' : '') }}>Mesma Janela</option>
                                     </select>
                                 </div>
-                            </div>                                                               
+                            </div> 
+                            <div class="col-12 col-sm-6 col-md-3 col-lg-3">
+                                <div class="form-group">
+                                    <label class="labelforms text-muted"><b>Botão Label</b></label>
+                                    <input type="text" class="form-control" name="botaolabel" value="{{old('botaolabel')}}">
+                                </div> 
+                            </div>                                                              
                         </div>
                         <div class="row">  
                             <div class="col-12 mb-1"> 
                                 <div class="form-group">
-                                    <label class="labelforms text-muted"><b>Imagem: </b>(1920X820) pixels</label>
+                                    <label class="labelforms text-muted"><b>Imagem: </b>(1920X696) pixels</label>
                                     <div class="thumb_user_admin">                                                    
                                         <img id="preview1" src="{{url(asset('backend/assets/images/image.jpg'))}}" alt="{{ old('titulo') }}" title="{{ old('titulo') }}"/>
                                         <input id="img-input" type="file" name="imagem">
@@ -131,7 +147,6 @@ $config = [
                 </div>
                 <div class="row text-right">
                     <div class="col-12 mb-4">
-                        <button type="submit" class="btn btn-lg btn-success" title="Cadastrar Agora"><i class="nav-icon fas fa-check mr-2"></i> Cadastrar Agora</button>
                         <button type="submit" class="btn btn-lg btn-success" title="Cadastrar Agora"><i class="nav-icon fas fa-check mr-2"></i> Cadastrar Agora</button>
                     </div>
                 </div>  

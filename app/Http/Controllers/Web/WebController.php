@@ -15,6 +15,7 @@ use App\Models\{
     Post,
     CatPost,
     Embarcacao,
+    Empresa,
     MPException,
     Newsletter,
     Roteiro,
@@ -33,9 +34,8 @@ class WebController extends Controller
     {
         $Configuracoes = Configuracoes::where('id', '1')->first();
         $artigos = Post::orderBy('created_at', 'DESC')->postson()->limit(3)->get();
-        $passeios = Passeio::orderBy('created_at', 'DESC')->available()->venda()->limit(6)->get();
-        $roteiros = Roteiro::orderBy('created_at', 'DESC')->available()->get();
         $slides = Slide::orderBy('created_at', 'DESC')->available()->where('expira', '>=', Carbon::now())->get();
+        $empresas = Empresa::orderBy('created_at', 'DESC')->available()->get();
         $head = $this->seo->render($Configuracoes->nomedosite ?? 'Informática Livre',
             $Configuracoes->descricao ?? 'Informática Livre desenvolvimento de sistemas web desde 2005',
             route('web.home'),
@@ -45,8 +45,7 @@ class WebController extends Controller
 		return view('web.home',[
             'head' => $head,
             'artigos' => $artigos,
-            'passeios' => $passeios,
-            'roteiros' => $roteiros,
+            'empresas' => $empresas,
             'slides' => $slides
 		]);
     }

@@ -17,6 +17,8 @@ class Slide extends Model
 
     protected $fillable = [
         'titulo',
+        'subtitulo',
+        'botaolabel',
         'imagem',
         'content',
         'link',
@@ -52,7 +54,7 @@ class Slide extends Model
         if(empty($this->imagem) || !File::exists('../public/storage/' . $image)) {
             return url(asset('backend/assets/images/image.jpg'));
         } 
-        return Storage::url(Cropper::thumb($this->imagem, 1920, 820));
+        return Storage::url(Cropper::thumb($this->imagem, 1920, 696));
     }
 
     public function getUrlImagemAttribute()

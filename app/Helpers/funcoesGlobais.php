@@ -1,4 +1,14 @@
 <?php
+// FUNÇÃO PARA LIMPAR O TELEFONE
+function limpaTelefone($telefone)
+{
+    if(empty($telefone)){
+        return null;
+    }
+	$valor = str_replace(['(',')', '-', ' '], '', $telefone);
+	
+    return $valor;
+}
 
 // Pega o Link do iframe google maps
 function getLinkGoogleMaps($link)

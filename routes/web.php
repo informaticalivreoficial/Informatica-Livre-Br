@@ -23,10 +23,13 @@ use App\Http\Controllers\Web\WebController;
 Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
     
     /** Página Inicial */   
-    //Route::get('/', 'WebController@home')->name('home');
     Route::get('teste-qrcode', [WebController::class, 'qrcode'])->name('qrcode'); 
     Route::get('/', [WebController::class, 'home'])->name('home');
     Route::post('reservar-roteiro', [WebController::class, 'reservarRoteiro'])->name('roteiro.do'); 
+
+    //****************************** Política de Privacidade ******************************/
+    Route::get('/politica-de-privacidade', [WebController::class, 'politica'])->name('politica');
+    Route::get('/consultoria', [WebController::class, 'orcamento'])->name('orcamento');
 
     //** Página Destaque */
     Route::get('/destaque', 'WebController@spotlight')->name('spotlight');
@@ -49,7 +52,7 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
     //****************************** Blog ***********************************************/
     Route::get('/blog/artigo/{slug}', [WebController::class, 'artigo'])->name('blog.artigo');
     Route::get('/blog/categoria/{slug}', [WebController::class, 'categoria'])->name('blog.categoria');
-    Route::get('/blog/artigos', [WebController::class, 'artigos'])->name('blog.artigos');
+    Route::get('/blog', [WebController::class, 'artigos'])->name('blog.artigos');
     Route::match(['get', 'post'],'/blog/pesquisar', [WebController::class, 'searchBlog'])->name('blog.searchBlog');
 
     //****************************** Notícias *******************************************/

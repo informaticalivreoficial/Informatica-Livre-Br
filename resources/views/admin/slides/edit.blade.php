@@ -42,14 +42,20 @@ $config = [
 @section('content')
 <div class="row">
     <div class="col-12">
-       @if($errors->all())
-            @foreach($errors->all() as $error)
-                @message(['color' => 'danger'])
-                {{ $error }}
-                @endmessage
-            @endforeach
-        @endif         
-    </div>            
+        @if($errors->all())
+             @foreach($errors->all() as $error)
+                 @message(['color' => 'danger'])
+                 {{ $error }}
+                 @endmessage
+             @endforeach
+         @endif 
+         
+         @if(session()->exists('message'))
+             @message(['color' => session()->get('color')])
+             {{ session()->get('message') }}
+             @endmessage
+         @endif
+     </div>            
 </div>   
                     
             
@@ -62,7 +68,7 @@ $config = [
             <div class="card-body">
                 <div class="tab-content" id="custom-tabs-four-tabContent">
                     <div class="tab-pane fade show active" id="custom-tabs-four-home" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
-                       <div class="row mb-4">
+                       <div class="row">
                             <div class="col-12 col-sm-8 col-md-6 col-lg-6">   
                                 <div class="form-group">
                                     <label class="labelforms text-muted"><b>*Título</b></label>
@@ -89,13 +95,23 @@ $config = [
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12 col-sm-8 col-md-3 col-lg-3">   
+                       </div>
+                       <div class="row">
+                            <div class="col-12 col-sm-8 col-md-9 col-lg-9">
+                                <div class="form-group">
+                                    <label class="labelforms text-muted"><b>Sub Título</b></label>
+                                    <input type="text" class="form-control" name="subtitulo" value="{{old('subtitulo') ?? $slide->subtitulo}}">
+                                </div> 
+                            </div>
+                            <div class="col-12 col-sm-4 col-md-3 col-lg-3">   
                                 <div class="form-group">
                                     <label class="labelforms text-muted"><b>Categoria</b></label>
                                     <input type="text" class="form-control" name="categoria" value="{{old('categoria') ?? $slide->categoria}}">
                                 </div>                                                    
                             </div>
-                            <div class="col-12 col-sm-6 col-md-6 col-lg-6">   
+                       </div>
+                       <div class="row mb-4">                            
+                            <div class="col-12 col-sm-12 col-md-6 col-lg-6">   
                                 <div class="form-group">
                                     <label class="labelforms text-muted"><b>Url</b> <small class="text-info">(Ex: http://www.dominio.com)</small></label>
                                     <input type="text" class="form-control" name="link" value="{{old('link') ?? $slide->link}}">
@@ -109,12 +125,18 @@ $config = [
                                         <option value="0" {{ (old('target') == '0' ? 'selected' : ($slide->target == 0 ? 'selected' : '')) }}>Mesma Janela</option>
                                     </select>
                                 </div>
-                            </div>                                                               
+                            </div> 
+                            <div class="col-12 col-sm-6 col-md-3 col-lg-3">
+                                <div class="form-group">
+                                    <label class="labelforms text-muted"><b>Botão Label</b></label>
+                                    <input type="text" class="form-control" name="botaolabel" value="{{old('botaolabel') ?? $slide->botaolabel}}">
+                                </div> 
+                            </div>                                                              
                         </div>
                         <div class="row">  
                             <div class="col-12 mb-1"> 
                                 <div class="form-group">
-                                    <label class="labelforms text-muted"><b>Imagem: </b>(1920X820) pixels</label>
+                                    <label class="labelforms text-muted"><b>Imagem: </b>(1920X696) pixels</label>
                                     <div class="thumb_user_admin">                                                    
                                         <img id="preview1" src="{{$slide->getimagem()}}" alt="{{ old('titulo') ?? $slide->titulo }}" title="{{ old('titulo') ?? $slide->titulo }}"/>
                                         <input id="img-input" type="file" name="imagem">

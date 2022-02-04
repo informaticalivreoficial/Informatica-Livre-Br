@@ -204,9 +204,11 @@
                                                             <div class="form-group">
                                                                 <label class="labelforms text-muted"><b>Cidade:</b></label>
                                                                 <select id="city-dd" class="form-control" name="cidade">
-                                                                    @if(!empty($cidades) && !empty($user->cidade))
+                                                                    @if(!empty($cidades)))
+                                                                        <option value="">Selecione o Estado</option>
                                                                         @foreach($cidades as $cidade)
-                                                                        <option value="{{$cidade->cidade_id}}" {{ (old('cidade') == $cidade->cidade_id ? 'selected' : '') }}>{{$cidade->cidade_nome}}</option>
+                                                                            <option value="{{$cidade->cidade_id}}" 
+                                                                                    {{ (old('cidade') == $cidade->cidade_id ? 'selected' : '') }}>{{$cidade->cidade_nome}}</option>                                                                   
                                                                         @endforeach                                                                        
                                                                     @endif
                                                                 </select>

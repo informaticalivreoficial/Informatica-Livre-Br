@@ -1,38 +1,39 @@
 <!DOCTYPE html>
-<html lang="pt-br" class="wide wow-animation smoothscroll scrollTo">
+<html class="wide wow-animation" lang="pt-br">
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
     <meta name="language" content="pt-br" />  
-    <meta name="robots" content="index, follow"/>
-    <meta name="format-detection" content="telephone=no">
-    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="copyright" content="{{$configuracoes->ano_de_inicio}} - {{$configuracoes->nomedosite}}">    
     
-    <meta name="author" content="Informática Livre"/>
-    <meta name="url" content="https://aquamarineturismonautico.com.br" />
+    <meta name="author" content="{{env('DESENVOLVEDOR')}}"/>
+    <meta name="designer" content="Renato Montanari">
+    <meta name="publisher" content="Renato Montanari">
+    <meta name="url" content="{{$configuracoes->dominio}}" />
     <meta name="keywords" content="{{$configuracoes->metatags}}">
-    <meta name="description" content="Venha desfrutar de momentos inesquecíveis a bordo das Escunas da Aquá Marine Turismo Náutico. Nossas escunas são altamente seguras e confortáveis. Contam com serviço de bar a  bordo.Nosso Roteiro principal é a Ilha Anchieta e o passeio tem duração de 5 a 5 hrs e meia com paradas para mergulho.*Para outros roteiros consulte nos."/>
+    <meta name="description" content="{{$configuracoes->descricao}}"/>
+    <meta name="distribution" content="web">
+    <meta name="rating" content="general">
     <meta name="date" content="Dec 26">
+
+    <link rel="canonical" href="{{$configuracoes->dominio}}">
 
     {!! $head ?? '' !!}
 
-    <!-- FAVICON -->
-    <link rel="shortcut icon" href="{{$configuracoes->getfaveicon()}}"/>
-    <link rel="apple-touch-icon" href="{{$configuracoes->getfaveicon()}}"/>
-    <link rel="apple-touch-icon" sizes="72x72" href="{{$configuracoes->getfaveicon()}}"/>
-    <link rel="apple-touch-icon" sizes="114x114" href="{{$configuracoes->getfaveicon()}}"/>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     
     <!-- CSS -->
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Roboto:400,400italic,700%7CLato:400">
+    <link rel="icon" href="{{$configuracoes->getfaveicon()}}" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7CLato:300,300italic,400,400italic,700,900%7CPlayfair+Display:700italic,900">
+    <link rel="stylesheet" href="{{url(asset('frontend/assets/css/bootstrap.css'))}}">
+    <link rel="stylesheet" href="{{url(asset('frontend/assets/css/fonts.css'))}}">
     <link rel="stylesheet" href="{{url(asset('frontend/assets/css/style.css'))}}">
-    <link rel="stylesheet" href="{{url(asset('frontend/assets/css/renato.css'))}}">
-    <!-- Ekko Lightbox -->
-    <link rel="stylesheet" href="{{url(asset('backend/plugins/ekko-lightbox/ekko-lightbox.css'))}}"/>
-    <!--[if lt IE 10]>
-        <div style="background: #212121; padding: 10px 0; box-shadow: 3px 3px 5px 0 rgba(0,0,0,.3); clear: both; text-align:center; position: relative; z-index:1;"><a href="https://windows.microsoft.com/en-US/internet-explorer/"><img src="images/ie8-panel/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today."></a></div>
-        <script src="{{url(asset('frontend/assets/js/html5shiv.min.js'))}}"></script>
-    <![endif]-->
+
+    <!--[if lt IE 9]>
+		<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
 
     @hasSection('css')
         @yield('css')
@@ -40,269 +41,202 @@
     
   </head>
   <body>    
-    <div class="page text-center">
-        
-    @yield('content')       
-
-    <!-- Footer-->
-    <footer class="page-footer bg-chathams-blue">
-        <section class="section-60">
-            <div class="shell">
-            <div class="range range-xs-center text-md-left">
-                <div class="cell-xs-10 cell-sm-7 cell-md-4">
-                <!-- Footer brand-->
-                <div class="footer-brand"><a href="index.html">
-                    <img src="{{$configuracoes->getlogomarca()}}" alt="{{$configuracoes->nomedosite}}" title="{{$configuracoes->nomedosite}}"/></a>
-                </div>
-                <div class="offset-top-30 inset-sm-right-20 text-silver">                    
-                    {!!$configuracoes->descricao!!}
-                    @if($configuracoes->cnpj)
-                     <p>CNPJ: {{$configuracoes->cnpj}}</p>
-                    @endif                                        
-                    @if($configuracoes->ie)
-                     <p>IE: {{$configuracoes->ie}}</p>
-                    @endif                                        
-                </div>
-                </div>
-                <div class="cell-xs-10 cell-sm-7 cell-md-5 offset-top-60 offset-md-top-0">
-                <div>
-                    <h5 class="text-bold text-white">Atendimento</h5>
-                </div>
-                <div class="offset-top-6">
-                    <div class="text-subline bg-ripe-lemon"></div>
-                </div>
-                <div class="offset-top-20">
-                    <!-- Contact Info-->
-                    <address class="contact-info text-left">
-                    <div>
-                        <div class="reveal-inline-block">
-                            @if ($configuracoes->whatsapp)
-                                <a href="{{getNumZap($configuracoes->whatsapp ,'Atendimento Aqua Marine Turismo Náutico')}}" class="unit unit-middle unit-horizontal unit-spacing-xs">
-                                    <span class="unit-left">
-                                        <span style="background-color: #34af23;color:#fff;" class="icon icon-xxs icon-circle mdi mdi-whatsapp"></span>
-                                    </span>
-                                    <span class="unit-body">
-                                        <span class="text-silver">{{$configuracoes->whatsapp}}</span>
-                                    </span>
-                                </a>
-                            @endif
-                            @if ($configuracoes->telefone1)
-                                <a href="callto:{{$configuracoes->telefone1}}" class="unit unit-middle unit-horizontal unit-spacing-xs ">
-                                    <span class="unit-left">
-                                        <span class=" offset-top-10 icon icon-xxs icon-primary icon-primary-filled icon-circle mdi mdi-phone"></span>
-                                    </span>
-                                    <span class="unit-body">
-                                        <span class="text-silver">{{$configuracoes->telefone1}}</span>
-                                        @if ($configuracoes->telefone2)
-                                            - {{$configuracoes->telefone2}}
-                                        @endif
-                                    </span>
-                                </a>
-                            @endif
-                            
-                        </div>
-                    </div>
-                    @if ($configuracoes->email)
-                        <div class="offset-top-10">
-                            <div class="reveal-inline-block">
-                                <a href="mailto:{{$configuracoes->email}}" class="unit unit-middle unit-horizontal unit-spacing-xs">
-                                    <span class="unit-left">
-                                        <span class="icon icon-xxs icon-primary icon-primary-filled icon-circle mdi mdi-email-outline"></span>
-                                    </span>
-                                    <span class="unit-body">
-                                        <span class="text-silver">{{$configuracoes->email}}</span>
-                                    </span>
-                                </a>
+    <div class="page">
+        <header class="page-head">
+            <div class="rd-navbar-wrap">
+                <nav class="rd-navbar rd-navbar-corporate-dark" data-layout="rd-navbar-fixed" 
+                    data-sm-layout="rd-navbar-fixed" data-md-layout="rd-navbar-fixed" 
+                    data-md-device-layout="rd-navbar-fixed" data-lg-layout="rd-navbar-static" 
+                    data-lg-device-layout="rd-navbar-fixed" data-xl-layout="rd-navbar-static" 
+                    data-xl-device-layout="rd-navbar-static" data-xxl-layout="rd-navbar-static" 
+                    data-xxl-device-layout="rd-navbar-static" data-lg-stick-up="true" 
+                    data-xl-stick-up="true" data-xxl-stick-up="true" data-lg-stick-up-offset="53px" 
+                    data-xl-stick-up-offset="53px" data-xxl-stick-up-offset="53px">
+                    <div class="rd-navbar-inner">
+                        <div class="rd-navbar-aside">
+                        <div class="rd-navbar-aside-toggle" data-custom-toggle=".rd-navbar-aside" data-custom-toggle-disable-on-blur="true"><span></span></div>
+                        <div class="rd-navbar-aside-content context-dark">
+                            <ul class="rd-navbar-aside-group list-units">
+                                <li>
+                                    <div class="unit unit-horizontal unit-spacing-xs">
+                                        <div class="unit-left">
+                                            <span class="novi-icon icon icon-xxs icon-primary fa-envelope-o"></span>
+                                        </div>
+                                        <div class="unit-body">
+                                            <a class="link-light-2 d-inline" href="#">suporte@informaticalivre.com</a>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="unit unit-horizontal unit-spacing-xs">
+                                    <div class="unit-left"><span class="novi-icon icon icon-xxs icon-primary fa-whatsapp"></span></div>
+                                        <div class="unit-body">
+                                            <p class="text-default">(12) 99138-5030</p>
+                                        </div>
+                                    </div>
+                                </li>                       
+                            </ul>
+                            <div class="rd-navbar-aside-group">
+                                <ul class="list-inline list-inline-reset">
+                                    <li><a class="icon icon-round icon-gray-dark-filled icon-xxs-smallest fa fa-facebook" href="#"></a></li>
+                                    <li><a class="icon icon-round icon-gray-dark-filled icon-xxs-smallest fa fa-twitter" href="#"></a></li>
+                                    <li><a class="icon icon-round icon-gray-dark-filled icon-xxs-smallest fa fa-instagram" href="#"></a></li>
+                                </ul>
                             </div>
                         </div>
-                    @endif
-                    @if ($configuracoes->email1)
-                        <div class="offset-top-10">
-                            <div class="reveal-inline-block">
-                                <a href="mailto:{{$configuracoes->email1}}" class="unit unit-middle unit-horizontal unit-spacing-xs">
-                                    <span class="unit-left">
-                                        <span class="icon icon-xxs icon-primary icon-primary-filled icon-circle mdi mdi-email-outline"></span>
-                                    </span>
-                                    <span class="unit-body">
-                                        <span class="text-silver">{{$configuracoes->email1}}</span>
-                                    </span>
-                                </a>
-                            </div>
                         </div>
-                    @endif
-
-                    @if($configuracoes->rua)	
-                    <div class="offset-top-10">
-                        <div class="reveal-inline-block">
-                            <a href="#" class="unit unit-horizontal unit-spacing-xs unit-spacing-xs">
-                            <span class="unit-left">
-                                <span class="icon icon-xxs icon-primary icon-primary-filled icon-circle mdi mdi-map-marker"></span>
-                            </span>
-                            <span class="unit-body">
-                                <span class="text-silver">{{$configuracoes->rua}}
-                                @if($configuracoes->num)
-                                , {{$configuracoes->num}}
-                                @if($configuracoes->bairro)
-                                    , {{$configuracoes->bairro}}
-                                @endif
-                                @endif
-                                </span>
-                            </span>
+                        <div class="rd-navbar-group rd-navbar-search-wrap">
+                        <div class="rd-navbar-panel">
+                            <button class="rd-navbar-toggle" data-custom-toggle=".rd-navbar-nav-wrap" data-custom-toggle-disable-on-blur="true"><span></span></button>
+                            <a class="rd-navbar-brand brand" href="{{route('web.home')}}">
+                                <img src="{{$configuracoes->getLogomarca()}}" alt="{{$configuracoes->nomedosite}}" width="139" height="22"/>
                             </a>
                         </div>
-                    </div>
-                    @endif
-                    
-                    </address>
-                </div>
-                <div class="offset-top-20">
-                    <ul class="list-inline list-inline-2">
-                        @if ($configuracoes->email)
-                            <li><a href="mailto:{{$configuracoes->facebook}}" class="icon icon-xxs icon-silver-filled icon-circle fa fa-envelope"></a></li>
-                        @endif
-                        @if ($configuracoes->facebook)
-                            <li><a target="_blank" href="{{$configuracoes->facebook}}" class="icon icon-xxs icon-silver-filled icon-circle fa fa-facebook"></a></li>
-                        @endif
-                        @if ($configuracoes->twitter)
-                            <li><a target="_blank" href="{{$configuracoes->twitter}}" class="icon icon-xxs icon-silver-filled icon-circle fa fa-twitter"></a></li>
-                        @endif
-                        @if ($configuracoes->instagram)
-                            <li><a target="_blank" href="{{$configuracoes->instagram}}" class="icon icon-xxs icon-silver-filled icon-circle fa fa-instagram"></a></li>
-                        @endif                
-                    </ul>
-                </div>
-                </div>
-                <div class="cell-xs-10 cell-sm-7 cell-md-3 offset-top-60 offset-md-top-0">
-                <div>
-                    <h5 class="text-bold text-white">Newsletter</h5>
-                </div>
-                <div class="offset-top-6">
-                    <div class="text-subline bg-ripe-lemon"></div>
-                </div>
-                <div class="offset-top-25">
-                    <p class="text-silver">Cadastre seu email e receba nossas promoções e dicas de passeios.</p>
-                </div>
-                <div class="offset-top-20">
-                    <form method="post" action="" class="rd-mailform-subscribe j_submitnewsletter">
-                        @csrf
-                        <div id="js-newsletter-result"></div>
-                        <!-- HONEYPOT -->
-                        <input type="hidden" class="noclear" name="bairro" value="" />
-                        <input type="text" class="noclear" style="display: none;" name="cidade" value="" />
-                        <input type="hidden" class="noclear" name="categoria" value="1" />
-                        <input type="hidden" class="noclear" name="status" value="1" />
-                        <input type="hidden" class="noclear" name="nome" value="#Cadastrado pelo Site" />
-                        <div class="form-group form-group-sm form_hide">
-                            <div class="input-group">
-                                <input placeholder="Seu email..." type="email" name="email" class="form-control"><span class="input-group-btn">
-                                <button type="submit" class="btn btn-xs btn-ripe-lemon">Cadastrar</button></span>
+                        <div class="rd-navbar-nav-wrap">
+                            <div class="rd-navbar-nav-inner">
+                                <div class="rd-navbar-search">
+                                    <form class="rd-search" action="search-results.html" method="GET" data-search-live="rd-search-results-live">
+                                    <div class="form-wrap">
+                                        <label class="form-label" for="rd-search-form-input">Pesquisar...</label>
+                                        <input class="form-input" id="rd-search-form-input" type="text" name="s" autocomplete="off">
+                                        <div class="rd-search-results-live" id="rd-search-results-live"></div>
+                                    </div>
+                                    <button class="rd-search-submit" type="submit"></button>
+                                    </form>
+                                    <button class="rd-navbar-search-toggle" data-rd-navbar-toggle=".rd-navbar-search, .rd-navbar-search-wrap"></button>
+                                </div>
+                                <ul class="rd-navbar-nav">
+                                    <li class="rd-nav-item">
+                                        <a class="rd-nav-link" href="index.php?v=sobre" title="Informática Livre">Informática Livre</a>
+                                    </li>
+                                    <li class="rd-nav-item active"><a class="rd-nav-link" href="#">Serviços</a>
+                                        <ul class="rd-menu rd-navbar-dropdown">
+                                        <li class="rd-dropdown-item"><a class="rd-dropdown-link" href="#">Criação de Sites</a>
+                                        </li>
+                                        <li class="rd-dropdown-item"><a class="rd-dropdown-link" href="#">Lojas Virtuais</a>
+                                        </li>
+                                        <li class="rd-dropdown-item"><a class="rd-dropdown-link" href="#">Sistemas Web</a>
+                                        </li>
+                                        <li class="rd-dropdown-item"><a class="rd-dropdown-link" href="#">Páginas de Captura</a>
+                                        </li>
+                                        <li class="rd-dropdown-item"><a class="rd-dropdown-link" href="#">Criação de Portais</a>
+                                        </li>
+                                        </ul>
+                                    </li>  
+                                    <li class="rd-nav-item">
+                                        <a class="rd-nav-link" href="index.php?v=projetos" title="Protifólio">Protifólio</a>
+                                    </li>                          
+                                    <li class="rd-nav-item">
+                                        <a class="rd-nav-link" href="{{route('web.blog.artigos')}}" title="Dicas">Dicas</a>
+                                    </li>
+                                    <li class="rd-nav-item">
+                                        <a class="rd-nav-link" href="{{route('web.atendimento')}}" title="Atendimento">Atendimento</a>
+                                    </li>                        
+                                </ul>
                             </div>
-                        </div>                        
-                    </form>
-                </div>
-                </div>
+                        </div>
+                        </div>
+                    </div>
+                </nav>
             </div>
+        </header>
+        
+        @yield('content')       
+
+        <section class="section section-60 section-md-100 bg-accent novi-background">
+            <div class="container text-center text-lg-start">
+                <div class="row row-30 align-items-md-center justify-content-lg-center">
+                    <div class="col-lg-8 col-xl-7">
+                        <h3>Solicite Agora um Orçamento</h3>
+                    </div>
+                    <div class="col-lg-4 col-xl-3">
+                        <a class="btn btn-xl btn-black-outline" href="{{route('web.orcamento')}}" target="_blank">Quero um Orçamento</a>
+                    </div>
+                </div>
             </div>
         </section>
-        <section class="section-12 text-md-left">
-            <div class="shell">
-            <p class="font-accent">
-                <span class="small text-silver-dark">&copy; {{$configuracoes->ano_de_inicio}} {{$configuracoes->nomedosite}} - todos os direitos reservados.</span>
-            </p>
-            <p class="font-accent">
-                <span class="small text-silver-dark">Feito com <i style="color:red;" class="fa fa-heart"></i> por <a style="color:#fff;" target="_blank" href="{{env('DESENVOLVEDOR_URL')}}">{{env('DESENVOLVEDOR')}}</a></span>
-            </p>
+        <section class="section section-40 section-md-top-75 section-md-bottom-60 bg-cod-gray novi-background">
+            <div class="container text-center text-md-start">
+                <div class="row row-30 align-items-md-center justify-content-lg-center justify-content-xl-start">
+                    <div class="col-sm-12 col-md-3 col-lg-2 col-xl-2 text-sm-center">
+                        <a class="brand" href="{{route('web.home')}}">
+                            <img src="{{$configuracoes->getLogomarca()}}" alt="{{$configuracoes->nomedosite}}" width="139" height="22"/>
+                        </a>
+                    </div>
+                    <div class="col-sm-12 col-md-9 col-lg-7 col-xl-6">
+                        <div class="wrap-justify">
+                            <address class="contact-info text-start">
+                                <div class="unit unit-horizontal unit-spacing-xs align-items-center justify-content-center unit-sm-left">
+                                    <div class="unit-left">
+                                        <span class="novi-icon icon icon-md-custom icon-gunsmoke material-icons-place"></span>
+                                    </div>
+                                    <div class="unit-body fw-light">
+                                        <a class="link-light-03 d-inline" href="javascript:void(0)">Rua Primavera, 120<br>Jardim Carolina - Ubatuba/SP</a>
+                                    </div>
+                                </div>
+                            </address>
+                            <address class="contact-info text-start">
+                                <div class="unit unit-horizontal unit-spacing-xs align-items-center justify-content-center unit-sm-left">
+                                    <div class="unit-left">
+                                        <span class="novi-icon icon icon-md-custom icon-gunsmoke material-icons-phone"></span>
+                                    </div>
+                                    <div class="unit-body fw-light">
+                                        <div class="link-wrap"><a class="link-light-03" href="tel:12991385030">(12) 99138-5030</a></div>
+                                        <div class="link-wrap"><a class="link-light-03" href="mailto:suporte@informaticalivre.com">suporte@informaticalivre.com</a></div>
+                                    </div>
+                                </div>
+                            </address>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-lg-3 col-xl-4 text-lg-center">
+                        <ul class="list-inline list-inline-xs">
+                            @if ($configuracoes->facebook)
+                                <li><a target="_blank" class="novi-icon icon icon-sm-custom link-tundora fa-facebook" href="{{$configuracoes->facebook}}"></a></li>
+                            @endif
+                            @if ($configuracoes->twitter)
+                                <li><a target="_blank" class="novi-icon icon icon-sm-custom link-tundora fa-twitter" href="{{$configuracoes->twitter}}"></a></li>
+                            @endif
+                            @if ($configuracoes->instagram)
+                                <li><a target="_blank" class="novi-icon icon icon-sm-custom link-tundora fa-instagram" href="{{$configuracoes->instagram}}"></a></li>
+                            @endif
+                            @if ($configuracoes->linkedin)
+                                <li><a target="_blank" class="novi-icon icon icon-sm-custom link-tundora fa-linkedin" href="{{$configuracoes->linkedin}}"></a></li>
+                            @endif
+                            @if ($configuracoes->youtube)
+                                <li><a target="_blank" class="novi-icon icon icon-sm-custom link-tundora fa-youtube" href="{{$configuracoes->youtube}}"></a></li>
+                            @endif
+                        </ul>
+                    </div>
+                </div>
             </div>
         </section>
-    </footer>
+        <footer class="page-foot page-foot-default section-35 bg-black novi-background text-center">
+            <div class="container">
+                <p class="rights small">
+                    <span>{{$configuracoes->nomedosite}}</span><span>&nbsp;&#169;&nbsp;</span>
+                    <span class="copyright-year"></span>
+                    <span>Todos os direitos reservados</span><br class="d-md-none">
+                    <a class="link-primary" href="{{route('web.politica')}}">Política de Privacidade</a>
+                </p>
+            </div>
+        </footer>
 
-    <div class="whatsapp-footer">
-        <a href="{{getNumZap($configuracoes->whatsapp ,'Atendimento Aqua Marine Turismo Náutico')}}" title="WhatsApp">
-            <img src="{{url(asset('frontend/assets/images/zap-topo.png'))}}" alt="{{url(asset('frontend/assets/images/zap-topo.png'))}}" title="WhatsApp" />
-        </a>
     </div>
 
-    </div>
-   
     <script src="{{url(asset('frontend/assets/js/core.min.js'))}}"></script>
-    <script src="{{url(asset('frontend/assets/js/pointer-events.min.js'))}}"></script>
-    <script src="{{url(asset('frontend/assets/js/SmoothScroll.min.js'))}}"></script>
-    <script src="{{url(asset('frontend/assets/js/bootstrap.js'))}}"></script>
-    <script src="{{url(asset('frontend/assets/js/rdvideoplayer.js'))}}"></script>
-    <script src="{{url(asset('frontend/assets/js/moment.js'))}}"></script>
-    <script src="{{url(asset('frontend/assets/js/materialdatepicker.js'))}}"></script>
-    <script src="{{url(asset('frontend/assets/js/timecircles.js'))}}"></script>
-    <!-- Ekko Lightbox -->
-    <script src="{{url(asset('backend/plugins/ekko-lightbox/ekko-lightbox.min.js'))}}"></script>
-    <script src="{{url(asset('frontend/assets/js/script.js'))}}"></script>  
+    <script src="{{url(asset('frontend/assets/js/script.js'))}}"></script> 
 
     @hasSection('js')
         @yield('js')
     @endif
 
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-N886VV2RRF"></script>
     <script>
-        $(function () {
-
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-            // Seletor, Evento/efeitos, CallBack, Ação
-            $('.j_submitnewsletter').submit(function (){
-                var form = $(this);
-                var dataString = $(form).serialize();
-
-                $.ajax({
-                    url: '{{ route('web.sendNewsletter') }}',
-                    data: dataString,
-                    type: 'GET',
-                    dataType: 'JSON',
-                    beforeSend: function(){
-                        form.find("#js-subscribe-btn").attr("disabled", true);
-                        form.find('#js-subscribe-btn').html("Carregando...");                
-                        form.find('.alert').fadeOut(500, function(){
-                            $(this).remove();
-                        });
-                    },
-                    success: function(response){
-                        $('html, body').animate({scrollTop:$('#js-newsletter-result').offset().top-40}, 'slow');
-                        if(response.error){
-                            form.find('#js-newsletter-result').html('<div class="alert alert-danger error-msg">'+ response.error +'</div>');
-                            form.find('.error-msg').fadeIn();                    
-                        }else{
-                            form.find('#js-newsletter-result').html('<div class="alert alert-success error-msg">'+ response.sucess +'</div>');
-                            form.find('.error-msg').fadeIn();                    
-                            form.find('input[class!="noclear"]').val('');
-                            form.find('.form_hide').fadeOut(500);
-                        }
-                    },
-                    complete: function(response){
-                        form.find("#js-subscribe-btn").attr("disabled", false);
-                        form.find('#js-subscribe-btn').html("Cadastrar!");                                
-                    }
-
-                });
-
-                return false;
-            });
-
-        });
-    </script>
-
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-C5XNETL9RJ"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-C5XNETL9RJ');
-    </script>
-
-
-    <!-- Messenger Plugin de bate-papo Code -->
-    <div id="fb-root"></div>
-
-    
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-N886VV2RRF');
+    </script>    
 </body>
 </html>

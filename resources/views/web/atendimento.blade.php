@@ -2,255 +2,137 @@
 
 
 @section('content')
-<header class="page-head slider-menu-position">
-    @include('web.include.header')
-  
-    <!-- Modern Breadcrumbs-->
-    <section class="section-height-800 breadcrumb-modern rd-parallax context-dark bg-gray-darkest text-lg-left">
-      <div data-speed="0.2" data-type="media" data-url="{{url(asset('frontend/assets/images/backgrounds/background-01-1920x900.jpg'))}}" class="rd-parallax-layer"></div>
-      <div data-speed="0" data-type="html" class="rd-parallax-layer">
-        <div class="bg-primary-chathams-blue-reverse">
-          <div class="shell section-top-57 section-bottom-30 section-md-top-185">
-            <div class="veil reveal-md-block">
-              <h1 class="text-bold">Atendimento</h1>
-            </div>
-            <ul class="list-inline list-inline-icon list-inline-icon-type-1 list-inline-icon-extra-small list-inline-icon-white p offset-top-30 offset-md-top-40">
-              <li><a href="{{route('web.home')}}" class="text-white">Início</a></li>
-              <li>Atendimento</li>
-            </ul>
-          </div>
-        </div>
+<section class="section section-30 section-xxl-40 section-xxl-66 section-xxl-bottom-90 novi-background bg-gray-dark page-title-wrap" style="background-image: url({{$configuracoes->gettopodosite()}});">
+  <div class="container">
+      <div class="page-title">
+      <h2>Atendimento</h2>
       </div>
-    </section>  
-  </header>
-  
-  
-  <!-- Page Contents-->
-  <main class="page-content">
-    <!-- Get in touch-->
-    <section class="section-90 section-md-111 text-left">
-      <div class="shell">
-        <div class="range range-xs-center">
-          <div class="cell-xs-10 cell-md-8">
-            <div class="inset-lg-right-40">           
-              
-              <div class="">
-                <!-- RD Mailform-->
-                <form method="post" action="" class="text-left j_formsubmit" autocomplete="off">
-                  @csrf
-                  <div id="js-contact-result"></div>
-                  <div>
-                      <!-- HONEYPOT -->
-                      <input type="hidden" class="noclear" name="bairro" value="" />
-                      <input type="text" class="noclear" style="display: none;" name="cidade" value="" />
-                  </div>
-                  <div class="range range-xs-center form_hide">
-                    <div class="cell-sm-6">
-                      <div class="form-group form-group-label-outside">
-                        <label for="contacts-first-name" class="form-label form-label-outside text-dark">Nome</label>
-                        <input id="contacts-first-name" type="text" name="nome" class="form-control">
+  </div>
+</section>
+<section class="section section-60 section-md-top-90 section-md-bottom-100">
+  <div class="container">
+      <div class="row row-50 justify-content-md-between">
+          <div class="col-lg-5 col-xl-4">
+              <div class="inset-lg-right-15 inset-xl-right-0">
+                  <div class="row row-30 row-md-40">
+                      <div class="col-sm-12">
+                          <div class="row row-30">
+                              <div class="col-md-6 col-lg-12">
+                                  <h5>Suporte</h5>
+                                  <address class="contact-info">
+                                      <p>
+                                        @if($configuracoes->rua)	
+                                          {{$configuracoes->rua}}
+                                          @if($configuracoes->num)
+                                          , {{$configuracoes->num}}
+                                          @endif
+                                          @if($configuracoes->bairro)
+                                          , {{$configuracoes->bairro}}
+                                          @endif
+                                          @if($configuracoes->cidade)  
+                                          - {{getCidadeNome($configuracoes->cidade, 'cidades')}}
+                                          @endif
+                                      @endif
+                                      </p>
+                                      @if ($configuracoes->telefone1)
+                                        <dl class="list-terms-inline">
+                                            <dt>Telefone</dt>
+                                            <dd><a class="link-secondary" href="tel:{{limpatelefone($configuracoes->telefone1)}}">{{$configuracoes->telefone1}}</a></dd>
+                                            @if ($configuracoes->telefone2)
+                                              <dd style="margin-left: 10px;"><a class="link-secondary" href="tel:{{limpatelefone($configuracoes->telefone2)}}">{{$configuracoes->telefone2}}</a></dd>
+                                            @endif
+                                        </dl>
+                                      @endif
+                                      @if ($configuracoes->telefone3)
+                                        <dl class="list-terms-inline">
+                                            <dt>Telefone</dt>
+                                            <dd><a class="link-secondary" href="tel:{{limpatelefone($configuracoes->telefone3)}}">{{$configuracoes->telefone3}}</a></dd>                                            
+                                        </dl>
+                                      @endif
+                                      @if($configuracoes->whatsapp)
+                                          <dl class="list-terms-inline">
+                                              <span class="novi-icon icon icon-xxs icon-primary fa-whatsapp"></span>
+                                              <dd><a class="link-secondary" href="{{getNumZap($configuracoes->whatsapp ,'Atendimento '.$configuracoes->nomedosite)}}">{{$configuracoes->whatsapp}}</a></dd>  
+                                              @if ($configuracoes->skype)
+                                                <span style="margin-left: 10px;" class="novi-icon icon icon-xxs icon-primary fa-skype"></span>
+                                                <dd><a href="skype:{{$configuracoes->skype}}">{{$configuracoes->skype}}</a></dd>
+                                              @endif                                          
+                                          </dl>                                          
+                                      @endif
+                                      @if ($configuracoes->email)
+                                          <dl class="list-terms-inline">
+                                              <span class="novi-icon icon icon-xxs icon-primary fa-envelope-o"></span>
+                                              <dd><a class="link-primary" href="mailto:{{$configuracoes->email}}">{{$configuracoes->email}}</a></dd>                                              
+                                          </dl>
+                                      @endif                                      
+                                      @if ($configuracoes->email1)
+                                          <dl class="list-terms-inline">
+                                              <span class="novi-icon icon icon-xxs icon-primary fa-envelope-o"></span>
+                                              <dd><a class="link-primary" href="mailto:{{$configuracoes->email1}}">{{$configuracoes->email1}}</a></dd>
+                                          </dl>
+                                      @endif                                      
+                                  </address>
+                              </div>
+                              <div class="col-md-6 col-lg-12">
+                                {!!$configuracoes->mapa_google!!}
+                              </div>                    
+                          </div>
                       </div>
-                    </div> 
-                    <div class="cell-sm-6">
-                      <div class="form-group form-group-label-outside">
-                        <label for="contacts-email" class="form-label form-label-outside text-dark">Email</label>
-                        <input id="contacts-email" type="email" name="email" class="form-control">
-                      </div>
-                    </div>                 
                   </div>
-                  <div class="form-group form-group-label-outside offset-top-20 form_hide">
-                    <label for="contacts-message" class="form-label form-label-outside text-dark">Mensagem</label>
-                    <textarea id="contacts-message" name="mensagem" style="max-height: 150px;" class="form-control"></textarea>
-                  </div>
-                  <div class="offset-top-18 offset-sm-top-30 text-center text-sm-left form_hide">
-                    <button type="submit" class="btn btn-ripe-lemon" id="js-contact-btn">Enviar Agora</button>
-                  </div>
-                </form>
               </div>
-              
-            </div>
           </div>
-          <div class="cell-xs-10 cell-md-4 offset-top-60 offset-md-top-0">
-            <!-- Sidebar-->
-            <aside class="text-left">
-              <div class="inset-md-left-30">
-                <!-- Socials-->
-                <div>
-                  <h5 class="text-bold">Redes Sociais</h5>
-                </div>
-                <div class="offset-top-6">
-                  <div class="text-subline bg-pizazz"></div>
-                </div>
-                <div class="offset-top-20">
-                  <ul class="list-inline list-inline-2">
-                    @if ($configuracoes->email)
-                        <li><a href="mailto:{{$configuracoes->facebook}}" class="icon icon-xxs icon-silver-filled icon-circle fa fa-envelope"></a></li>
-                    @endif
-                    @if ($configuracoes->facebook)
-                        <li><a target="_blank" href="{{$configuracoes->facebook}}" class="icon icon-xxs icon-silver-filled icon-circle fa fa-facebook"></a></li>
-                    @endif
-                    @if ($configuracoes->twitter)
-                        <li><a target="_blank" href="{{$configuracoes->twitter}}" class="icon icon-xxs icon-silver-filled icon-circle fa fa-twitter"></a></li>
-                    @endif
-                    @if ($configuracoes->instagram)
-                        <li><a target="_blank" href="{{$configuracoes->instagram}}" class="icon icon-xxs icon-silver-filled icon-circle fa fa-instagram"></a></li>
-                    @endif                
-                    </ul>
-                </div>
-                <!-- Phones-->
-                <div class="offset-top-30 offset-md-top-60">
-                  <div>
-                    <h5 class="text-bold">Telefones</h5>
-                  </div>
-                  <div class="offset-top-6">
-                    <div class="text-subline bg-pizazz"></div>
-                  </div>
-                  @if ($configuracoes->telefone1)
-                      <div class="offset-top-20">
-                        <div class="unit unit-middle unit-horizontal unit-spacing-xs">
-                          <div class="unit-left">
-                            <span class="icon icon-xxs icon-primary icon-primary-filled icon-circle mdi mdi-phone"></span>
-                          </div>
-                          <div class="unit-body text-gray-darker">
-                            <p>
-                              <a href="callto:{{$configuracoes->telefone1}}" class="reveal-block reveal-xs-inline-block text-gray-darker">{{$configuracoes->telefone1}}</a>                        
-                            </p>
-                          </div>
-                        </div>
-                      </div>                      
-                  @endif
-                  @if ($configuracoes->telefone2)
-                      <div class="offset-top-20">
-                        <div class="unit unit-middle unit-horizontal unit-spacing-xs">
-                          <div class="unit-left">
-                            <span class="icon icon-xxs icon-primary icon-primary-filled icon-circle mdi mdi-phone"></span>
-                          </div>
-                          <div class="unit-body text-gray-darker">
-                            <p>
-                              <a href="callto:{{$configuracoes->telefone2}}" class="reveal-block reveal-xs-inline-block text-gray-darker">{{$configuracoes->telefone2}}</a>                        
-                            </p>
-                          </div>
-                        </div>
-                      </div>                      
-                  @endif
-                  @if ($configuracoes->telefone3)
-                      <div class="offset-top-20">
-                        <div class="unit unit-middle unit-horizontal unit-spacing-xs">
-                          <div class="unit-left">
-                            <span class="icon icon-xxs icon-primary icon-primary-filled icon-circle mdi mdi-phone"></span>
-                          </div>
-                          <div class="unit-body text-gray-darker">
-                            <p>
-                              <a href="callto:{{$configuracoes->telefone3}}" class="reveal-block reveal-xs-inline-block text-gray-darker">{{$configuracoes->telefone3}}</a>                        
-                            </p>
-                          </div>
-                        </div>
-                      </div>                      
-                  @endif
-                  @if ($configuracoes->whatsapp)
-                    <div class="offset-top-20">
-                      <div class="unit unit-middle unit-horizontal unit-spacing-xs">
-                        <div class="unit-left">
-                          <span style="background-color: #34af23;color:#fff;" class="icon icon-xxs icon-circle mdi mdi-whatsapp"></span>
-                        </div>
-                        <div class="unit-body text-gray-darker">
-                          <p>
-                            <a href="{{getNumZap($configuracoes->whatsapp ,'Atendimento Aqua Marine Turismo Náutico')}}" class="reveal-block reveal-xs-inline-block text-gray-darker">{{$configuracoes->whatsapp}}</a>                        
-                          </p>
-                        </div>
+          <div class="col-lg-7 col-xl-6">
+              <h3>Preencha o Formulário</h3>
+              <form class="rd-mailform form-modern j_formsubmit" method="post" action="" autocomplete="off">
+                @csrf
+              <div class="row row-30">                
+                  <div id="js-contact-result" style="margin-bottom: 10px;"></div>
+                  <!-- HONEYPOT -->
+                  <input type="hidden" class="noclear" name="bairro" value="" />
+                  <input type="text" class="noclear" style="display: none;" name="cidade" value="" />
+                  <div class="col-md-6 form_hide">
+                      <div class="form-wrap">
+                          <input class="form-input" id="contact-name" type="text" name="nome">
+                          <label class="form-label" for="contact-name">Nome</label>
                       </div>
-                    </div>                    
-                  @endif                  
-                  
-                </div>
-                @if ($configuracoes->email)
-                  <div class="offset-top-30 offset-md-top-60">
-                    <div>
-                      <h5 class="text-bold">Email</h5>
-                    </div>
-                    <div class="offset-top-6">
-                      <div class="text-subline bg-pizazz"></div>
-                    </div>
-                    <div class="offset-top-20">
-                      <div class="unit unit-middle unit-horizontal unit-spacing-xs">
-                        <div class="unit-left"><span class="icon icon-xxs icon-primary icon-primary-filled icon-circle mdi mdi-email-outline"></span></div>
-                        <div class="unit-body">
-                          <p><a href="mailto:{{$configuracoes->email}}" class="text-ripe-lemon">{{$configuracoes->email}}</a></p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>                      
-                @endif
-                @if ($configuracoes->email1)
-                  <div class="offset-top-30 offset-md-top-60">
-                    <div>
-                      <h5 class="text-bold">Email</h5>
-                    </div>
-                    <div class="offset-top-6">
-                      <div class="text-subline bg-pizazz"></div>
-                    </div>
-                    <div class="offset-top-20">
-                      <div class="unit unit-middle unit-horizontal unit-spacing-xs">
-                        <div class="unit-left"><span class="icon icon-xxs icon-primary icon-primary-filled icon-circle mdi mdi-email-outline"></span></div>
-                        <div class="unit-body">
-                          <p><a href="mailto:{{$configuracoes->email1}}" class="text-ripe-lemon">{{$configuracoes->email1}}</a></p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>                      
-                @endif
-
-                @if($configuracoes->rua)	
-                <div class="offset-top-30 offset-md-top-60">
-                  <div>
-                    <h5 class="text-bold">Ponto de venda</h5>
                   </div>
-                  <div class="offset-top-6">
-                    <div class="text-subline bg-pizazz"></div>
-                  </div>
-                  <div class="offset-top-20">
-                    <div class="unit unit-horizontal unit-spacing-xs">
-                      <div class="unit-left"><span class="icon icon-xxs icon-primary icon-primary-filled icon-circle mdi mdi-map-marker"></span></div>
-                      <div class="unit-body">
-                        <p>{{$configuracoes->rua}}
-                        @if($configuracoes->num)
-                        , {{$configuracoes->num}}
-                        @if($configuracoes->bairro)
-                            , {{$configuracoes->bairro}}
-                        @endif
-                        @endif
-                        </p>
+                  <div class="col-md-6 form_hide">
+                      <div class="form-wrap">
+                          <input class="form-input" id="contact-email" type="email" name="email">
+                          <label class="form-label" for="contact-email">Email</label>
                       </div>
-                    </div>
                   </div>
-                </div>
-                @endif
-                              
+                  <div class="col-sm-12 form_hide">
+                      <div class="form-wrap">
+                          <div class="textarea-lined-wrap">
+                          <textarea class="form-input" id="contact-message" name="mensagem"></textarea>
+                          <label class="form-label" for="contact-message">Mensagem</label>
+                          </div>
+                      </div>
+                  </div>
               </div>
-            </aside>
+              <div class="row row-30 row-sm-50 form_hide">
+                  <div class="col-sm-12">
+                      <button class="btn btn-primary btn-block" id="js-contact-btn" type="submit">Enviar Agora</button>
+                  </div>                
+              </div>
+              </form>
           </div>
-        </div>
       </div>
-    </section>
-    <section>
-      
-      <div class="rd-google-map">
-        {!!$configuracoes->mapa_google!!}
-      </div>
-
-    </section>
-  </main>
-  @endsection
+  </div>
+</section>
+  
+@endsection
 
 @section('css')
-<style>
-  iframe{
-    height: 450px;
-    width: 100%;
-    display: inline-block;
-    overflow: hidden"
-  }
-</style>
+  <style>
+    iframe{
+      height: 350px;
+      width: 100%;
+      display: inline-block;
+      overflow: hidden"
+    }
+  </style>
 @endsection
 
 @section('js')
@@ -297,7 +179,6 @@
                     form.find("#js-contact-btn").attr("disabled", false);
                     form.find('#js-contact-btn').html("Enviar Agora");                                
                 }
-
             });
 
             return false;
