@@ -133,22 +133,21 @@ class WebController extends Controller
     //     ]);
     // }
 
-    // public function artigos()
-    // {
-    //     $Configuracoes = Configuracoes::where('id', '1')->first();
-    //     $posts = Post::orderBy('created_at', 'DESC')->where('tipo', '=', 'artigo')->postson()->paginate(10);
-    //     $categorias = CatPost::orderBy('titulo', 'ASC')->where('tipo', 'artigo')->get();
-    //     $head = $this->seo->render('Blog - ' . $Configuracoes->nomedosite ?? 'Informática Livre',
-    //         'Blog - ' . $Configuracoes->nomedosite,
-    //         route('web.blog.artigos'),
-    //         Storage::url($Configuracoes->metaimg)
-    //     );
-    //     return view('web.blog.artigos', [
-    //         'head' => $head,
-    //         'posts' => $posts,
-    //         'categorias' => $categorias
-    //     ]);
-    // }
+    public function artigos()
+    {
+        $posts = Post::orderBy('created_at', 'DESC')->where('tipo', '=', 'artigo')->postson()->paginate(10);
+        $categorias = CatPost::orderBy('titulo', 'ASC')->where('tipo', 'artigo')->get();
+        $head = $this->seo->render('Blog - ' . $this->configService->getConfig()->nomedosite ?? 'Informática Livre',
+            'Blog - ' . $this->configService->getConfig()->nomedosite,
+            route('web.blog.artigos'),
+            $this->configService->getMetaImg() ?? 'https://informaticalivre.com/media/metaimg.jpg'
+        );
+        return view('web.blog.artigos', [
+            'head' => $head,
+            'posts' => $posts,
+            'categorias' => $categorias
+        ]);
+    }
 
     // public function categoria(Request $request)
     // {

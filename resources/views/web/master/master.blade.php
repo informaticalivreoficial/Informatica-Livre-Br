@@ -55,29 +55,47 @@
                         <div class="rd-navbar-aside-content context-dark">
                             <ul class="rd-navbar-aside-group list-units">
                                 <li>
-                                    <div class="unit unit-horizontal unit-spacing-xs">
-                                        <div class="unit-left">
-                                            <span class="novi-icon icon icon-xxs icon-primary fa-envelope-o"></span>
-                                        </div>
-                                        <div class="unit-body">
-                                            <a class="link-light-2 d-inline" href="#">suporte@informaticalivre.com</a>
-                                        </div>
+                                    <div class="unit unit-horizontal unit-spacing-xs">                                        
+                                        @if ($configuracoes->email)
+                                            <div class="unit-left">
+                                                <span class="novi-icon icon icon-xxs icon-primary fa-envelope-o"></span>
+                                            </div>
+                                            <div class="unit-body">
+                                                <a class="link-light-2 d-inline" href="mailto:{{$configuracoes->email}}">{{$configuracoes->email}}</a>
+                                            </div>
+                                        @endif
                                     </div>
                                 </li>
                                 <li>
                                     <div class="unit unit-horizontal unit-spacing-xs">
-                                    <div class="unit-left"><span class="novi-icon icon icon-xxs icon-primary fa-whatsapp"></span></div>
-                                        <div class="unit-body">
-                                            <p class="text-default">(12) 99138-5030</p>
-                                        </div>
+                                        @if ($configuracoes->whatsapp)
+                                            <div class="unit-left">
+                                                <span class="novi-icon icon icon-xxs icon-primary fa-whatsapp"></span>
+                                            </div>
+                                            <div class="unit-body">
+                                                <a class="link-light-2 d-inline" target="_blank" href="{{getNumZap($configuracoes->whatsapp ,'Atendimento '.$configuracoes->nomedosite)}}">{{$configuracoes->whatsapp}}</a>
+                                            </div>
+                                        @endif
                                     </div>
                                 </li>                       
                             </ul>
                             <div class="rd-navbar-aside-group">
                                 <ul class="list-inline list-inline-reset">
-                                    <li><a class="icon icon-round icon-gray-dark-filled icon-xxs-smallest fa fa-facebook" href="#"></a></li>
-                                    <li><a class="icon icon-round icon-gray-dark-filled icon-xxs-smallest fa fa-twitter" href="#"></a></li>
-                                    <li><a class="icon icon-round icon-gray-dark-filled icon-xxs-smallest fa fa-instagram" href="#"></a></li>
+                                    @if ($configuracoes->facebook)
+                                        <li><a target="_blank" class="icon icon-round icon-gray-dark-filled icon-xxs-smallest fa fa-facebook" href="{{$configuracoes->facebook}}"></a></li>
+                                    @endif
+                                    @if ($configuracoes->twitter)
+                                        <li><a target="_blank" class="icon icon-round icon-gray-dark-filled icon-xxs-smallest fa fa-twitter" href="{{$configuracoes->twitter}}"></a></li>
+                                    @endif
+                                    @if ($configuracoes->instagram)
+                                        <li><a target="_blank" class="icon icon-round icon-gray-dark-filled icon-xxs-smallest fa fa-instagram" href="{{$configuracoes->instagram}}"></a></li>
+                                    @endif
+                                    @if ($configuracoes->linkedin)
+                                        <li><a target="_blank" class="icon icon-round icon-gray-dark-filled icon-xxs-smallest fa fa-linkedin" href="{{$configuracoes->linkedin}}"></a></li>
+                                    @endif
+                                    @if ($configuracoes->youtube)
+                                        <li><a target="_blank" class="icon icon-round icon-gray-dark-filled icon-xxs-smallest fa fa-youtube" href="{{$configuracoes->youtube}}"></a></li>
+                                    @endif
                                 </ul>
                             </div>
                         </div>
