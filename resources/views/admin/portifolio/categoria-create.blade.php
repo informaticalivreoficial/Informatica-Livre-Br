@@ -19,7 +19,7 @@ if($catpai != null){
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{route('home')}}">Painel de Controle</a></li>
-            <li class="breadcrumb-item"><a href="{{route('catprodutos.index')}}">Categorias</a></li>
+            <li class="breadcrumb-item"><a href="{{route('catportifolio.index')}}">Categorias</a></li>
             <li class="breadcrumb-item active">{{$h1}}</li>
         </ol>
     </div>
@@ -42,7 +42,7 @@ if($catpai != null){
             <div class="col-12">
                 <div class="card card-teal card-outline">
                     <div class="card-body">
-                        <form action="{{ route('produtos-categorias.store') }}" method="post" autocomplete="off">
+                        <form action="{{ route('portifolio-categorias.store') }}" method="post" autocomplete="off">
                         @csrf                        
                                                                       
                         <div class="row mb-4">

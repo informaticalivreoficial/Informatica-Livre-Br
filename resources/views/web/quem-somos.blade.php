@@ -39,25 +39,25 @@
         <div class="row row-40">
             <div class="col-sm-6 col-md-3">
                 <div class="box-counter"><span class="novi-icon icon icon-md icon-primary material-icons-content_copy"></span>
-                    <div class="text-large counter">120</div>
+                    <div class="text-large counter">{{$projetosCount}}</div>
                     <h5 class="box-header">Projetos</h5>
                 </div>
             </div>
             <div class="col-sm-6 col-md-3">
                 <div class="box-counter"><span class="novi-icon icon icon-md icon-primary material-icons-mood"></span>
-                    <div class="text-large counter counter">82</div>
+                    <div class="text-large counter counter">{{$clientesCount}}</div>
                     <h5 class="box-header">Clientes Atendidos</h5>
                 </div>
             </div>
             <div class="col-sm-6 col-md-3">
-                <div class="box-counter"><span class="novi-icon icon icon-md icon-primary material-icons-access_time"></span>
-                    <div class="text-large counter">120</div>
+                <div class="box-counter"><span class="novi-icon icon icon-md icon-primary material-icons-language"></span>
+                    <div class="text-large counter">75</div>
                     <h5 class="box-header">Domínios</h5>
                 </div>
             </div>
             <div class="col-sm-6 col-md-3">
                 <div class="box-counter"><span class="novi-icon icon icon-md icon-primary material-icons-code"></span>
-                    <div class="text-large counter counter">834</div>
+                    <div class="text-large counter counter">62</div>
                     <h5 class="box-header">Sites Hospedados</h5>
                 </div>
             </div>

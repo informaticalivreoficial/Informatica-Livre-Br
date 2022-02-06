@@ -5,7 +5,7 @@
 @section('content_header')
 <div class="row mb-2">
     <div class="col-sm-6">
-        <h1><i class="fas fa-search mr-2"></i> Produtos/Categorias</h1>
+        <h1><i class="fas fa-search mr-2"></i> Portifólio/Categorias</h1>
     </div>
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
@@ -20,7 +20,7 @@
 
     <div class="card">
         <div class="card-header text-right">
-            <a href="{{route('produtos-categorias.create',['catpai' => 'null'])}}" class="btn btn-default"><i class="fas fa-plus mr-2"></i> Cadastrar Categoria</a>
+            <a href="{{route('portifolio-categorias.create',['catpai' => 'null'])}}" class="btn btn-default"><i class="fas fa-plus mr-2"></i> Cadastrar Categoria</a>
         </div>
         <!-- /.card-header -->
         <div class="card-body">
@@ -52,8 +52,8 @@
                             <td class="text-center">{{$categoria->created_at}}</td>
                             <td class="text-center">{{$categoria->tipo}}</td>
                             <td>
-                                <a href="{{route('produtos-categorias.create', ['catpai' => $categoria->id])}}" class="btn btn-xs btn-success">Criar Subcategoria</a>
-                                <a href="{{ route('produtos-categorias.edit', [ 'id' => $categoria->id]) }}" class="btn btn-xs btn-default"><i class="fas fa-pen"></i></a>
+                                <a href="{{route('portifolio-categorias.create', ['catpai' => $categoria->id])}}" class="btn btn-xs btn-success">Criar Subcategoria</a>
+                                <a href="{{ route('portifolio-categorias.edit', [ 'id' => $categoria->id]) }}" class="btn btn-xs btn-default"><i class="fas fa-pen"></i></a>
                                 <button type="button" class="btn btn-xs btn-danger text-white j_modal_btn" data-id="{{$categoria->id}}" data-toggle="modal" data-target="#modal-default">
                                     <i class="fas fa-trash"></i>
                                 </button>
@@ -63,11 +63,11 @@
                                 @foreach($categoria->children as $subcategoria)                        
                                 <tr style="">                            
                                     <td><img src="{{url(asset('backend/assets/images/setaseta.png'))}}"/> {{$subcategoria->titulo}}</td>
-                                    <td class="text-center">{{$subcategoria->status}}</td>
+                                    <td class="text-center">{{($subcategoria->status == true ? 'Sim' : 'Não')}}</td>
                                     <td class="text-center">{{$subcategoria->created_at}}</td>
                                     <td class="text-center">{{$subcategoria->tipo}}</td>
                                     <td>
-                                        <a href="{{ route('produtos-categorias.edit', [ 'id' => $subcategoria->id ]) }}" class="btn btn-xs btn-default"><i class="fas fa-pen"></i></a>
+                                        <a href="{{ route('portifolio-categorias.edit', [ 'id' => $subcategoria->id ]) }}" class="btn btn-xs btn-default"><i class="fas fa-pen"></i></a>
                                         <button type="button" class="btn btn-xs btn-danger text-white j_modal_btn" data-id="{{$subcategoria->id}}" data-toggle="modal" data-target="#modal-default">
                                             <i class="fas fa-trash"></i>
                                         </button>
@@ -136,7 +136,7 @@
                 $.ajax({
                     type: 'GET',
                     dataType: 'JSON',
-                    url: "{{ route('produtos-categorias.delete') }}",
+                    url: "{{ route('portifolio-categorias.delete') }}",
                     data: {
                        'id': categoria_id
                     },
@@ -145,14 +145,14 @@
                             $('.onoff').attr('disabled', false);
                             $('.j_param_data').html(data.erroron);
                             $('#id_categoria').val(data.id);
-                            $('#frm').prop('action','{{ route('produtos-categorias.deleteon') }}');
+                            $('#frm').prop('action','{{ route('portifolio-categorias.deleteon') }}');
                         }else if(data.error){
                             $('.onoff').attr('disabled', true);
                             $('.j_param_data').html(data.error);
                         }else{
                             $('.onoff').attr('disabled', false);
                             $('#id_categoria').val(data.id);
-                            $('#frm').prop('action','{{ route('produtos-categorias.deleteon') }}');
+                            $('#frm').prop('action','{{ route('portifolio-categorias.deleteon') }}');
                         }
                     }
                 });

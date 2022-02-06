@@ -9,25 +9,21 @@ use App\Mail\Web\Atendimento;
 use App\Mail\Web\AtendimentoRetorno;
 use App\Mail\Web\Compra;
 use App\Mail\Web\CompraRetorno;
-use App\Models\Configuracoes;
 use Illuminate\Support\Facades\Storage;
 use App\Models\{
+    CatPortifolio,
     Post,
     CatPost,
     Embarcacao,
     Empresa,
-    MPException,
     Newsletter,
-    Roteiro,
-    Passeio,
     Pedido,
+    Portifolio,
     Slide,
     User
 };
 use App\Services\ConfigService;
 use App\Support\Seo;
-use Illuminate\Support\Facades\Hash;
-use MercadoPago;
 use Carbon\Carbon;
 
 class WebController extends Controller
@@ -63,6 +59,8 @@ class WebController extends Controller
 
     public function quemsomos()
     {
+        $projetosCount = Portifolio::count();
+        $clientesCount = User::where('client', 1)->count();
         $paginaQuemSomos = Post::where('tipo', 'pagina')->postson()->where('id', 5)->first();
         $head = $this->seo->render('Quem Somos - ' . $this->configService->getConfig()->nomedosite,
             $this->configService->getConfig()->descricao ?? 'Informática Livre desenvolvimento de sistemas web desde 2005',
@@ -71,7 +69,40 @@ class WebController extends Controller
         );
         return view('web.quem-somos',[
             'head' => $head,
-            'paginaQuemSomos' => $paginaQuemSomos
+            'paginaQuemSomos' => $paginaQuemSomos,
+            'projetosCount' => $projetosCount,
+            'clientesCount' => $clientesCount
+        ]);
+    }
+
+    public function portifolio()
+    {
+        $catProjetos = CatPortifolio::orderBy('created_at', 'DESC')->whereNotNull('id_pai')->available()->get(); 
+        //dd($catProjetos);
+        $projetos = Portifolio::orderBy('created_at', 'DESC')->available()->exibir()->get(); 
+        $head = $this->seo->render('Portifólio - ' . $this->configService->getConfig()->nomedosite,
+            'Confira alguns dos projetos desenvolvidos pela Informática Livre',
+            route('web.portifolio'),
+            $this->configService->getMetaImg() ?? 'https://informaticalivre.com/media/metaimg.jpg'
+        );
+        return view('web.portifolio',[
+            'head' => $head,
+            'catProjetos' => $catProjetos,
+            'projetos' => $projetos
+        ]);
+    }
+
+    public function projeto($slug)
+    {
+        $projeto = Portifolio::where('slug', $slug)->first();
+        $head = $this->seo->render($projeto->name,
+            $projeto->headline ?? 'Projeto desenvolvido pela Informática Livre',
+            route('web.projeto',$projeto->slug),
+            $this->configService->getMetaImg() ?? 'https://informaticalivre.com/media/metaimg.jpg'
+        );
+        return view('web.projeto',[
+            'head' => $head,
+            'projeto' => $projeto
         ]);
     }
 

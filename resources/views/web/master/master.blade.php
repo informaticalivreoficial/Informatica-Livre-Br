@@ -121,7 +121,7 @@
                                         </ul>
                                     </li>  
                                     <li class="rd-nav-item">
-                                        <a class="rd-nav-link" href="index.php?v=projetos" title="Protifólio">Protifólio</a>
+                                        <a class="rd-nav-link" href="{{route('web.portifolio')}}" title="Protifólio">Protifólio</a>
                                     </li>                          
                                     <li class="rd-nav-item">
                                         <a class="rd-nav-link" href="{{route('web.blog.artigos')}}" title="Dicas">Dicas</a>

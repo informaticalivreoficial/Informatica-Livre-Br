@@ -47,7 +47,7 @@ class Post extends Model
 
     /**
      * Relacionamentos
-     */
+    */
 
     public function user()
     {

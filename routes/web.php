@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\CatPortifolioController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\EmailController;
 use App\Http\Controllers\Admin\PostController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\Admin\EmpresaController;
 use App\Http\Controllers\Admin\ProdutoController;
 use App\Http\Controllers\Admin\CatProdutoController;
 use App\Http\Controllers\Admin\ParceiroController;
+use App\Http\Controllers\Admin\PortifolioController;
 use App\Http\Controllers\Admin\SitemapController;
 use App\Http\Controllers\Admin\SlideController;
 use App\Http\Controllers\Web\ClienteController;
@@ -59,13 +61,9 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
     Route::get('/noticia/{slug}', 'WebController@noticia')->name('noticia');
     Route::get('/noticias', 'WebController@noticias')->name('noticias');
 
-    //****************************** Roteiros *******************************************/
-    Route::get('/roteiro/{slug}', [WebController::class, 'roteiro'])->name('roteiro');
-    Route::get('/roteiros', [WebController::class, 'roteiros'])->name('roteiros');
-
-    //****************************** Embarcações *******************************************/
-    Route::get('/embarcacao/{slug}', [WebController::class, 'embarcacao'])->name('embarcacao');
-    Route::get('/embarcacoes', [WebController::class, 'embarcacoes'])->name('embarcacoes');
+    //****************************** Portifólio *******************************************/
+    Route::get('/portifolio/{slug}', [WebController::class, 'projeto'])->name('projeto');
+    Route::get('/portifolio', [WebController::class, 'portifolio'])->name('portifolio');
 
     ///****************************** Passeios *******************************************/
     Route::get('/passeios/comprar/{passeio}', [WebController::class, 'comprar'])->name('passeios.comprar');
@@ -117,6 +115,28 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     //******************** Pedidos *********************************************/
     Route::get('pedidos/show/{id}', [PedidoController::class, 'show'])->name('pedidos.show');
     Route::get('pedidos', [PedidoController::class, 'index'])->name('pedidos.index');
+
+    //*************************** Portifólio Categorias **********************************/
+    Route::get('portifolio/categorias/delete', [CatPortifolioController::class, 'delete'])->name('portifolio-categorias.delete');
+    Route::delete('portifolio/categorias/deleteon', [CatPortifolioController::class, 'deleteon'])->name('portifolio-categorias.deleteon');
+    Route::get('portifolio/categorias/{id}/edit', [CatPortifolioController::class, 'edit'])->name('portifolio-categorias.edit');
+    Route::put('portifolio/categorias/{id}', [CatPortifolioController::class, 'update'])->name('portifolio-categorias.update');
+    Route::match(['post', 'get'],'portifolio/categorias/create/{catpai}', [CatPortifolioController::class, 'create'])->name('portifolio-categorias.create');
+    Route::post('portifolio/categorias/store', [CatPortifolioController::class, 'store'])->name('portifolio-categorias.store');
+    Route::get('portifolio/categorias', [CatPortifolioController::class, 'index'])->name('catportifolio.index');
+
+    //*************************** Portifólio *******************************************/
+    Route::match(['get', 'post'], 'portifolio/pesquisa', [PortifolioController::class, 'search'])->name('portifolio.search');
+    Route::get('portifolio/set-status', [PortifolioController::class, 'portifolioSetStatus'])->name('portifolio.portifolioSetStatus');
+    Route::post('portifolio/image-set-cover', [PortifolioController::class, 'imageSetCover'])->name('portifolio.imageSetCover');
+    Route::delete('portifolio/image-remove', [PortifolioController::class, 'imageRemove'])->name('portifolio.imageRemove');
+    Route::delete('portifolio/deleteon', [PortifolioController::class, 'deleteon'])->name('portifolio.deleteon');
+    Route::get('portifolio/delete', [PortifolioController::class, 'delete'])->name('portifolio.delete');
+    Route::put('portifolio/{id}', [PortifolioController::class, 'update'])->name('portifolio.update');
+    Route::get('portifolio/{id}/edit', [PortifolioController::class, 'edit'])->name('portifolio.edit');
+    Route::get('portifolio/create', [PortifolioController::class, 'create'])->name('portifolio.create');
+    Route::post('portifolio/store', [PortifolioController::class, 'store'])->name('portifolio.store');
+    Route::get('portifolio', [PortifolioController::class, 'index'])->name('portifolio.index');
 
     //*************************** Produtos Categorias **********************************/
     Route::get('produtos/categorias/delete', [CatProdutoController::class, 'delete'])->name('produtos-categorias.delete');
