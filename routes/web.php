@@ -2,25 +2,28 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Admin\CatPortifolioController;
-use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\EmailController;
-use App\Http\Controllers\Admin\PostController;
-use App\Http\Controllers\Admin\CatPostController;
-use App\Http\Controllers\Admin\ConfigController;
-use App\Http\Controllers\Admin\EmpresaController;
-use App\Http\Controllers\Admin\ProdutoController;
-use App\Http\Controllers\Admin\CatProdutoController;
-use App\Http\Controllers\Admin\ParceiroController;
-use App\Http\Controllers\Admin\PortifolioController;
-use App\Http\Controllers\Admin\SitemapController;
-use App\Http\Controllers\Admin\SlideController;
-use App\Http\Controllers\Web\ClienteController;
-use App\Http\Controllers\Web\RssFeedController;
-use App\Http\Controllers\Web\WebController;
-
-//use Illuminate\Mail\Markdown;
+use App\Http\Controllers\Admin\{
+    AdminController,
+    CatPortifolioController,
+    UserController,
+    EmailController,
+    PostController,
+    CatPostController,
+    ConfigController,
+    EmpresaController,
+    ProdutoController,
+    CatProdutoController,
+    ParceiroController,
+    PortifolioController,
+    SitemapController,
+    SlideController
+};
+use App\Http\Controllers\Web\{
+    ClienteController,
+    RssFeedController,
+    SendEmailController,
+    WebController
+};
 
 Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
     
@@ -30,7 +33,8 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
 
     //****************************** Política de Privacidade ******************************/
     Route::get('/politica-de-privacidade', [WebController::class, 'politica'])->name('politica');
-    Route::get('/consultoria', [WebController::class, 'orcamento'])->name('orcamento');
+    Route::get('/consultoria/produtos', [WebController::class, 'orcamento'])->name('orcamento');
+    Route::get('/consultoria/orcamento', [WebController::class, 'formorcamento'])->name('formorcamento');
     Route::get('/quem-somos', [WebController::class, 'quemsomos'])->name('quemsomos');
 
     //** Página Destaque */
@@ -46,20 +50,17 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
     Route::get('/cliente/login', [ClienteController::class, 'login'])->name('login');
     Route::get('/cliente/meus-passeios', [ClienteController::class, 'passeios'])->name('passeios');
    
-    //**************************** Página Inicial ********************************************/
+    //**************************** Emails ********************************************/
     Route::get('/atendimento', [WebController::class, 'atendimento'])->name('atendimento');
-    Route::get('/sendEmail', [WebController::class, 'sendEmail'])->name('sendEmail');
-    Route::get('/sendNewsletter', [WebController::class, 'sendNewsletter'])->name('sendNewsletter');
+    Route::get('/sendEmail', [SendEmailController::class, 'sendEmail'])->name('sendEmail');
+    Route::get('/sendNewsletter', [SendEmailController::class, 'sendNewsletter'])->name('sendNewsletter');
+    Route::get('/sendOrcamento', [SendEmailController::class, 'sendOrcamento'])->name('sendOrcamento');
     
     //****************************** Blog ***********************************************/
     Route::get('/blog/artigo/{slug}', [WebController::class, 'artigo'])->name('blog.artigo');
     Route::get('/blog/categoria/{slug}', [WebController::class, 'categoria'])->name('blog.categoria');
     Route::get('/blog', [WebController::class, 'artigos'])->name('blog.artigos');
     Route::match(['get', 'post'],'/blog/pesquisar', [WebController::class, 'searchBlog'])->name('blog.searchBlog');
-
-    //****************************** Notícias *******************************************/
-    Route::get('/noticia/{slug}', 'WebController@noticia')->name('noticia');
-    Route::get('/noticias', 'WebController@noticias')->name('noticias');
 
     //****************************** Portifólio *******************************************/
     Route::get('/portifolio/{slug}', [WebController::class, 'projeto'])->name('projeto');

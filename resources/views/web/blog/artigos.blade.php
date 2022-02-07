@@ -51,81 +51,18 @@
 </section>
 @endif
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      
-<main class="page-content">
-<!-- Blog Classic-->
-<div id="fb-root"></div>
-<section class="section-90 section-md-111 text-left bg-zircon">
-    <div class="shell">
-    <div class="range range-xs-center range-lg-right">
-        
-        <div class="cell-sm-10 cell-md-4 offset-top-60 offset-md-top-0">
-        <div class="inset-md-left-30">
-            <!-- Aside-->
-            <aside class="text-left">
-           
-            <!-- Categories-->
-            <div class="offset-top-30 offset-md-top-60">
-                <h5 class="text-bold">Categorias</h5>
+<section class="section section-60 section-md-100 bg-accent novi-background">
+    <div class="container text-center text-lg-start">
+        <div class="row row-30 align-items-md-center justify-content-lg-center">
+            <div class="col-lg-8 col-xl-7">
+                <h3>Solicite Agora um Orçamento</h3>
             </div>
-            <div class="offset-top-6">
-                <div class="text-subline bg-pizazz"></div>
+            <div class="col-lg-4 col-xl-3">
+                <a class="btn btn-xl btn-black-outline" href="{{route('web.formorcamento')}}">Quero um Orçamento</a>
             </div>
-            <div class="offset-top-15 offset-md-top-20">
-                <div class="inset-xs-left-8">
-                <!-- List Marked-->
-                <ul class="list list-marked list-marked-icon text-dark">
-                    @if(!empty($categorias) && $categorias->count() > 0)
-                        @foreach($categorias as $categoria)                                    
-                            @if($categoria->children)
-                                @foreach($categoria->children as $subcategoria)
-                                    @if($subcategoria->countposts() >= 1)
-                                        <li><a class="text-ripe-lemon" href="{{route('web.blog.categoria', ['slug' => $subcategoria->slug] )}}" title="{{ $subcategoria->titulo }}">{{ $subcategoria->titulo }}</a> ({{$subcategoria->countposts()}})</li>
-                                    @endif                                            
-                                @endforeach
-                            @endif                                                                                                                             
-                        @endforeach
-                    @endif
-                </ul>
-                </div>
-            </div>
-            
-            <div class="offset-top-30 offset-md-top-60">
-                <!-- Facebook standart widget-->
-                <div>
-                <div class="fb-root fb-widget">
-                    <div class="fb-page-responsive">
-                    <div data-href="{{$configuracoes->facebook}}" data-tabs="timeline" data-height="500" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true" class="fb-page">
-                        <div class="fb-xfbml-parse-ignore">
-                        <blockquote cite="{{$configuracoes->facebook}}"><a href="{{$configuracoes->facebook}}">{{$configuracoes->nomedosite}}</a></blockquote>
-                        </div>
-                    </div>
-                    </div>
-                </div>
-                </div>
-            </div>
-            </aside>
         </div>
-        </div>
-    </div>
     </div>
 </section>
-</main>
-    
     
 @endsection
 

@@ -66,13 +66,13 @@ class Configuracoes extends Model
         'rss',
         'rss_data',
         'sitemap',
-        'sitemap_data'
+        'sitemap_data',
+        'politicas_de_privacidade'
     ];
 
     /**
      * Accerssors and Mutators
-     */
-        
+    */        
     public function getmetaimg()
     {
         $image = $this->metaimg;        

@@ -72,6 +72,7 @@ class CreateConfiguracoesTable extends Migration
             $table->text('descricao')->nullable();
             $table->text('mapa_google')->nullable();
             $table->text('metatags')->nullable();
+            $table->text('politicas_de_privacidade')->nullable();
             $table->string('rss');
             $table->date('rss_data')->nullable();
             $table->string('sitemap');

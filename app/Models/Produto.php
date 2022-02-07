@@ -53,6 +53,11 @@ class Produto extends Model
         return $query->where('status', 0);
     }
 
+    public function scopeExibir($query)
+    {
+        return $query->where('exibir', 1);
+    }
+
     public function images()
     {
         return $this->hasMany(ProdutoGb::class, 'produto', 'id')->orderBy('cover', 'ASC');

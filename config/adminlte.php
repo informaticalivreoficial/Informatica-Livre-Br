@@ -278,10 +278,6 @@ return [
                     'url'  => 'admin/posts/artigos',
                 ],
                 [
-                    'text' => 'Notícias',
-                    'url'  => 'admin/posts/noticias',
-                ],
-                [
                     'text' => 'Páginas',
                     'url'  => 'admin/posts/paginas',
                 ],
@@ -320,9 +316,23 @@ return [
             ]
         ], 
         [
-            'text' => 'Pedidos',
-            'url'  => 'admin/pedidos',
+            'text' => 'Vendas',            
             'icon' => 'fas fa-money-check',
+            'submenu' => [
+                [
+                    'text' => 'Pedidos',
+                    'url' => 'admin/pedidos',
+                ],
+                [
+                    'text' => 'Orçamentos',
+                    'url' => 'admin/orcamentos',
+                ],
+                [
+                    'text' => 'Finalizados',
+                    'url' => 'admin/finalizados',
+                ]                
+            ],
+            
         ],
         [
             'text' => 'Portifólio',            

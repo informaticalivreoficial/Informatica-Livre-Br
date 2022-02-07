@@ -65,7 +65,7 @@
     </div>
 </section>
 
-
+<!--
 <section class="section section-60 section-md-90 section-lg-bottom-120 bg-gray-dark novi-background text-center">
     <div class="container">
         <h3>Depoimento de Clientes</h3>
@@ -132,6 +132,19 @@
                         <p class="caption">Proprietário</p>
                     </div>
                 </blockquote>
+            </div>
+        </div>
+    </div>
+</section>
+-->
+<section class="section section-60 section-md-100 bg-accent novi-background">
+    <div class="container text-center text-lg-start">
+        <div class="row row-30 align-items-md-center justify-content-lg-center">
+            <div class="col-lg-8 col-xl-7">
+                <h3>Solicite Agora um Orçamento</h3>
+            </div>
+            <div class="col-lg-4 col-xl-3">
+                <a class="btn btn-xl btn-black-outline" href="{{route('web.formorcamento')}}">Quero um Orçamento</a>
             </div>
         </div>
     </div>

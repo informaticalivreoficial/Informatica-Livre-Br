@@ -3318,13 +3318,11 @@ p + p {
 	overflow: hidden;
 	border-radius: 5px;
 	background: #fff;
-	text-align: center;
 	box-shadow: -1px 2px 5px 0 rgba(65, 65, 65, 0.12);
 }
 
 .pricing-table-header {
 	font-size: 18px;
-	text-transform: uppercase;
 	letter-spacing: .05em;
 	color: #535457;
 }
@@ -4705,8 +4703,8 @@ html .btn-default, html .btn-default:active, html .btn-default.active, html .btn
 
 .open > html .btn-default.dropdown-toggle, html .btn-default:hover {
 	color: #fff;
-	background-color: #58c4a7;
-	border-color: #58c4a7;
+	background-color: #F48920;
+	border-color: #F48920;
 }
 
 html .btn-default.disabled, html .btn-default[disabled],
@@ -6500,7 +6498,6 @@ form.label-outside .form-validation {
 .textarea-lined-wrap {
 	position: relative;
 	line-height: 2.39;
-	background: url("../images/textarea-pattern-light.png") repeat;
 }
 
 .textarea-lined-wrap textarea {

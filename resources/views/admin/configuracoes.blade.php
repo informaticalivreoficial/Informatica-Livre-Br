@@ -2,6 +2,28 @@
 
 @section('title', 'Configurações')
 
+@php
+$config1 = [
+    "height" => "300",
+    "fontSizes" => ['8', '9', '10', '11', '12', '14', '18'],
+    "lang" => 'pt-BR',
+    "toolbar" => [
+        // [groupName, [list of button]]
+        ['style', ['style']],
+        ['fontname', ['fontname']],
+        ['fontsize', ['fontsize']],
+        ['style', ['bold', 'italic', 'underline', 'clear']],
+        //['font', ['strikethrough', 'superscript', 'subscript']],        
+        ['color', ['color']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['height', ['height']],
+        ['table', ['table']],
+        ['insert', ['link', 'picture', 'video','hr']],
+        ['view', ['fullscreen', 'codeview']],
+    ],
+]
+@endphp
+
 @section('content_header')
 <div class="row mb-2">
     <div class="col-sm-6">
@@ -88,20 +110,34 @@
                                     <div class="row mb-2">
                                         <div class="col-12 col-md-6 col-sm-6 col-lg-6 mb-2">
                                             <div class="form-group">
-                                                <label class="labelforms"><b>Nome do site</b></label>
+                                                <label class="labelforms text-muted"><b>Nome do site</b></label>
                                                 <input type="text" class="form-control text-muted" placeholder="Nome do site" name="nomedosite" value="{{ old('nomedosite') ?? $config->nomedosite }}">
                                             </div>
                                         </div>
                                         <div class="col-12 col-md-6 col-sm-6 col-lg-6 mb-2">
                                             @if(\Illuminate\Support\Facades\Auth::user()->superadmin == 1)
                                                 <div class="form-group">
-                                                    <label class="labelforms"><b>URL do site</b></label>
-                                                    <input type="text" class="form-control text-muted" placeholder="URL do site" name="dominio" value="{{ old('dominio') ?? $config->dominio }}">
+                                                    <label class="labelforms text-muted"><b>URL do site</b></label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control text-muted" placeholder="URL do site" name="dominio" value="{{ old('dominio') ?? $config->dominio }}"/>
+                                                        <div class="input-group-append">
+                                                            <div class="input-group-text">
+                                                            <a href="javascript:void(0)" title="QrCode" data-toggle="modal" data-target="#modal-qrcode"><i class="fa fa-qrcode"></i></a>
+                                                            </div>                                                            
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             @else
                                                 <div class="form-group">
-                                                    <label class="labelforms"><b>URL do site</b></label>
-                                                    <input type="text" class="form-control text-muted" placeholder="URL do site" name="dominio" value="{{ old('dominio') ?? $config->dominio }}" disabled>
+                                                    <label class="labelforms text-muted"><b>URL do site</b></label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control text-muted" placeholder="URL do site" name="dominio" value="{{ old('dominio') ?? $config->dominio }}" disabled>
+                                                        <div class="input-group-append">
+                                                            <div class="input-group-text">
+                                                            <a href="javascript:void(0)" title="QrCode" data-toggle="modal" data-target="#modal-qrcode"><i class="fa fa-qrcode"></i></a>
+                                                            </div>                                                            
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             @endif                                                    
                                         </div>                                         
@@ -219,7 +255,14 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>                                       
+                                </div> 
+                                
+                                <div class="row mb-2">
+                                    <div class="col-12">   
+                                        <label class="labelforms text-muted"><b>Política de Privacidade</b></label>
+                                        <x-adminlte-text-editor name="politicas_de_privacidade" v placeholder="Política de Privacidade..." :config="$config1">{{ old('politicas_de_privacidade') ?? $config->politicas_de_privacidade }}</x-adminlte-text-editor>                                                                                     
+                                    </div>                                    
+                                </div>
                             </div> 
                         </div>
                         <div class="tab-pane fade" id="custom-tabs-four-profile" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">                                    
@@ -493,6 +536,8 @@
     <!-- /.modal-dialog -->
 </div>
 
+
+
 @stop
 
 @section('css')
@@ -531,6 +576,7 @@
 @stop
 
 @section('plugins.Toastr', true)
+
 
 @section('js')
 <!--tags input-->

@@ -19,6 +19,7 @@ use App\Models\{
     Newsletter,
     Pedido,
     Portifolio,
+    Produto,
     Slide,
     User
 };
@@ -75,10 +76,22 @@ class WebController extends Controller
         ]);
     }
 
+    public function politica()
+    {
+        $head = $this->seo->render('Política de Privacidade - ' . $this->configService->getConfig()->nomedosite ?? 'Informática Livre',
+            'Política de Privacidade - ' . $this->configService->getConfig()->nomedosite,
+            route('web.politica'),
+            $this->configService->getMetaImg() ?? 'https://informaticalivre.com/media/metaimg.jpg'
+        );
+
+        return view('web.politica',[
+            'head' => $head
+        ]);
+    }
+
     public function portifolio()
     {
         $catProjetos = CatPortifolio::orderBy('created_at', 'DESC')->whereNotNull('id_pai')->available()->get(); 
-        //dd($catProjetos);
         $projetos = Portifolio::orderBy('created_at', 'DESC')->available()->exibir()->get(); 
         $head = $this->seo->render('Portifólio - ' . $this->configService->getConfig()->nomedosite,
             'Confira alguns dos projetos desenvolvidos pela Informática Livre',
@@ -95,6 +108,8 @@ class WebController extends Controller
     public function projeto($slug)
     {
         $projeto = Portifolio::where('slug', $slug)->first();
+        $projeto->views += 1;
+        $projeto->save();
         $head = $this->seo->render($projeto->name,
             $projeto->headline ?? 'Projeto desenvolvido pela Informática Livre',
             route('web.projeto',$projeto->slug),
@@ -106,32 +121,37 @@ class WebController extends Controller
         ]);
     }
 
-    // public function artigo(Request $request)
-    // {
-    //     $Configuracoes = Configuracoes::where('id', '1')->first();
-    //     $post = Post::where('slug', $request->slug)->postson()->first();
-        
-    //     $categorias = CatPost::orderBy('titulo', 'ASC')
-    //         ->where('tipo', 'artigo')
-    //         ->get();
-    //     $postsMais = Post::orderBy('views', 'DESC')->where('id', '!=', $post->id)->limit(3)->postson()->get();
-        
-    //     $post->views = $post->views + 1;
-    //     $post->save();
+    public function orcamento()
+    {
+        $produtos = Produto::orderBy('valor', 'ASC')
+                            ->where('categoria', 4)
+                            ->exibir()
+                            ->available()
+                            ->get();
+        $head = $this->seo->render('Soluções para sua empresa - ' . $this->configService->getConfig()->nomedosite,
+            'Nossa equipe está pronta para melhor atender as demandas de nossos clientes!',
+            route('web.atendimento'),
+            $this->configService->getMetaImg() ?? 'https://informaticalivre.com/media/metaimg.jpg'
+        );        
 
-    //     $head = $this->seo->render($post->titulo . ' - Blog ' . $Configuracoes->nomedosite ?? 'Informática Livre',
-    //         $post->titulo,
-    //         route('web.blog.artigo', ['slug' => $post->slug]),
-    //         $post->cover() ?? Storage::url($Configuracoes->metaimg)
-    //     );
+        return view('web.consultoria.produtos', [
+            'head' => $head,
+            'produtos' => $produtos            
+        ]);
+    }
 
-    //     return view('web.blog.artigo', [
-    //         'head' => $head,
-    //         'post' => $post,
-    //         'postsMais' => $postsMais,
-    //         'categorias' => $categorias
-    //     ]);
-    // }
+    public function formorcamento()
+    {
+        $head = $this->seo->render('Orçamento Perdonalizado - ' . $this->configService->getConfig()->nomedosite,
+            'Nossa equipe está pronta para melhor atender as demandas de nossos clientes!',
+            route('web.atendimento'),
+            $this->configService->getMetaImg() ?? 'https://informaticalivre.com/media/metaimg.jpg'
+        );        
+
+        return view('web.consultoria.consultoria', [
+            'head' => $head           
+        ]);
+    }
 
     public function artigos()
     {
@@ -145,6 +165,37 @@ class WebController extends Controller
         return view('web.blog.artigos', [
             'head' => $head,
             'posts' => $posts,
+            'categorias' => $categorias
+        ]);
+    }
+
+    public function artigo(Request $request)
+    {
+        $post = Post::where('slug', $request->slug)->postson()->first();
+        
+        $categorias = CatPost::orderBy('titulo', 'ASC')
+            ->where('tipo', 'artigo')
+            ->get();
+        $postsMais = Post::orderBy('views', 'DESC')
+            ->where('id', '!=', $post->id)
+            ->where('tipo', 'artigo')
+            ->limit(4)
+            ->postson()
+            ->get();
+        
+        $post->views = $post->views + 1;
+        $post->save();
+
+        $head = $this->seo->render($post->titulo ?? 'Informática Livre',
+            $post->titulo,
+            route('web.blog.artigo', ['slug' => $post->slug]),
+            $post->cover() ?? $this->configService->getMetaImg()
+        );
+
+        return view('web.blog.artigo', [
+            'head' => $head,
+            'post' => $post,
+            'postsMais' => $postsMais,
             'categorias' => $categorias
         ]);
     }
@@ -211,47 +262,7 @@ class WebController extends Controller
         ]);
     }
 
-    // public function sendEmail(Request $request)
-    // {
-    //     $Configuracoes = Configuracoes::where('id', '1')->first();
-    //     if($request->nome == ''){
-    //         $json = "Por favor preencha o campo <strong>Nome</strong>";
-    //         return response()->json(['error' => $json]);
-    //     }
-    //     if(!filter_var($request->email, FILTER_VALIDATE_EMAIL)){
-    //         $json = "O campo <strong>Email</strong> está vazio ou não tem um formato válido!";
-    //         return response()->json(['error' => $json]);
-    //     }
-    //     if($request->mensagem == ''){
-    //         $json = "Por favor preencha sua <strong>Mensagem</strong>";
-    //         return response()->json(['error' => $json]);
-    //     }
-    //     if(!empty($request->bairro) || !empty($request->cidade)){
-    //         $json = "<strong>ERRO</strong> Você está praticando SPAM!"; 
-    //         return response()->json(['error' => $json]);
-    //     }else{
-    //         $data = [
-    //             'sitename' => $Configuracoes->nomedosite,
-    //             'siteemail' => $Configuracoes->email,
-    //             'reply_name' => $request->nome,
-    //             'reply_email' => $request->email,
-    //             'mensagem' => $request->mensagem
-    //         ];
-
-    //         $retorno = [
-    //             'sitename' => $Configuracoes->nomedosite,
-    //             'siteemail' => $Configuracoes->email,
-    //             'reply_name' => $request->nome,
-    //             'reply_email' => $request->email
-    //         ];
-            
-    //         Mail::send(new Atendimento($data));
-    //         Mail::send(new AtendimentoRetorno($retorno));
-            
-    //         $json = "Obrigado {$request->nome} sua mensagem foi enviada com sucesso!"; 
-    //         return response()->json(['sucess' => $json]);
-    //     }
-    // }
+    
 
     
 
