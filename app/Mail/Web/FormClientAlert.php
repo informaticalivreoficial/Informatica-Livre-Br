@@ -8,11 +8,9 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Markdown;
 
-class SendOrcamento extends Mailable
+class FormClientAlert extends Mailable
 {
     use Queueable, SerializesModels;
-
-    private $data;
 
     /**
      * Create a new message instance.
@@ -34,12 +32,20 @@ class SendOrcamento extends Mailable
         return $this->replyTo($this->data['reply_email'], $this->data['reply_name'])
             ->to($this->data['siteemail'], $this->data['sitename'])
             ->from($this->data['siteemail'], $this->data['sitename'])
-            ->subject('#Orçamento: ' . $this->data['reply_name'])
-            ->markdown('emails.orcamento', [
+            ->subject('✅ Formulário de Cliente Enviado')
+            ->markdown('emails.form-client-alert', [
+                //Cliente
                 'nome' => $this->data['reply_name'],
                 'email' => $this->data['reply_email'],
                 'telefone' => $this->data['telefone'],
-                'mensagem' => $this->data['mensagem']
+                'cpf' => $this->data['cpf'],
+                //Empresa
+                'empresa' => $this->data['empresa'] ?? null,
+                'email_empresa' => $this->data['email_empresa'] ?? null,
+                'telefone_empresa' => $this->data['telefone_empresa'] ?? null,
+                'celular' => $this->data['celular'] ?? null,
+                'whatsapp' => $this->data['whatsapp'] ?? null,
+                'notasadicionais' => $this->data['notasadicionais'] ?? null
         ]);
     }
 }

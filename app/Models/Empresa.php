@@ -49,7 +49,7 @@ class Empresa extends Model
 
     /**
      * Scopes
-     */
+    */
 
     public function scopeAvailable($query)
     {

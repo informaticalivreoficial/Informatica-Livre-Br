@@ -124,20 +124,19 @@
                                     <li class="rd-nav-item">
                                         <a class="rd-nav-link" href="{{route('web.quemsomos')}}" title="Informática Livre">Informática Livre</a>
                                     </li>
-                                    <li class="rd-nav-item active"><a class="rd-nav-link" href="#">Serviços</a>
-                                        <ul class="rd-menu rd-navbar-dropdown">
-                                        <li class="rd-dropdown-item"><a class="rd-dropdown-link" href="#">Criação de Sites</a>
-                                        </li>
-                                        <li class="rd-dropdown-item"><a class="rd-dropdown-link" href="#">Lojas Virtuais</a>
-                                        </li>
-                                        <li class="rd-dropdown-item"><a class="rd-dropdown-link" href="#">Sistemas Web</a>
-                                        </li>
-                                        <li class="rd-dropdown-item"><a class="rd-dropdown-link" href="#">Páginas de Captura</a>
-                                        </li>
-                                        <li class="rd-dropdown-item"><a class="rd-dropdown-link" href="#">Criação de Portais</a>
-                                        </li>
-                                        </ul>
-                                    </li>  
+
+                                    @if (!empty($menu_servicos) && $menu_servicos->count() > 0)
+                                        <li class="rd-nav-item active"><a class="rd-nav-link" href="#">Serviços</a>
+                                            <ul class="rd-menu rd-navbar-dropdown">
+                                                @foreach ($menu_servicos as $servico)
+                                                <li class="rd-dropdown-item">
+                                                    <a class="rd-dropdown-link" href="{{route('web.pagina',['slug' => $servico->slug])}}">{{$servico->titulo}}</a>
+                                                </li>
+                                                @endforeach
+                                            </ul>
+                                        </li> 
+                                    @endif
+                                     
                                     <li class="rd-nav-item">
                                         <a class="rd-nav-link" href="{{route('web.portifolio')}}" title="Protifólio">Protifólio</a>
                                     </li>                          

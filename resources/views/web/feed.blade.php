@@ -3,9 +3,9 @@
 ?>
 <rss version="2.0">
     <channel>
-        <title><![CDATA[ {{ $Configuracoes->nomedosite }} ]]></title>
+        <title><![CDATA[ {{ $configuracoes->nomedosite }} ]]></title>
         <link><![CDATA[ {{url('feed')}} ]]></link>
-        <description><![CDATA[ {{ $Configuracoes->descricao }} ]]></description>
+        <description><![CDATA[ {{ $configuracoes->descricao }} ]]></description>
         <language>pt-br</language>
         <pubDate>{{ now() }}</pubDate>
 
@@ -22,16 +22,16 @@
             </item>
         @endforeach
 
-        @foreach($roteiros as $roteiro)
+        @foreach($projetos as $projeto)
             <item>
-                <title><![CDATA[{{ $roteiro->name }}]]></title>
-                <link>{{ url('roteiro/'.$roteiro->slug) }}</link>
-                <image>{{ $roteiro->cover() }}</image>
-                <description><![CDATA[{!! $roteiro->getContentWebAttribute() !!}]]></description>
-                <category>Passeios</category>
-                <author><![CDATA[ {{ $Configuracoes->nomedosite }} ]]></author>
-                <guid>{{ $roteiro->id }}</guid>
-                <pubDate>{{ $roteiro->created_at }}</pubDate>
+                <title><![CDATA[{{ $projeto->name }}]]></title>
+                <link>{{ url('portifolio/'.$projeto->slug) }}</link>
+                <image>{{ $projeto->cover() }}</image>
+                <description><![CDATA[{!! $projeto->getContentWebAttribute() !!}]]></description>
+                <category>Projetos</category>
+                <author><![CDATA[ {{ $configuracoes->nomedosite }} ]]></author>
+                <guid>{{ $projeto->id }}</guid>
+                <pubDate>{{ $projeto->created_at }}</pubDate>
             </item>
         @endforeach        
     </channel>

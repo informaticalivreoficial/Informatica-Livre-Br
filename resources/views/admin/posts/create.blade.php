@@ -268,7 +268,7 @@ $config = [
 
             $('.tipo_post').on('change', function (){
                 var categoria = this.value;
-
+                //console.log(categoria);
                 $.ajax({
                     url: "{{route('posts.categoriaList')}}",
                     type: "POST",
@@ -281,13 +281,23 @@ $config = [
                         $('.categoria').html('Carregando...');
                     },
                     success: function (retorno){
-                        if(retorno.data.length !== 0){
+                        //Função da porra                        
+                        var fragment="";
+                        var modelHTML="";
+                        if(retorno.length !== 0){
                             $('.categoria').html('<option value="">Selecione a Categoria</option>');
-                            $.each(retorno.data, function (key, value) {
-                                $(".categoria").append('<optgroup label="' + value.catTitulo + '">'
-                                + '<option value="'+ value.subcategory.id +'">'+ value.subcategory.titulo +'</option>'  
-                                + '</optgroup>');
+                            $.each(retorno, function (k, value) {
+                                //console.log(value.catId);
+                                modelHTML +="";
+                                $.each(value.subcategory, function (ind, val) { 
+                                    var Model_Name = val.titulo;                                   			  
+                                    modelHTML += "<option value="+ val.id +">" + val.titulo + "</option>";     
+                                });
+                                
+                                fragment +="<optgroup label=" + value.catTitulo + "> "+ modelHTML +" </optgroup>";
+                                modelHTML="";                                
                             });
+                            $('.categoria').append(fragment);
                         }else{
                             $('.categoria').html('<option value="">Cadastre uma categoria!</option>');
                         }                       

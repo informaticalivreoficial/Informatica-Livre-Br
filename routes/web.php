@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\{
     EmpresaController,
     ProdutoController,
     CatProdutoController,
+    OrcamentoController,
     ParceiroController,
     PortifolioController,
     SitemapController,
@@ -36,6 +37,7 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
     Route::get('/consultoria/produtos', [WebController::class, 'orcamento'])->name('orcamento');
     Route::get('/consultoria/orcamento', [WebController::class, 'formorcamento'])->name('formorcamento');
     Route::get('/quem-somos', [WebController::class, 'quemsomos'])->name('quemsomos');
+    Route::get('consultoria/orcamentos/form-client/{token}', [WebController::class, 'formClient'])->name('formClient');
 
     //** Página Destaque */
     Route::get('/destaque', 'WebController@spotlight')->name('spotlight');
@@ -55,6 +57,7 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
     Route::get('/sendEmail', [SendEmailController::class, 'sendEmail'])->name('sendEmail');
     Route::get('/sendNewsletter', [SendEmailController::class, 'sendNewsletter'])->name('sendNewsletter');
     Route::get('/sendOrcamento', [SendEmailController::class, 'sendOrcamento'])->name('sendOrcamento');
+    Route::get('/sendFormCaptacao', [SendEmailController::class, 'sendFormCaptacao'])->name('sendFormCaptacao');
     
     //****************************** Blog ***********************************************/
     Route::get('/blog/artigo/{slug}', [WebController::class, 'artigo'])->name('blog.artigo');
@@ -66,18 +69,8 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
     Route::get('/portifolio/{slug}', [WebController::class, 'projeto'])->name('projeto');
     Route::get('/portifolio', [WebController::class, 'portifolio'])->name('portifolio');
 
-    ///****************************** Passeios *******************************************/
-    Route::get('/passeios/comprar/{passeio}', [WebController::class, 'comprar'])->name('passeios.comprar');
-    Route::get('/passeios/carrinhocreate', [WebController::class, 'carrinhocreate'])->name('passeios.carrinhocreate');
-    Route::get('/passeios/meu-carrinho', [WebController::class, 'meuCarrinho'])->name('passeios.meucarrinho');
-    Route::match(['post', 'get'], '/passeios/{slug}/Payment', [WebController::class, 'paymentsend'])->name('passeios.paymentsend');
-    Route::get('/passeios/payment', [WebController::class, 'payment'])->name('passeios.payment');
-    Route::get('/passeios/notifications', [WebController::class, 'notifications'])->name('passeios.notifications');
-    Route::get('/passeios/voucher/{token}', [WebController::class, 'voucher'])->name('passeios.voucher');
-
-    //****************************** Páginas *******************************************/
-    Route::get('/pagina/{slug}', 'WebController@pagina')->name('pagina');
-    Route::get('/paginas', 'WebController@paginas')->name('paginas');
+    //*************************************** Páginas *******************************************/
+    Route::get('/pagina/{slug}', [WebController::class, 'pagina'])->name('pagina');
 
     //** Pesquisa */
     Route::match(['post', 'get'], '/pesquisa', 'WebController@pesquisa')->name('pesquisa');
@@ -113,9 +106,10 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::post('parceiros/store', [ParceiroController::class, 'store'])->name('parceiros.store');
     Route::get('parceiros', [ParceiroController::class, 'index'])->name('parceiros.index');
     
-    //******************** Pedidos *********************************************/
+    //******************** Vendas *************************************************************/
     Route::get('pedidos/show/{id}', [PedidoController::class, 'show'])->name('pedidos.show');
-    Route::get('pedidos', [PedidoController::class, 'index'])->name('pedidos.index');
+    Route::get('pedidos', [PedidoController::class, 'index'])->name('pedidos.index');    
+    Route::get('orcamentos', [OrcamentoController::class, 'index'])->name('vendas.orcamentos');
 
     //*************************** Portifólio Categorias **********************************/
     Route::get('portifolio/categorias/delete', [CatPortifolioController::class, 'delete'])->name('portifolio-categorias.delete');
@@ -226,11 +220,5 @@ Route::prefix('admin')->middleware('auth')->group( function(){
 
     Route::get('/', [AdminController::class, 'home'])->name('home');
 });
-
-// Route::get('mail', function () {
-//     $markdown = new Markdown(view(), config('mail.markdown'));
-//     return $markdown->render('emails.compra-retorno');
-// });
-
 
 Auth::routes();

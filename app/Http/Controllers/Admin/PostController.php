@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Models\Post;
 use App\Models\PostGb;
 use App\Models\CatPost;
+use Illuminate\Support\Facades\Redirect;
 
 class PostController extends Controller
 {
@@ -53,9 +54,13 @@ class PostController extends Controller
     }
 
     public function store(PostRequest $request)
-    {
-        $criarPost = Post::create($request->all());
-        $criarPost->fill($request->all());
+    {        
+        $data = $request->all();
+        $catPai = CatPost::where('id', $request->categoria)->first();
+        $data['cat_pai'] = $catPai->id_pai;
+
+        $criarPost = Post::create($data);
+        //$criarPost->fill($request->all());
 
         $secao = ($request->tipo == 'artigo' ? 'artigos' : 
                  ($request->tipo == 'noticia' ? 'noticias' : 
@@ -66,7 +71,7 @@ class PostController extends Controller
         $validator = Validator::make($request->only('files'), ['files.*' => 'image']);
 
         if ($validator->fails() === true) {
-            return redirect()->back()->withInput()->with([
+            return Redirect::back()->withInput()->with([
                 'color' => 'orange',
                 'message' => 'Todas as imagens devem ser do tipo jpg, jpeg ou png.',
             ]);
@@ -81,14 +86,14 @@ class PostController extends Controller
                 unset($postGb);
             }
         }
-        return redirect()->route('posts.edit', [
+        return Redirect::route('posts.edit', [
             'id' => $criarPost->id,
         ])->with(['color' => 'success', 'message' => $request->tipo.' cadastrado com sucesso!']);
     }
 
     public function edit($id)
     {
-        $categorias = CatPost::orderBy('titulo', 'ASC')->get();
+        $categorias = CatPost::orderBy('titulo', 'ASC')->where('id_pai', null)->get();
         $editarPost = Post::where('id', $id)->first();
         $users = User::where('admin', '=', '1')->orWhere('editor', '=', '1')->get();
 
@@ -113,7 +118,7 @@ class PostController extends Controller
     }
 
     public function update(PostRequest $request, $id)
-    {
+    {        
         $postUpdate = Post::where('id', $id)->first();
         $postUpdate->fill($request->all());
 
@@ -127,7 +132,7 @@ class PostController extends Controller
         $validator = Validator::make($request->only('files'), ['files.*' => 'image']);
 
         if ($validator->fails() === true) {
-            return redirect()->back()->withInput()->with([
+            return Redirect::back()->withInput()->with([
                 'color' => 'orange',
                 'message' => 'Todas as imagens devem ser do tipo jpg, jpeg ou png.',
             ]);
@@ -143,7 +148,7 @@ class PostController extends Controller
             }
         }
 
-        return redirect()->route('posts.edit', [
+        return Redirect::route('posts.edit', [
             'id' => $postUpdate->id,
         ])->with(['color' => 'success', 'message' => $request->tipo.' atualizado com sucesso!']);
     } 
@@ -158,22 +163,22 @@ class PostController extends Controller
 
     public function categoriaList(Request $request)
     {   
-        $allData = array();
+        $allData = [];
         $categorias = CatPost::where('tipo', '=', $request->categoria_tipo)->where('id_pai', null)->get();     
         foreach($categorias as $key => $categoria){
             $allData[$key]['catTitulo'] = $categoria->titulo;
             $allData[$key]['catId'] = $categoria->id;
 
-            $subCat = array();
+            $subCat = [];
             if($categoria->children){
                 foreach($categoria->children as $k => $subcategoria){
-                    $subCat['id'] = $subcategoria->id; 
-                    $subCat['titulo'] = $subcategoria->titulo; 
+                    $subCat[$k]['id'] = $subcategoria->id; 
+                    $subCat[$k]['titulo'] = $subcategoria->titulo;                                       
                 }
             }
-            $allData[$key]['subcategory'] = $subCat;       
-        }       
-        return response()->json(['data' => $allData]);
+            $allData[$key]['subcategory'] = $subCat;
+        }         
+        return response()->json($allData);
     }
 
     public function imageRemove(Request $request)
@@ -247,7 +252,7 @@ class PostController extends Controller
             }
             $postdelete->delete();
         }
-        return redirect()->route('posts.'.$secao.'')->with([
+        return Redirect::route('posts.'.$secao.'')->with([
             'color' => 'success', 
             'message' => $postdelete->tipo.' '.$postR.' foi removido com sucesso!'
         ]);

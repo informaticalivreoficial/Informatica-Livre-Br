@@ -243,6 +243,61 @@ return [
             'icon' => 'fas fa-cog',
         ],
         [
+            'text' => 'Vendas',            
+            'icon' => 'fas fa-money-check',
+            'submenu' => [
+                [
+                    'text' => 'Pedidos',
+                    'url' => 'admin/pedidos',
+                ],
+                [
+                    'text' => 'Orçamentos',
+                    'url' => 'admin/orcamentos',
+                ],
+                [
+                    'text' => 'Finalizados',
+                    'url' => 'admin/finalizados',
+                ]                
+            ],
+            
+        ],
+        [
+            'text' => 'Produtos',            
+            'icon' => 'fas fa-store',
+            'submenu' => [
+                [
+                    'text' => 'Listar Todos',
+                    'url'  => 'admin/produtos',
+                ],                
+                [
+                    'text' => 'Cadastrar Novo',
+                    'url'  => 'admin/produtos/create',
+                ],                
+                [
+                    'text' => 'Categorias',
+                    'url'  => 'admin/produtos/categorias',
+                ]
+            ]
+        ],
+        [
+            'text' => 'Portifólio',            
+            'icon' => 'fas fa-project-diagram',
+            'submenu' => [
+                [
+                    'text' => 'Listar Todos',
+                    'url'  => 'admin/portifolio',
+                ],                
+                [
+                    'text' => 'Cadastrar Novo',
+                    'url'  => 'admin/portifolio/create',
+                ],                
+                [
+                    'text' => 'Categorias',
+                    'url'  => 'admin/portifolio/categorias',
+                ]
+            ]
+        ],
+        [
             'text' => 'Usuários',            
             'icon' => 'fas fa-fw fa-users',
             'submenu' => [
@@ -296,61 +351,6 @@ return [
             'text' => 'Banner Slides',
             'url'  => 'admin/slides',
             'icon' => 'fas fa-film',
-        ],  
-        [
-            'text' => 'Produtos',            
-            'icon' => 'fas fa-store',
-            'submenu' => [
-                [
-                    'text' => 'Listar Todos',
-                    'url'  => 'admin/produtos',
-                ],                
-                [
-                    'text' => 'Cadastrar Novo',
-                    'url'  => 'admin/produtos/create',
-                ],                
-                [
-                    'text' => 'Categorias',
-                    'url'  => 'admin/produtos/categorias',
-                ]
-            ]
-        ], 
-        [
-            'text' => 'Vendas',            
-            'icon' => 'fas fa-money-check',
-            'submenu' => [
-                [
-                    'text' => 'Pedidos',
-                    'url' => 'admin/pedidos',
-                ],
-                [
-                    'text' => 'Orçamentos',
-                    'url' => 'admin/orcamentos',
-                ],
-                [
-                    'text' => 'Finalizados',
-                    'url' => 'admin/finalizados',
-                ]                
-            ],
-            
-        ],
-        [
-            'text' => 'Portifólio',            
-            'icon' => 'fas fa-project-diagram',
-            'submenu' => [
-                [
-                    'text' => 'Listar Todos',
-                    'url'  => 'admin/portifolio',
-                ],                
-                [
-                    'text' => 'Cadastrar Novo',
-                    'url'  => 'admin/portifolio/create',
-                ],                
-                [
-                    'text' => 'Categorias',
-                    'url'  => 'admin/portifolio/categorias',
-                ]
-            ]
         ], 
         
     ],

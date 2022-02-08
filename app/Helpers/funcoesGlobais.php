@@ -88,13 +88,14 @@ function getNumZap($nZap ,$textZap = null) {
 * @return HTML = texto informado + a saudação!
 */
 function getSaudacao($nome = null) {
+   date_default_timezone_set('America/Sao_Paulo');
    $hora = date('H');		
    if($hora >= 6 && $hora <= 12):
-       return (empty($nome) ? '' : $nome).' Bom dia';		
+       return (empty($nome) ? '' : $nome).' bom dia';		
    elseif( $hora > 12 && $hora <=18  ):
-       return (empty($nome) ? '' : $nome).' Boa tarde';		
+       return (empty($nome) ? '' : $nome).' boa tarde';		
    else:			
-       return (empty($nome) ? '' : $nome).' Boa noite';	
+       return (empty($nome) ? '' : $nome).' boa noite';	
    endif;
 }
 

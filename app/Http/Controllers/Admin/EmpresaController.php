@@ -118,7 +118,7 @@ class EmpresaController extends Controller
             Cropper::flush($empresa->logomarca);
             $empresa->delete();
         }
-        return redirect()->route('admin.empresas.index')->with([
+        return redirect()->route('empresas.index')->with([
             'color' => 'success', 
             'message' => 'Empresa removida com sucesso!'
         ]);

@@ -23,6 +23,8 @@
             <br />
             <strong>E-mail: </strong><strong style="color:#09F;">{{ $email }}</strong>
             <br />
+            <strong>Telefone: </strong><strong style="color:#09F;">{{ $telefone }}</strong>
+            <br />
             <strong>Mensagem: </strong>            
             </p>
             <p style="padding-left:10px;font:20px Trebuchet MS, Arial, Helvetica, sans-serif; color:#09F;">@php echo nl2br($mensagem); @endphp</p>

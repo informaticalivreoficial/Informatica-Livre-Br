@@ -22,17 +22,23 @@
                     <!-- HONEYPOT -->
                     <input type="hidden" class="noclear" name="bairro" value="" />
                     <input type="text" class="noclear" style="display: none;" name="cidade" value="" />
-                    <div class="col-md-6 form_hide">
+                    <div class="col-md-5 col-lg-5 form_hide">
                         <div class="form-wrap">
                             <input class="form-input" id="contact-name" type="text" name="nome">
                             <label class="form-label" for="contact-name">Nome</label>
                         </div>
                     </div>
-                    <div class="col-md-6 form_hide">
+                    <div class="col-md-4 col-lg-4 form_hide">
                         <div class="form-wrap">
                             <input class="form-input" id="contact-email" type="email" name="email">
                             <label class="form-label" for="contact-email">Email</label>
                         </div>
+                    </div>
+                    <div class="col-md-3 col-lg-3 form_hide">   
+                        <div class="form-wrap">                     
+                        <input class="form-input celularmask" placeholder="Telefone" type="text" name="telefone">
+                         
+                        </div>                       
                     </div>
                     <div class="col-sm-12 form_hide">
                         <div class="form-wrap">
@@ -111,6 +117,13 @@
 @endsection
 
 @section('js')
+<script src="{{url(asset('backend/assets/js/jquery.mask.js'))}}"></script>
+<script>
+    $(document).ready(function () { 
+        var $celularmask = $(".celularmask");
+        $celularmask.mask('(99) 99999-9999', {reverse: false});
+    });
+</script> 
   <script>
     $(function () {
 

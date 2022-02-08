@@ -4,7 +4,7 @@
 <section class="section section-30 section-xxl-40 section-xxl-66 section-xxl-bottom-90 novi-background bg-gray-dark page-title-wrap" style="background-image: url({{$configuracoes->gettopodosite()}});">
     <div class="container">
         <div class="page-title">
-            <h2>{{$post->titulo}}</h2>
+            <h2>Blog</h2>
         </div>
     </div>
 </section>
@@ -27,7 +27,7 @@
                   <dl class="list-terms-inline">
                     <dt>Data</dt>
                     <dd>
-                      <time datetime="2021-01-22">{{$post->publish_at}}</time>
+                      <time datetime="{{\Carbon\Carbon::createFromFormat('d/m/Y', $post->publish_at)->format('Y-m-d')}}">{{$post->publish_at}}</time>
                     </dd>
                   </dl>
                 </li>
@@ -65,7 +65,7 @@
             </div>
             <div class="post-footer">
                 <h5>Compartilhe este artigo:</h5>
-                <div style="top:2px;" class="fb-share-button" data-href="{{url()->current()}}" data-layout="button_count" data-size="large"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{url()->current()}}&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Compartilhar</a></div>
+                <div class="fb-share-button" data-href="{{url()->current()}}" data-layout="button_count" data-size="large"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{url()->current()}}&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Compartilhar</a></div>
                 <a class="btn-front mdi mdi-whatsapp" target="_blank" href="https://web.whatsapp.com/send?text={{url()->current()}}" data-action="share/whatsapp/share"> Compartilhar</a>
             </div>
           </article>
@@ -74,7 +74,7 @@
         </div>
         <div class="col-lg-4 col-xl-3">
           <div class="blog-aside">
-            <div class="blog-aside-item">
+            <!--<div class="blog-aside-item">
               <form class="rd-search rd-search-classic" action="search-results.html" method="GET">
                 <div class="form-wrap">
                   <label class="form-label" for="rd-search-form-input-1">Search...</label>
@@ -82,7 +82,7 @@
                 </div>
                 <button class="rd-search-submit" type="submit"></button>
               </form>
-            </div>
+            </div>-->
             <div class="blog-aside-item">
                 <h6>Categorias</h6>
                 <ul class="list-marked-bordered">
@@ -120,7 +120,7 @@
                                         <div class="post-meta">
                                         <ul class="list-meta">
                                             <li>
-                                                <time datetime="2021-02-04">{{$post->publish_at}}</time>
+                                                <time datetime="{{\Carbon\Carbon::createFromFormat('d/m/Y', $post->publish_at)->format('Y-m-d')}}">{{$post->publish_at}}</time>
                                             </li>                                            
                                         </ul>
                                         </div>
@@ -173,10 +173,8 @@
         background-color: #6ebf58;
         color:#fff;
         border-radius: .25rem;
-        padding: 3px 8px !important;
+        padding: 7px 8px !important;
         border:none;
-
-        
     }
     .btn-front:hover, mdi:hover{
         color:#fff;

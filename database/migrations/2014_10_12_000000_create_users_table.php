@@ -88,6 +88,7 @@ class CreateUsersTable extends Migration
             $table->boolean('superadmin')->nullable();
 
             $table->integer('status')->default('0');
+            $table->text('notasadicionais')->nullable();
         });
     }
 

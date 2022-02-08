@@ -65,7 +65,7 @@
             <div class="item">
                 @foreach ($empresas as $empresa)
                     <div class="link-image-wrap">
-                        <a class="link-image" href="#">
+                        <a class="link-image" href="javascript:void(0)">
                             <img src="{{$empresa->nocover()}}" alt="" width="126" height="68" />
                         </a>
                     </div>

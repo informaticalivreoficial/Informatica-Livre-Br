@@ -77,7 +77,7 @@ class Portifolio extends Model
 
     /**
      * Accerssors and Mutators
-     */
+    */
 
     public function getContentWebAttribute()
     {

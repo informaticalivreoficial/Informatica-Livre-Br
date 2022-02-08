@@ -16,7 +16,9 @@ use App\Models\{
     CatPost,
     Embarcacao,
     Empresa,
+    Estados,
     Newsletter,
+    Orcamento,
     Pedido,
     Portifolio,
     Produto,
@@ -141,7 +143,7 @@ class WebController extends Controller
     }
 
     public function formorcamento()
-    {
+    {        
         $head = $this->seo->render('Orçamento Perdonalizado - ' . $this->configService->getConfig()->nomedosite,
             'Nossa equipe está pronta para melhor atender as demandas de nossos clientes!',
             route('web.atendimento'),
@@ -149,7 +151,23 @@ class WebController extends Controller
         );        
 
         return view('web.consultoria.consultoria', [
-            'head' => $head           
+            'head' => $head                       
+        ]);
+    }
+
+    public function formClient($token)
+    {
+        $estados = Estados::orderBy('estado_nome', 'ASC')->get();
+        $orcamento = Orcamento::where('token', $token)->first();
+        $head = $this->seo->render('Formulário de Orçamento Perdonalizado - ' . $this->configService->getConfig()->nomedosite,
+            'Nossa equipe está pronta para melhor atender as demandas de nossos clientes!',
+            route('web.formClient',$token),
+            $this->configService->getMetaImg() ?? 'https://informaticalivre.com/media/metaimg.jpg'
+        );
+        return view('web.consultoria.formulario-de-retorno',[
+            'head' => $head ,
+            'orcamento' => $orcamento,
+            'estados' => $estados
         ]);
     }
 
@@ -200,27 +218,27 @@ class WebController extends Controller
         ]);
     }
 
-    // public function categoria(Request $request)
-    // {
-    //     $Configuracoes = Configuracoes::where('id', '1')->first();
-    //     $categoria = CatPost::where('slug', '=', $request->slug)->first();
-    //     $categorias = CatPost::orderBy('titulo', 'ASC')
-    //                 ->where('tipo', 'artigo')
-    //                 ->where('id', '!=', $categoria->id)->get();
-    //     $posts = Post::orderBy('created_at', 'DESC')->where('categoria', '=', $categoria->id)->postson()->paginate(15);
-    //     $head = $this->seo->render($categoria->titulo . ' - Blog - ' . $Configuracoes->nomedosite ?? 'Informática Livre',
-    //         $categoria->titulo . ' - Blog - ' . $Configuracoes->nomedosite,
-    //         route('web.blog.categoria', ['slug' => $request->slug]),
-    //         Storage::url($Configuracoes->metaimg)
-    //     );
+    public function categoria(Request $request)
+    {
+        $categoria = CatPost::where('slug', '=', $request->slug)->first();
+        $categorias = CatPost::orderBy('titulo', 'ASC')
+                    ->where('tipo', 'artigo')
+                    ->where('id', '!=', $categoria->id)->get();
+        $posts = Post::orderBy('created_at', 'DESC')->where('categoria', '=', $categoria->id)->postson()->paginate(10);
         
-    //     return view('web.blog.categoria', [
-    //         'head' => $head,
-    //         'posts' => $posts,
-    //         'categoria' => $categoria,
-    //         'categorias' => $categorias
-    //     ]);
-    // }
+        $head = $this->seo->render($categoria->titulo . ' - Blog - ' . $this->configService->getConfig()->nomedosite ?? 'Informática Livre',
+            $categoria->titulo . ' - Blog - ' . $this->configService->getConfig()->nomedosite,
+            route('web.blog.categoria', ['slug' => $request->slug]),
+            $this->configService->getMetaImg() ?? 'https://informaticalivre.com/media/metaimg.jpg'
+        );
+        
+        return view('web.blog.categoria', [
+            'head' => $head,
+            'posts' => $posts,
+            'categoria' => $categoria,
+            'categorias' => $categorias
+        ]);
+    }
 
     // public function searchBlog(Request $request)
     // {

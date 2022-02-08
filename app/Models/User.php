@@ -73,7 +73,8 @@ class User extends Authenticatable
         'client',
         'editor',
         'superadmin',
-        'status'
+        'status',
+        'notasadicionais'
     ];
 
     /**
