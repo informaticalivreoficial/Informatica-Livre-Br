@@ -73,7 +73,7 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
     Route::get('/pagina/{slug}', [WebController::class, 'pagina'])->name('pagina');
 
     //** Pesquisa */
-    Route::match(['post', 'get'], '/pesquisa', 'WebController@pesquisa')->name('pesquisa');
+    Route::match(['post', 'get'], '/pesquisa', [WebController::class, 'pesquisa'])->name('pesquisa');
 
     //** FEED */    
     Route::get('feed', [RssFeedController::class, 'feed'])->name('feed');

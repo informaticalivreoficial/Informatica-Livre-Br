@@ -21,7 +21,7 @@
             <div class="col-12 col-md-6 col-lg-5 text-secondary">
                 <div class="inset-md-right-15 inset-xl-right-0">                    
                     <h3>Principios e valores</h3>
-                    <ul class="list-marked">
+                    <ul class="list-marked" style="font-size: 1.2em;">
                         <li>Comprometimento</li>
                         <li>Crescer junto com o cliente</li>
                         <li>Prazos e responsabilidade</li>

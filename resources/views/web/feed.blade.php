@@ -22,6 +22,19 @@
             </item>
         @endforeach
 
+        @foreach($paginas as $pagina)
+            <item>
+                <title><![CDATA[{{ $pagina->titulo }}]]></title>
+                <link>{{ url('blog/artigo/'.$pagina->slug) }}</link>
+                <image>{{ $pagina->cover() }}</image>
+                <description><![CDATA[{!! $pagina->getContentWebAttribute() !!}]]></description>
+                <category>{{ $pagina->categoriaObject->titulo }}</category>
+                <author><![CDATA[{{ $pagina->userObject->name }}]]></author>
+                <guid>{{ $pagina->id }}</guid>
+                <pubDate>{{ $pagina->created_at }}</pubDate>
+            </item>
+        @endforeach
+
         @foreach($projetos as $projeto)
             <item>
                 <title><![CDATA[{{ $projeto->name }}]]></title>

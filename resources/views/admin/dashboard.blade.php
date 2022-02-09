@@ -20,17 +20,15 @@
 <div class="row">
     <div class="col-12 col-sm-6 col-md-4 col-lg-3">
         <div class="info-box">
-            <span class="info-box-icon bg-teal"><a href="{{route('empresas.index')}}" title="Empresas"><i class="fa far fa-industry"></i></a></span>
+            <span class="info-box-icon bg-info"><a href="{{ route('vendas.orcamentos') }}" title="Orçamentos"><i class="fa far fa-file"></i></a></span>
 
             <div class="info-box-content">
-                <span class="info-box-text"><b>Empresas</b></span>
-                <span class="info-box-text">Ativas: {{ $empresasAvailable }}</span>
-                <span class="info-box-text">Inativas: {{ $empresasUnavailable }}</span>
-                <span class="info-box-text">Total: {{ $empresasTotal }}</span>
-            </div>
-            <!-- /.info-box-content -->
+                <span class="info-box-text"><b>Orçamentos</b></span>
+                <span class="info-box-text">Pendentes: {{ $orcamentosPendentes }}</span>
+                <span class="info-box-text">Concluídos: {{ $orcamentosConcluidos }}</span>
+                <span class="info-box-text">Total: {{ $orcamentosPendentes + $orcamentosConcluidos }}</span>
+            </div>            
         </div>
-        <!-- /.info-box -->
     </div>
     <div class="col-12 col-sm-6 col-md-4 col-lg-3">
         <div class="info-box">
@@ -42,24 +40,22 @@
                 <span class="info-box-text">Inativos: {{ $produtosUnavailable }}</span>
                 <span class="info-box-text">Total: {{ $produtosTotal }}</span>
             </div>
-            <!-- /.info-box-content -->
         </div>
-    <!-- /.info-box -->
-    </div>
+    </div> 
     <div class="col-12 col-sm-6 col-md-4 col-lg-3">
         <div class="info-box">
-            <span class="info-box-icon bg-teal"><a href="{{--route('embarcacoes.index')--}}" title="Embarcações"><i class="fa far fa-ship"></i></a></span>
+            <span class="info-box-icon bg-teal"><a href="{{route('empresas.index')}}" title="Empresas"><i class="fa far fa-industry"></i></a></span>
 
             <div class="info-box-content">
-                <span class="info-box-text"><b>Embarcações</b></span>
-                <span class="info-box-text">Disponíveis: {{-- $embarcacoesAvailable --}}</span>
-                <span class="info-box-text">Inativas: {{-- $embarcacoesUnavailable --}}</span>
-                <span class="info-box-text">Time: {{-- $embarcacoesTotal --}}</span>
+                <span class="info-box-text"><b>Empresas</b></span>
+                <span class="info-box-text">Ativas: {{ $empresasAvailable }}</span>
+                <span class="info-box-text">Inativas: {{ $empresasUnavailable }}</span>
+                <span class="info-box-text">Total: {{ $empresasTotal }}</span>
             </div>
             <!-- /.info-box-content -->
         </div>
-    <!-- /.info-box -->
-    </div>
+        <!-- /.info-box -->
+    </div>       
     <div class="col-12 col-sm-6 col-md-4 col-lg-3">
         <div class="info-box">
             <span class="info-box-icon bg-teal"><a href="{{--route('embarcacoes.index')--}}" title="Pedidos"><i class="fa far fa-money-check"></i></a></span>
@@ -144,20 +140,19 @@
     </div>
 </div>
 
-    @if(!empty($artigosTop) && $artigosTop->count() > 0)
+@if(!empty($artigosTop) && $artigosTop->count() > 0)
     <div class="card">
         <div class="card-header">
-          <h3 class="card-title">Artigos mais visitados</h3>
+            <h3 class="card-title">Artigos mais visitados</h3>
         </div>
-        <!-- /.card-header -->
         <div class="card-body p-0">
           <table class="table table-sm">
             <thead>
               <tr>
-                <th class="text-center">Foto</th>
-                <th>Título</th>
-                <th></th>
-                <th class="text-center">Visitas</th>
+                    <th>Foto</th>
+                    <th>Título</th>
+                    <th></th>
+                    <th class="text-center">Visitas</th>
               </tr>
             </thead>
             <tbody>                            
@@ -173,7 +168,7 @@
                     $percenttag = str_replace(",", ".", $percent);
                 @endphp
                 <tr>
-                    <td class="text-center">
+                    <td>
                         <a href="{{url($artigotop->nocover())}}" data-title="{{$artigotop->titulo}}" data-toggle="lightbox"> 
                             <img src="{{url($artigotop->cover())}}" alt="{{$artigotop->titulo}}" class="img-size-50">
                         </a>
@@ -187,15 +182,67 @@
                     <td class="text-center">
                       <span class="badge bg-primary">{{$artigotop->views}}</span>
                       <a data-toggle="tooltip" data-placement="top" title="Editar Artigo" href="{{route('posts.edit', ['id' => $artigotop->id])}}" class="btn btn-xs btn-default ml-2"><i class="fas fa-pen"></i></a>
+                      <a target="_blank" href="{{route('web.blog.artigo',['slug' => $artigotop->slug])}}" class="btn btn-xs btn-info text-white"><i class="fas fa-search"></i></a>
                     </td>
                 </tr>
                 @endforeach                            
             </tbody>
           </table>
         </div>
-        <!-- /.card-body -->
     </div>
-    @endif
+@endif
+
+@if(!empty($paginasTop) && $paginasTop->count() > 0)
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Páginas mais visitadas</h3>
+        </div>
+        <div class="card-body p-0">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                    <th>Foto</th>
+                    <th>Título</th>
+                    <th></th>
+                    <th class="text-center">Visitas</th>
+              </tr>
+            </thead>
+            <tbody>                            
+                @foreach($paginasTop as $paginatop)
+                @php
+                    //REALIZA PORCENTAGEM DE VISITAS!
+                    if($paginatop->views == '0'){
+                        $percent = 1;
+                    }else{
+                        $percent = substr(( $paginatop['views'] / $paginastotalviews ) * 100, 0, 5);
+                    }
+                    
+                    $percenttag = str_replace(",", ".", $percent);
+                @endphp
+                <tr>
+                    <td>
+                        <a href="{{url($paginatop->nocover())}}" data-title="{{$paginatop->titulo}}" data-toggle="lightbox"> 
+                            <img src="{{url($paginatop->cover())}}" alt="{{$paginatop->titulo}}" class="img-size-50">
+                        </a>
+                    </td>
+                    <td>{{$paginatop->titulo}}</td>
+                    <td style="width:10%;">
+                      <div class="progress progress-md progress-striped active">
+                        <div class="progress-bar bg-primary" style="width: {{$percenttag}}%" title="{{$percenttag}}%"></div>
+                      </div>
+                    </td>
+                    <td class="text-center">
+                      <span class="badge bg-primary">{{$paginatop->views}}</span>
+                      <a data-toggle="tooltip" data-placement="top" title="Editar Página" href="{{route('posts.edit', ['id' => $paginatop->id])}}" class="btn btn-xs btn-default ml-2"><i class="fas fa-pen"></i></a>
+                      <a target="_blank" href="{{route('web.pagina',['slug' => $paginatop->slug])}}" class="btn btn-xs btn-info text-white"><i class="fas fa-search"></i></a>
+                    </td>
+                </tr>
+                @endforeach                            
+            </tbody>
+          </table>
+        </div>
+    </div>
+@endif
 </section>
 @stop
 
@@ -375,13 +422,12 @@
         var donutDataposts        = {
             labels: [ 
                 'Artigos', 
-                'Notícias',
                 'Páginas'             
             ],
             datasets: [
                 {
-                data: [{{ $postsArtigos }},{{ $postsNoticias }}, {{ $postsPaginas }}],
-                    backgroundColor : ['#018577', '#419B45', '#BAC431'],
+                data: [{{ $postsArtigos }}, {{ $postsPaginas }}],
+                    backgroundColor : ['#018577', '#BAC431'],
                 }
             ]
             }

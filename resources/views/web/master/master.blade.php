@@ -110,10 +110,11 @@
                         <div class="rd-navbar-nav-wrap">
                             <div class="rd-navbar-nav-inner">
                                 <div class="rd-navbar-search">
-                                    <form class="rd-search" action="search-results.html" method="GET" data-search-live="rd-search-results-live">
+                                    <form class="rd-search" action="{{ route('web.pesquisa') }}" method="post" autocomplete="off">
+                                    @csrf
                                     <div class="form-wrap">
                                         <label class="form-label" for="rd-search-form-input">Pesquisar...</label>
-                                        <input class="form-input" id="rd-search-form-input" type="text" name="s" autocomplete="off">
+                                        <input class="form-input" id="rd-search-form-input" type="text" name="search" value="{{$search ?? ''}}">
                                         <div class="rd-search-results-live" id="rd-search-results-live"></div>
                                     </div>
                                     <button class="rd-search-submit" type="submit"></button>

@@ -7583,7 +7583,7 @@ blockquote cite {
 .icon-box.hover:before, .icon-box.hover:after, .icon-box:hover:before, .icon-box:hover:after {
 	width: 100%;
 	height: 100%;
-	border-color: #58c4a7;
+	border-color: #F48920;
 }
 
 .icon-box.hover .box-top, .icon-box:hover .box-top {
@@ -9241,7 +9241,7 @@ blockquote cite {
 	height: 2px;
 	margin-left: auto;
 	margin-right: auto;
-	background: #58c4a7;
+	background: #F48920;
 }
 
 .divider-fullwidth {

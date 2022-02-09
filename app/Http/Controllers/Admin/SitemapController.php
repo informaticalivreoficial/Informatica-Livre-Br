@@ -11,9 +11,6 @@ use Carbon\Carbon;
 use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
 
-// use Spatie\Feed\Feedable;
-// use Spatie\Feed\FeedItem;
-
 class SitemapController extends Controller
 {  
         
@@ -29,21 +26,13 @@ class SitemapController extends Controller
             ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
             ->setPriority(0.1))
             ->add('/')
-            //->add('/destaque')
             ->add('/blog/artigos')
-            ->add('/roteiros')
-            ->add('/embarcacoes')
+            ->add('/quem-somos')
+            ->add('/portifolio')
+            ->add('/consultoria/produtos')
+            ->add('/consultoria/orcamento')            
             ->writeToFile('sitemap.xml'); 
         
         return response()->json(['success' => true]);
     }
-
-    // public function gerarfeed(Request $request)
-    // {
-    //     $configupdate = Configuracoes::where('id', $request->id)->first();
-    //     $configupdate->rss_data = date('Y-m-d');
-    //     $configupdate->save();
-
-    //     return response()->json(['success' => true]);
-    // }
 }

@@ -240,31 +240,70 @@ class WebController extends Controller
         ]);
     }
 
-    // public function searchBlog(Request $request)
-    // {
-    //     $Configuracoes = Configuracoes::where('id', '1')->first();
+    public function pesquisa(Request $request)
+    {
+        $search = $request->only('search');
 
-    //     $filters = $request->only('filter');
+        $paginas = Post::where(function($query) use ($request){
+            if($request->search){
+                $query->orWhere('titulo', 'LIKE', "%{$request->search}%")
+                    ->where('tipo', 'pagina')->postson();
+                $query->orWhere('content', 'LIKE', "%{$request->search}%")
+                    ->where('tipo', 'pagina')->postson();
+            }
+        })->postson()->limit(10)->get();
 
-    //     $posts = Post::where(function($query) use ($request){
-    //         if($request->filter){
-    //             $query->orWhere('titulo', 'LIKE', "%{$request->filter}%");
-    //             $query->orWhere('content', 'LIKE', "%{$request->filter}%");
-    //         }
-    //     })->postson()->paginate(10);
+        $artigos = Post::where(function($query) use ($request){
+            if($request->search){
+                $query->orWhere('titulo', 'LIKE', "%{$request->search}%")
+                    ->where('tipo', 'artigo')->postson();
+                $query->orWhere('content', 'LIKE', "%{$request->search}%")
+                    ->where('tipo', 'artigo')->postson();
+            }
+        })->postson()->limit(10)->get();
 
-    //     $head = $this->seo->render('Pesquisa por ' . $request->filter ?? 'Informática Livre',
-    //         'Blog - ' . $Configuracoes->nomedosite,
-    //         route('web.blog.artigos'),
-    //         Storage::url($Configuracoes->metaimg)
-    //     );
+        $projetos = Portifolio::where(function($query) use ($request){
+            if($request->search){
+                $query->orWhere('name', 'LIKE', "%{$request->search}%");
+                $query->orWhere('content', 'LIKE', "%{$request->search}%");
+            }
+        })->available()->limit(10)->get();
         
-    //     return view('web.blog.artigos',[
-    //         'head' => $head,
-    //         'posts' => $posts,
-    //         'filters' => $filters
-    //     ]);
-    // }
+        $head = $this->seo->render('Pesquisa por ' . $request->search ?? 'Informática Livre',
+            'Pesquisa - ' . $this->configService->getConfig()->nomedosite,
+            route('web.blog.artigos'),
+            $this->configService->getMetaImg() ?? 'https://informaticalivre.com/media/metaimg.jpg'
+        );
+        
+        return view('web.pesquisa',[
+            'head' => $head,
+            'paginas' => $paginas,
+            'artigos' => $artigos,
+            'projetos' => $projetos
+        ]);
+    }
+
+    public function pagina($slug)
+    {
+        $projetosCount = Portifolio::count();
+        $clientesCount = User::where('client', 1)->count();
+        $post = Post::where('slug', $slug)->where('tipo', 'pagina')->postson()->first();        
+        $post->views = $post->views + 1;
+        $post->save();
+
+        $head = $this->seo->render($post->titulo ?? 'Informática Livre',
+            $post->titulo,
+            route('web.pagina', ['slug' => $post->slug]),
+            $post->cover() ?? $this->configService->getMetaImg()
+        );
+
+        return view('web.pagina', [
+            'head' => $head,
+            'post' => $post,
+            'projetosCount' => $projetosCount,
+            'clientesCount' => $clientesCount
+        ]);
+    }
     
     
     public function atendimento()

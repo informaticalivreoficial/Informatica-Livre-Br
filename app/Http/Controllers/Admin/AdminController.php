@@ -12,6 +12,7 @@ use Spatie\Analytics\Period;
 use App\Models\{
     CatPost,
     Empresa,
+    Orcamento,
     User,
     Post,
     Produto
@@ -27,13 +28,24 @@ class AdminController extends Controller
         $usersUnavailable = User::where('client', 1)->unavailable()->count();
         //Artigos
         $postsArtigos = CatPost::where('tipo', 'artigo')->count();
-        $postsNoticias = CatPost::where('tipo', 'noticia')->count();
         $postsPaginas = CatPost::where('tipo', 'pagina')->count();
-        $artigosTop = Post::where(DB::raw('YEAR(created_at)'), '=', date('Y'))
-                ->limit(4)->postson()->get()->sortByDesc('views');
-        $totalViewsArtigos = Post::selectRaw('SUM(views) AS VIEWS')
+        $artigosTop = Post::where('tipo', 'artigo')
+                ->limit(4)
                 ->postson()
-                ->where( DB::raw('YEAR(created_at)'), '=', date('Y') )
+                ->get()
+                ->sortByDesc('views');
+        $totalViewsArtigos = Post::selectRaw('SUM(views) AS VIEWS')
+                ->where('tipo', 'artigo')
+                ->postson()
+                ->first();
+        $paginasTop = Post::where('tipo', 'pagina')
+                ->limit(4)
+                ->postson()
+                ->get()
+                ->sortByDesc('views');
+        $totalViewsPaginas = Post::selectRaw('SUM(views) AS VIEWS')
+                ->where('tipo', 'pagina')
+                ->postson()
                 ->first();
 
         //Roteiros
@@ -46,7 +58,10 @@ class AdminController extends Controller
         // $totalviewsroteiros = Roteiro::selectRaw('SUM(views) AS VIEWS')
         //         ->available()
         //         ->where( DB::raw('YEAR(created_at)'), '=', date('Y') )
-        //         ->first();        
+        //         ->first();     
+        //Orçamentos
+        $orcamentosPendentes = Orcamento::available()->count();   
+        $orcamentosConcluidos = Orcamento::unavailable()->count();   
         //Produtos
         $produtosAvailable = Produto::available()->count();
         $produtosUnavailable = Produto::unavailable()->count();
@@ -80,16 +95,20 @@ class AdminController extends Controller
             'usersUnavailable' => $usersUnavailable,
             //Artigos
             'postsArtigos' => $postsArtigos,
-            'postsNoticias' => $postsNoticias,
             'postsPaginas' => $postsPaginas,
             'artigosTop' => $artigosTop,
             'artigostotalviews' => $totalViewsArtigos->VIEWS,
+            'paginasTop' => $paginasTop,
+            'paginastotalviews' => $totalViewsPaginas->VIEWS,
             //Roteiros
             // 'roteirosAvailable' => $roteirosAvailable,
             // 'roteirosUnavailable' => $roteirosUnavailable,
             // 'roteirosTotal' => $roteirosTotal,            
             // 'roteirosTop' => $roteirosTop,
             // 'totalviewsroteiros' => $totalviewsroteiros,
+            //Orçamentos
+            'orcamentosPendentes' => $orcamentosPendentes,
+            'orcamentosConcluidos' => $orcamentosConcluidos,
             //Produtos
             'produtosAvailable' => $produtosAvailable,
             'produtosUnavailable' => $produtosUnavailable,
