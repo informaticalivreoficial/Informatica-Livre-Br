@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
     <meta name="language" content="pt-br" />  
-    <meta name="copyright" content="{{$configuracoes->ano_de_inicio}} - {{$configuracoes->nomedosite}}">    
+    <meta name="copyright" content="{{$configuracoes->ano_de_inicio}} - {{$configuracoes->nomedosite}}"> 
+    <meta name="msvalidate.01" content="AB238289F13C246C5E386B6770D9F10E" />   
     
     <meta name="author" content="{{env('DESENVOLVEDOR')}}"/>
     <meta name="designer" content="Renato Montanari">

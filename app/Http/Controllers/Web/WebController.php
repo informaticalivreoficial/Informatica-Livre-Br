@@ -14,7 +14,6 @@ use App\Models\{
     CatPortifolio,
     Post,
     CatPost,
-    Embarcacao,
     Empresa,
     Estados,
     Newsletter,

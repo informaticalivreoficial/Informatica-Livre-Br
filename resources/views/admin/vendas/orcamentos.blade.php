@@ -183,21 +183,21 @@
             
             //FUNÇÃO PARA EXCLUIR
             $('.j_modal_btn').click(function() {
-                var portifolio_id = $(this).data('id');                
+                var orcamento_id = $(this).data('id');                
                 $.ajax({
                     type: 'GET',
                     dataType: 'JSON',
-                    url: "{{ route('portifolio.delete') }}",
+                    url: "{{ route('orcamento.delete') }}",
                     data: {
-                       'id': portifolio_id
+                       'id': orcamento_id
                     },
                     success:function(data) {
                         if(data.error){
                             $('.j_param_data').html(data.error);
-                            $('#id_portifolio').val(data.id);
-                            $('#frm').prop('action','{{ route('portifolio.deleteon') }}');
+                            $('#id_orcamento').val(data.id);
+                            $('#frm').prop('action','{{ route('orcamento.deleteon') }}');
                         }else{
-                            $('#frm').prop('action','{{ route('portifolio.deleteon') }}');
+                            $('#frm').prop('action','{{ route('orcamento.deleteon') }}');
                         }
                     }
                 });
@@ -210,14 +210,14 @@
             
             $('.toggle-class').on('change', function() {
                 var status = $(this).prop('checked') == true ? 1 : 0;
-                var portifolio_id = $(this).data('id');
+                var orcamento_id = $(this).data('id');
                 $.ajax({
                     type: 'GET',
                     dataType: 'JSON',
-                    url: "{{ route('portifolio.portifolioSetStatus') }}",
+                    url: "{{ route('orcamento.orcamentoSetStatus') }}",
                     data: {
                         'status': status,
-                        'id': portifolio_id
+                        'id': orcamento_id
                     },
                     success:function(data) {
                         

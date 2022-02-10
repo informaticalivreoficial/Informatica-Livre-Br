@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Slide;
 use App\Http\Requests\Admin\Slide as SlideRequest;
 use App\Support\Cropper;
+use Illuminate\Support\Facades\Redirect;
 
 class SlideController extends Controller
 {
@@ -35,7 +36,7 @@ class SlideController extends Controller
         $validator = Validator::make($request->only('files'), ['files.*' => 'image']);
 
         if ($validator->fails() === true) {
-            return redirect()->back()->withInput()->with([
+            return Redirect::back()->withInput()->with([
                 'color' => 'orange',
                 'message' => 'Todas as imagens devem ser do tipo jpg, jpeg ou png.',
             ]);
@@ -46,7 +47,7 @@ class SlideController extends Controller
             $slideCreate->save();
         }
 
-        return redirect()->route('slides.edit', $slideCreate->id)->with(['color' => 'success', 'message' => 'Slide cadastrado com sucesso!']);
+        return Redirect::route('slides.edit', $slideCreate->id)->with(['color' => 'success', 'message' => 'Slide cadastrado com sucesso!']);
     }    
     
     public function edit($id)
@@ -65,7 +66,7 @@ class SlideController extends Controller
         $validator = Validator::make($request->only('files'), ['files.*' => 'image']);
 
         if ($validator->fails() === true) {
-            return redirect()->back()->withInput()->with([
+            return Redirect::back()->withInput()->with([
                 'color' => 'orange',
                 'message' => 'Todas as imagens devem ser do tipo jpg, jpeg ou png.',
             ]);
@@ -85,13 +86,21 @@ class SlideController extends Controller
         }
 
         if(!$slide->save()){
-            return redirect()->back()->withInput()->with([
+            return Redirect::back()->withInput()->with([
                 'color' => 'orange',
                 'message' => 'Erro ao salvar Slide',
             ]);
         }        
 
-        return redirect()->route('slides.edit', $slide->id)->with(['color' => 'success', 'message' => 'Slide atualizado com sucesso!']);
+        return Redirect::route('slides.edit', $slide->id)->with(['color' => 'success', 'message' => 'Slide atualizado com sucesso!']);
+    }
+
+    public function slideSetStatus(Request $request)
+    {        
+        $slide = Slide::find($request->id);
+        $slide->status = $request->status;
+        $slide->save();
+        return response()->json(['success' => true]);
     }
 
     public function delete(Request $request)
@@ -115,6 +124,6 @@ class SlideController extends Controller
             Cropper::flush($slide->imagem);
             $slide->delete();
         }
-        return redirect()->route('slides.index')->with(['color' => 'success', 'message' => 'O slide '.$slideR.' foi removido com sucesso!']);
+        return Redirect::route('slides.index')->with(['color' => 'success', 'message' => 'O slide '.$slideR.' foi removido com sucesso!']);
     }
 }

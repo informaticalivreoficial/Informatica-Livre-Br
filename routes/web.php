@@ -108,7 +108,9 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     
     //******************** Vendas *************************************************************/
     Route::get('pedidos/show/{id}', [PedidoController::class, 'show'])->name('pedidos.show');
-    Route::get('pedidos', [PedidoController::class, 'index'])->name('pedidos.index');    
+    Route::get('pedidos', [PedidoController::class, 'index'])->name('pedidos.index');   
+    Route::delete('orcamentos/deleteon', [OrcamentoController::class, 'deleteon'])->name('orcamento.deleteon');
+    Route::get('orcamentos/delete', [OrcamentoController::class, 'delete'])->name('orcamento.delete'); 
     Route::get('orcamentos', [OrcamentoController::class, 'index'])->name('vendas.orcamentos');
 
     //*************************** Portifólio Categorias **********************************/
