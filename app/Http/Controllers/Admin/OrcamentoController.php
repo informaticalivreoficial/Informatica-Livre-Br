@@ -37,9 +37,9 @@ class OrcamentoController extends Controller
         if(!empty($orcamento)){            
             $orcamento->delete();
         }
-        return Redirect::route('empresas.index')->with([
+        return Redirect::route('vendas.orcamentos')->with([
             'color' => 'success', 
-            'message' => 'Empresa removida com sucesso!'
+            'message' => 'Orçamento removido com sucesso!'
         ]);
     }
 }
