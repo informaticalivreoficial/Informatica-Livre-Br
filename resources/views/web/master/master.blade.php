@@ -140,7 +140,7 @@
                                     @endif
                                      
                                     <li class="rd-nav-item">
-                                        <a class="rd-nav-link" href="{{route('web.portifolio')}}" title="Protifólio">Protifólio</a>
+                                        <a class="rd-nav-link" href="{{route('web.portifolio')}}" title="Portifólio">Portifólio</a>
                                     </li>                          
                                     <li class="rd-nav-item">
                                         <a class="rd-nav-link" href="{{route('web.blog.artigos')}}" title="Dicas">Dicas</a>
