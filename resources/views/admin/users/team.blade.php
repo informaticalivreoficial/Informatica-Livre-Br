@@ -95,16 +95,18 @@
                     <div class="card-footer">
                       <div class="text-right"> 
                         <input type="checkbox" data-onstyle="success" data-offstyle="warning" data-size="mini" class="toggle-class" data-id="{{ $user->id }}" data-toggle="toggle" data-style="slow" data-on="<i class='fas fa-check'></i>" data-off="<i style='color:#fff !important;' class='fas fa-exclamation-triangle'></i>" {{ $user->status == true ? 'checked' : ''}}> 
-                        @php
-                        if($user->id != Auth::user()->id){
-                        @endphp 
-                        @if($user->whatsapp != '')
-                            <a target="_blank" href="{{getNumZap($user->whatsapp)}}" class="btn btn-xs btn-success text-white"><i class="fab fa-whatsapp"></i></a>
-                        @endif 
-                        <a href="{{route('email.send',['id' => $user->id, 'parametro' => 'user'] )}}" class="btn btn-xs text-white bg-teal"><i class="fas fa-envelope"></i></a>
-                        @php
-                        }
-                        @endphp                    
+                        @if ($user->id != auth()->user()->id)
+                            @if($user->whatsapp != '')
+                                <a target="_blank" href="{{getNumZap($user->whatsapp)}}" class="btn btn-xs btn-success text-white"><i class="fab fa-whatsapp"></i></a>
+                            @endif
+                        
+                            <form class="btn btn-xs" action="{{route('email.send')}}" method="post">
+                                @csrf
+                                <input type="hidden" name="nome" value="{{ $user->name }}">
+                                <input type="hidden" name="email" value="{{ $user->email }}">
+                                <button title="Enviar Email" type="submit" class="btn btn-xs text-white bg-teal"><i class="fas fa-envelope"></i></button>
+                            </form>
+                        @endif                    
                         <a href="{{route('users.view',['id' => $user->id])}}" class="btn btn-xs btn-primary"><i class="fas fa-search"></i></a>
                         @if($user->superadmin == true && \Illuminate\Support\Facades\Auth::user()->admin == true)
                             

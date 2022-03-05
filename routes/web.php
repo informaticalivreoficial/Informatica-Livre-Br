@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\{
     EmpresaController,
     ProdutoController,
     CatProdutoController,
+    NewsletterController,
     OrcamentoController,
     ParceiroController,
     PortifolioController,
@@ -82,6 +83,22 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
 });
 
 Route::prefix('admin')->middleware('auth')->group( function(){
+
+    //******************************* Newsletter *********************************************/
+    Route::get('listas/set-status', [NewsletterController::class, 'listaSetStatus'])->name('listas.listaSetStatus');
+    Route::get('listas/delete', [NewsletterController::class, 'listaDelete'])->name('listas.delete');
+    Route::delete('listas/deleteon', [NewsletterController::class, 'listaDeleteon'])->name('listas.deleteon');
+    Route::put('listas/{id}', [NewsletterController::class, 'listasUpdate'])->name('listas.update');
+    Route::get('listas/{id}/editar', [NewsletterController::class, 'listasEdit'])->name('listas.edit');
+    Route::get('listas/cadastrar', [NewsletterController::class, 'listasCreate'])->name('listas.create');
+    Route::post('listas/store', [NewsletterController::class, 'listasStore'])->name('listas.store');
+    Route::get('listas', [NewsletterController::class, 'listas'])->name('listas');
+
+    Route::put('listas/email/{id}', [NewsletterController::class, 'newsletterUpdate'])->name('listas.newsletter.update');
+    Route::get('listas/email/{id}/edit', [NewsletterController::class, 'newsletterEdit'])->name('listas.newsletter.edit');
+    Route::get('listas/email/cadastrar', [NewsletterController::class, 'newsletterCreate'])->name('lista.newsletter.create');
+    Route::post('listas/email/store', [NewsletterController::class, 'newsletterStore'])->name('listas.newsletter.store');
+    Route::get('listas/emails/categoria/{categoria}', [NewsletterController::class, 'newsletters'])->name('lista.newsletters');
 
     //******************* Slides ************************************************/
     Route::get('slides/set-status', [SlideController::class, 'slideSetStatus'])->name('slides.slideSetStatus');

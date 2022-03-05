@@ -7,25 +7,18 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use App\Mail\Admin\AdminSend;
 use App\Mail\Admin\SuporteSend;
-use App\Models\User;
+use Illuminate\Support\Facades\Redirect;
 
 class EmailController extends Controller
 {    
 
     public function send(Request $request)
     {
-        if($request->parametro == 'empresa'){
-            $empresa = Empresa::where('id', $request->id)->first();
-            return view('admin.email.send',[
-                'empresa' => $empresa
-            ]);
-        }elseif($request->parametro == 'user'){
-            $user = User::where('id', $request->id)->first();
-            return view('admin.email.send',[
-                'user' => $user
-            ]);
-        }
-        return view('admin.email.send');
+        $destinatario = $request->except('_token');        
+        
+        return view('admin.email.send', [
+            'destinatario' => $destinatario
+        ]);
         
     }    
     
@@ -33,13 +26,13 @@ class EmailController extends Controller
     public function sendEmail(Request $request)
     {
         if($request->assunto == ''){
-            return redirect()->back()->with([
+            return Redirect::back()->with([
                 'color' => 'danger', 
                 'message' => 'Erro, por favor preencha o campo assunto!'
             ]);
         }
         if($request->destinatario_email == ''){
-            return redirect()->back()->with([
+            return Redirect::back()->with([
                 'color' => 'danger', 
                 'message' => 'Erro, por favor informe um destinatário para o envio!'
             ]);
@@ -63,7 +56,7 @@ class EmailController extends Controller
         $data['mensagem'] = $request->mensagem;  
 
         Mail::send(new AdminSend($data));
-        return redirect()->route('email.success')->with([
+        return Redirect::route('email.success')->with([
             'color' => 'success', 
             'message' => 'Email enviado com sucesso!'
         ]);

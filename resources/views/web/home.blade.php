@@ -44,7 +44,7 @@
                     Administre e venda imóveis de uma forma inteligente e profissional, nosso sistema é 
                     integrado com as principais plataformas de imóveis do mercado imobiliário.
                     </p>
-                    <a class="btn btn-xl btn-primary" href="#" target="_blank">Quero 1 Mês Gratis</a>
+                    <a class="btn btn-xl btn-primary" href="https://superimoveis.info/planos" target="_blank">Quero 1 Mês Gratis</a>
                 </div>
             </div>
             <div class="col-md-7 col-xl-8">

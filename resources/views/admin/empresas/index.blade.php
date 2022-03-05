@@ -57,11 +57,16 @@
                             <td>{{$empresa->owner->name }}</td>
                             <td>
                                 <input type="checkbox" data-onstyle="success" data-offstyle="warning" data-size="mini" class="toggle-class" data-id="{{ $empresa->id }}" data-toggle="toggle" data-style="slow" data-on="<i class='fas fa-check'></i>" data-off="<i style='color:#fff !important;' class='fas fa-exclamation-triangle'></i>" {{ $empresa->status == true ? 'checked' : ''}}>
-                                @if($empresa->whatsapp != '')
+                                @if(!empty($empresa->whatsapp))
                                     <a target="_blank" href="{{getNumZap($empresa->whatsapp)}}" class="btn btn-xs btn-success text-white"><i class="fab fa-whatsapp"></i></a>
                                 @endif
-                                @if($empresa->email != '')
-                                    <a href="{{route('email.send',['id' => $empresa->id, 'parametro' => 'empresa'] )}}" class="btn btn-xs bg-teal text-white"><i class="fas fa-envelope"></i></a>
+                                @if(!empty($empresa->email))
+                                    <form class="btn btn-xs" action="{{route('email.send')}}" method="post">
+                                        @csrf
+                                        <input type="hidden" name="nome" value="{{ $empresa->alias_name }}">
+                                        <input type="hidden" name="email" value="{{ $empresa->email }}">
+                                        <button title="Enviar Email" type="submit" class="btn btn-xs text-white bg-teal"><i class="fas fa-envelope"></i></button>
+                                    </form>
                                 @endif                                
                                 <a href="{{route('empresas.edit',['id' => $empresa->id])}}" class="btn btn-xs btn-default"><i class="fas fa-pen"></i></a>
                                 <button type="button" class="btn btn-xs btn-danger text-white j_modal_btn" data-id="{{$empresa->id}}" data-toggle="modal" data-target="#modal-default">

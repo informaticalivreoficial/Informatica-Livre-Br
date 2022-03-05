@@ -39,7 +39,7 @@
     <div class="col-12 text-center">
         <div class="card card-teal card-outline p-4">
             <div class="card-body">
-                <a href="{{ route('email.send', Auth::user()->id ) }}" class="btn btn-lg btn-primary">Enviar um novo email</a>
+                <a href="{{ route('email.send') }}" class="btn btn-lg btn-primary">Enviar um novo email</a>
             </div>                        
         </div>
     </div>                

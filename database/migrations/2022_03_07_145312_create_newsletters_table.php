@@ -18,7 +18,7 @@ class CreateNewslettersTable extends Migration
             $table->string('email')->unique();
             $table->string('nome');
             $table->string('sobrenome')->nullable();
-            $table->integer('status')->nullable();
+            $table->integer('status')->default(1);
             $table->integer('autorizacao')->nullable();
             $table->unsignedInteger('categoria');
             $table->string('whatsapp')->nullable();

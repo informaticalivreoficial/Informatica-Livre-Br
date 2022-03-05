@@ -61,30 +61,8 @@ $config = [
     <div class="col-12">
         <div class="card card-teal card-outline">
             <form action="{{ route('email.sendEmail') }}" method="post" autocomplete="off" enctype="multipart/form-data">
-                @csrf
-                @php 
-                if(!empty($user)){
-                    if($user->email != '' && $user->email != Auth::user()->email){
-                        $usernome = $user->name;
-                        $useremail = $user->email;
-                    }else{
-                        $usernome = '';
-                        $useremail = '';
-                    }
-                }elseif(!empty($empresa)){
-                    if($empresa->email != '' && $empresa->email != Auth::user()->email){
-                        $usernome = $empresa->alias_name;
-                        $useremail = $empresa->email;
-                    }else{
-                        $usernome = '';
-                        $useremail = '';
-                    }
-                }else{
-                    $usernome = '';
-                    $useremail = '';
-                }
-                @endphp                            
-                <input type="hidden" name="destinatario_nome" value="{{$usernome}}">
+                @csrf                                            
+                <input type="hidden" name="destinatario_nome" value="{{ $destinatario['nome'] ?? '' }}">
                 <input type="hidden" name="remetente_nome" value="{{ Auth::user()->name }}">
                 <input type="hidden" name="sitename" value="{{ $configuracoes->nomedosite }}">
             <div class="card-header">
@@ -108,7 +86,7 @@ $config = [
             <div class="card-body">
                 <div class="form-group">
                     <label class="">Para:</label>
-                    <input type="text" class="form-control" name="destinatario_email" placeholder="Para:" value="{{$useremail}}">
+                    <input type="text" class="form-control" name="destinatario_email" placeholder="Para:" value="{{ $destinatario['email'] ?? '' }}">
                 </div>
                 <p>
                     <a href="#" class="text-front open_cc">Com Cópia &darr;</a>
@@ -121,7 +99,7 @@ $config = [
                 </div>
                 <div class="form-group">
                     <x-adminlte-text-editor name="mensagem" v :config="$config">
-                        <p>Olá {{ $usernome }},</p> 
+                        <p>Olá {{ $destinatario['nome'] ?? '' }},</p> 
                         <p>{{ getPrimeiroNome(Auth::user()->name) }} digite sua mensagem aqui...</p>
                         <p style="font-size:11px;text-align:left;color:#666;margin-top: 40px;line-height:1em !important;">
                         att<br />

@@ -25,6 +25,7 @@ class CreateNewsletterCatsTable extends Migration
             $table->text('content')->nullable();
             
             $table->timestamps();
+
         });
     }
 

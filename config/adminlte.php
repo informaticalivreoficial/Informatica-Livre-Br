@@ -87,7 +87,7 @@ return [
     'layout_boxed' => null,
     'layout_fixed_sidebar' => null,
     'layout_fixed_navbar' => null,
-    'layout_fixed_footer' => null,
+    'layout_fixed_footer' => true,
     'layout_dark_mode' => null,
 
     /*
@@ -352,6 +352,28 @@ return [
             'url'  => 'admin/slides',
             'icon' => 'fas fa-film',
         ], 
+        [
+            'text' => 'Email',            
+            'icon' => 'fas fa-fw fa-envelope',
+            'submenu' => [
+                [
+                    'text' => 'Enviar Email',
+                    'url'  => 'admin/email/enviar-email',
+                ],
+                [
+                    'text' => 'Listas',
+                    'url'  => 'admin/listas',
+                ],
+                [
+                    'text' => 'Cadastrar Lista',
+                    'url'  => 'admin/listas/cadastrar',
+                ],
+                [
+                    'text' => 'Cadastrar Email',
+                    'url'  => 'admin/listas/email/cadastrar',
+                ],
+            ]
+        ],
         
     ],
 
