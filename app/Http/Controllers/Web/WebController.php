@@ -114,7 +114,7 @@ class WebController extends Controller
         $head = $this->seo->render($projeto->name,
             $projeto->headline ?? 'Projeto desenvolvido pela Informática Livre',
             route('web.projeto',$projeto->slug),
-            $this->configService->getMetaImg() ?? 'https://informaticalivre.com/media/metaimg.jpg'
+            $projeto->cover() ?? $this->configService->getMetaImg()
         );
         return view('web.projeto',[
             'head' => $head,
