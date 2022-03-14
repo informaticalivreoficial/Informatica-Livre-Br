@@ -12,7 +12,7 @@ use Spatie\Analytics\Period;
 use App\Models\{
     CatPost,
     Empresa,
-    Orcamento,
+    //Orcamento,
     User,
     Post,
     Produto
@@ -59,22 +59,7 @@ class AdminController extends Controller
         //         ->available()
         //         ->where( DB::raw('YEAR(created_at)'), '=', date('Y') )
         //         ->first();     
-        //Orçamentos
-        $orcamentosPendentes = Orcamento::available()->count();   
-        $orcamentosConcluidos = Orcamento::unavailable()->count();   
-        //Produtos
-        $produtosAvailable = Produto::available()->count();
-        $produtosUnavailable = Produto::unavailable()->count();
-        $produtosTotal = Produto::all()->count();
-        //Empresas
-        $empresasAvailable = Empresa::available()->count();
-        $empresasUnavailable = Empresa::unavailable()->count();
-        $empresasTotal = Empresa::all()->count();
-        //Pedidos
-        // $pedidosApproved = Pedido::approved()->count();
-        // $pedidosInprocess = Pedido::inprocess()->count();
-        // $pedidosRejected = Pedido::rejected()->count();
-
+        
         //Analitcs
         $visitasHoje = Analytics::fetchMostVisitedPages(Period::days(1));
         $visitas365 = Analytics::fetchTotalVisitorsAndPageViews(Period::months(5));
@@ -100,27 +85,6 @@ class AdminController extends Controller
             'artigostotalviews' => $totalViewsArtigos->VIEWS,
             'paginasTop' => $paginasTop,
             'paginastotalviews' => $totalViewsPaginas->VIEWS,
-            //Roteiros
-            // 'roteirosAvailable' => $roteirosAvailable,
-            // 'roteirosUnavailable' => $roteirosUnavailable,
-            // 'roteirosTotal' => $roteirosTotal,            
-            // 'roteirosTop' => $roteirosTop,
-            // 'totalviewsroteiros' => $totalviewsroteiros,
-            //Orçamentos
-            'orcamentosPendentes' => $orcamentosPendentes,
-            'orcamentosConcluidos' => $orcamentosConcluidos,
-            //Produtos
-            'produtosAvailable' => $produtosAvailable,
-            'produtosUnavailable' => $produtosUnavailable,
-            'produtosTotal' => $produtosTotal,
-            //Empresas
-            'empresasAvailable' => $empresasAvailable,
-            'empresasUnavailable' => $empresasUnavailable,
-            'empresasTotal' => $empresasTotal,
-            //Pedidos
-            // 'pedidosApproved' => $pedidosApproved,
-            // 'pedidosInprocess' => $pedidosInprocess,
-            // 'pedidosRejected' => $pedidosRejected,
             //Analytics
             'visitasHoje' => $visitasHoje,
             //'visitas365' => $visitas365,
