@@ -158,4 +158,24 @@ class NewsletterController extends Controller
             'message' => 'A Inscrição de '.$newsletterUpdate->nome.' foi alualizada com sucesso!'
         ]);
     }
+
+    public function padraoMark(Request $request)
+    {
+        $lista = NewsletterCat::where('id', $request->id)->first();
+        $allListas = NewsletterCat::where('id', '!=', $lista->id)->get();
+
+        foreach ($allListas as $listaall) {
+            $listaall->sistema = null;
+            $listaall->save();
+        }
+
+        $lista->sistema = true;
+        $lista->save();
+
+        $json = [
+            'success' => true,
+        ];
+
+        return response()->json($json);         
+    }
 }

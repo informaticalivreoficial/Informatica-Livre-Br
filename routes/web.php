@@ -85,6 +85,7 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
 Route::prefix('admin')->middleware('auth')->group( function(){
 
     //******************************* Newsletter *********************************************/
+    Route::match(['post', 'get'], 'listas/padrao', [NewsletterController::class, 'padraoMark'])->name('listas.padrao');
     Route::get('listas/set-status', [NewsletterController::class, 'listaSetStatus'])->name('listas.listaSetStatus');
     Route::get('listas/delete', [NewsletterController::class, 'listaDelete'])->name('listas.delete');
     Route::delete('listas/deleteon', [NewsletterController::class, 'listaDeleteon'])->name('listas.deleteon');

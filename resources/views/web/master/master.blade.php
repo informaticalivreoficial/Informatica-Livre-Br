@@ -175,7 +175,7 @@
                                         <span class="novi-icon icon icon-md-custom icon-gunsmoke material-icons-place"></span>
                                     </div>
                                     <div class="unit-body fw-light">
-                                        <a class="link-light-03 d-inline" href="javascript:void(0)">Rua Primavera, 120<br>Jardim Carolina - Ubatuba/SP</a>
+                                        <a class="link-light-03 d-inline" href="javascript:void(0)">{{getCidadeNome($configuracoes->cidade, 'cidades')}}</a>
                                     </div>
                                 </div>
                             </address>
@@ -185,8 +185,8 @@
                                         <span class="novi-icon icon icon-md-custom icon-gunsmoke material-icons-phone"></span>
                                     </div>
                                     <div class="unit-body fw-light">
-                                        <div class="link-wrap"><a class="link-light-03" href="tel:12991385030">(12) 99138-5030</a></div>
-                                        <div class="link-wrap"><a class="link-light-03" href="mailto:suporte@informaticalivre.com">suporte@informaticalivre.com</a></div>
+                                        <div class="link-wrap"><a class="link-light-03" href="tel:{{$configuracoes->whatsapp}}">{{$configuracoes->whatsapp}}</a></div>
+                                        <div class="link-wrap"><a class="link-light-03" href="mailto:{{$configuracoes->email}}">{{$configuracoes->email}}</a></div>
                                     </div>
                                 </div>
                             </address>

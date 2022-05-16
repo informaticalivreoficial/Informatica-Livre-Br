@@ -18,8 +18,7 @@ class EmailController extends Controller
         
         return view('admin.email.send', [
             'destinatario' => $destinatario
-        ]);
-        
+        ]);        
     }    
     
     
