@@ -29,7 +29,7 @@ use App\Http\Controllers\Web\{
 
 Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
     
-    /** Página Inicial */   
+    /** Página Inicial */
     Route::get('teste-qrcode', [WebController::class, 'qrcode'])->name('qrcode'); 
     Route::get('/', [WebController::class, 'home'])->name('home');     
 

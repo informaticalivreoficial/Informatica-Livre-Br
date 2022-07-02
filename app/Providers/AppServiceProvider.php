@@ -30,8 +30,8 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
         Blade::aliasComponent('admin.components.message', 'message');
 
-        $configuracoes = \App\Models\Configuracoes::find(1); 
-        View()->share('configuracoes', $configuracoes);
+        $configuracoes = \App\Models\Configuracoes::find(1);
+        if($configuracoes){View()->share('configuracoes', $configuracoes);}         
 
         //Páginas no menu frontend
         $servicos = Post::orderBy('created_at', 'ASC')
