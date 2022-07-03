@@ -29,7 +29,7 @@ class ConfigController extends Controller
         $feeddata = Carbon::createFromFormat('Y-m-d', $config->rss_data);
         $feeddatahoje = Carbon::now();
         $feeddatadiferenca = $feeddatahoje->diffInDays($feeddata); // saída: X dias
-
+        
         return view('admin.configuracoes',[
             'config' => $config,
             'estados' => $estados,

@@ -414,7 +414,7 @@ $config1 = [
                                     <div class="form-group">
                                         <label class="labelforms"><b>Logomarca do site</b> - {{env('LOGOMARCA_WIDTH')}}x{{env('LOGOMARCA_HEIGHT')}} pixels</label>
                                         <div class="thumb_user_admin">                                                    
-                                            <img id="preview2" src="{{$config->getlogomarca()}}" alt="{{ old('dominio') ?? $config->dominio }}" title="{{ old('dominio') ?? $config->dominio }}"/>
+                                            <img id="preview2" width="{{env('LOGOMARCA_WIDTH')}}" height="{{env('LOGOMARCA_HEIGHT')}}" src="{{$config->getlogomarca()}}" alt="{{ old('dominio') ?? $config->dominio }}" title="{{ old('dominio') ?? $config->dominio }}"/>
                                             <input id="img-logomarca" type="file" name="logomarca">
                                         </div>
                                     </div>
@@ -423,7 +423,7 @@ $config1 = [
                                     <div class="form-group">
                                         <label class="labelforms"><b>Logomarca do Gerenciador</b> - {{env('LOGOMARCA_GERENCIADOR_WIDTH')}}x{{env('LOGOMARCA_GERENCIADOR_HEIGHT')}} pixels</label>
                                         <div class="thumb_user_admin">                                                    
-                                            <img id="preview3" src="{{$config->getlogoadmin()}}" alt="{{ old('dominio') ?? $config->dominio }}" title="{{ old('dominio') ?? $config->dominio }}"/>
+                                            <img id="preview3" width="{{env('LOGOMARCA_GERENCIADOR_WIDTH')}}" height="{{env('LOGOMARCA_GERENCIADOR_HEIGHT')}}" src="{{$config->getlogoadmin()}}" alt="{{ old('dominio') ?? $config->dominio }}" title="{{ old('dominio') ?? $config->dominio }}"/>
                                             <input id="img-logomarcaadmin" type="file" name="logomarca_admin">
                                         </div>
                                     </div>
@@ -432,7 +432,7 @@ $config1 = [
                                     <div class="form-group">
                                         <label class="labelforms"><b>Favicon</b> - {{env('FAVEICON_WIDTH')}}x{{env('FAVEICON_HEIGHT')}} pixels</label>
                                         <div class="thumb_user_admin">                                                    
-                                            <img id="preview4" src="{{$config->getfaveicon()}}" alt="{{ old('dominio') ?? $config->dominio }}" title="{{ old('dominio') ?? $config->dominio }}"/>
+                                            <img id="preview4" width="{{env('FAVEICON_WIDTH')}}" height="{{env('FAVEICON_HEIGHT')}}" src="{{$config->getfaveicon()}}" alt="{{ old('dominio') ?? $config->dominio }}" title="{{ old('dominio') ?? $config->dominio }}"/>
                                             <input id="img-favicon" type="file" name="favicon">
                                         </div>
                                     </div>
@@ -441,7 +441,7 @@ $config1 = [
                                     <div class="form-group">
                                         <label class="labelforms"><b>Marca D´agua</b> - {{env('MARCADAGUA_WIDTH')}}x{{env('MARCADAGUA_HEIGHT')}} pixels</label>
                                         <div class="thumb_user_admin">                                                    
-                                            <img id="preview5" src="{{$config->getmarcadagua()}}" alt="{{ old('dominio') ?? $config->dominio }}" title="{{ old('dominio') ?? $config->dominio }}"/>
+                                            <img id="preview5" width="{{env('MARCADAGUA_WIDTH')}}" height="{{env('MARCADAGUA_HEIGHT')}}" src="{{$config->getmarcadagua()}}" alt="{{ old('dominio') ?? $config->dominio }}" title="{{ old('dominio') ?? $config->dominio }}"/>
                                             <input id="img-marcadagua" type="file" name="marcadagua">
                                         </div>
                                     </div>
@@ -450,7 +450,7 @@ $config1 = [
                                     <div class="form-group">
                                         <label class="labelforms"><b>Topo do site</b> - {{env('IMGHEADER_WIDTH')}}x{{env('IMGHEADER_HEIGHT')}} pixels</label>
                                         <div class="thumb_user_admin">
-                                            <img id="preview6" src="{{$config->gettopodosite()}}" alt="{{ old('dominio') ?? $config->dominio }}" title="{{ old('dominio') ?? $config->dominio }}"/>
+                                            <img id="preview6" width="{{env('IMGHEADER_WIDTH')}}" height="{{env('IMGHEADER_HEIGHT')}}" src="{{$config->gettopodosite()}}" alt="{{ old('dominio') ?? $config->dominio }}" title="{{ old('dominio') ?? $config->dominio }}"/>
                                             <input id="img-imgheader" type="file" name="imgheader">
                                         </div>
                                     </div>
