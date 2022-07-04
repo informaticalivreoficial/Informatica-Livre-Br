@@ -12,6 +12,11 @@ class WhatsApp
     */
     public static function getNumZap($nZap ,$textZap = null)
     {
-        
+        if(!empty($nZap)):
+            $textZap = ($textZap == null ? getSaudacao() : $textZap);
+            $zap = '55' . preg_replace("/[^0-9]/", "", $nZap);
+            return "https://api.whatsapp.com/send?l=pt_pt&phone={$zap}&text={$textZap}";
+        endif;
+        return null;
     }
 }
