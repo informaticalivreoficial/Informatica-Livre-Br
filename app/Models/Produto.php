@@ -4,10 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use App\Support\Cropper;
 
 class Produto extends Model
 {
@@ -87,11 +85,12 @@ class Produto extends Model
             $cover = $images->first(['path']);
         }
 
-        if(empty($cover['path']) || !File::exists('../public/storage/' . $cover['path'])) {
+        if(empty($cover['path']) || !Storage::disk()->exists($cover['path'])) {
             return url(asset('backend/assets/images/image.jpg'));
         }
 
-        return Storage::url(Cropper::thumb($cover['path'], 960, 1100));
+        //return Storage::url(Cropper::thumb($cover['path'], 960, 1100));
+        return Storage::url($cover['path']);
     }
 
     public function nocover()
@@ -104,7 +103,7 @@ class Produto extends Model
             $cover = $images->first(['path']);
         }
 
-        if(empty($cover['path']) || !File::exists('../public/storage/' . $cover['path'])) {
+        if(empty($cover['path']) || !Storage::disk()->exists($cover['path'])) {
             return url(asset('backend/assets/images/image.jpg'));
         }
 
