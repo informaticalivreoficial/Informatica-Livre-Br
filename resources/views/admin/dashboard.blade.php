@@ -159,10 +159,10 @@
                 @foreach($artigosTop as $artigotop)
                 @php
                     //REALIZA PORCENTAGEM DE VISITAS!
-                    if($artigotop->views == '0'){
+                    if($artigotop->views == 0){
                         $percent = 1;
                     }else{
-                        $percent = substr(( $artigotop['views'] / $artigostotalviews ) * 100, 0, 5);
+                        $percent = substr(( $artigotop->views / $artigostotalviews ) * 100, 0, 5);
                     }
                     
                     $percenttag = str_replace(",", ".", $percent);
