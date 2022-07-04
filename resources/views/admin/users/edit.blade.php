@@ -69,8 +69,8 @@
                                             <div class="form-group">
                                                 <div class="thumb_user_admin">
                                                     @php
-                                                        if(!empty($user->avatar) && \Illuminate\Support\Facades\File::exists(public_path() . '/storage/' . $user->avatar)){
-                                                            $cover = url('storage/'.$user->avatar);
+                                                        if(!empty($user->avatar) && \Illuminate\Support\Facades\Storage::exists($user->avatar)){
+                                                            $cover = \Illuminate\Support\Facades\Storage::url($user->avatar);
                                                         } else {
                                                             $cover = url(asset('backend/assets/images/image.jpg'));
                                                         }

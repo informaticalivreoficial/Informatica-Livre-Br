@@ -78,9 +78,9 @@
                         </div>
                         <div class="col-5 text-center">
                         @php
-                            if(!empty($user->avatar) && \Illuminate\Support\Facades\File::exists(public_path() . '/storage/' . $user->avatar)){
-                                $cover = url('storage/'.$user->avatar);
-                            } else {
+                            if(!empty($user->avatar) && \Illuminate\Support\Facades\Storage::exists($user->avatar)){
+                                    $cover = \Illuminate\Support\Facades\Storage::url($user->avatar);
+                                } else {
                                 if($user->genero == 'masculino'){
                                     $cover = url(asset('backend/assets/images/avatar5.png'));
                                 }else{

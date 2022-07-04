@@ -6,7 +6,7 @@
     </a>
     @php
         if(!empty(\Illuminate\Support\Facades\Auth::user()->avatar) &&
-        \Illuminate\Support\Facades\File::exists(public_path() . '/storage/' . \Illuminate\Support\Facades\Auth::user()->avatar)){
+        \Illuminate\Support\Facades\Storage::exists(\Illuminate\Support\Facades\Auth::user()->avatar)){
             $cover = \Illuminate\Support\Facades\Auth::user()->url_avatar;
         } else {
             $cover = url(asset('backend/assets/images/image.jpg'));
