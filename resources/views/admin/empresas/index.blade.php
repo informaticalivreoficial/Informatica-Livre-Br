@@ -58,7 +58,7 @@
                             <td>
                                 <input type="checkbox" data-onstyle="success" data-offstyle="warning" data-size="mini" class="toggle-class" data-id="{{ $empresa->id }}" data-toggle="toggle" data-style="slow" data-on="<i class='fas fa-check'></i>" data-off="<i style='color:#fff !important;' class='fas fa-exclamation-triangle'></i>" {{ $empresa->status == true ? 'checked' : ''}}>
                                 @if(!empty($empresa->whatsapp))
-                                    <a target="_blank" href="{{getNumZap($empresa->whatsapp)}}" class="btn btn-xs btn-success text-white"><i class="fab fa-whatsapp"></i></a>
+                                    <a target="_blank" href="{{\App\Helpers\WhatsApp::getNumZap($empresa->whatsapp)}}" class="btn btn-xs btn-success text-white"><i class="fab fa-whatsapp"></i></a>
                                 @endif
                                 @if(!empty($empresa->email))
                                     <form class="btn btn-xs" action="{{route('email.send')}}" method="post">
