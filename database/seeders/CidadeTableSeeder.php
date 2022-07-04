@@ -519,7 +519,7 @@ class CidadeTableSeeder extends Seeder
                 'document_company_secondary'=>NULL,
                 'status'=>1,
                 'logomarca'=>'empresas/pousada-cavalo-marinho-16474476349318.png',
-                'notasadicionais'=>'CNPJ	00.981.409/0001-36 [ MATRIZ ]\r\nNome da empresa	POUSADA CAVALO MARINHO DE UBATUBA LTDA\r\nInicio atividade data	1995-12-20\r\nNatureza jurídica	Sociedade Empresária Limitada \r\nSituação cadastral	ATIVA desde 2002-03-30\r\nQualificação do responsável	Sócio-Administrador\r\nCapital social	R$ 50.000,00\r\nPorte da empresa	MICRO\r\nOpção pelo simples	Optantes pelo simples desde 2007-07-01\r\nOpção pelo MEI	NÃO',
+                'notasadicionais'=>'ss',
                 'cep'=>'11689046',
                 'rua'=>'Rua Guarani',
                 'num'=>'757',
