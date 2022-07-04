@@ -24,7 +24,7 @@ class CidadeTableSeeder extends Seeder
                 'document_company_secondary'=>NULL,
                 'status'=>1,
                 'logomarca'=>'empresas/tribo-do-mar-turismo-16439433082856.jpg',
-                'notasadicionais'=>'########################## TRIBO DO MAR ##########################################################\r\n##\r\n##  IP: 67.23.238.20	                                                                                                  Criado em 01/2019  Pago em 11/01/2021 R$149,00\r\n##  Domínio:  tribodomar.com.br                 \r\n##  Cpanel :  tribodom                          facebook:contato@tribodomar.com.br                   \r\n##  password: tribo0981?%&)ngT                  senha: tribo098                            \r\n##                                                                    \r\n##  E-mail:  contato@tribodomar.com.br          pagseguro:contato@tribodomar.com.br \r\n##  senha:   tribodo098A                        senha: tribo098\r\n##\r\n##  E-mail:  analiad@tribodomar.com.br\r\n##  senha:   tribodo098A\r\n##\r\n##  #### Banco de Dados ####                                                                  \r\n##  Bd: tribodom_tribodo \r\n##  User: tribodom_tribodo \r\n##  Pass: sCGNdH6u\r\n##\r\n##  #### Redirecionamentos de E-mail ####\r\n##\r\n##  contato@tribodomar.com.br =>> ana.liad@hotmail.com\r\n##\r\n##################################################################################################',
+                'notasadicionais'=>'s',
                 'cep'=>'11685430',
                 'rua'=>'Rua Três Irmãos',
                 'num'=>'44',
