@@ -88,12 +88,14 @@ class AdminController extends Controller
             'usersAvailable' => $usersAvailable,
             'usersUnavailable' => $usersUnavailable,
             //Artigos
-            'postsArtigos' => $postsArtigos,
-            'postsPaginas' => $postsPaginas,
             'artigosTop' => $artigosTop,
-            'artigostotalviews' => $totalViewsArtigos->VIEWS,
+            'artigostotalviews' => $totalViewsArtigos,
+            //Páginas
             'paginasTop' => $paginasTop,
-            'paginastotalviews' => $totalViewsPaginas->VIEWS,            
+            'paginastotalviews' => $totalViewsPaginas, 
+            //CHART PIZZA
+            'postsArtigos' => $postsArtigos,
+            'postsPaginas' => $postsPaginas,         
             //Orçamentos
             'orcamentosPendentes' => $orcamentosPendentes,
             'orcamentosConcluidos' => $orcamentosConcluidos,
