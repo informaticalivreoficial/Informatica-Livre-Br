@@ -14,11 +14,11 @@
   <div class="container">
       <div class="row row-50 justify-content-md-between">
         <div class="col-12">            
-            <h4>Olá {{getSaudacao(getPrimeiroNome($orcamento->name))}}</h4>
+            <h4>Olá {{\App\Helpers\Renato::getSaudacao(\App\Helpers\Renato::getPrimeiroNome($orcamento->name))}}</h4>
             <p style="color: #333;font-size:1.2em;">Seja muito bem vindo! Queremos já de antemão lhe agradecer por ter escolhido 
                 nossa equipe para dessenvolver seu projeto.<br>
-                {{getPrimeiroNome($orcamento->name)}} segue abaixo um formulário com informações
-                importantes para darmos seguimento ao seu projeto. Ah {{getPrimeiroNome($orcamento->name)}}
+                {{\App\Helpers\Renato::getPrimeiroNome($orcamento->name)}} segue abaixo um formulário com informações
+                importantes para darmos seguimento ao seu projeto. Ah {{\App\Helpers\Renato::getPrimeiroNome($orcamento->name)}}
                 fique tranquilo suas informações estão em ambiente seguro, criptografado e odiamos SPAM!
             </p>
             <form class="j_formsubmit" method="post" action="" autocomplete="off">

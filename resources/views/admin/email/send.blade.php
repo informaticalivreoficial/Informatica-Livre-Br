@@ -100,7 +100,7 @@ $config = [
                 <div class="form-group">
                     <x-adminlte-text-editor name="mensagem" v :config="$config">
                         <p>Olá {{ $destinatario['nome'] ?? '' }},</p> 
-                        <p>{{ getPrimeiroNome(Auth::user()->name) }} digite sua mensagem aqui...</p>
+                        <p>{{ \App\Helpers\Renato::getPrimeiroNome(Auth::user()->name) }} digite sua mensagem aqui...</p>
                         <p style="font-size:11px;text-align:left;color:#666;margin-top: 40px;line-height:1em !important;">
                         att<br />
                         {{ Auth::user()->name }}<br />

@@ -35,4 +35,19 @@ class Renato
             return false;
         endif;
     }
+
+    /**
+    * <b>Limpa Telefone:</b> Ao executar este HELPER, são eliminados
+    * espaços traços e outros caracteres do numero de telefone
+    * @return HTML = texto informado primeiro nome!
+    */
+    public static function limpaTelefone($telefone)
+    {
+        if(empty($telefone)){
+            return null;
+        }
+        $valor = str_replace(['(',')', '-', ' '], '', $telefone);
+        
+        return $valor;
+    }
 }

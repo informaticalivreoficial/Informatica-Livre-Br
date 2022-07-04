@@ -74,7 +74,7 @@
                                                 <span class="novi-icon icon icon-xxs icon-primary fa-whatsapp"></span>
                                             </div>
                                             <div class="unit-body">
-                                                <a class="link-light-2 d-inline" target="_blank" href="{{getNumZap($configuracoes->whatsapp ,'Atendimento '.$configuracoes->nomedosite)}}">{{$configuracoes->whatsapp}}</a>
+                                                <a class="link-light-2 d-inline" target="_blank" href="{{\App\Helpers\WhatsApp::getNumZap($configuracoes->whatsapp ,'Atendimento '.$configuracoes->nomedosite)}}">{{$configuracoes->whatsapp}}</a>
                                             </div>
                                         @endif
                                     </div>
@@ -175,7 +175,7 @@
                                         <span class="novi-icon icon icon-md-custom icon-gunsmoke material-icons-place"></span>
                                     </div>
                                     <div class="unit-body fw-light">
-                                        <a class="link-light-03 d-inline" href="javascript:void(0)">{{getCidadeNome($configuracoes->cidade, 'cidades')}}</a>
+                                        <a class="link-light-03 d-inline" href="javascript:void(0)">{{\App\Helpers\Cidade::getCidadeNome($configuracoes->cidade, 'cidades')}}</a>
                                     </div>
                                 </div>
                             </address>

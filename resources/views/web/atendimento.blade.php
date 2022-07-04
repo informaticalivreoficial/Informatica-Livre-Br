@@ -67,29 +67,29 @@
                                           , {{$configuracoes->bairro}}
                                           @endif
                                           @if($configuracoes->cidade)  
-                                          - {{getCidadeNome($configuracoes->cidade, 'cidades')}}
+                                          - {{\App\Helpers\Cidade::getCidadeNome($configuracoes->cidade, 'cidades')}}
                                           @endif
                                       @endif
                                       </p>
                                       @if ($configuracoes->telefone1)
                                         <dl class="list-terms-inline">
                                             <dt>Telefone</dt>
-                                            <dd><a class="link-secondary" href="tel:{{limpatelefone($configuracoes->telefone1)}}">{{$configuracoes->telefone1}}</a></dd>
+                                            <dd><a class="link-secondary" href="tel:{{\App\Helpers\Renato::limpatelefone($configuracoes->telefone1)}}">{{$configuracoes->telefone1}}</a></dd>
                                             @if ($configuracoes->telefone2)
-                                              <dd style="margin-left: 10px;"><a class="link-secondary" href="tel:{{limpatelefone($configuracoes->telefone2)}}">{{$configuracoes->telefone2}}</a></dd>
+                                              <dd style="margin-left: 10px;"><a class="link-secondary" href="tel:{{\App\Helpers\Renato::limpatelefone($configuracoes->telefone2)}}">{{$configuracoes->telefone2}}</a></dd>
                                             @endif
                                         </dl>
                                       @endif
                                       @if ($configuracoes->telefone3)
                                         <dl class="list-terms-inline">
                                             <dt>Telefone</dt>
-                                            <dd><a class="link-secondary" href="tel:{{limpatelefone($configuracoes->telefone3)}}">{{$configuracoes->telefone3}}</a></dd>                                            
+                                            <dd><a class="link-secondary" href="tel:{{\App\Helpers\Renato::limpatelefone($configuracoes->telefone3)}}">{{$configuracoes->telefone3}}</a></dd>                                            
                                         </dl>
                                       @endif
                                       @if($configuracoes->whatsapp)
                                           <dl class="list-terms-inline">
                                               <span class="novi-icon icon icon-xxs icon-primary fa-whatsapp"></span>
-                                              <dd><a class="link-secondary" href="{{getNumZap($configuracoes->whatsapp ,'Atendimento '.$configuracoes->nomedosite)}}">{{$configuracoes->whatsapp}}</a></dd>  
+                                              <dd><a class="link-secondary" href="{{\App\Helpers\WhatsApp::getNumZap($configuracoes->whatsapp ,'Atendimento '.$configuracoes->nomedosite)}}">{{$configuracoes->whatsapp}}</a></dd>  
                                               @if ($configuracoes->skype)
                                                 <span style="margin-left: 10px;" class="novi-icon icon icon-xxs icon-primary fa-skype"></span>
                                                 <dd><a href="skype:{{$configuracoes->skype}}">{{$configuracoes->skype}}</a></dd>
