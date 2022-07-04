@@ -94,11 +94,12 @@ class Portifolio extends Model
             $cover = $images->first(['path']);
         }
 
-        if(empty($cover['path']) || !File::exists('../public/storage/' . $cover['path'])) {
+        if(empty($cover['path']) || !Storage::disk()->exists($cover['path'])) {
             return url(asset('backend/assets/images/image.jpg'));
         }
 
-        return Storage::url(Cropper::thumb($cover['path'], 370, 278));
+        //return Storage::url(Cropper::thumb($cover['path'], 370, 278));
+        return Storage::url($cover['path']);
     }
 
     public function nocover()
@@ -111,7 +112,7 @@ class Portifolio extends Model
             $cover = $images->first(['path']);
         }
 
-        if(empty($cover['path']) || !File::exists('../public/storage/' . $cover['path'])) {
+        if(empty($cover['path']) || !Storage::disk()->exists($cover['path'])) {
             return url(asset('backend/assets/images/image.jpg'));
         }
 
