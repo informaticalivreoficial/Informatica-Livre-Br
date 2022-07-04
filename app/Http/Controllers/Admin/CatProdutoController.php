@@ -91,7 +91,7 @@ class CatProdutoController extends Controller
         $categoria = CatProduto::where('id', $request->id)->first();
         $subcategoria = CatProduto::where('id_pai', $request->id)->first();
         $produtos = Produto::where('categoria', $request->id)->first();
-        $nome = getPrimeiroNome(Auth::user()->name);
+        $nome = \App\Helpers\Renato::getPrimeiroNome(Auth::user()->name);
 
         if(!empty($categoria) && empty($subcategoria)){
             if($categoria->id_pai == null){

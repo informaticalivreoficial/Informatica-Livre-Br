@@ -21,7 +21,7 @@ class OrcamentoController extends Controller
     public function delete(Request $request)
     {
         $orcamento = Orcamento::where('id', $request->id)->first();
-        $nome = getPrimeiroNome(Auth::user()->name);
+        $nome = \App\Helpers\Renato::getPrimeiroNome(Auth::user()->name);
 
         if(!empty($orcamento)){
             $json = "<b>$nome</b> você tem certeza que deseja excluir este orçamento?";                      

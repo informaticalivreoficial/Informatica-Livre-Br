@@ -73,7 +73,7 @@ class NewsletterController extends Controller
     public function listaDelete(Request $request)
     {
         $lista = NewsletterCat::where('id', $request->id)->first();
-        $nome = getPrimeiroNome(auth()->user()->name);
+        $nome = \App\Helpers\Renato::getPrimeiroNome(auth()->user()->name);
 
         if(!empty($lista)){
             if($lista->newsletters->count() > 0){

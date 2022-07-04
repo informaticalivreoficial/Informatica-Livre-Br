@@ -91,7 +91,7 @@ class CatPortifolioController extends Controller
         $categoria = CatPortifolio::where('id', $request->id)->first();
         $subcategoria = CatPortifolio::where('id_pai', $request->id)->first();
         $portifolio = Portifolio::where('categoria', $request->id)->first();
-        $nome = getPrimeiroNome(Auth::user()->name);
+        $nome = \App\Helpers\Renato::getPrimeiroNome(Auth::user()->name);
 
         if(!empty($categoria) && empty($subcategoria)){
             if($categoria->id_pai == null){

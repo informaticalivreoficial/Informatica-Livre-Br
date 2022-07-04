@@ -142,7 +142,7 @@ class ProdutoController extends Controller
     {
         $produtodelete = $this->produtoService->getProduto($request->id);
         $produtoGb = $this->produtoService->getGbImage($produtodelete->id);
-        $nome = getPrimeiroNome(Auth::user()->name);
+        $nome = \App\Helpers\Renato::getPrimeiroNome(Auth::user()->name);
 
         if(!empty($produtodelete)){
             if(!empty($produtoGb)){

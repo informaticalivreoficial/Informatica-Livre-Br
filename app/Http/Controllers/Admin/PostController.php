@@ -213,7 +213,7 @@ class PostController extends Controller
     {
         $postdelete = Post::where('id', $request->id)->first();
         $postGb = PostGb::where('post', $postdelete->id)->first();
-        $nome = getPrimeiroNome(Auth::user()->name);
+        $nome = \App\Helpers\Renato::getPrimeiroNome(Auth::user()->name);
 
         $tipo = ($postdelete->tipo == 'artigo' ? 'este artigo' : 
                  ($postdelete->tipo == 'noticia' ? 'esta notícia' : 

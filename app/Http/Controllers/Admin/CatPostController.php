@@ -10,6 +10,7 @@ use App\Models\Post;
 use App\Models\PostGb;
 use CoffeeCode\Cropper\Cropper;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 
 class CatPostController extends Controller
@@ -41,11 +42,11 @@ class CatPostController extends Controller
         $criarCategoria->setSlug();
         
         if($request->id_pai != null){
-            return redirect()->route('categorias.edit', [
+            return Redirect::route('categorias.edit', [
                 'id' => $criarCategoria->id,
             ])->with(['color' => 'success', 'message' => 'Sub Categoria cadastrada com sucesso!']);
         }else{
-            return redirect()->route('categorias.edit', [
+            return Redirect::route('categorias.edit', [
                 'id' => $criarCategoria->id,
             ])->with(['color' => 'success', 'message' => 'Categoria cadastrada com sucesso!']);
         }
@@ -74,11 +75,11 @@ class CatPostController extends Controller
         $categoria->setSlug();
         
         if($categoria->id_pai != null){
-            return redirect()->route('categorias.edit', [
+            return Redirect::route('categorias.edit', [
                 'id' => $categoria->id,
             ])->with(['color' => 'success', 'message' => 'Sub Categoria atualizada com sucesso!']);
         }else{
-            return redirect()->route('categorias.edit', [
+            return Redirect::route('categorias.edit', [
                 'id' => $categoria->id,
             ])->with(['color' => 'success', 'message' => 'Categoria atualizada com sucesso!']);
         }
@@ -90,7 +91,7 @@ class CatPostController extends Controller
         $categoria = CatPost::where('id', $request->id)->first();
         $subcategoria = CatPost::where('id_pai', $request->id)->first();
         $post = Post::where('categoria', $request->id)->first();
-        $nome = getPrimeiroNome(Auth::user()->name);
+        $nome = \App\Helpers\Renato::getPrimeiroNome(Auth::user()->name);
 
         $secao = ($categoria->tipo == 'artigo' ? 'artigos' : 
                  ($categoria->tipo == 'noticia' ? 'notícias' : 
@@ -134,7 +135,7 @@ class CatPostController extends Controller
             if(!empty($post) && !empty($postgb)){
                 $postgb = PostGb::where('post', $post->id)->first();
                 Storage::delete($postgb->path);
-                Cropper::flush($postgb->path);
+                //Cropper::flush($postgb->path);
                 $postgb->delete();
                 Storage::deleteDirectory($secao.'/'.$post->id);
                 $categoria->delete();
@@ -143,12 +144,12 @@ class CatPostController extends Controller
         }
 
         if($categoria->id_pai != null){
-            return redirect()->route('categorias.index')->with([
+            return Redirect::route('categorias.index')->with([
                 'color' => 'success', 
                 'message' => 'A sub categoria '.$categoriaR.' foi removida com sucesso!'
             ]);
         }else{
-            return redirect()->route('categorias.index')->with([
+            return Redirect::route('categorias.index')->with([
                 'color' => 'success', 
                 'message' => 'A categoria '.$categoriaR.' foi removida com sucesso!'
             ]);

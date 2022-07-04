@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Image;
 use App\Support\Cropper;
+use Illuminate\Support\Facades\Redirect;
 
 class ParceiroController extends Controller
 {
@@ -52,7 +53,7 @@ class ParceiroController extends Controller
         $validator = Validator::make($request->only('files'), ['files.*' => 'image']);
 
         if ($validator->fails() === true) {
-            return redirect()->back()->withInput()->with([
+            return Redirect::back()->withInput()->with([
                 'color' => 'orange',
                 'message' => 'Todas as imagens devem ser do tipo jpg, jpeg ou png.',
             ]);
@@ -68,7 +69,7 @@ class ParceiroController extends Controller
             }
         }
         
-        return redirect()->route('parceiros.edit', $parceiroCreate->id)->with([
+        return Redirect::route('parceiros.edit', $parceiroCreate->id)->with([
             'color' => 'success', 
             'message' => 'Parceiro cadastrado com sucesso!'
         ]);        
@@ -110,7 +111,7 @@ class ParceiroController extends Controller
         $validator = Validator::make($request->only('files'), ['files.*' => 'image']);
 
         if ($validator->fails() === true) {
-            return redirect()->back()->withInput()->with([
+            return Redirect::back()->withInput()->with([
                 'color' => 'orange',
                 'message' => 'Todas as imagens devem ser do tipo jpg, jpeg ou png.',
             ]);
@@ -126,7 +127,7 @@ class ParceiroController extends Controller
             }
         }
 
-        return redirect()->route('parceiros.edit', [
+        return Redirect::route('parceiros.edit', [
             'id' => $parceiro->id,
         ])->with(['color' => 'success', 'message' => 'Parceiro atualizado com sucesso!']);
     } 
@@ -183,7 +184,7 @@ class ParceiroController extends Controller
     {
         $parceirodelete = Parceiro::where('id', $request->id)->first();
         $parceiroGb = ParceiroGb::where('parceiro_id', $parceirodelete->id)->first();
-        $nome = getPrimeiroNome(Auth::user()->name);
+        $nome = \App\Helpers\Renato::getPrimeiroNome(Auth::user()->name);
 
         if(!empty($parceirodelete)){
             if(!empty($parceiroGb)){
@@ -219,7 +220,7 @@ class ParceiroController extends Controller
             $parceirodelete->delete();
         }
 
-        return redirect()->route('parceiros.index')->with([
+        return Redirect::route('parceiros.index')->with([
             'color' => 'success', 
             'message' => 'O parceiro '.$postR.' foi removido com sucesso!'
         ]);

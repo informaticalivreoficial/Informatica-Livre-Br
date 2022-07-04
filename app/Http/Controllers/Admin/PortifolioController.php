@@ -147,7 +147,7 @@ class PortifolioController extends Controller
     {
         $portifoliodelete = $this->portifolioService->getPortifolio($request->id);
         $portifolioGb = $this->portifolioService->getGbImage($portifoliodelete->id);
-        $nome = getPrimeiroNome(Auth::user()->name);
+        $nome = \App\Helpers\Renato::getPrimeiroNome(Auth::user()->name);
 
         if(!empty($portifoliodelete)){
             if(!empty($portifolioGb)){

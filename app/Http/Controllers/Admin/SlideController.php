@@ -106,7 +106,7 @@ class SlideController extends Controller
     public function delete(Request $request)
     {
         $slide = Slide::where('id', $request->id)->first();
-        $nome = getPrimeiroNome(Auth::user()->name);
+        $nome = \App\Helpers\Renato::getPrimeiroNome(Auth::user()->name);
         if(!empty($slide)){
             $json = "<b>$nome</b> você tem certeza que deseja excluir este Slide?";
             return response()->json(['error' => $json,'id' => $slide->id]);

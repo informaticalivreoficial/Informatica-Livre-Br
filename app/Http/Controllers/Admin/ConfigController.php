@@ -13,6 +13,7 @@ use App\Support\Cropper;
 use App\Models\Estados;
 use App\Models\Cidades;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Redirect;
 
 class ConfigController extends Controller
 {
@@ -112,10 +113,10 @@ class ConfigController extends Controller
         }
         
         if(!$config->save()){
-            return redirect()->back()->withInput()->withErrors();
+            return Redirect::back()->withInput()->withErrors('Erro');
         }
 
-        return redirect()->route('configuracoes.editar', $config->id)->with([
+        return Redirect::route('configuracoes.editar', $config->id)->with([
             'color' => 'success', 
             'message' => 'Configurações atualizadas com sucesso!'
         ]);
