@@ -90,7 +90,7 @@
                             <td>
                                 <input type="checkbox" data-onstyle="success" data-offstyle="warning" data-size="mini" class="toggle-class" data-id="{{ $user->id }}" data-toggle="toggle" data-style="slow" data-on="<i class='fas fa-check'></i>" data-off="<i style='color:#fff !important;' class='fas fa-exclamation-triangle'></i>" {{ $user->status == true ? 'checked' : ''}}>
                                 @if($user->whatsapp != '')
-                                    <a target="_blank" href="{{getNumZap($user->whatsapp)}}" class="btn btn-xs btn-success text-white"><i class="fab fa-whatsapp"></i></a>
+                                    <a target="_blank" href="{{\App\Helpers\WhatsApp::getNumZap($user->whatsapp)}}" class="btn btn-xs btn-success text-white"><i class="fab fa-whatsapp"></i></a>
                                 @endif
                                 <form class="btn btn-xs" action="{{route('email.send')}}" method="post">
                                     @csrf
