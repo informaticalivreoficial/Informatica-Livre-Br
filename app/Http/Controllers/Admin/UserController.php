@@ -14,6 +14,7 @@ use App\Models\Estados;
 use App\Models\User;
 use App\Services\UserService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Redirect;
 
 class UserController extends Controller
 {
@@ -83,7 +84,7 @@ class UserController extends Controller
             $userCreate->avatar = $request->file('avatar')->storeAs('user', Str::slug($request->name)  . '-' . str_replace('.', '', microtime(true)) . '.' . $request->file('avatar')->extension());
             $userCreate->save();
         }
-        return redirect()->route('users.edit', $userCreate->id)->with(['color' => 'success', 'message' => 'Cadastro realizado com sucesso!']);        
+        return Redirect::route('users.edit', $userCreate->id)->with(['color' => 'success', 'message' => 'Cadastro realizado com sucesso!']);        
     }
 
     public function edit($id)
@@ -111,13 +112,13 @@ class UserController extends Controller
         $nasc = Carbon::createFromFormat('d/m/Y', $request->nasc)->format('d-m-Y');        
         
         if(Carbon::parse($nasc)->age < 18){
-            return redirect()->back()->with(['color' => 'danger', 'message' => 'Data de nascimento inválida!']);
+            return Redirect::back()->with(['color' => 'danger', 'message' => 'Data de nascimento inválida!']);
         }
 
         if($request->estado_civil == 'casado'){
             $nasc_conjuje = Carbon::createFromFormat('d/m/Y', $request->nasc_conjuje)->format('d-m-Y');
             if(Carbon::parse($nasc_conjuje)->age < 18){
-                return redirect()->back()->with(['color' => 'danger', 'message' => 'Data de nascimento do conjuje inválida!']);
+                return Redirect::back()->with(['color' => 'danger', 'message' => 'Data de nascimento do conjuje inválida!']);
             }            
         }
 
@@ -134,10 +135,10 @@ class UserController extends Controller
         }
 
         if(!$user->save()){
-            return redirect()->back()->withInput()->withErrors('erro');
+            return Redirect::back()->withInput()->withErrors('erro');
         }
 
-        return redirect()->route('users.edit', $user->id)->with([
+        return Redirect::route('users.edit', $user->id)->with([
             'color' => 'success', 
             'message' => 'Usuário atualizado com sucesso!'
         ]);
@@ -203,6 +204,6 @@ class UserController extends Controller
             $page = 'index';
         }
         
-        return redirect()->route('users.'.$page)->with(['color' => 'success', 'message' => $perfil.' removido com sucesso!']);
+        return Redirect::route('users.'.$page)->with(['color' => 'success', 'message' => $perfil.' removido com sucesso!']);
     }
 }

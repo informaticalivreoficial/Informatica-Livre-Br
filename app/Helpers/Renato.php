@@ -21,4 +21,18 @@ class Renato
             return (empty($nome) ? '' : $nome).' boa noite';	
         endif;
     }
+
+    /**
+    * <b>Primeiro Nome:</b> Ao executar este HELPER, é retornado o primeiro nome
+    * do usuário!
+    * @return HTML = texto informado primeiro nome!
+    */
+    public static function getPrimeiroNome($pNome) {
+        if(!empty($pNome)):
+            $pData = explode(" ",$pNome);
+            return count( $pData ) > 0 ? $pData[0] : $pNome;
+        else:
+            return false;
+        endif;
+    }
 }

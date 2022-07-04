@@ -13,6 +13,7 @@ use App\Models\Empresa;
 use App\Models\Estados;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 
 class EmpresaController extends Controller
 {
@@ -46,7 +47,7 @@ class EmpresaController extends Controller
             $criarEmpresa->save();
         }
         
-        return redirect()->route('empresas.edit', [
+        return Redirect::route('empresas.edit', [
             'id' => $criarEmpresa->id,
         ])->with(['color' => 'success', 'message' => 'Empresa cadastrada com sucesso!']);
     }
@@ -84,7 +85,7 @@ class EmpresaController extends Controller
 
         $empresa->save();
 
-        return redirect()->route('empresas.edit', [
+        return Redirect::route('empresas.edit', [
             'id' => $empresa->id,
         ])->with(['color' => 'success', 'message' => 'Empresa atualizada com sucesso!']);
     }
@@ -100,7 +101,7 @@ class EmpresaController extends Controller
     public function delete(Request $request)
     {
         $empresa = Empresa::where('id', $request->id)->first();
-        $nome = getPrimeiroNome(Auth::user()->name);
+        $nome = \App\Helpers\Renato::getPrimeiroNome(Auth::user()->name);
 
         if(!empty($empresa)){
             $json = "<b>$nome</b> você tem certeza que deseja excluir esta empresa?";                      
@@ -118,7 +119,7 @@ class EmpresaController extends Controller
             Cropper::flush($empresa->logomarca);
             $empresa->delete();
         }
-        return redirect()->route('empresas.index')->with([
+        return Redirect::route('empresas.index')->with([
             'color' => 'success', 
             'message' => 'Empresa removida com sucesso!'
         ]);
