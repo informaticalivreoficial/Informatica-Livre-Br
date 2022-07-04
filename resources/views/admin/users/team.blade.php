@@ -61,7 +61,7 @@
                                     , {{$user->bairro}}
                                 @endif
                                 @if($user->rua != '' || $user->num != '' || $user->bairro != '')
-                                    - {{ getCidadeNome($user->cidade, 'cidades') }}
+                                    - {{ \App\Helpers\Cidade::getCidadeNome($user->cidade, 'cidades') }}
                                 @endif
                             </li>
                             @if($user->telefone)
