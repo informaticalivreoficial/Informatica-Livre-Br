@@ -172,7 +172,8 @@ class User extends Authenticatable
     public function getUrlAvatarAttribute()
     {
         if (!empty($this->avatar)) {
-            return Storage::url(Cropper::thumb($this->avatar, 500, 500));
+            //return Storage::url(Cropper::thumb($this->avatar, 500, 500));
+            return Storage::url($this->avatar);
         }
         return '';
     }
