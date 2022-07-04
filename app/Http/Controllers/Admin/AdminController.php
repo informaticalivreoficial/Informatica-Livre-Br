@@ -27,38 +27,32 @@ class AdminController extends Controller
         $usersAvailable = User::where('client', 1)->available()->count();
         $usersUnavailable = User::where('client', 1)->unavailable()->count();
         //Artigos
-        $postsArtigos = CatPost::where('tipo', 'artigo')->count();
-        $postsPaginas = CatPost::where('tipo', 'pagina')->count();
-        $artigosTop = Post::where('tipo', 'artigo')
-                ->limit(4)
-                ->postson()
-                ->get()
-                ->sortByDesc('views');
-        $totalViewsArtigos = Post::selectRaw('SUM(views) AS VIEWS')
+        $postsArtigos = Post::where('tipo', 'artigo')->count();
+        $postsPaginas = Post::where('tipo', 'pagina')->count();
+        $artigosTop = Post::orderBy('views', 'DESC')
+                ->where('tipo', 'artigo')
+                ->limit(6)
+                ->postson()   
+                ->get();
+        $totalViewsArtigos = Post::orderBy('views', 'DESC')
                 ->where('tipo', 'artigo')
                 ->postson()
-                ->first();
-        $paginasTop = Post::where('tipo', 'pagina')
-                ->limit(4)
-                ->postson()
+                ->limit(6)
                 ->get()
-                ->sortByDesc('views');
-        $totalViewsPaginas = Post::selectRaw('SUM(views) AS VIEWS')
+                ->sum('views');
+        $paginasTop = Post::orderBy('views', 'DESC')
+                ->where('tipo', 'pagina')
+                ->limit(6)
+                ->postson()   
+                ->get();
+        $totalViewsPaginas = Post::orderBy('views', 'DESC')
                 ->where('tipo', 'pagina')
                 ->postson()
-                ->first();
+                ->limit(6)
+                ->get()
+                ->sum('views');
 
-        //Roteiros
-        // $roteirosAvailable = Roteiro::available()->count();
-        // $roteirosUnavailable = Roteiro::unavailable()->count();
-        // $roteirosTotal = Roteiro::all()->count();
-        //Roteiros Mais
-        // $roteirosTop = Roteiro::where(DB::raw('YEAR(created_at)'), '=', date('Y'))
-        //         ->limit(4)->available()->get()->sortByDesc('views');
-        // $totalviewsroteiros = Roteiro::selectRaw('SUM(views) AS VIEWS')
-        //         ->available()
-        //         ->where( DB::raw('YEAR(created_at)'), '=', date('Y') )
-        //         ->first();     
+          
         //Orçamentos
         $orcamentosPendentes = Orcamento::available()->count();   
         $orcamentosConcluidos = Orcamento::unavailable()->count();   
@@ -99,13 +93,7 @@ class AdminController extends Controller
             'artigosTop' => $artigosTop,
             'artigostotalviews' => $totalViewsArtigos->VIEWS,
             'paginasTop' => $paginasTop,
-            'paginastotalviews' => $totalViewsPaginas->VIEWS,
-            //Roteiros
-            // 'roteirosAvailable' => $roteirosAvailable,
-            // 'roteirosUnavailable' => $roteirosUnavailable,
-            // 'roteirosTotal' => $roteirosTotal,            
-            // 'roteirosTop' => $roteirosTop,
-            // 'totalviewsroteiros' => $totalviewsroteiros,
+            'paginastotalviews' => $totalViewsPaginas->VIEWS,            
             //Orçamentos
             'orcamentosPendentes' => $orcamentosPendentes,
             'orcamentosConcluidos' => $orcamentosConcluidos,
