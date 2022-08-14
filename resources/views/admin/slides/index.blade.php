@@ -49,7 +49,7 @@
                     <tr style="{{ ($slide->status == '1' ? '' : 'background: #fffed8 !important;')  }}">                            
                         <td class="text-center">
                             @php
-                                if(!empty($slide->imagem) && \Illuminate\Support\Facades\Storage::exists($slide->imagem)){
+                                if(!empty($slide->imagem) && \Illuminate\Support\Facades\Storage::exists(env('AWS_PASTA') . $slide->imagem)){
                                     $cover = \Illuminate\Support\Facades\Storage::url($slide->imagem);
                                 } else {
                                     $cover = url(asset('backend/assets/images/image.jpg'));

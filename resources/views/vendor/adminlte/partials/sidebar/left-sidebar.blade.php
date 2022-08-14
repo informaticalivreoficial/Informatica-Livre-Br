@@ -6,7 +6,7 @@
     </a>
     @php
         if(!empty(\Illuminate\Support\Facades\Auth::user()->avatar) &&
-        \Illuminate\Support\Facades\Storage::exists(\Illuminate\Support\Facades\Auth::user()->avatar)){
+        \Illuminate\Support\Facades\Storage::exists(env('AWS_PASTA') . \Illuminate\Support\Facades\Auth::user()->avatar)){
             $cover = \Illuminate\Support\Facades\Auth::user()->url_avatar;
         } else {
             $cover = url(asset('backend/assets/images/image.jpg'));

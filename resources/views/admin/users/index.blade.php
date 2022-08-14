@@ -67,7 +67,7 @@
                         @foreach($users as $user)                    
                         <tr style="{{ ($user->status == '1' ? '' : 'background: #fffed8 !important;')  }}">
                             @php
-                                if(!empty($user->avatar) && \Illuminate\Support\Facades\Storage::exists($user->avatar)){
+                                if(!empty($user->avatar) && \Illuminate\Support\Facades\Storage::exists(env('AWS_PASTA') . $user->avatar)){
                                     $cover = \Illuminate\Support\Facades\Storage::url($user->avatar);
                                 } else {
                                     if($user->genero == 'masculino'){
