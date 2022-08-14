@@ -28,20 +28,20 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-	    // URL::forceScheme('https');
-        // Schema::defaultStringLength(191);
-        // Blade::aliasComponent('admin.components.message', 'message');
+	    URL::forceScheme('https');
+        Schema::defaultStringLength(191);
+        Blade::aliasComponent('admin.components.message', 'message');
 
-        // $configuracoes = \App\Models\Configuracoes::find(1); 
-        // View()->share('configuracoes', $configuracoes);
+        $configuracoes = \App\Models\Configuracoes::find(1); 
+        View()->share('configuracoes', $configuracoes);
 
-        // //Páginas no menu frontend
-        // $servicos = Post::orderBy('created_at', 'ASC')
-        //                 ->postson()
-        //                 ->where('categoria', 9)
-        //                 ->get();
-        // View()->share('menu_servicos', $servicos);
+        //Páginas no menu frontend
+        $servicos = Post::orderBy('created_at', 'ASC')
+                        ->postson()
+                        ->where('categoria', 9)
+                        ->get();
+        View()->share('menu_servicos', $servicos);
 
-        // Paginator::useBootstrap();
+        Paginator::useBootstrap();
     }
 }
