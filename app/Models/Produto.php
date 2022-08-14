@@ -85,7 +85,7 @@ class Produto extends Model
             $cover = $images->first(['path']);
         }
 
-        if(empty($cover['path']) || !Storage::disk()->exists($cover['path'])) {
+        if(empty($cover['path']) || !Storage::disk()->exists(env('AWS_PASTA') . $cover['path'])) {
             return url(asset('backend/assets/images/image.jpg'));
         }
 
@@ -103,7 +103,7 @@ class Produto extends Model
             $cover = $images->first(['path']);
         }
 
-        if(empty($cover['path']) || !Storage::disk()->exists($cover['path'])) {
+        if(empty($cover['path']) || !Storage::disk()->exists(env('AWS_PASTA') . $cover['path'])) {
             return url(asset('backend/assets/images/image.jpg'));
         }
 
