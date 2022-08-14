@@ -61,7 +61,7 @@ class SendEmailController extends Controller
             
             Mail::send(new ParceiroSend($data));
             
-            $json = 'Thank you '.getPrimeiroNome($request->nome).', your message has been sent to our <b>'.$parceiro->name.'</b> partner successfully!'; 
+            $json = 'Thank you '.\App\Helpers\Renato::getPrimeiroNome($request->nome).', your message has been sent to our <b>'.$parceiro->name.'</b> partner successfully!'; 
             return response()->json(['sucess' => $json]);
         }
     }    
