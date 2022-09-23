@@ -81,7 +81,7 @@ class UserController extends Controller
 
         $userCreate = User::create($data);
         if(!empty($request->file('avatar'))){
-            $userCreate->avatar = $request->file('avatar')->storeAs('user', Str::slug($request->name)  . '-' . str_replace('.', '', microtime(true)) . '.' . $request->file('avatar')->extension());
+            $userCreate->avatar = $request->file('avatar')->storeAs(env('AWS_PASTA') . 'user', Str::slug($request->name)  . '-' . str_replace('.', '', microtime(true)) . '.' . $request->file('avatar')->extension());
             $userCreate->save();
         }
         return Redirect::route('users.edit', $userCreate->id)->with(['color' => 'success', 'message' => 'Cadastro realizado com sucesso!']);        
@@ -131,7 +131,7 @@ class UserController extends Controller
         $user->fill($request->all());
 
         if(!empty($request->file('avatar'))){
-            $user->avatar = $request->file('avatar')->storeAs('user', Str::slug($request->name)  . '-' . str_replace('.', '', microtime(true)) . '.' . $request->file('avatar')->extension());
+            $user->avatar = $request->file('avatar')->storeAs(env('AWS_PASTA') . 'user', Str::slug($request->name)  . '-' . str_replace('.', '', microtime(true)) . '.' . $request->file('avatar')->extension());
         }
 
         if(!$user->save()){
