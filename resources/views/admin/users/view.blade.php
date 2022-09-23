@@ -25,17 +25,17 @@
       <div class="card card-teal card-outline">
         <div class="card-body box-profile">
           <div class="text-center">
-              @php
-                  if(!empty($user->avatar) && \Illuminate\Support\Facades\Storage::exists($user->avatar)){
-                        $cover = \Illuminate\Support\Facades\Storage::url($user->avatar);
-                    } else {
-                      if($user->genero == 'masculino'){
-                          $cover = url(asset('backend/assets/images/avatar5.png'));
-                      }else{
-                          $cover = url(asset('backend/assets/images/avatar3.png'));
-                      }
-                  }
-              @endphp
+            @php
+                if(!empty($user->avatar) && \Illuminate\Support\Facades\Storage::exists($user->avatar)){
+                    $cover = \Illuminate\Support\Facades\Storage::url($user->avatar);
+                } else {
+                    if($user->genero == 'masculino'){
+                        $cover = url(asset('backend/assets/images/avatar5.png'));
+                    }else{
+                        $cover = url(asset('backend/assets/images/avatar3.png'));
+                    }
+                }
+            @endphp
             <img class="profile-user-img img-fluid img-circle" src="{{$cover}}" alt="{{$user->name}}">
           </div>
 

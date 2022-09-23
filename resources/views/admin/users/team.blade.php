@@ -77,17 +77,17 @@
                           </ul>
                         </div>
                         <div class="col-5 text-center">
-                        @php
-                            if(!empty($user->avatar) && \Illuminate\Support\Facades\Storage::exists($user->avatar)){
-                                    $cover = \Illuminate\Support\Facades\Storage::url($user->avatar);
-                                } else {
-                                if($user->genero == 'masculino'){
-                                    $cover = url(asset('backend/assets/images/avatar5.png'));
-                                }else{
-                                    $cover = url(asset('backend/assets/images/avatar3.png'));
+                            @php
+                                if(!empty($user->avatar) && \Illuminate\Support\Facades\Storage::exists($user->avatar)){
+                                        $cover = \Illuminate\Support\Facades\Storage::url($user->avatar);
+                                    } else {
+                                    if($user->genero == 'masculino'){
+                                        $cover = url(asset('backend/assets/images/avatar5.png'));
+                                    }else{
+                                        $cover = url(asset('backend/assets/images/avatar3.png'));
+                                    }
                                 }
-                            }
-                        @endphp
+                            @endphp
                           <img src="{{url($cover)}}" alt="" class="img-circle img-fluid">
                         </div>
                       </div>

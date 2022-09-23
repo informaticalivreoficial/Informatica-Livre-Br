@@ -195,7 +195,7 @@ class UserController extends Controller
                       ($user->admin == '1' && $user->client == '0' ? 'Administrador' :
                       ($user->admin == '0' && $user->client == '1' ? 'Cliente' : 'Cliente')));
             Storage::delete($user->avatar);
-            Cropper::flush($user->avatar);
+            //Cropper::flush($user->avatar);
             $user->delete();
         }
         if($user->admin == '1' || $user->Editor == '1'){
