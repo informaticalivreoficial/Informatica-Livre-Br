@@ -74,7 +74,7 @@ class Configuracoes extends Model
     public function getmetaimg()
     {
         //$image = $this->metaimg;        
-        if(empty($this->metaimg) || !Storage::disk()->exists(env('AWS_PASTA') . $this->metaimg)) {
+        if(empty($this->metaimg) || !Storage::disk()->exists($this->metaimg)) {
             return url(asset('backend/assets/images/image.jpg'));
         } 
         //return Storage::url(Cropper::thumb($this->metaimg, env('METAIMG_WIDTH'), env('METAIMG_HEIGHT')));
@@ -84,7 +84,7 @@ class Configuracoes extends Model
     public function getlogomarca()
     {
         //$image = $this->logomarca; 
-        if(empty($this->logomarca) || !Storage::disk()->exists(env('AWS_PASTA') . $this->logomarca)) {
+        if(empty($this->logomarca) || !Storage::disk()->exists($this->logomarca)) {
             return url(asset('backend/assets/images/image.jpg'));
         } 
         //return Storage::url(Cropper::thumb($this->logomarca, env('LOGOMARCA_WIDTH'), env('LOGOMARCA_HEIGHT')));
@@ -94,7 +94,7 @@ class Configuracoes extends Model
     public function getlogoadmin()
     {
         //$image = $this->logomarca_admin;        
-        if(empty($this->logomarca_admin) || !Storage::disk()->exists(env('AWS_PASTA') . $this->logomarca_admin)) {
+        if(empty($this->logomarca_admin) || !Storage::disk()->exists($this->logomarca_admin)) {
             return url(asset('backend/assets/images/image.jpg'));
         } 
         //return Storage::url(Cropper::thumb($this->logomarca_admin, env('LOGOMARCA_GERENCIADOR_WIDTH'), env('LOGOMARCA_GERENCIADOR_HEIGHT')));
@@ -104,7 +104,7 @@ class Configuracoes extends Model
     public function getfaveicon()
     {
         //$image = $this->favicon;        
-        if(empty($this->favicon) || !Storage::disk()->exists(env('AWS_PASTA') . $this->favicon)) {
+        if(empty($this->favicon) || !Storage::disk()->exists($this->favicon)) {
             return url(asset('backend/assets/images/image.jpg'));
         } 
         //return Storage::url(Cropper::thumb($this->favicon, env('FAVEICON_WIDTH'), env('FAVEICON_HEIGHT')));
@@ -113,18 +113,16 @@ class Configuracoes extends Model
     
     public function getmarcadagua()
     {
-        //$image = $this->marcadagua;        
-        if(empty($this->marcadagua) || !Storage::disk()->exists(env('AWS_PASTA') . $this->marcadagua)) {
+        if(empty($this->marcadagua) || !Storage::disk()->exists($this->marcadagua)) {
             return url(asset('backend/assets/images/image.jpg'));
         } 
-        //return Storage::url(Cropper::thumb($this->marcadagua, env('MARCADAGUA_WIDTH'), env('MARCADAGUA_HEIGHT')));
         return Storage::url($this->marcadagua);
     }
     
     public function gettopodosite()
     {
         //$image = $this->imgheader;        
-        if(empty($this->imgheader) || !Storage::disk()->exists(env('AWS_PASTA') . $this->imgheader)) {
+        if(empty($this->imgheader) || !Storage::disk()->exists($this->imgheader)) {
             return url(asset('backend/assets/images/image.jpg'));
         } 
         //return Storage::url(Cropper::thumb($this->imgheader, env('IMGHEADER_WIDTH'), env('IMGHEADER_HEIGHT')));

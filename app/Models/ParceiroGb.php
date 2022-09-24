@@ -25,7 +25,6 @@ class ParceiroGb extends Model
 
     public function getUrlCroppedAttribute()
     {
-        //return Storage::url(Cropper::thumb($this->path, 1366, 768));
         return Storage::url($this->path);
     }
 
