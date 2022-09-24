@@ -74,7 +74,7 @@ class Empresa extends Model
      */
     public function cover()
     {       
-        if(empty($this->logomarca) || !Storage::disk()->exists(env('AWS_PASTA') . $this->logomarca)) {
+        if(empty($this->logomarca) || !Storage::disk()->exists($this->logomarca)) {
             return url(asset('backend/assets/images/image.jpg'));
         }
 
@@ -84,7 +84,7 @@ class Empresa extends Model
 
     public function nocover()
     {       
-        if(empty($this->logomarca) || !Storage::disk()->exists(env('AWS_PASTA') . $this->logomarca)) {
+        if(empty($this->logomarca) || !Storage::disk()->exists($this->logomarca)) {
             return url(asset('backend/assets/images/image.jpg'));
         }
 
