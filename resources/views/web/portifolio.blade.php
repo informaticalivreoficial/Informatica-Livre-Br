@@ -40,7 +40,7 @@
                                         <span class="novi-icon icon icon-sm fa fa-link"></span>
                                     </a>
                                     <figure>
-                                        <img src="{{$projeto->cover()}}" alt="{{$projeto->name}}" width="370" height="278" />
+                                        <img class="imgportifolio" src="{{$projeto->cover()}}" alt="{{$projeto->name}}" />
                                     </figure>
                                     <div class="caption">
                                         <a class="link link-original" href="{{$projeto->nocover()}}" data-lightgallery="item"></a>
@@ -68,4 +68,13 @@
     </div>
 </section>
 
+@endsection
+
+@section('css')
+    <style>
+        .imgportifolio{
+            width: 370px !important;
+            height: 278px !important;
+        }
+    </style>
 @endsection
