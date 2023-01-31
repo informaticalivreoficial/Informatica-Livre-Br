@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Models\Portifolio;
 use App\Models\PortifolioGb;
-use App\Support\Cropper;
 use Illuminate\Support\Facades\Storage;
 
 class PortifolioRepository
@@ -89,7 +88,6 @@ class PortifolioRepository
     {      
         $imageDelete = $this->modelGb->where('id', $id)->first();
         Storage::delete($imageDelete->path);
-        Cropper::flush($imageDelete->path);
         $imageDelete->delete();
         return true;          
     }
@@ -98,7 +96,6 @@ class PortifolioRepository
     {      
         $imageDelete = $this->modelGb->where('portifolio', $id)->first();
         Storage::delete($imageDelete->path);
-        Cropper::flush($imageDelete->path);
         $imageDelete->delete();
         Storage::deleteDirectory('portifolio/'.$id);
     }

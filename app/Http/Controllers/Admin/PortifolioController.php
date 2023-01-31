@@ -60,7 +60,7 @@ class PortifolioController extends Controller
             foreach ($request->allFiles()['files'] as $image) {
                 $portifolioImage = new PortifolioGb();
                 $portifolioImage->portifolio = $portifolioCreate->id;
-                $portifolioImage->path = $image->storeAs('portifolio/' . $portifolioCreate->id, Str::slug($request->name) . '-' . str_replace('.', '', microtime(true)) . '.' . $image->extension());
+                $portifolioImage->path = $image->storeAs(env('AWS_PASTA') .  'portifolio/' . $portifolioCreate->id, Str::slug($request->name) . '-' . str_replace('.', '', microtime(true)) . '.' . $image->extension());
                 $portifolioImage->save();
                 unset($portifolioImage);
             }
@@ -102,7 +102,7 @@ class PortifolioController extends Controller
             foreach ($request->allFiles()['files'] as $image) {
                 $portifolioImage = new PortifolioGb();
                 $portifolioImage->portifolio = $portifolioUpdate->id;
-                $portifolioImage->path = $image->storeAs('portifolio/' . $portifolioUpdate->id, Str::slug($request->name) . '-' . str_replace('.', '', microtime(true)) . '.' . $image->extension());
+                $portifolioImage->path = $image->storeAs(env('AWS_PASTA') . 'portifolio/' . $portifolioUpdate->id, Str::slug($request->name) . '-' . str_replace('.', '', microtime(true)) . '.' . $image->extension());
                 $portifolioImage->save();
                 unset($portifolioImage);
             }
