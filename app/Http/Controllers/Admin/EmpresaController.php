@@ -79,7 +79,7 @@ class EmpresaController extends Controller
 
     public function fetchCity(Request $request)
     {
-        $data['cidades'] = Cidades::where("estado_id",$request->estado_id)->get(["cidade_nome", "cidade_id"]);
+        $data['cidades'] = $this->cidadeService->getCidadesByUfId($request->estado_id);
         return response()->json($data);
     }
    
