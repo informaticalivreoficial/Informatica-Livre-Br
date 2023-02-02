@@ -104,7 +104,7 @@
                                 @csrf
                                 <input type="hidden" name="nome" value="{{ $user->name }}">
                                 <input type="hidden" name="email" value="{{ $user->email }}">
-                                <button title="Enviar Email" type="submit" class="btn btn-xs text-white bg-teal"><i class="fas fa-envelope"></i></button>
+                                <button title="Enviar email para:{{ $user->email }}" type="submit" class="btn btn-xs text-white bg-teal"><i class="fas fa-envelope"></i></button>
                             </form>
                         @endif                    
                         <a href="{{route('users.view',['id' => $user->id])}}" class="btn btn-xs btn-primary"><i class="fas fa-search"></i></a>

@@ -24,18 +24,22 @@ use App\Models\{
     Slide,
     User
 };
-use App\Services\ConfigService;
+use App\Services\{
+    ConfigService,
+    EstadoService
+};
 use App\Support\Seo;
 use Carbon\Carbon;
 
 class WebController extends Controller
 {
-    protected $configService;
+    protected $configService, $estadoService;
     protected $seo;
 
-    public function __construct(ConfigService $configService)
+    public function __construct(ConfigService $configService, EstadoService $estadoService)
     {
         $this->configService = $configService;
+        $this->estadoService = $estadoService;
         $this->seo = new Seo();
     }
 
@@ -156,7 +160,6 @@ class WebController extends Controller
 
     public function formClient($token)
     {
-        $estados = Estados::orderBy('estado_nome', 'ASC')->get();
         $orcamento = Orcamento::where('token', $token)->first();
         $head = $this->seo->render('Formulário de Orçamento Perdonalizado - ' . $this->configService->getConfig()->nomedosite,
             'Nossa equipe está pronta para melhor atender as demandas de nossos clientes!',
@@ -166,7 +169,7 @@ class WebController extends Controller
         return view('web.consultoria.formulario-de-retorno',[
             'head' => $head ,
             'orcamento' => $orcamento,
-            'estados' => $estados
+            'estados' => $this->estadoService->getEstados()
         ]);
     }
 

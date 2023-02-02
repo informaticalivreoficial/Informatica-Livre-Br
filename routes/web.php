@@ -58,7 +58,7 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
     Route::get('/sendEmail', [SendEmailController::class, 'sendEmail'])->name('sendEmail');
     Route::get('/sendNewsletter', [SendEmailController::class, 'sendNewsletter'])->name('sendNewsletter');
     Route::get('/sendOrcamento', [SendEmailController::class, 'sendOrcamento'])->name('sendOrcamento');
-    Route::get('/sendFormCaptacao', [SendEmailController::class, 'sendFormCaptacao'])->name('sendFormCaptacao');
+    Route::get('/sendFormCaptacao', [SendEmailController::class, 'sendFormCaptacao'])->name('sendFormCaptacao');    
     
     //****************************** Blog ***********************************************/
     Route::get('/blog/artigo/{slug}', [WebController::class, 'artigo'])->name('blog.artigo');
@@ -131,6 +131,7 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::delete('orcamentos/deleteon', [OrcamentoController::class, 'deleteon'])->name('orcamento.deleteon');
     Route::get('orcamentos/delete', [OrcamentoController::class, 'delete'])->name('orcamento.delete'); 
     Route::get('orcamentos', [OrcamentoController::class, 'index'])->name('vendas.orcamentos');
+    Route::get('/sendFormCaptacaoClient', [OrcamentoController::class, 'sendFormCaptacaoClient'])->name('orcamento.sendFormCaptacaoClient');
 
     //*************************** Portifólio Categorias **********************************/
     Route::get('portifolio/categorias/delete', [CatPortifolioController::class, 'delete'])->name('portifolio-categorias.delete');

@@ -15,11 +15,17 @@
       <div class="row row-50 justify-content-md-between">
         <div class="col-12">            
             <h4>Olá {{\App\Helpers\Renato::getSaudacao(\App\Helpers\Renato::getPrimeiroNome($orcamento->name))}}</h4>
-            <p style="color: #333;font-size:1.2em;">Seja muito bem vindo! Queremos já de antemão lhe agradecer por ter escolhido 
-                nossa equipe para dessenvolver seu projeto.<br>
+            <p style="color: #333;font-size:1.2em;">
+                Seja muito bem vindo(a)!
+                <br/> 
+                Queremos já de antemão lhe agradecer por ter escolhido 
+                nossa equipe para orçar sem compromisso o seu projeto.
+                <br/>
                 {{\App\Helpers\Renato::getPrimeiroNome($orcamento->name)}} segue abaixo um formulário com informações
-                importantes para darmos seguimento ao seu projeto. Ah {{\App\Helpers\Renato::getPrimeiroNome($orcamento->name)}}
-                fique tranquilo suas informações estão em ambiente seguro, criptografado e odiamos SPAM!
+                importantes para darmos seguimento ao seu orçamento. 
+                <br/>
+                Ah {{\App\Helpers\Renato::getPrimeiroNome($orcamento->name)}}
+                fique tranquilo(a) suas informações estão em ambiente seguro, criptografado e também odiamos SPAM!
             </p>
             <form class="j_formsubmit" method="post" action="" autocomplete="off">
                 @csrf
@@ -53,7 +59,7 @@
 
                     <h5 class="form_hide">Dados da empresa</h5>
                     <p class="form_hide" style="color: #333;font-size:1.2em;">Estes dados são necessários para configuração de domínio e hospedagem de sites, 
-                        caso o projeto seja para pessoa física você pode deixar em branco. </p>
+                        caso o projeto seja para pessoa física você pode preencher somente o endereço e informações de contato. </p>
                     <div class="col-sm-6 col-md-6 col-lg-4 form_hide">
                         <div class="form-wrap">
                             <label style="color: #333;" for="contact-email">Empresa</label>

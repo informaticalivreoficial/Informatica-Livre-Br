@@ -66,11 +66,26 @@
                     @foreach($orcamentos as $orcamento)                    
                     <tr style="{{ ($orcamento->status == '1' ? '' : 'background: #fffed8 !important;')  }}">
                         <td>{{$orcamento->name}}</td>                        
-                        <td class="text-center"><a href="mailto:{{$orcamento->email}}">{{$orcamento->email}}</a></td>                        
+                        <td class="text-center">
+                            @if ($orcamento->email)
+                                <form class="btn btn-xs" action="{{route('email.send')}}" method="post">
+                                    @csrf
+                                    <input type="hidden" name="nome" value="{{$orcamento->name}}">
+                                    <input type="hidden" name="email" value="{{$orcamento->email}}">
+                                    <button type="submit" class="btn btn-xs text-white bg-teal" title="Enviar email para:{{$orcamento->email}}"><i class="fas fa-envelope"></i></button>
+                                </form>
+                            @else
+                            ----
+                            @endif
+                        </td>                        
                         <td class="text-center">{{$orcamento->telefone}}</td>                        
                         <td class="text-center">{{$orcamento->created_at}}</td>  
                         <td class="text-center">
-                            <a href="javascript:void(0)" class="btn btn-xs btn-info text-white j_enviaform" data-id="{{ $orcamento->id }}">Enviar Formulário <i class="fas fa-check"></i></a>    
+                            @if ($orcamento->form_sendat == null)
+                                <a href="javascript:void(0)" class="btn btn-xs btn-success text-white j_enviaform cli{{ $orcamento->id }}" data-id="{{ $orcamento->id }}">Enviar Formulário <i class="fas fa-check"></i></a>
+                            @else
+                                <a href="javascript:void(0)" class="btn btn-xs btn-secondary text-white j_enviaform cli{{ $orcamento->id }}" data-id="{{ $orcamento->id }}">Reenviar Formulário <i class="fas fa-check"></i></a>
+                            @endif                                
                         </td>  
                         <td>
                             <input type="checkbox" data-onstyle="success" data-offstyle="warning" data-size="mini" class="toggle-class" data-id="{{ $orcamento->id }}" data-toggle="toggle" data-style="slow" data-on="<i class='fas fa-check'></i>" data-off="<i style='color:#fff !important;' class='fas fa-exclamation-triangle'></i>" {{ $orcamento->status == true ? 'checked' : ''}}>
@@ -168,6 +183,32 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
+
+            $('.j_enviaform').click(function() {
+                var id = $(this).data('id');                
+                $.ajax({
+                    type: 'GET',
+                    dataType: 'JSON',
+                    url: "{{ route('orcamento.sendFormCaptacaoClient') }}",
+                    data: {
+                       'id': id
+                    },
+                    beforeSend: function(){
+                        $(".cli"+id).addClass('disabled')
+                        $(".cli"+id).html("Carregando...");  
+                    },
+                    success:function(data) {
+                        if(data.retorno == true){
+                            $(".cli"+id).html("Reenviar Formulário <i class=\"fas fa-check\"></i>");
+                        } else{
+                            $(".cli"+id).html("Enviar Formulário <i class=\"fas fa-check\"></i>");
+                        }
+                    },
+                    complete: function(resposta){
+                        $(".cli"+id).removeClass('disabled');
+                    }
+                });
+            });
            
             $(document).on('click', '[data-toggle="lightbox"]', function(event) {
               event.preventDefault();
@@ -181,7 +222,6 @@
                 $('.j_data').html(content);
             });
             
-            //FUNÇÃO PARA EXCLUIR
             $('.j_modal_btn').click(function() {
                 var orcamento_id = $(this).data('id');                
                 $.ajax({

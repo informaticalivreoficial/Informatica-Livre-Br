@@ -196,7 +196,7 @@ class SendEmailController extends Controller
             $json = "O campo <strong>Email</strong> está vazio ou não tem um formato válido!";
             return response()->json(['error' => $json]);
         }        
-        if(validaCPF($request->cpf) == false){
+        if(\App\Helpers\Renato::validaCPF($request->cpf) == false){
             $json = "O campo <strong>CPF</strong> está vazio ou não tem um formato válido!";
             return response()->json(['error' => $json]);
         }else{
@@ -216,12 +216,15 @@ class SendEmailController extends Controller
                 'notasadicionais' => $request->notas_adicionais
             ];
 
-            $userCreate = User::create($user);
-            $userCreate->save();
+            $getUser = User::where('email', $request->email)->first();
+            if(!$getUser){
+                $userCreate = User::create($user);
+                $userCreate->save();
+            }             
 
             if(!empty($request->empresa)){
                 $empresa = [
-                    'user' => $userCreate->id,
+                    'user' => $userCreate->id ?? $getUser->id,
                     'social_name' => $request->empresa,
                     'alias_name' => $request->empresa,
                     'email' => $request->email_empresa,
@@ -264,4 +267,5 @@ class SendEmailController extends Controller
             return response()->json(['sucess' => $json]);
         }
     }
+    
 }
