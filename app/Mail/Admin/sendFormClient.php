@@ -2,6 +2,8 @@
 
 namespace App\Mail\Admin;
 
+use App\Models\Configuracoes;
+use App\Services\ConfigService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -32,12 +34,12 @@ class sendFormClient extends Mailable
     public function build()
     {
         return $this->replyTo($this->data['siteemail'], $this->data['sitename'])
-            ->to($this->data['reply_email'], $this->data['reply_name'])
+            ->to($this->data['email'], $this->data['name'])
             ->from($this->data['siteemail'], $this->data['sitename'])
-            ->subject('#Orçamento: ' . $this->data['reply_name'])
+            ->subject('#Orçamento: ' . $this->data['name'])
             ->markdown('emails.form-send-client', [
                 'token' => $this->data['token'],
-                'nome' => $this->data['nome'],
+                'nome' => $this->data['name'],
         ]);
     }
 }

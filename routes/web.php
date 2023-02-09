@@ -132,6 +132,7 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('orcamentos/delete', [OrcamentoController::class, 'delete'])->name('orcamento.delete'); 
     Route::get('orcamentos', [OrcamentoController::class, 'index'])->name('vendas.orcamentos');
     Route::get('/sendFormCaptacaoClient', [OrcamentoController::class, 'sendFormCaptacaoClient'])->name('orcamento.sendFormCaptacaoClient');
+    //Route::get('/testecron', [OrcamentoController::class, 'checkOrcamentoClient'])->name('orcamento.checkOrcamentoClient');
 
     //*************************** Portifólio Categorias **********************************/
     Route::get('portifolio/categorias/delete', [CatPortifolioController::class, 'delete'])->name('portifolio-categorias.delete');

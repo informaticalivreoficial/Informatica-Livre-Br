@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Controllers\Admin\OrcamentoController;
 use Illuminate\Console\Command;
 
 class CheckOrcamentos extends Command
@@ -11,14 +12,14 @@ class CheckOrcamentos extends Command
      *
      * @var string
      */
-    protected $signature = 'command:name';
+    protected $signature = 'CheckOrcamentoClient:create';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Checa a cada 6 horas se existe algum orçamento criado se sim dispara o formulário';
 
     /**
      * Create a new command instance.
@@ -37,6 +38,7 @@ class CheckOrcamentos extends Command
      */
     public function handle()
     {
-        return 0;
+        $controller = new OrcamentoController();
+        $controller->checkOrcamentoClient();
     }
 }
