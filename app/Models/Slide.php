@@ -4,10 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use App\Support\Cropper;
+use Carbon\Carbon;
 
 class Slide extends Model
 {
@@ -46,8 +45,7 @@ class Slide extends Model
 
     /**
      * Accerssors and Mutators
-     */
-
+    */
     public function getimagem()
     {
         if(empty($this->imagem) || !Storage::disk()->exists($this->imagem)) {
@@ -62,7 +60,13 @@ class Slide extends Model
             return Storage::url($this->imagem);
         }
         return '';
-    }    
+    } 
+    
+    public function getDataExpira()
+    {
+        $diff =  Carbon::now()->gt($this->expira);        
+        return $diff;        
+    }
 
     public function setExpiraAttribute($value)
     {
@@ -79,13 +83,13 @@ class Slide extends Model
         $this->attributes['status'] = ($value == '1' ? 1 : 0);
     }
     
-    public function getExpiraAttribute($value)
-    {
-        if (empty($value)) {
-            return null;
-        }
-        return date('d/m/Y', strtotime($value));
-    }
+    // public function getExpiraAttribute($value)
+    // {
+    //     if (empty($value)) {
+    //         return null;
+    //     }
+    //     return date('d/m/Y', strtotime($value));
+    // }
 
     public function getCreatedAtAttribute($value)
     {
