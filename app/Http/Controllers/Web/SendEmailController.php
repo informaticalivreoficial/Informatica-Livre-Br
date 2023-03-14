@@ -18,6 +18,7 @@ use App\Models\Empresa;
 use App\Models\Newsletter;
 use App\Models\Orcamento;
 use App\Models\Parceiro;
+use App\Models\Pedido;
 use App\Models\Produto;
 use App\Models\User;
 use Carbon\Carbon;
@@ -242,6 +243,14 @@ class SendEmailController extends Controller
                 ];
                 $empresaCreate = Empresa::create($empresa);
                 $empresaCreate->save();
+
+                $pedido = [
+                    'status' => 1,
+                    'empresa' => $empresaCreate->id,
+                    'orcamento' => $request->id_orcamento
+                ];
+                $pedidoCreate = Pedido::create($pedido);
+                $pedidoCreate->save();
             }
 
             $data = [

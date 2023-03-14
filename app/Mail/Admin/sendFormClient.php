@@ -34,12 +34,12 @@ class sendFormClient extends Mailable
     public function build()
     {
         return $this->replyTo($this->data['siteemail'], $this->data['sitename'])
-            ->to($this->data['email'], $this->data['name'])
+            ->to($this->data['reply_email'], $this->data['reply_name'])
             ->from($this->data['siteemail'], $this->data['sitename'])
-            ->subject('#Orçamento: ' . $this->data['name'])
+            ->subject('#Orçamento: ' . $this->data['reply_name'])
             ->markdown('emails.form-send-client', [
                 'token' => $this->data['token'],
-                'nome' => $this->data['name'],
+                'nome' => $this->data['reply_name'],
         ]);
     }
 }

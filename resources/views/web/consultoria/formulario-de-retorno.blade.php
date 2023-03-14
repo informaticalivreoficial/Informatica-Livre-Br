@@ -35,6 +35,7 @@
                     <div class="col-sm-6 col-md-6 col-lg-4 form_hide">
                         <div class="form-wrap">
                             <label style="color: #333;" for="contact-email">*Nome</label>
+                            <input type="hidden" name="id_orcamento" value="{{$orcamento->id}}">
                             <input class="form-input" id="contact-name" type="text" name="nome" value="{{$orcamento->name}}">
                         </div>
                     </div>
