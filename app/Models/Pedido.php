@@ -26,6 +26,11 @@ class Pedido extends Model
         return $this->hasOne(Empresa::class, 'id', 'empresa');
     }
 
+    public function itens()
+    {
+        return $this->hasMany(ItemPedido::class, 'pedido', 'id');
+    }
+
     /**
      * Accerssors and Mutators
     */
@@ -50,14 +55,9 @@ class Pedido extends Model
     /**
      * Scopes
     */
-    public function scopeAvailable($query)
+    public function itensTotalValor()
     {
-        return $query->where('status', 1);
-    }
-
-    public function scopeUnavailable($query)
-    {
-        return $query->where('status', 0);
+        return $this->hasMany(ItemPedido::class, 'pedido', 'id')->sum('valor');
     }
 
     private function convertStringToDate(?string $param)

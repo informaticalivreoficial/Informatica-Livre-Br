@@ -13,9 +13,16 @@ class CreateItemPedidosTable extends Migration
      */
     public function up()
     {
-        Schema::create('item_pedidos', function (Blueprint $table) {
-            $table->id();
+        Schema::create('item_pedido', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('pedido');
+            $table->string('Descricao');
+            $table->decimal('valor', 10, 2)->nullable();
+            $table->integer('quantidade')->default(1);
+
             $table->timestamps();
+
+            $table->foreign('pedido')->references('id')->on('pedidos')->onDelete('CASCADE');
         });
     }
 
@@ -26,6 +33,6 @@ class CreateItemPedidosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('item_pedidos');
+        Schema::dropIfExists('item_pedido');
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Empresa;
+use App\Models\Gateway;
 use App\Models\Pedido;
 use Illuminate\Http\Request;
 
@@ -26,9 +27,14 @@ class PedidoController extends Controller
         ]);
     }
 
-    public function store()
+    public function show($id)
     {
-        //
+        $pedido = Pedido::where('id', $id)->first();
+        $gateways = Gateway::orderBy('created_at', 'ASC')->available()->get();
+        return view('admin.pedidos.show',[
+            'pedido' => $pedido,
+            'gateways' => $gateways
+        ]);
     }
     
 }

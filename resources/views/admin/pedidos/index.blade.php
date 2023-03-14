@@ -68,9 +68,10 @@
                     <tr>
                         <td>{{$pedido->getEmpresa->alias_name}}</td>                        
                         <td class="text-center">{{Carbon\Carbon::parse($pedido->created_at)->format('d/m/Y')}}</td> 
-                        <td class="text-center"></td>                       
+                        <td class="text-center">R$ {{str_replace(',00', '', $pedido->itensTotalValor())}}</td>                       
                         <td class="text-center">{!!$pedido->getStatus()!!}</td> 
                         <td>
+                            <a href="{{route('pedidos.show',['id' => $pedido->id])}}" class="btn btn-xs btn-info text-white"><i class="fas fa-search"></i></a>
                             <button type="button" class="btn btn-xs btn-danger text-white j_modal_btn" data-id="{{$pedido->id}}" data-toggle="modal" data-target="#modal-default">
                                 <i class="fas fa-trash"></i>
                             </button>
