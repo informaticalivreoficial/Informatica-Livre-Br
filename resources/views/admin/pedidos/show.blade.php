@@ -34,9 +34,23 @@
                       <div class="col-sm-4 invoice-col">
                          De
                          <address>
-                            <strong>{{$configuracoes->nomedosite}}</strong><br>
-                            795 Folsom Ave, Suite 600<br>
-                            San Francisco, CA 94107<br>
+                           <strong>{{$configuracoes->nomedosite}}</strong><br>
+                           @if($configuracoes->rua)	
+                              {{$configuracoes->rua}}
+                                 @if($configuracoes->num)
+                                 , {{$configuracoes->num}}
+                                 @endif
+                              @if($configuracoes->bairro)
+                              <br>{{$configuracoes->bairro}}
+                                 @if($configuracoes->cep)
+                                 , {{$configuracoes->cep}}
+                                 @endif
+                              @endif
+                              @if($configuracoes->cidade)  
+                              <br>{{\App\Helpers\Cidade::getCidadeNome($configuracoes->cidade, 'cidades')}}
+                              @endif
+                           @endif
+                            <br>
                             Fone: {{$configuracoes->whatsapp}}<br>
                             Email: {{$configuracoes->email}}
                          </address>
@@ -45,8 +59,22 @@
                          Para
                          <address>
                             <strong>{{$pedido->getEmpresa->alias_name}}</strong><br>
-                            795 Folsom Ave, Suite 600<br>
-                            San Francisco, CA 94107<br>
+                            @if($pedido->getEmpresa->rua)	
+                              {{$pedido->getEmpresa->rua}}
+                                 @if($pedido->getEmpresa->num)
+                                 , {{$pedido->getEmpresa->num}}
+                                 @endif
+                              @if($pedido->getEmpresa->bairro)
+                              <br>{{$pedido->getEmpresa->bairro}}
+                                 @if($pedido->getEmpresa->cep)
+                                 , {{$pedido->getEmpresa->cep}}
+                                 @endif
+                              @endif
+                              @if($pedido->getEmpresa->cidade)  
+                              <br>{{\App\Helpers\Cidade::getCidadeNome($pedido->getEmpresa->cidade, 'cidades')}}
+                              @endif
+                           @endif
+                            <br>
                             Fone: {{$pedido->getEmpresa->celular}}<br>
                             Email: {{$pedido->getEmpresa->email}}
                          </address>
@@ -54,9 +82,7 @@
                       <div class="col-sm-4 invoice-col">
                          <b>Pedido #{{$pedido->id}}</b><br>
                          <br>
-                         <b>Order ID:</b> 4F3S8J<br>
-                         <b>Payment Due:</b> 2/22/2014<br>
-                         <b>Account:</b> 968-34567
+                         <b>Vencimento:</b> {{Carbon\Carbon::parse($pedido->vencimento)->format('d/m/Y')}}<br>
                       </div>
                    </div>
                    <div class="row">
@@ -109,7 +135,7 @@
                                </tr>
                                <tr>
                                   <th>Total:</th>
-                                  <td>$265.24</td>
+                                  <td>R$ {{str_replace(',00', '', $pedido->itensTotalValor())}}</td>
                                </tr>
                             </table>
                          </div>
@@ -117,13 +143,12 @@
                    </div>
                    <div class="row no-print">
                       <div class="col-12">
-                         <a href="invoice-print.html" rel="noopener" target="_blank" class="btn btn-default"><i class="fas fa-print"></i> Print</a>
-                         <button type="button" class="btn btn-success float-right"><i class="far fa-credit-card"></i> Submit
-                         Payment
-                         </button>
-                         <button type="button" class="btn btn-primary float-right" style="margin-right: 5px;">
-                         <i class="fas fa-download"></i> Generate PDF
-                         </button>
+                        <a href="javascript:void(0)" onclick="window.print();"class="btn btn-default">
+                           <i class="fas fa-print"></i> Imprimir
+                        </a>
+                        <a style="margin-right: 5px;" class="btn btn-success float-right" href="{{route('web.pagar',['pedido' => $pedido->id])}}">
+                           <i class="far fa-credit-card"></i> Pagar Agora
+                        </a>
                       </div>
                    </div>
                 </div>

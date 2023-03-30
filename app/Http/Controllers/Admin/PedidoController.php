@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Empresa;
 use App\Models\Gateway;
+use App\Models\ItemPedido;
 use App\Models\Pedido;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use WebMaster\PagHiper\PagHiper;
 
 class PedidoController extends Controller
 {
@@ -35,6 +38,54 @@ class PedidoController extends Controller
             'pedido' => $pedido,
             'gateways' => $gateways
         ]);
+    }
+
+    public function pagar($pedido)
+    {
+        $pedido = Pedido::where('id', $pedido)->first();
+        $data = [
+            'order_id' => $pedido->id,
+            'payer_name' => $pedido->getEmpresa->alias_name,
+            'payer_email' => $pedido->getEmpresa->email,
+            'payer_cpf_cnpj' => ($pedido->getEmpresa->cnpj ? $pedido->getEmpresa->cnpj : $pedido->getEmpresa->owner->cpf),
+            'days_due_date' => Carbon::parse($pedido->vencimento)->diffInDays(Carbon::parse(Carbon::now()))
+        ];
+
+        $itensPedido = ItemPedido::where('pedido', $pedido->id)->get();
+        if(!empty($itensPedido) && $itensPedido->count() > 0){
+            $items = [];
+            foreach($itensPedido as $item){
+                $items['items'][] = [                    
+                    'description' => $item->descricao,
+                    'quantity' => $item->quantidade,
+                    'item_id' => $item->id,
+                    'price_cents' => str_replace(',', '.', str_replace('.', '', $item->valor))                    
+                ];
+            }
+        }        
+        $array = array_merge($data, $items);
+        $this->gerarBoleto($array);
+    }
+
+    public function gerarBoleto($data)
+    {
+        $paghiper = new PagHiper(
+            'apk_47471634-czZLxKaXvGIlUjremsKCGrZCNUJmLhZo', 
+            'B5R7OTL4K4LR20ONVNPDBKXWEFIKGACTTRRLET4W967M'
+        );
+        $transaction = $paghiper->billet()->create($data);
+    }
+
+    public function getTransaction(Request $request)
+    {
+        $paghiper = new PagHiper(
+            'apk_47471634-czZLxKaXvGIlUjremsKCGrZCNUJmLhZo', 
+            'B5R7OTL4K4LR20ONVNPDBKXWEFIKGACTTRRLET4W967M'
+        );
+        $transaction = $paghiper->notification()->response(
+            $_POST['notification_id'], 
+            $_POST['idTransacao']
+        );
     }
     
 }

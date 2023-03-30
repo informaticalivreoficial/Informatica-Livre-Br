@@ -69,7 +69,7 @@
                                           @if($configuracoes->cidade)  
                                           - {{\App\Helpers\Cidade::getCidadeNome($configuracoes->cidade, 'cidades')}}
                                           @endif
-                                      @endif
+                                        @endif
                                       </p>
                                       @if ($configuracoes->telefone1)
                                         <dl class="list-terms-inline">

@@ -18,7 +18,8 @@
         "league/flysystem-aws-s3-v3": "^1.0",
         "simplesoftwareio/simple-qrcode": "~2",
         "spatie/laravel-analytics": "^3.11",
-        "spatie/laravel-sitemap": "^5.9"
+        "spatie/laravel-sitemap": "^5.9",
+        "webmasterdro/paghiper-php-sdk": "^3.0"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

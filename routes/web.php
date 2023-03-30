@@ -32,7 +32,10 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
     
     /** Página Inicial */
     Route::get('teste-qrcode', [WebController::class, 'qrcode'])->name('qrcode'); 
-    Route::get('/', [WebController::class, 'home'])->name('home');     
+    Route::get('/', [WebController::class, 'home'])->name('home');   
+    
+    Route::get('pagar/{pedido}', [PedidoController::class, 'pagar'])->name('pagar');
+    Route::post('notification/pagHiper', [PedidoController::class, 'getTransaction'])->name('getTransaction');
 
     //****************************** Política de Privacidade ******************************/
     Route::get('/politica-de-privacidade', [WebController::class, 'politica'])->name('politica');
@@ -129,7 +132,8 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('pedidos/show/{id}', [PedidoController::class, 'show'])->name('pedidos.show');
     Route::get('pedidos/create', [PedidoController::class, 'create'])->name('pedidos.create');
     Route::post('pedidos/store', [PedidoController::class, 'store'])->name('pedidos.store');
-    Route::get('pedidos', [PedidoController::class, 'index'])->name('pedidos.index');  
+    Route::get('pedidos', [PedidoController::class, 'index'])->name('pedidos.index');    
+        
     Route::delete('pedidos/deleteon', [PedidoController::class, 'deleteon'])->name('pedidos.deleteon');
     Route::get('pedidos/delete', [PedidoController::class, 'delete'])->name('pedidos.delete'); 
     Route::get('pedidos/set-status', [PedidoController::class, 'setStatus'])->name('pedidos.setStatus'); 

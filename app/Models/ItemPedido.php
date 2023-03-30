@@ -29,5 +29,17 @@ class ItemPedido extends Model
     /**
      * Scopes
     */
+    public function setValorAttribute($value)
+    {
+        $this->attributes['valor'] = (!empty($value) ? floatval($this->convertStringToDouble($value)) : null);
+    }
+
+    private function convertStringToDouble($param)
+    {
+        if(empty($param)){
+            return null;
+        }
+        return str_replace(',', '.', str_replace('.', '', $param));
+    }
     
 }
