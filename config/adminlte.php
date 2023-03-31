@@ -247,6 +247,10 @@ return [
             'icon' => 'fas fa-money-check',
             'submenu' => [
                 [
+                    'text' => 'Bancos',
+                    'url' => 'admin/bancos',
+                ],
+                [
                     'text' => 'Pedidos',
                     'url' => 'admin/pedidos',
                 ],

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\{
     AdminController,
+    BancoController,
     CatPortifolioController,
     UserController,
     EmailController,
@@ -127,6 +128,10 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('parceiros/create', [ParceiroController::class, 'create'])->name('parceiros.create');
     Route::post('parceiros/store', [ParceiroController::class, 'store'])->name('parceiros.store');
     Route::get('parceiros', [ParceiroController::class, 'index'])->name('parceiros.index');
+
+    //******************** Bancos *************************************************************/
+    Route::get('bancos', [BancoController::class, 'index'])->name('bancos.index');
+    Route::get('bancos/refresh', [BancoController::class, 'refresh'])->name('bancos.refresh');
     
     //******************** Vendas *************************************************************/
     Route::get('pedidos/show/{id}', [PedidoController::class, 'show'])->name('pedidos.show');

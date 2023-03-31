@@ -30,6 +30,13 @@ class Message
         $this->text = $message;
         return $this;
     }
+
+    public function info(string $message): Message
+    {
+        $this->type = 'info';
+        $this->text = $message;
+        return $this;
+    }
     
     public function render()
     {

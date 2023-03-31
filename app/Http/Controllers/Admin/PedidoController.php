@@ -16,7 +16,6 @@ class PedidoController extends Controller
     public function index()
     {
         $pedidos = Pedido::orderBy('created_at', 'DESC')->paginate(25);
-
         return view('admin.pedidos.index', [
             'pedidos' => $pedidos
         ]);
