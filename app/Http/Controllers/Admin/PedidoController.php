@@ -69,8 +69,8 @@ class PedidoController extends Controller
     public function gerarBoleto($data)
     {
         $paghiper = new PagHiper(
-            'apk_47471634-czZLxKaXvGIlUjremsKCGrZCNUJmLhZo', 
-            'B5R7OTL4K4LR20ONVNPDBKXWEFIKGACTTRRLET4W967M'
+            env('PAGHIPER_APIKEY'), 
+            env('PAGHIPER_TOKEM')
         );
         $transaction = $paghiper->billet()->create($data);
     }
@@ -78,8 +78,8 @@ class PedidoController extends Controller
     public function getTransaction(Request $request)
     {
         $paghiper = new PagHiper(
-            'apk_47471634-czZLxKaXvGIlUjremsKCGrZCNUJmLhZo', 
-            'B5R7OTL4K4LR20ONVNPDBKXWEFIKGACTTRRLET4W967M'
+            env('PAGHIPER_APIKEY'), 
+            env('PAGHIPER_TOKEM')
         );
         $transaction = $paghiper->notification()->response(
             $_POST['notification_id'], 
