@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\PedidoRequest;
 use App\Models\Empresa;
 use App\Models\Gateway;
 use App\Models\ItemPedido;
+use App\Models\Orcamento;
 use App\Models\Pedido;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -24,9 +26,19 @@ class PedidoController extends Controller
     public function create()
     {
         $empresas = Empresa::orderBy('created_at', 'DESC')->get();
+        $orcamentos = Orcamento::orderBy('created_at', 'DESC')->get();
+        $gateways = Gateway::orderBy('created_at', 'DESC')->get();
+
         return view('admin.pedidos.create',[
-            'empresas' => $empresas
+            'empresas' => $empresas,
+            'orcamentos' => $orcamentos,
+            'gateways' => $gateways
         ]);
+    }
+
+    public function store(PedidoRequest $request)
+    {
+        dd($request->all());  
     }
 
     public function show($id)

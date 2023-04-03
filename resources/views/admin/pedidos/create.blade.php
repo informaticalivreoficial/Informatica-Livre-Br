@@ -53,7 +53,7 @@ $config = [
 </div>   
                     
             
-<form action="{{ route('pedidos.store') }}" method="post" enctype="multipart/form-data" autocomplete="off">
+<form action="{{ route('pedidos.store') }}" method="post">
 @csrf          
 <div class="row">            
 <div class="col-12">
@@ -86,108 +86,58 @@ $config = [
                     </select>
                 </div>
             </div> 
-            <div class="col-12 col-md-6 col-lg-5">   
+            <div class="col-12 col-md-6 col-lg-4"> 
                 <div class="form-group">
-                    <label class="labelforms text-muted"><b>Headline</b> <small class="text-info">(Chamada que vai em destaque nas redes sociais)</small></label>
-                    <input type="text" class="form-control" name="headline" value="{{old('headline')}}">
-                </div>                                                    
+                    <label class="labelforms text-muted"><b>*Orçamento:</b> <a style="font-size:11px;" href="{{route('vendas.orcamentos')}}">(Cadastrar Orçamento)</a></label>
+                    <select name="orcamento" class="form-control categoria">
+                        @if(!empty($orcamentos) && $orcamentos->count() > 0)
+                            <option value="">Selecione</option>
+                            @foreach($orcamentos as $orcamento) 
+                                <option value="{{ $orcamento->id }}" {{ (old('orcamento') == $orcamento->id ? 'selected' : '') }}>{{ \Carbon\Carbon::parse($orcamento->created_at)->format('d/m/Y') }} - {{ $orcamento->name }}</option>                                                                                                                      
+                            @endforeach
+                        @else
+                            <option value="">Cadastre um Orçamento</option>
+                        @endif
+                                                                       
+                    </select>
+                </div>
             </div> 
-            <div class="col-12 col-sm-4 col-md-4 col-lg-3">
+            <div class="col-12 col-sm-4 col-md-4 col-lg-4">
                 <div class="form-group">
                     <label class="labelforms text-muted"><b>Status:</b></label>
                     <select name="status" class="form-control">
-                        <option value="1" {{ (old('status') == '1' ? 'selected' : '') }}>Publicado</option>
-                        <option value="0" {{ (old('status') == '0' ? 'selected' : '') }}>Rascunho</option>
+                        <option value="canceled" {{ (old('status') == 'canceled' ? 'selected' : '') }}>Cancelado</option>
+                        <option value="pending" {{ (old('status') == 'pending' ? 'selected' : '') }}>Pendente</option>
+                        <option value="reserved" {{ (old('status') == 'reserved' ? 'selected' : '') }}>Reservado</option>
+                        <option value="completed" {{ (old('status') == 'completed' ? 'selected' : '') }}>Completo</option>
+                        <option value="paid" {{ (old('status') == 'paid' ? 'selected' : '') }}>Aprovado</option>
+                        <option value="processing" {{ (old('status') == 'processing' ? 'selected' : '') }}>Análise</option>
+                        <option value="refunded" {{ (old('status') == 'refunded' ? 'selected' : '') }}>Estornado</option>
                     </select>
                 </div>
             </div> 
             <div class="col-12 col-sm-5 col-md-5 col-lg-4">
                 <div class="form-group">
-                    <label class="labelforms text-muted"><b>*Categoria:</b> <a style="font-size:11px;" href="{{route('catprodutos.index')}}">(Criar categoria)</a></label>
-                    <select name="categoria" class="form-control categoria">
-                        @if(!empty($catProdutos) && $catProdutos->count() > 0)
-                            <option value="">Selecione a Categoria</option>
-                            @foreach($catProdutos as $categoria)                                
-                                <optgroup label="{{ $categoria->titulo }}">  
-                                    @if($categoria->children)
-                                        @foreach($categoria->children as $subcategoria)
-                                            <option value="{{ $subcategoria->id }}" {{ (old('categoria') == $subcategoria->id ? 'selected' : '') }}>{{ $subcategoria->titulo }}</option>
-                                        @endforeach
-                                    @endif
-                                </optgroup>                                                                                       
+                    <label class="labelforms text-muted"><b>*Gateway:</b></label>
+                    <select name="gateway" class="form-control">
+                        @if(!empty($gateways) && $gateways->count() > 0)
+                            <option value="">Selecione</option>
+                            @foreach($gateways as $gateway)        
+                                <option value="{{ $gateway->id }}" {{ (old('gateway') == $gateway->id ? 'selected' : '') }}>{{ $gateway->nome }}</option> 
                             @endforeach
                         @else
-                            <option value="">Cadastre Categorias</option>
-                        @endif
-                                                                       
+                            <option value="">Cadastre Gateways</option>
+                        @endif                                                                       
                     </select>
                 </div>
-            </div>
-            <div class="col-12 col-sm-3 col-md-3 col-lg-3">
-                <div class="form-group">
-                    <label class="labelforms text-muted"><b>Exibir:</b></label>
-                    <select name="exibir" class="form-control">
-                        <option value="1" {{ (old('exibir') == '1' ? 'selected' : '') }}>Sim</option>
-                        <option value="0" {{ (old('exibir') == '0' ? 'selected' : '') }}>Não</option>
-                    </select>
-                </div>
-            </div>                          
+            </div>                                     
         </div>
         
         <div class="row mb-2">
             <div class="col-12"> 
-                <div class="form-group">
-                    <label class="labelforms text-muted"><b>Tipo de pagamento</b></label>
-                    <div class="form-check">
-                        <input id="tipounico" class="form-check-input" type="radio" value="1" name="tipo_pagamento" {{(old('tipo_pagamento') == '1' ? 'checked' : '')}}>
-                        <label for="tipounico" class="form-check-label mr-5">Único</label>
-                        <input id="tiporecorrente" class="form-check-input" type="radio" value="0" name="tipo_pagamento" {{(old('tipo_pagamento') == '0' ? 'checked' : '' )}}>
-                        <label for="tiporecorrente" class="form-check-label">Recorrente</label>
-                    </div>
-                </div>
-            </div>                        
-        </div>
-
-        <div class="row mb-2">
-            <div class="col-12 col-sm-4 col-md-4 col-lg-2">
-                <label class="labelforms text-muted"><b>Valor</b></label>
-                <input type="text" class="form-control mask-money v" name="valor" value="{{ old('valor') }}">
-            </div>
-            <div class="col-12 col-sm-4 col-md-4 col-lg-2">
-                <label class="labelforms text-muted"><b>Mensal</b></label>
-                <input type="text" class="form-control mask-money m" name="valor_mensal" value="{{ old('valor_mensal') }}">
-            </div>
-            <div class="col-12 col-sm-4 col-md-4 col-lg-2">
-                <label class="labelforms text-muted"><b>Trimestral</b></label>
-                <input type="text" class="form-control mask-money t" name="valor_trimestral" value="{{ old('valor_trimestral') }}">
-            </div>
-            <div class="col-12 col-sm-4 col-md-4 col-lg-2">
-                <label class="labelforms text-muted"><b>Semestral</b></label>
-                <input type="text" class="form-control mask-money s" name="valor_semestral" value="{{ old('valor_semestral') }}">
-            </div>
-            <div class="col-12 col-sm-4 col-md-4 col-lg-2">
-                <label class="labelforms text-muted"><b>Anual</b></label>
-                <input type="text" class="form-control mask-money a" name="valor_anual" value="{{ old('valor_anual') }}">
-            </div>
-            <div class="col-12 col-sm-4 col-md-4 col-lg-2">
-                <label class="labelforms text-muted"><b>Bi-anual</b></label>
-                <input type="text" class="form-control mask-money b" name="valor_bianual" value="{{ old('valor_bianual') }}">
-            </div>
-        </div>
-        
-        <div class="row mb-2">
-            <div class="col-12 mb-1"> 
-                <div class="form-group">
-                    <label class="labelforms text-muted"><b>MetaTags</b></label>
-                    <input id="tags_1" class="tags" rows="5" name="tags" value="{{ old('tags') }}">
-                </div>
-            </div>
-            <div class="col-12">   
-                <label class="labelforms text-muted"><b>Descrição do Produto</b></label>
-                <x-adminlte-text-editor name="content" v placeholder="Descrição do produto..." :config="$config">{{ old('content') }}</x-adminlte-text-editor>                                                                                     
-            </div>                        
-        </div>
                 
+            </div>                        
+        </div>
     </div>                                   
     
 </div>
