@@ -85,10 +85,7 @@ $config1 = [
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" id="custom-tabs-four-seo-tab" data-toggle="pill" href="#custom-tabs-four-seo" role="tab" aria-controls="custom-tabs-four-mapas" aria-selected="false">SEO</a>
-                        </li>
-                        <li class="nav-item bg-teal">
-                            <a class="nav-link j_modal_suporte" data-id="{{$config->id}}" data-toggle="modal" data-target="#modal-suporte" href="javascript:void(0)" aria-selected="false">SUPORTE</a>
-                        </li>
+                        </li>                        
                     </ul>
                 </div>
                 <div class="card-body">
@@ -504,39 +501,6 @@ $config1 = [
         </div>
     </div> 
 </form>
-
-<div class="modal fade" id="modal-suporte">
-    <div class="modal-dialog">
-        <div class="modal-content p-3">
-            <span class="j_param_data"></span>
-            <form class="btn_suporte form_hide" method="post" action="" autocomplete="off">
-            @csrf    
-                <div class="col-sm-12">
-                    <div class="form-group">
-                        <h5><b>Suporte ao Cliente</b></h5>  
-                        <p>Digite sua solicitação de suporte ou dúvida no campo abaixo. Iremos atender o mais breve possível.</p>                                          
-                    </div>
-                </div>
-                <hr>
-                <div class="col-sm-12 mt-2">
-                    <div class="form-group">
-                        <input type="hidden" name="username" value="{{ Auth::user()->name }}"/>
-                        <input type="hidden" name="sitename" value="{{$config->nomedosite}}"/>
-                        <input type="hidden" name="email" value="{{ Auth::user()->email }}"/>
-                        <textarea class="form-control noclear" rows="5" name="mensagem"></textarea>                                          
-                    </div>
-                </div>
-                <div class="col-12 mb-4">
-                    <button type="submit" class="btn btn-success b_nome"><i class="nav-icon fas fa-check mr-2"></i> Enviar Solicitação</button>
-                </div>
-            </form>            
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-
-
 
 @stop
 

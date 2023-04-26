@@ -28,6 +28,10 @@
         {{-- Configured right links --}}
         @each('adminlte::partials.navbar.menu-item', $adminlte->menu('navbar-right'), 'item')
 
+        <li class="nav-item dropdown">
+            <a class="nav-link j_modal_suporte" data-id="{{auth()->user()->id}}" data-toggle="modal" data-target="#modal-suporte" href="javascript:void(0)" aria-selected="false" title="Suporte"><i style="color: rgb(223, 87, 87);" class="fas fa-life-ring"></i></a>
+        </li>
+
         {{-- User menu link --}}
         @if(Auth::user())
             @if(config('adminlte.usermenu_enabled'))

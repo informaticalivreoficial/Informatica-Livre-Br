@@ -79,6 +79,37 @@
     {{-- Body Content --}}
     @yield('body')
 
+    <div class="modal fade" id="modal-suporte">
+        <div class="modal-dialog">
+            <div class="modal-content p-3">
+                <form class="btn_suporte" method="post" action="" autocomplete="off">
+                    @csrf 
+                    <div class="col-sm-12 form_hide">
+                        <div class="form-group">
+                            <h5><b>Suporte ao Cliente</b></h5>  
+                            <p>Digite sua solicitação de suporte ou dúvida no campo abaixo. Iremos atender o mais breve possível.</p>                                          
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <span class="j_param_data"></span>
+                    </div>
+                    <hr>
+                    <div class="col-sm-12 mt-2 form_hide">
+                        <div class="form-group">
+                            <input type="hidden" name="username" value="{{ auth()->user()->name ?? '' }}"/>
+                            <input type="hidden" name="sitename" value="{{ $configuracoes->nomedosite ?? ''}}"/>
+                            <input type="hidden" name="email" value="{{ auth()->user()->email ?? '' }}"/>
+                            <textarea class="form-control noclear" rows="5" name="mensagem"></textarea>                                          
+                        </div>
+                    </div>
+                    <div class="col-12 mb-4 form_hide">
+                        <button type="submit" class="btn btn-success b_nome"><i class="nav-icon fas fa-check mr-2"></i> Enviar Solicitação</button>
+                    </div>
+                </form>            
+            </div>
+        </div>
+    </div>
+
     {{-- Base Scripts --}}
     @if(!config('adminlte.enabled_laravel_mix'))
         <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
@@ -105,6 +136,48 @@
 
     {{-- Custom Scripts --}}
     @yield('adminlte_js')
+
+    <script>
+        $(function () { 
+            
+    
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+    
+            // FORM DE SUPORTE NO ADMIN
+            $('.btn_suporte').submit(function(){ 
+                var dados = $(this).serialize();                
+                $.ajax({
+                    type: 'GET',
+                    dataType: 'JSON',
+                    url: "{{ route('email.suporte') }}",
+                    data: dados,
+                    beforeSend: function(){
+                        $('.b_nome').html("Carregando...");
+                        $('.alert').fadeOut(500, function(){
+                            $(this).remove();
+                        });
+                    },
+                    complete: function(){
+                        $('.b_nome').html("<i class=\"nav-icon fas fa-check mr-2\"></i> Enviar Solicitação");               
+                    },
+                    success:function(data) {
+                        if(data.error){
+                            $('.j_param_data').html('<div class="alert alert-danger alert-dismissible">'+ data.error +'</div>');
+                        }else{
+                            $('input[class!="noclear"]').val('');
+                            $('.form_hide').fadeOut(500);
+                            $('.j_param_data').html('<div class="alert alert-success alert-dismissible">'+ data.success +'</div>');
+                        }
+                    }
+                });
+                return false;
+            });            
+        });
+    </script>
 
 </body>
 
