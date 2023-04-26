@@ -12,6 +12,8 @@ class OrcamentoRetorno extends Mailable
 {
     use Queueable, SerializesModels;
 
+    private $retorno;
+
     /**
      * Create a new message instance.
      *

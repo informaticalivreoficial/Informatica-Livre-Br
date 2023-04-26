@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\{
     ProdutoController,
     CatProdutoController,
     NewsletterController,
+    NotificationController,
     OrcamentoController,
     ParceiroController,
     PedidoController,
@@ -255,6 +256,10 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('usuarios/create', [UserController::class, 'create'])->name('users.create');
     Route::post('usuarios/store', [UserController::class, 'store'])->name('users.store');
     Route::get('usuarios', [UserController::class, 'index'])->name('users.index');
+
+    Route::get('/notifications', [NotificationController::class, 'notifications'])->name('notifications');
+    Route::put('/notification-all-read', [NotificationController::class, 'markAllAsRead']);
+    Route::put('/notification-read', [NotificationController::class, 'markAsRead']);
 
     Route::get('/', [AdminController::class, 'home'])->name('home');
 });
