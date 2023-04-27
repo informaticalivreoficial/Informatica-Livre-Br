@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Storage;
-use App\Support\Cropper;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
@@ -48,26 +47,14 @@ class User extends Authenticatable
         'celular',
         'whatsapp',
         'skype',
+        'telegram',
         'facebook',
         'twitter',
         'instagram',
         'linkedin',
         'vimeo',
         'youtube',
-        'fliccr',
-        'soundclound',
-        'snapchat',
-        'tipo_de_comunhao',
-        'nome_conjuje',
-        'genero_conjuje',
-        'cpf_conjuje',
-        'rg_conjuje',
-        'rg_expedicao_conjuje',
-        'nasc_conjuje',
-        'naturalidade_conjuje',
-        'profissao_conjuje',
-        'renda_conjuje',
-        'profissao_empresa_conjuje',
+        'fliccr', 
         'admin',
         'client',
         'editor',
