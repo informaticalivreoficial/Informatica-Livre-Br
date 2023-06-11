@@ -58,6 +58,7 @@
                     <tr>
                         <th class="text-center">Empresa</th>
                         <th class="text-center">Data</th>                        
+                        <th class="text-center">Vencimento</th>                        
                         <th class="text-center">Valor</th>                        
                         <th class="text-center">Status</th>
                         <th>Ações</th>
@@ -68,7 +69,8 @@
                     <tr>
                         <td>{{$pedido->getEmpresa->alias_name}}</td>                        
                         <td class="text-center">{{Carbon\Carbon::parse($pedido->created_at)->format('d/m/Y')}}</td> 
-                        <td class="text-center">R$ {{str_replace(',00', '', $pedido->itensTotalValor())}}</td>                       
+                        <td class="text-center">{{Carbon\Carbon::parse($pedido->vencimento)->format('d/m/Y')}}</td> 
+                        <td class="text-center">R$ {{$pedido->valor ?? str_replace(',00', '', $pedido->itensTotalValor())}}</td>                       
                         <td class="text-center">{!!$pedido->getStatus()!!}</td> 
                         <td>
                             <a href="{{route('pedidos.show',['id' => $pedido->id])}}" class="btn btn-xs btn-info text-white"><i class="fas fa-search"></i></a>

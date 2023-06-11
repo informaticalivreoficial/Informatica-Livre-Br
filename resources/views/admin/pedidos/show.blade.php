@@ -146,7 +146,7 @@
                         <a href="javascript:void(0)" onclick="window.print();"class="btn btn-default">
                            <i class="fas fa-print"></i> Imprimir
                         </a>
-                        <a style="margin-right: 5px;" class="btn btn-success float-right" href="{{route('web.pagar',['pedido' => $pedido->id])}}">
+                        <a style="margin-right: 5px;" class="btn btn-success float-right" {{($pedido->url_slip ? 'target="_blank"' : '')}} href="{{$pedido->url_slip ?? route('web.pagar',['pedido' => $pedido->id])}}">
                            <i class="far fa-credit-card"></i> Pagar Agora
                         </a>
                       </div>

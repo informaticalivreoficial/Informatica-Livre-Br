@@ -15,6 +15,10 @@ class Pedido extends Model
         'empresa',
         'orcamento',
         'status',
+        'valor',
+        'url_slip',
+        'digitable_line',
+        'vencimento',
         'empresa'
     ];
 
@@ -35,21 +39,33 @@ class Pedido extends Model
      * Accerssors and Mutators
     */
     public function getStatus() {
-        if($this->status == 5){
+        if($this->status == 'processing'){
             return '<small class="badge badge-warning">Em Análise</small>';
-        }elseif($this->status == 4){
-            return '<small class="badge badge-primary">Aguardando Aceite</small>';
-        }elseif($this->status == 3){
+        }elseif($this->status == 'pending'){
+            return '<small class="badge badge-primary">Aguardando Pagamento</small>';
+        }elseif($this->status == 'canceled'){
             return '<small class="badge badge-danger">Cancelado</small>';
-        }elseif($this->status == 2){
+        }elseif($this->status == 'paid'){
             return '<small class="badge badge-success">Aprovado</small>';
-        }elseif($this->status == 1){
-            return '<small class="badge badge-secondary">Entregando</small>'; 
-        }elseif($this->status == 0){
+        }elseif($this->status == 'completed'){
             return '<small class="badge badge-info">Finalizado</small>'; 
         }else{
             return '<small class="badge badge-warning">Em Análise</small>'; 
         }
+    }
+
+    public function setValorAttribute($value)
+    {
+        $this->attributes['valor'] = (!empty($value) ? floatval($this->convertStringToDouble($value)) : null);
+    }
+
+    public function getValorAttribute($value)
+    {
+        if (empty($value)) {
+            return null;
+        }
+
+        return number_format($value / 100, 2, ',', '');
     }
 
     /**
