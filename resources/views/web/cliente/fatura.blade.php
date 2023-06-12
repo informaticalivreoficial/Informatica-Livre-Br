@@ -9,6 +9,41 @@
         <link rel="stylesheet" href="{{url(asset('frontend/assets/css/fatura.css'))}}">
 
         <link rel="icon" href="{{$configuracoes->getfaveicon()}}" type="image/x-icon">
+
+        <style>
+            .badge-primary {
+                color: #fff;
+                background-color: #007bff;
+            }
+            .badge-success {
+                color: #fff;
+                background-color: #28a745;
+            }
+            .badge-warning {
+                color: #fff;
+                background-color: #ffc107;
+            }
+            .badge-danger {
+                color: #fff;
+                background-color: #dc3545;
+            }
+            .badge-info {
+                color: #fff;
+                background-color: #17a2b8;
+            }
+            .badge {
+                display: inline-block;
+                padding: 0.25em 0.4em;
+                font-size: 85%;
+                font-weight: 700;
+                line-height: 1;
+                text-align: center;
+                white-space: nowrap;
+                vertical-align: baseline;
+                border-radius: 0.25rem;
+                transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+            }
+        </style>
     </head>
     <body>
         <div class="cs-container">
@@ -27,6 +62,8 @@
                                     <br>
                                     <b class="cs-primary_color">Vencimento: </b>
                                     {{Carbon\Carbon::parse($fatura->vencimento)->format('d/m/Y')}}
+                                    <br>
+                                    {!!$fatura->getStatus()!!}
                                 </p>
                             </div>
                             <div class="cs-invoice_right cs-text_right">
@@ -89,41 +126,47 @@
                                     <table>
                                         <thead>
                                             <tr>
-                                                <th class="cs-width_3 cs-semi_bold cs-primary_color cs-focus_bg">Qtd</th>
+                                                <th class="cs-width_1 cs-semi_bold cs-primary_color cs-focus_bg">Qtd</th>
                                                 <th class="cs-width_4 cs-semi_bold cs-primary_color cs-focus_bg">Descrição</th>
-                                                <th class="cs-width_1 cs-semi_bold cs-primary_color cs-focus_bg">Valor</th>
-                                                <th class="cs-width_2 cs-semi_bold cs-primary_color cs-focus_bg cs-text_right">Subtotal</th>
+                                                <th class="cs-width_2 cs-semi_bold cs-primary_color cs-focus_bg">Valor</th>
+                                                <th class="cs-width_3 cs-semi_bold cs-primary_color cs-focus_bg cs-text_right">Subtotal</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td class="cs-width_3">App Development</td>
-                                                <td class="cs-width_4">Mobile &Ios Application Development</td>
-                                                <td class="cs-width_1">$460</td>
-                                                <td class="cs-width_2 cs-text_right">$920</td>
-                                            </tr>                                            
+                                            @if (!empty($fatura->itens()) && $fatura->itens->count() > 0)
+                                                @foreach ($fatura->itens()->get() as $item)
+                                                <tr>
+                                                    <td class="cs-width_1">{{$item->quantidade}}</td>
+                                                    <td class="cs-width_4">{{$item->descricao}}</td>                                        
+                                                    <td class="cs-width_2">R$ {{str_replace(',00', '', $item->valor)}}</td>
+                                                    <td class="cs-width_3 cs-text_right">R$ {{str_replace(',00', '', ($item->quantidade * $item->valor))}}</td>
+                                                </tr>
+                                                @endforeach
+                                            @endif                                                                                      
                                         </tbody>
                                     </table>
                                 </div>
                                 <div class="cs-invoice_footer cs-border_top">
                                     <div class="cs-left_footer cs-mobile_hide">
-                                        <p class="cs-mb0">
-                                            <b class="cs-primary_color">Additional Information:</b>
-                                        </p>
-                                        <p class="cs-m0">
-                                            At check in you may need to present the credit <br>card used for payment of this ticket.
-                                        </p>
+                                        @if ($fatura->notas_adicionais)
+                                            <p class="cs-mb0">
+                                                <b class="cs-primary_color">Informações adicionais:</b>
+                                            </p>
+                                            <p class="cs-m0">
+                                                {{$fatura->notas_adicionais}}
+                                            </p>
+                                        @endif
                                     </div>
                                     <div class="cs-right_footer">
                                         <table>
                                             <tbody>
                                                 <tr class="cs-border_left">
                                                     <td class="cs-width_3 cs-semi_bold cs-primary_color cs-focus_bg">Subtoal</td>
-                                                    <td class="cs-width_3 cs-semi_bold cs-focus_bg cs-primary_color cs-text_right">$1140</td>
+                                                    <td class="cs-width_3 cs-semi_bold cs-focus_bg cs-primary_color cs-text_right">R$ {{$fatura->valor ?? str_replace(',00', '', $fatura->itensTotalValor())}}</td>
                                                 </tr>
                                                 <tr class="cs-border_left">
-                                                    <td class="cs-width_3 cs-semi_bold cs-primary_color cs-focus_bg">Tax</td>
-                                                    <td class="cs-width_3 cs-semi_bold cs-focus_bg cs-primary_color cs-text_right">-$20</td>
+                                                    <td class="cs-width_3 cs-semi_bold cs-primary_color cs-focus_bg">Taxas</td>
+                                                    <td class="cs-width_3 cs-semi_bold cs-focus_bg cs-primary_color cs-text_right">--</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -137,40 +180,13 @@
                                         <tbody>
                                             <tr class="cs-border_none">
                                                 <td class="cs-width_3 cs-border_top_0 cs-bold cs-f16 cs-primary_color">Total</td>
-                                                <td class="cs-width_3 cs-border_top_0 cs-bold cs-f16 cs-primary_color cs-text_right">{{$fatura->valor}}</td>
+                                                <td class="cs-width_3 cs-border_top_0 cs-bold cs-f16 cs-primary_color cs-text_right">R$ {{$fatura->valor ?? str_replace(',00', '', $fatura->itensTotalValor())}}</td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         </div>
-                        <div class="cs-note">
-                            <div class="cs-note_left">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512">
-                                    <path d="M416 221.25V416a48 48 0 01-48 48H144a48 48 0 01-48-48V96a48 48 0 0148-48h98.75a32 32 0 0122.62 9.37l141.26 141.26a32 32 0 019.37 22.62z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="32"/>
-                                    <path d="M256 56v120a32 32 0 0032 32h120M176 288h160M176 368h160" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
-                                </svg>
-                            </div>
-                            <div class="cs-note_right">
-                                <p class="cs-mb0">
-                                    <b class="cs-primary_color cs-bold">Note:</b>
-                                </p>
-                                <p class="cs-m0">Here we can write a additional notes for the client to get a better understanding of this invoice.</p>
-                            </div>
-                        </div>
-                    @else
-                        <div class="cs-note_left">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512">
-                                <path d="M416 221.25V416a48 48 0 01-48 48H144a48 48 0 01-48-48V96a48 48 0 0148-48h98.75a32 32 0 0122.62 9.37l141.26 141.26a32 32 0 019.37 22.62z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="32"/>
-                                <path d="M256 56v120a32 32 0 0032 32h120M176 288h160M176 368h160" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
-                            </svg>
-                        </div>
-                        <div class="cs-note_right">
-                            <p class="cs-mb0">
-                                <b class="cs-primary_color cs-bold">Note:</b>
-                            </p>
-                            <p class="cs-m0">Here we can write a additional notes for the client to get a better understanding of this invoice.</p>
-                        </div>    
                     @endif 
                 </div>
 
@@ -182,16 +198,13 @@
                             <path d="M384 128v-24a40.12 40.12 0 00-40-40H168a40.12 40.12 0 00-40 40v24" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="32"/>
                             <circle cx="392" cy="184" r="24"/>
                         </svg>
-                        <span>Print</span>
+                        <span>Imprimir</span>
                     </a>
-                    <button id="download_btn" class="cs-invoice_btn cs-color2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512">
-                            <title>Download</title>
-                            <path d="M336 176h40a40 40 0 0140 40v208a40 40 0 01-40 40H136a40 40 0 01-40-40V216a40 40 0 0140-40h40" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
-                            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M176 272l80 80 80-80M256 48v288"/>
-                        </svg>
-                        <span>Download</span>
-                    </button>
+                    @if ($fatura->url_slip && $fatura->status != 'paid' && $fatura->status != 'completed' && $fatura->status != 'canceled')
+                        <a href="{{$fatura->url_slip}}" target="_blank" class="cs-invoice_btn cs-color2">
+                            <span>Pagar Fatura</span>
+                        </a>
+                    @endif                    
                 </div>
             </div>
         </div>

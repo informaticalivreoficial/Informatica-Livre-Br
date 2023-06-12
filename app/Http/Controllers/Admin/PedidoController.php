@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PedidoRequest;
+use App\Mail\Admin\FaturaClientSend;
+use App\Models\Configuracoes;
 use App\Models\Empresa;
 use App\Models\Gateway;
 use App\Models\ItemPedido;
@@ -11,6 +13,7 @@ use App\Models\Orcamento;
 use App\Models\Pedido;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
 use WebMaster\PagHiper\PagHiper;
 
@@ -116,6 +119,29 @@ class PedidoController extends Controller
             $_POST['notification_id'], 
             $_POST['idTransacao']
         );
+    }
+
+    public function sendFormFaturaClient(Request $request)
+    {
+        $Configuracoes = Configuracoes::where('id', '1')->first();
+        $pedido = Pedido::where('id', $request->id)->first();
+        $pedido->form_sendat = now();
+        $pedido->save();
+
+        $data = [            
+            'sitename' => $Configuracoes->nomedosite,
+            'siteemail' => $Configuracoes->email,
+            'client_name' => $pedido->getEmpresa->owner->name,
+            'client_email' => $pedido->getEmpresa->owner->email,
+            'uuid' => $pedido->uuid,
+            'empresa' => $pedido->getEmpresa->alias_name,
+        ];
+
+        Mail::send(new FaturaClientSend($data, $pedido));
+        
+        return response()->json([
+            'retorno' => true
+        ]);
     }
     
 }

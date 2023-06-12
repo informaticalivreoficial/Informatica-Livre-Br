@@ -56,11 +56,11 @@
             <table class="table table-bordered table-striped projects">
                 <thead>
                     <tr>
-                        <th class="text-center">Empresa</th>
-                        <th class="text-center">Data</th>                        
+                        <th class="text-center">Empresa</th>                                                
                         <th class="text-center">Vencimento</th>                        
                         <th class="text-center">Valor</th>                        
                         <th class="text-center">Status</th>
+                        <th class="text-center">Envio</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
@@ -68,10 +68,16 @@
                     @foreach($pedidos as $pedido)                    
                     <tr>
                         <td>{{$pedido->getEmpresa->alias_name}}</td>                        
-                        <td class="text-center">{{Carbon\Carbon::parse($pedido->created_at)->format('d/m/Y')}}</td> 
                         <td class="text-center">{{Carbon\Carbon::parse($pedido->vencimento)->format('d/m/Y')}}</td> 
                         <td class="text-center">R$ {{$pedido->valor ?? str_replace(',00', '', $pedido->itensTotalValor())}}</td>                       
                         <td class="text-center">{!!$pedido->getStatus()!!}</td> 
+                        <td class="text-center">
+                            @if ($pedido->form_sendat == null)
+                                <a href="javascript:void(0)" class="btn btn-xs btn-success text-white j_enviaform cli{{ $pedido->id }}" data-id="{{ $pedido->id }}">Enviar Fatura <i class="fas fa-check"></i></a>
+                            @else
+                                <a href="javascript:void(0)" class="btn btn-xs btn-secondary text-white j_enviaform cli{{ $pedido->id }}" data-id="{{ $pedido->id }}">Reenviar Fatura <i class="fas fa-check"></i></a>
+                            @endif                                
+                        </td>
                         <td>
                             <a href="{{route('pedidos.show',['id' => $pedido->id])}}" class="btn btn-xs btn-info text-white"><i class="fas fa-search"></i></a>
                             <button type="button" class="btn btn-xs btn-danger text-white j_modal_btn" data-id="{{$pedido->id}}" data-toggle="modal" data-target="#modal-default">
@@ -192,6 +198,32 @@
                         }else{
                             $('#frm').prop('action','{{ route('pedidos.deleteon') }}');
                         }
+                    }
+                });
+            });
+
+            $('.j_enviaform').click(function() {
+                var id = $(this).data('id');                
+                $.ajax({
+                    type: 'GET',
+                    dataType: 'JSON',
+                    url: "{{ route('pedidos.sendFormFaturaClient') }}",
+                    data: {
+                       'id': id
+                    },
+                    beforeSend: function(){
+                        $(".cli"+id).addClass('disabled')
+                        $(".cli"+id).html("Carregando...");  
+                    },
+                    success:function(data) {
+                        if(data.retorno == true){
+                            $(".cli"+id).html("Reenviar Fatura <i class=\"fas fa-check\"></i>");
+                        } else{
+                            $(".cli"+id).html("Enviar Fatura <i class=\"fas fa-check\"></i>");
+                        }
+                    },
+                    complete: function(resposta){
+                        $(".cli"+id).removeClass('disabled');
                     }
                 });
             });

@@ -46,7 +46,7 @@ class Pedido extends Model
         }elseif($this->status == 'canceled'){
             return '<small class="badge badge-danger">Cancelado</small>';
         }elseif($this->status == 'paid'){
-            return '<small class="badge badge-success">Aprovado</small>';
+            return '<small class="badge badge-success">Pago</small>';
         }elseif($this->status == 'completed'){
             return '<small class="badge badge-info">Finalizado</small>'; 
         }else{
