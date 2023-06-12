@@ -93,7 +93,7 @@ $config = [
                         @if(!empty($orcamentos) && $orcamentos->count() > 0)
                             <option value="">Selecione</option>
                             @foreach($orcamentos as $orcamento) 
-                                <option value="{{ $orcamento->id }}" {{ (old('orcamento') == $orcamento->id ? 'selected' : '') }}>{{ \Carbon\Carbon::parse($orcamento->created_at)->format('d/m/Y') }} - {{ $orcamento->name }}</option>                                                                                                                      
+                                <option value="{{ $orcamento->id }}" {{ (old('orcamento') == $orcamento->id ? 'selected' : '') }}>{{ $orcamento->created_at  }} - {{ $orcamento->name }}</option>                                                                                                                      
                             @endforeach
                         @else
                             <option value="">Cadastre um Orçamento</option>
