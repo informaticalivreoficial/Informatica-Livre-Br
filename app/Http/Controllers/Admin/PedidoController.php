@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PedidoRequest;
+use App\Mail\Admin\FaturaClientSend;
+use App\Models\Configuracoes;
 use App\Models\Empresa;
 use App\Models\Gateway;
 use App\Models\ItemPedido;
@@ -11,6 +13,8 @@ use App\Models\Orcamento;
 use App\Models\Pedido;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redirect;
 use WebMaster\PagHiper\PagHiper;
 
 class PedidoController extends Controller
@@ -59,7 +63,8 @@ class PedidoController extends Controller
             'payer_name' => $pedido->getEmpresa->alias_name,
             'payer_email' => $pedido->getEmpresa->email,
             'payer_cpf_cnpj' => ($pedido->getEmpresa->cnpj ? $pedido->getEmpresa->cnpj : $pedido->getEmpresa->owner->cpf),
-            'days_due_date' => Carbon::parse($pedido->vencimento)->diffInDays(Carbon::parse(Carbon::now()))
+            'days_due_date' => Carbon::parse($pedido->vencimento)->diffInDays(Carbon::parse(Carbon::now())),
+            'type_bank_slip' => 'boletoa4',
         ];
 
         $itensPedido = ItemPedido::where('pedido', $pedido->id)->get();
@@ -85,6 +90,23 @@ class PedidoController extends Controller
             env('PAGHIPER_TOKEM')
         );
         $transaction = $paghiper->billet()->create($data);
+        
+        if(!empty($transaction) && $transaction['result'] == 'success'){
+            $pedido = Pedido::where('id', $transaction['order_id'])->first();
+            $pedido->transaction_id = $transaction['transaction_id'];
+            $pedido->status = $transaction['status'];
+            $pedido->valor = $transaction['value_cents'];
+            $pedido->url_slip = $transaction['bank_slip']['url_slip'];
+            $pedido->digitable_line = $transaction['bank_slip']['digitable_line'];
+            $pedido->vencimento = $transaction['due_date'];
+            $pedido->save();
+        }
+
+        return Redirect::route('admin.pedidos.index')->with([
+            'color' => 'success', 
+            'message' => $transaction['response_message']
+        ]);
+        
     }
 
     public function getTransaction(Request $request)
@@ -97,6 +119,29 @@ class PedidoController extends Controller
             $_POST['notification_id'], 
             $_POST['idTransacao']
         );
+    }
+
+    public function sendFormFaturaClient(Request $request)
+    {
+        $Configuracoes = Configuracoes::where('id', '1')->first();
+        $pedido = Pedido::where('id', $request->id)->first();
+        $pedido->form_sendat = now();
+        $pedido->save();
+
+        $data = [            
+            'sitename' => $Configuracoes->nomedosite,
+            'siteemail' => $Configuracoes->email,
+            'client_name' => $pedido->getEmpresa->owner->name,
+            'client_email' => $pedido->getEmpresa->owner->email,
+            'uuid' => $pedido->uuid,
+            'empresa' => $pedido->getEmpresa->alias_name,
+        ];
+
+        Mail::send(new FaturaClientSend($data, $pedido));
+        
+        return response()->json([
+            'retorno' => true
+        ]);
     }
     
 }

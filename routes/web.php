@@ -57,7 +57,7 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
 
     //***************************** Cliente ********************************************/
     Route::get('/cliente/login', [ClienteController::class, 'login'])->name('login');
-    Route::get('/cliente/meus-passeios', [ClienteController::class, 'passeios'])->name('passeios');
+    Route::get('/cliente/minha-fatura/{uuid}', [ClienteController::class, 'fatura'])->name('fatura');
    
     //**************************** Emails ********************************************/
     Route::get('/atendimento', [WebController::class, 'atendimento'])->name('atendimento');
@@ -138,7 +138,8 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('pedidos/show/{id}', [PedidoController::class, 'show'])->name('pedidos.show');
     Route::get('pedidos/create', [PedidoController::class, 'create'])->name('pedidos.create');
     Route::post('pedidos/store', [PedidoController::class, 'store'])->name('pedidos.store');
-    Route::get('pedidos', [PedidoController::class, 'index'])->name('pedidos.index');    
+    Route::get('pedidos', [PedidoController::class, 'index'])->name('pedidos.index'); 
+    Route::get('pedidos/sendFormFaturaClient', [PedidoController::class, 'sendFormFaturaClient'])->name('pedidos.sendFormFaturaClient');   
         
     Route::delete('pedidos/deleteon', [PedidoController::class, 'deleteon'])->name('pedidos.deleteon');
     Route::get('pedidos/delete', [PedidoController::class, 'delete'])->name('pedidos.delete'); 

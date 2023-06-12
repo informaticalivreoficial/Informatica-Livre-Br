@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\Configuracoes;
+use App\Models\Pedido;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -14,16 +15,12 @@ class ClienteController extends Controller
         return view('web.cliente.login');
     }
 
-    public function passeios()
+    public function fatura($uuid)
     {
-        $Configuracoes = Configuracoes::where('id', '1')->first();
-        $head = $this->seo->render('Meus Passeios - ' . $Configuracoes->nomedosite ?? 'Informática Livre',
-            $Configuracoes->descricao ?? 'Informática Livre desenvolvimento de sistemas web desde 2005',
-            route('web.home'),
-            Storage::url($Configuracoes->metaimg ?? 'https://informaticalivre.com/media/metaimg.jpg')
-        ); 
-        return view('web.cliente.meus-passeios',[
-            'head' => $head
+        $fatura = Pedido::where('uuid', $uuid)->first();
+         
+        return view('web.cliente.fatura',[
+            'fatura' => $fatura
         ]);
     }
 }
