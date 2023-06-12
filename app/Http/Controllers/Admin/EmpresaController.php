@@ -43,9 +43,7 @@ class EmpresaController extends Controller
         $users = User::orderBy('name')->get();
 
         return view('admin.empresas.create', [
-            'users' => $users,
-            'estados' => $this->estadoService->getEstados(),
-            'cidades' => $this->cidadeService->getCidades()
+            'users' => $users
         ]);
     }
     
@@ -71,9 +69,7 @@ class EmpresaController extends Controller
 
         return view('admin.empresas.edit', [
             'empresa' => $empresa,
-            'users' => $users,
-            'estados' => $this->estadoService->getEstados(),
-            'cidades' => $this->cidadeService->getCidades()
+            'users' => $users
         ]);
     }
 

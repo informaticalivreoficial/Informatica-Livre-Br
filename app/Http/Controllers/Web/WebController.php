@@ -168,8 +168,7 @@ class WebController extends Controller
         );
         return view('web.consultoria.formulario-de-retorno',[
             'head' => $head ,
-            'orcamento' => $orcamento,
-            'estados' => $this->estadoService->getEstados()
+            'orcamento' => $orcamento
         ]);
     }
 

@@ -79,10 +79,21 @@
                             <input class="form-input cnpjmask" id="contact-name" type="text" name="cnpj">
                         </div>
                     </div>                    
-                    
+                    <div class="col-sm-6 col-md-3 col-lg-2 form_hide">
+                        <div class="form-wrap">
+                            <label style="color: #333;" for="contact-email">CEP</label>
+                            <input class="form-input mask-zipcode" id="cep" type="text" name="cep">
+                        </div>
+                    </div>
+                    <div class="col-sm-9 col-md-4 col-lg-3 form_hide">
+                        <div class="form-wrap">
+                            <label style="color: #333;" for="contact-email">Bairro</label>
+                            <input class="form-input" id="bairro" type="text" name="bairro">
+                        </div>
+                    </div>
                     <div class="col-sm-7 col-md-6 col-lg-3 form_hide">
                         <div class="form-wrap">
-                            <label style="color: #333;" for="contact-email">Endereço</label>
+                            <label style="color: #333;" for="contact-email">Rua</label>
                             <input class="form-input" id="contact-name" type="text" name="rua">
                         </div>
                     </div>
@@ -91,45 +102,26 @@
                             <label style="color: #333;" for="contact-email">Número</label>
                             <input class="form-input" id="contact-name" type="text" name="num">
                         </div>
-                    </div>
-                    <div class="col-sm-9 col-md-4 col-lg-3 form_hide">
-                        <div class="form-wrap">
-                            <label style="color: #333;" for="contact-email">Bairro</label>
-                            <input class="form-input" id="contact-name" type="text" name="bairro">
-                        </div>
-                    </div>
+                    </div>                    
                     <div class="col-sm-6 col-md-3 col-lg-2 form_hide">
                         <div class="form-wrap">
                             <label style="color: #333;" for="contact-email">Complemento</label>
                             <input class="form-input" id="contact-name" type="text" name="complemento">
                         </div>
                     </div>
-                    <div class="col-sm-6 col-md-3 col-lg-2 form_hide">
+                    
+                    <div class="col-sm-6 col-md-6 col-lg-3 form_hide">
                         <div class="form-wrap">
-                            <label style="color: #333;" for="contact-email">CEP</label>
-                            <input class="form-input mask-zipcode" id="contact-name" type="text" name="cep">
+                            <label style="color: #333;" for="contact-email">Cidade</label>
+                            <input class="form-input" id="cidade" type="text" name="cidade">
                         </div>
                     </div>
                     <div class="col-sm-6 col-md-6 col-lg-3 form_hide">
                         <div class="form-wrap">
                             <label style="color: #333;">Estado</label>
-                            <select id="state-dd" name="uf" class="form-control">
-                                @if(!empty($estados))
-                                    @foreach($estados as $estado)
-                                        <option value="{{$estado->estado_id}}">{{$estado->estado_nome}}</option>
-                                    @endforeach                                                                        
-                                @endif
-                            </select>
+                            <input class="form-input" id="uf" type="text" name="uf">
                         </div>
-                    </div>
-                    <div class="col-sm-6 col-md-6 col-lg-3 form_hide">
-                        <div class="form-wrap">
-                            <label style="color: #333;" for="contact-email">Cidade</label>
-                            <select id="city-dd" name="cidade" class="form-control">
-                                <option value="">Selecione o Estado</option>
-                            </select>
-                        </div>
-                    </div>
+                    </div>                    
                     
                     <div class="col-sm-6 col-md-4 col-lg-2 form_hide">   
                         <div class="form-wrap">      
@@ -242,27 +234,55 @@
             return false;
         });
 
-        $('#state-dd').on('change', function () {
-            var idState = this.value;
-            $("#city-dd").html('');
-            $.ajax({
-                url: "{{route('users.fetchCity')}}",
-                type: "POST",
-                data: {
-                    estado_id: idState,
-                    _token: '{{csrf_token()}}'
-                },
-                dataType: 'json',
-                success: function (res) {
-                    $('#select2-city-dd-container').html('Selecione a cidade');
-                    $.each(res.cidades, function (key, value) {
-                        $("#city-dd").append('<option value="' + value
-                            .cidade_id + '">' + value.cidade_nome + '</option>');
-                    });
-                }
-            });
-        });
-
     });
 </script>   
+
+<script>
+    $(document).ready(function() {
+
+        function limpa_formulário_cep() {
+            $("#rua").val("");
+            $("#bairro").val("");
+            $("#cidade").val("");
+            $("#uf").val("");
+        }
+        
+        $("#cep").blur(function() {
+
+            var cep = $(this).val().replace(/\D/g, '');
+
+            if (cep != "") {
+                
+                var validacep = /^[0-9]{8}$/;
+
+                if(validacep.test(cep)) {
+                    
+                    $("#rua").val("...");
+                    $("#bairro").val("...");
+                    $("#cidade").val("...");
+                    $("#uf").val("...");
+                    
+                    $.getJSON("https://viacep.com.br/ws/"+ cep +"/json/?callback=?", function(dados) {
+
+                        if (!("erro" in dados)) {
+                            $("#rua").val(dados.logradouro);
+                            $("#bairro").val(dados.bairro);
+                            $("#cidade").val(dados.localidade);
+                            $("#uf").val(dados.uf);
+                        } else {
+                            limpa_formulário_cep();
+                            alert("CEP não encontrado.");
+                        }
+                    });
+                } else {
+                    limpa_formulário_cep();
+                    alert("Formato de CEP inválido.");
+                }
+            } else {
+                limpa_formulário_cep();
+            }
+        });
+    });
+
+</script>
 @endsection
