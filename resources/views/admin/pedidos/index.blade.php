@@ -89,7 +89,7 @@
                                 ------------
                             @endif                                                            
                         </td>
-                        <td>
+                        <td> 
                             @if ($pedido->valor && $pedido->vencimento)
                                 <a href="{{route('pedidos.show',['id' => $pedido->id])}}" class="btn btn-xs btn-info text-white"><i class="fas fa-search"></i></a>
                             @endif    
