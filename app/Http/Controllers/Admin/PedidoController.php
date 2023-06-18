@@ -42,7 +42,12 @@ class PedidoController extends Controller
 
     public function store(PedidoRequest $request)
     {
-        dd($request->all());  
+        $pedidoCreate = Pedido::create($request->all()); 
+        $pedidoCreate->fill($request->all()); 
+
+        return Redirect::route('pedidos.edit', [
+            'id' => $pedidoCreate->id,
+        ])->with(['color' => 'success', 'message' => 'Pedido cadastrado com sucesso!']);
     }
 
     public function show($id)
@@ -52,6 +57,15 @@ class PedidoController extends Controller
         return view('admin.pedidos.show',[
             'pedido' => $pedido,
             'gateways' => $gateways
+        ]);
+    }
+
+    public function edit($id)
+    {
+        $pedido = Pedido::where('id', $id)->first();
+        
+        return view('admin.pedidos.edit', [
+            'pedido' => $pedido
         ]);
     }
 

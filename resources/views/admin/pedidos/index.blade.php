@@ -70,16 +70,30 @@
                         <td>{{$pedido->getEmpresa->alias_name}}</td>                        
                         <td class="text-center">{{Carbon\Carbon::parse($pedido->vencimento)->format('d/m/Y')}}</td> 
                         <td class="text-center">R$ {{$pedido->valor ?? str_replace(',00', '', $pedido->itensTotalValor())}}</td>                       
-                        <td class="text-center">{!!$pedido->getStatus()!!}</td> 
+                        
                         <td class="text-center">
-                            @if ($pedido->form_sendat == null)
-                                <a href="javascript:void(0)" class="btn btn-xs btn-success text-white j_enviaform cli{{ $pedido->id }}" data-id="{{ $pedido->id }}">Enviar Fatura <i class="fas fa-check"></i></a>
+                            @if ($pedido->valor && $pedido->vencimento)
+                                {!!$pedido->getStatus()!!}
                             @else
-                                <a href="javascript:void(0)" class="btn btn-xs btn-secondary text-white j_enviaform cli{{ $pedido->id }}" data-id="{{ $pedido->id }}">Reenviar Fatura <i class="fas fa-check"></i></a>
-                            @endif                                
+                                ------------
+                            @endif
+                        </td> 
+                        <td class="text-center">
+                            @if ($pedido->valor && $pedido->vencimento)
+                                @if ($pedido->form_sendat == null)
+                                    <a href="javascript:void(0)" class="btn btn-xs btn-success text-white j_enviaform cli{{ $pedido->id }}" data-id="{{ $pedido->id }}">Enviar Fatura <i class="fas fa-check"></i></a>
+                                @else
+                                    <a href="javascript:void(0)" class="btn btn-xs btn-secondary text-white j_enviaform cli{{ $pedido->id }}" data-id="{{ $pedido->id }}">Reenviar Fatura <i class="fas fa-check"></i></a>
+                                @endif
+                            @else
+                                ------------
+                            @endif                                                            
                         </td>
                         <td>
-                            <a href="{{route('pedidos.show',['id' => $pedido->id])}}" class="btn btn-xs btn-info text-white"><i class="fas fa-search"></i></a>
+                            @if ($pedido->valor && $pedido->vencimento)
+                                <a href="{{route('pedidos.show',['id' => $pedido->id])}}" class="btn btn-xs btn-info text-white"><i class="fas fa-search"></i></a>
+                            @endif    
+                            <a href="{{route('pedidos.edit',['id' => $pedido->id])}}" class="btn btn-xs btn-default"><i class="fas fa-pen"></i></a>                        
                             <button type="button" class="btn btn-xs btn-danger text-white j_modal_btn" data-id="{{$pedido->id}}" data-toggle="modal" data-target="#modal-default">
                                 <i class="fas fa-trash"></i>
                             </button>

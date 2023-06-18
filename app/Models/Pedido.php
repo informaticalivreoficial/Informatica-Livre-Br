@@ -19,7 +19,9 @@ class Pedido extends Model
         'url_slip',
         'digitable_line',
         'vencimento',
-        'empresa'
+        'empresa',
+        'gateway',
+        'uuid'
     ];
 
     /**
@@ -52,6 +54,11 @@ class Pedido extends Model
         }else{
             return '<small class="badge badge-warning">Em Análise</small>'; 
         }
+    }
+
+    public function setVencimentoAttribute($value)
+    {
+        $this->attributes['vencimento'] = (!empty($value) ? $this->convertStringToDate($value) : null);
     }
 
     public function setValorAttribute($value)
