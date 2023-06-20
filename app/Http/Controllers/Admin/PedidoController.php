@@ -63,10 +63,24 @@ class PedidoController extends Controller
     public function edit($id)
     {
         $pedido = Pedido::where('id', $id)->first();
+        $empresas = Empresa::orderBy('created_at', 'DESC')->get();
+        $gateways = Gateway::orderBy('created_at', 'ASC')->available()->get();
         
         return view('admin.pedidos.edit', [
-            'pedido' => $pedido
+            'pedido' => $pedido,
+            'gateways' => $gateways,
+            'empresas' => $empresas
         ]);
+    }
+
+    public function update(PedidoRequest $request, $id)
+    {
+        $pedidoUpdate = Pedido::where('id', $id)->first();
+        $pedidoUpdate->fill($request->all());
+        
+        return Redirect::route('pedidos.edit', [
+            'id' => $pedidoUpdate->id,
+        ])->with(['color' => 'success', 'message' => 'Pedido atualizado com sucesso!']);
     }
 
     public function pagar($pedido)
@@ -155,6 +169,16 @@ class PedidoController extends Controller
         
         return response()->json([
             'retorno' => true
+        ]);
+    }
+
+    public function storeItem(Request $request)
+    {
+        //$itemCreate = ItemPedido::create($request->all()); 
+        //$itemCreate->fill($request->all()); 
+
+        return response()->json([
+            'success' => 'success'
         ]);
     }
     

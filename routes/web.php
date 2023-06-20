@@ -138,10 +138,13 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('pedidos/show/{id}', [PedidoController::class, 'show'])->name('pedidos.show');
     Route::get('pedidos/create', [PedidoController::class, 'create'])->name('pedidos.create');
     Route::post('pedidos/store', [PedidoController::class, 'store'])->name('pedidos.store');
+    Route::put('pedidos/{id}', [PedidoController::class, 'update'])->name('pedidos.update');
     Route::get('pedidos/{id}/edit', [PedidoController::class, 'edit'])->name('pedidos.edit');
     Route::get('pedidos', [PedidoController::class, 'index'])->name('pedidos.index'); 
     Route::get('pedidos/sendFormFaturaClient', [PedidoController::class, 'sendFormFaturaClient'])->name('pedidos.sendFormFaturaClient');   
         
+    Route::post('itemPedidos/store', [PedidoController::class, 'storeItem'])->name('storeItem.store');
+
     Route::delete('pedidos/deleteon', [PedidoController::class, 'deleteon'])->name('pedidos.deleteon');
     Route::get('pedidos/delete', [PedidoController::class, 'delete'])->name('pedidos.delete'); 
     Route::get('pedidos/set-status', [PedidoController::class, 'setStatus'])->name('pedidos.setStatus'); 
