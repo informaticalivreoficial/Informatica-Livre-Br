@@ -12,6 +12,7 @@ use App\Models\Gateway;
 use App\Models\ItemPedido;
 use App\Models\Orcamento;
 use App\Models\Pedido;
+use App\Models\Produto;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -32,19 +33,54 @@ class PedidoController extends Controller
     {
         $empresas = Empresa::orderBy('created_at', 'DESC')->get();
         $orcamentos = Orcamento::orderBy('created_at', 'DESC')->get();
+        $produtos = Produto::orderBy('created_at', 'DESC')->available()->get();
         $gateways = Gateway::orderBy('created_at', 'DESC')->get();
 
         return view('admin.pedidos.create',[
             'empresas' => $empresas,
             'orcamentos' => $orcamentos,
-            'gateways' => $gateways
+            'gateways' => $gateways,
+            'produtos' => $produtos
         ]);
     }
 
     public function store(PedidoRequest $request)
     {
-        $pedidoCreate = Pedido::create($request->all()); 
-        $pedidoCreate->fill($request->all()); 
+        dd($request->all());
+
+        //Cria Pedido
+        $data = [
+            'plano' => $request->plano,
+            'user' =>  $request->user,
+            'periodo' => $request->periodo,
+            'vencimento' => $request->vencimento,
+            'status' => 1
+        ];
+
+        $pedidoCreate = Pedido::create($data);
+        $pedidoCreate->save();
+
+        // return Redirect::route('pedidos.edit', [
+        //     'id' => $pedidoCreate->id,
+        // ])->with(['color' => 'success', 'message' => 'Pedido cadastrado com sucesso!']);
+    }
+
+    public function storeProduct(PedidoRequest $request)
+    {
+        $produto = Produto::where('id', $request->produto)->first();
+        //Cria Produto
+        $data = [
+            'produto'    => $request->produto,
+            'empresa'    =>  $request->empresa,
+            'gateway'    => $request->gateway,
+            'vencimento' => $request->vencimento,
+            'valor'      => str_replace(',', '', str_replace('.', '', $produto->valor)),
+            'status'     => $request->status,
+            'created_at' => now()
+        ];
+
+        $pedidoCreate = Pedido::create($data);
+        $pedidoCreate->save();
 
         return Redirect::route('pedidos.edit', [
             'id' => $pedidoCreate->id,

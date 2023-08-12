@@ -138,6 +138,8 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('pedidos/show/{id}', [PedidoController::class, 'show'])->name('pedidos.show');
     Route::get('pedidos/create', [PedidoController::class, 'create'])->name('pedidos.create');
     Route::post('pedidos/store', [PedidoController::class, 'store'])->name('pedidos.store');
+    Route::post('pedidos/store-product', [PedidoController::class, 'storeProduct'])->name('pedidos.storeProduct');
+    Route::post('pedidos/store-service', [PedidoController::class, 'storeService'])->name('pedidos.storeService');
     Route::put('pedidos/{id}', [PedidoController::class, 'update'])->name('pedidos.update');
     Route::get('pedidos/{id}/edit', [PedidoController::class, 'edit'])->name('pedidos.edit');
     Route::get('pedidos', [PedidoController::class, 'index'])->name('pedidos.index'); 

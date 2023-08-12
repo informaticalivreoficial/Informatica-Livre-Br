@@ -14,6 +14,7 @@ class Pedido extends Model
     protected $fillable = [
         'empresa',
         'orcamento',
+        'produto',
         'status',
         'valor',
         'url_slip',
@@ -30,6 +31,11 @@ class Pedido extends Model
     public function getEmpresa()
     {
         return $this->hasOne(Empresa::class, 'id', 'empresa');
+    }
+
+    public function getProduto()
+    {
+        return $this->hasOne(Produto::class, 'id', 'produto');
     }
 
     public function itens()

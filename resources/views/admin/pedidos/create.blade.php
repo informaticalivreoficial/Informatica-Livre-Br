@@ -31,7 +31,7 @@
 </div>   
                     
             
-<form action="{{ route('pedidos.store') }}" method="post" autocomplete="off">
+<form id="frm" action="{{ route('pedidos.store') }}" method="post" autocomplete="off">
 @csrf          
 <div class="row">            
     <div class="col-12"> 
@@ -44,7 +44,67 @@
                 </ul>
             </div>
             <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-12"> 
+                            <div class="form-group">
+                                <label class="labelforms text-muted"><b>Tipo de pedido</b></label>
+                                <div class="form-check">
+                                    <input id="tipo-orcamento" class="form-check-input" type="radio" value="1" name="tipo_pedido" {{(old('tipo_pedido') == '1' ? 'checked' : '')}}>
+                                    <label for="tipo-orcamento" class="form-check-label mr-5">Orçamento</label>
+                                    <input id="tipo-produto" class="form-check-input" type="radio" value="0" name="tipo_pedido" {{(old('tipo_pedido') == '0' ? 'checked' : '' )}}>
+                                    <label for="tipo-produto" class="form-check-label mr-5">Produto</label>
+                                    <input id="tipo-servico" class="form-check-input" type="radio" value="2" name="tipo_pedido" {{(old('tipo_pedido') == '2' ? 'checked' : '' )}}>
+                                    <label for="tipo-servico" class="form-check-label">Serviço</label>
+                                </div>
+                            </div>
+                        </div>                        
+                    </div>
                     <div class="row mb-2 mt-2"> 
+                        <div class="col-12 col-md-6 col-lg-4"> 
+                            <div class="form-group">
+                                <label class="labelforms text-muted"><b>*Serviços:</b> <a style="font-size:11px;" href="{{route('vendas.orcamentos')}}">(Cadastrar Serviço)</a></label>
+                                <select name="produto" class="form-control categoria tipo-servico">
+                                    @if(!empty($produtos) && $produtos->count() > 0)
+                                        <option value="">Selecione</option>
+                                        @foreach($produtos as $produto) 
+                                            <option value="{{ $produto->id }}" {{ (old('produto') == $produto->id ? 'selected' : '') }}>{{ $produto->name }}</option>                                                                                                                      
+                                        @endforeach
+                                    @else
+                                        <option value="">Cadastre um Orçamento</option>
+                                    @endif                                                                                
+                                </select>
+                            </div>
+                        </div> 
+                        <div class="col-12 col-md-6 col-lg-4"> 
+                            <div class="form-group">
+                                <label class="labelforms text-muted"><b>*Produtos:</b> <a style="font-size:11px;" href="{{route('vendas.orcamentos')}}">(Cadastrar Produto)</a></label>
+                                <select name="produto" class="form-control categoria tipo-produto">
+                                    @if(!empty($produtos) && $produtos->count() > 0)
+                                        <option value="">Selecione</option>
+                                        @foreach($produtos as $produto) 
+                                            <option value="{{ $produto->id }}" {{ (old('produto') == $produto->id ? 'selected' : '') }}>{{ $produto->name }}</option>                                                                                                                      
+                                        @endforeach
+                                    @else
+                                        <option value="">Cadastre um Orçamento</option>
+                                    @endif                                                                                
+                                </select>
+                            </div>
+                        </div> 
+                        <div class="col-12 col-md-6 col-lg-4"> 
+                            <div class="form-group">
+                                <label class="labelforms text-muted"><b>*Orçamento:</b> <a style="font-size:11px;" href="{{route('vendas.orcamentos')}}">(Cadastrar Orçamento)</a></label>
+                                <select name="orcamento" class="form-control categoria tipo-orcamento">
+                                    @if(!empty($orcamentos) && $orcamentos->count() > 0)
+                                        <option value="">Selecione</option>
+                                        @foreach($orcamentos as $orcamento) 
+                                            <option value="{{ $orcamento->id }}" {{ (old('orcamento') == $orcamento->id ? 'selected' : '') }}>{{ $orcamento->created_at  }} - {{ $orcamento->name }}</option>                                                                                                                      
+                                        @endforeach
+                                    @else
+                                        <option value="">Cadastre um Orçamento</option>
+                                    @endif                                                                                
+                                </select>
+                            </div>
+                        </div> 
                         <div class="col-12 col-md-6 col-lg-4"> 
                             <div class="form-group">
                                 <label class="labelforms text-muted"><b>*Empresa:</b> <a style="font-size:11px;" href="{{route('empresas.index')}}">(Cadastrar Empresa)</a></label>
@@ -61,22 +121,7 @@
                                 </select>
                             </div>
                         </div> 
-                        <div class="col-12 col-md-6 col-lg-4"> 
-                            <div class="form-group">
-                                <label class="labelforms text-muted"><b>*Orçamento:</b> <a style="font-size:11px;" href="{{route('vendas.orcamentos')}}">(Cadastrar Orçamento)</a></label>
-                                <select name="orcamento" class="form-control categoria">
-                                    @if(!empty($orcamentos) && $orcamentos->count() > 0)
-                                        <option value="">Selecione</option>
-                                        @foreach($orcamentos as $orcamento) 
-                                            <option value="{{ $orcamento->id }}" {{ (old('orcamento') == $orcamento->id ? 'selected' : '') }}>{{ $orcamento->created_at  }} - {{ $orcamento->name }}</option>                                                                                                                      
-                                        @endforeach
-                                    @else
-                                        <option value="">Cadastre um Orçamento</option>
-                                    @endif
-                                                                                
-                                </select>
-                            </div>
-                        </div> 
+                        
                         <div class="col-12 col-sm-4 col-md-4 col-lg-4">
                             <div class="form-group">
                                 <label class="labelforms text-muted"><b>Status:</b></label>
@@ -155,7 +200,49 @@
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
-        });          
+        });  
+        
+        function tipoPedido() {
+            if ($('#tipo-orcamento').prop('checked')) {
+                $('.tipo-servico, .tipo-produto').prop('disabled', true);
+                $('.tipo-orcamento').prop('disabled', false);
+                $('#frm').prop('action', "{{ route('pedidos.store') }}");
+            }else if($('#tipo-produto').prop('checked')){
+                $('.tipo-orcamento, .tipo-servico').prop('disabled', true);
+                $('.tipo-produto').prop('disabled', false);
+                $('#frm').prop('action', "{{ route('pedidos.storeProduct') }}");
+            }else if($('#tipo-servico').prop('checked')){
+                $('.tipo-produto, .tipo-orcamento').prop('disabled', true);
+                $('.tipo-servico').prop('disabled', false);
+                $('#frm').prop('action', "{{ route('pedidos.storeService') }}");
+            }else{
+                $('.tipo-servico, .tipo-produto, tipo-orcamento').prop('disabled', true);
+            }
+        } 
+
+        tipoPedido();
+
+        $('#tipo-orcamento').change( function(){
+            if(this.checked){
+                $('.tipo-servico, .tipo-produto').prop('disabled', true);
+                $('.tipo-orcamento').prop('disabled', false);
+                $('#frm').prop('action', "{{ route('pedidos.store') }}");
+            }
+        });
+        $('#tipo-produto').change( function(){
+            if(this.checked){
+                $('.tipo-orcamento, .tipo-servico').prop('disabled', true);
+                $('.tipo-produto').prop('disabled', false);
+                $('#frm').prop('action', "{{ route('pedidos.storeProduct') }}");
+            }
+        });
+        $('#tipo-servico').change( function(){
+            if(this.checked){
+                $('.tipo-produto, .tipo-orcamento').prop('disabled', true);
+                $('.tipo-servico').prop('disabled', false);
+                $('#frm').prop('action', "{{ route('pedidos.storeService') }}");
+            }
+        });
         
     });
 </script>
