@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\ItemPedidoRequest;
 use App\Http\Requests\Admin\PedidoRequest;
 use App\Mail\Admin\FaturaClientSend;
 use App\Models\Configuracoes;
@@ -172,11 +173,11 @@ class PedidoController extends Controller
         ]);
     }
 
-    public function storeItem(Request $request)
+    public function storeItem(ItemPedidoRequest $request)
     {
-        //$itemCreate = ItemPedido::create($request->all()); 
-        //$itemCreate->fill($request->all()); 
-
+        $itemCreate = ItemPedido::create($request->all()); 
+        $itemCreate->fill($request->all()); 
+        dd($itemCreate);
         return response()->json([
             'success' => 'success'
         ]);

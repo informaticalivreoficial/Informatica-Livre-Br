@@ -148,7 +148,7 @@
                     <div class="tab-pane fade show" id="custom-tabs-four-itens" role="tabpanel" aria-labelledby="custom-tabs-four-itens-tab">
                         <div class="row mb-2 mt-3">
                             @if(!empty($pedido->itens()->get()) && $pedido->itens()->count() > 0)
-                                <div class="12">
+                                <div class="col-12">
                                     <table class="table table-bordered table-striped projects">
                                         <thead>
                                             <tr>
@@ -161,9 +161,9 @@
                                         <tbody>
                                             @foreach($pedido->itens()->get() as $item)                    
                                             <tr>
-                                                <td></td>                        
-                                                <td class="text-center"></td> 
-                                                <td class="text-center"></td> 
+                                                <td>{{$item->descricao}}</td>                        
+                                                <td class="text-center">{{$item->quantidade}}</td> 
+                                                <td class="text-center">R$ {{str_replace(',00', '', $item->valor)}}</td> 
                                                 <td> 
                                                     <a href="" class="btn btn-xs btn-default"><i class="fas fa-pen"></i></a>                        
                                                     <button type="button" class="btn btn-xs btn-danger text-white j_modal_btn" data-id="{{$item->id}}" data-toggle="modal" data-target="#modal-default">
@@ -176,12 +176,17 @@
                                     </table>
                                 </div> 
                             @else                                
-                                <div class="col-sm-12 text-right">                                                        
-                                    <button type="button" class="btn btn-xs btn-danger text-white j_modal_insert" data-id="{{$pedido->id}}" data-toggle="modal" data-target="#modal-default">
-                                        Cadastrar item para o pedido
-                                    </button>                                                        
-                                </div>                                
-                            @endif                        
+                                <div class="col-12">                                                        
+                                    <div class="alert alert-info p-3">
+                                        Não foram encontrados registros!
+                                    </div>                                                        
+                                </div>                         
+                            @endif 
+                            <div class="col-sm-12 text-right">                                                        
+                                <button type="button" class="btn btn-xs btn-success text-white j_modal_insert" data-id="{{$pedido->id}}" data-toggle="modal" data-target="#modal-default">
+                                    Cadastrar item para o pedido
+                                </button>                                                        
+                            </div>                       
                         </div>
                     </div>
 
@@ -197,7 +202,7 @@
         <div class="modal-content">
             <form action="" method="post" class="j_modal_item_insert">            
             @csrf            
-                <input id="id_pedido" name="pedido_id" type="hidden" value="{{$pedido->id}}"/>
+                <input name="pedido" type="hidden" value="{{$pedido->id}}"/>
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -206,7 +211,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-12 mb-2" id="js-result"></div>
-                        <div class="col-7 col-md-7 col-lg-7 mb-2">
+                        <div class="col-7 col-md-8 col-lg-8 mb-2">
                             <div class="form-group">
                                 <label class="labelforms text-muted"><b>*Descrição</b></label>
                                 <input type="text" class="form-control" name="descricao" value="">
@@ -218,7 +223,7 @@
                                 <input type="text" class="form-control" name="quantidade" value="">
                             </div>
                         </div>
-                        <div class="col-3 col-md-3 col-lg-3 mb-2">
+                        <div class="col-3 col-md-2 col-lg-2 mb-2">
                             <div class="form-group">
                                 <label class="labelforms text-muted"><b>*Valor</b></label>
                                 <input type="text" class="form-control mask-money" name="valor" value="">
@@ -237,6 +242,11 @@
 @stop
 
 @section('css')
+<style>
+    .invalid-feedback {
+        display: block;
+    }
+</style>
 <link href="{{url(asset('backend/plugins/airdatepicker/css/datepicker.min.css'))}}" rel="stylesheet" type="text/css">
 @endsection
 
@@ -260,7 +270,7 @@
             }
         });   
         
-        $('.j_modal_item_insert').click(function() {
+        $('.j_modal_item_insert').submit(function() {
             var form = $(this);
             var dataString = $(form).serialize();
             $.ajax({
@@ -271,7 +281,7 @@
                 beforeSend: function(){
                     form.find(".btn-item").attr("disabled", true);
                     form.find('.btn-item').html("Carregando...");                
-                    form.find('.alert').fadeOut(500, function(){
+                    form.find('.invalid-feedback').fadeOut(500, function(){
                         $(this).remove();
                     });
                 },
@@ -289,11 +299,19 @@
                 complete: function(data){
                     form.find(".btn-item").attr("disabled", false);
                     form.find('.btn-item').html("Cadastrar");                                
+                },
+                error:function (data){
+                    $.each(data.responseJSON.errors,function(field_name,error){
+                        form.find('[name='+field_name+']').after('<span class="error invalid-feedback">' +error+ '</span>')
+                    })
                 }
             });
+
+            return false;
         });
         
     });
 </script>
+
 
 @stop

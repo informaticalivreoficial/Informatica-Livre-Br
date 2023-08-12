@@ -148,40 +148,7 @@
                                         
                                     </div>
 
-                                    <div id="accordion">   
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h4>                          
-                                                    <a style="border:none;color: #555;" data-toggle="collapse" data-parent="#accordion" href="#collapseRenda">
-                                                        <i class="nav-icon fas fa-plus mr-2"></i> Renda
-                                                    </a>
-                                                </h4>
-                                            </div>
-                                            <div id="collapseRenda" class="panel-collapse collapse show">
-                                                <div class="card-body">
-                                                    <div class="row mb-2">
-                                                        <div class="col-12 col-md-4 col-lg-4"> 
-                                                            <div class="form-group">
-                                                                <label class="labelforms text-muted"><b>Profissão:</b></label>
-                                                                <input type="text" class="form-control" placeholder="Profissão do Cliente" name="profissao" value="{{old('profissao') ?? $user->profissao}}">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-12 col-md-4 col-lg-4"> 
-                                                            <div class="form-group">
-                                                                <label class="labelforms text-muted"><b>Renda:</b></label>
-                                                                <input type="text" class="form-control mask-money" placeholder="Valores em Reais" name="renda" value="{{old('renda') ?? $user->renda}}">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-12 col-md-4 col-lg-4"> 
-                                                            <div class="form-group">
-                                                                <label class="labelforms text-muted"><b>Empresa:</b></label>
-                                                                <input type="text" class="form-control" placeholder="Contratante" name="profissao_empresa" value="{{old('profissao_empresa') ?? $user->profissao_empresa}}">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div id="accordion"> 
                                         <div class="card">
                                             <div class="card-header">
                                                 <h4>

@@ -36,11 +36,6 @@ class CreateUsersTable extends Migration
             $table->string('estado_civil')->nullable();
             $table->string('avatar')->nullable();
             $table->string('email1')->nullable();
-            
-            /** income */
-            $table->string('profissao')->nullable();
-            $table->double('renda', 10, 2)->nullable();
-            $table->string('profissao_empresa')->nullable();
 
             /** address */
             $table->string('cep')->nullable();

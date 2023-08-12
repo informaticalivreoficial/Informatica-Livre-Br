@@ -48,11 +48,6 @@ class User extends FormRequest
             //'naturalidade' => 'required_if:client,on',
             //'avatar' => 'image',
             
-            // Income
-            //'profissao' => 'required_if:client,on',
-            //'renda' => 'required_if:client,on',
-            //'profissao_empresa' => 'required_if:client,on',
-            
             // Address
             // 'cep' => 'required|min:8|max:9',
             // 'rua' => 'required',
