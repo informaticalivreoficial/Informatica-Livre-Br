@@ -141,6 +141,8 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::post('pedidos/store-product', [PedidoController::class, 'storeProduct'])->name('pedidos.storeProduct');
     Route::post('pedidos/store-service', [PedidoController::class, 'storeService'])->name('pedidos.storeService');
     Route::put('pedidos/{id}', [PedidoController::class, 'update'])->name('pedidos.update');
+    Route::put('pedidos-product/{id}', [PedidoController::class, 'updateProduct'])->name('pedidos.updateProduct');
+    Route::put('pedidos-service/{id}', [PedidoController::class, 'updateService'])->name('pedidos.updateService');
     Route::get('pedidos/{id}/edit', [PedidoController::class, 'edit'])->name('pedidos.edit');
     Route::get('pedidos', [PedidoController::class, 'index'])->name('pedidos.index'); 
     Route::get('pedidos/sendFormFaturaClient', [PedidoController::class, 'sendFormFaturaClient'])->name('pedidos.sendFormFaturaClient');   

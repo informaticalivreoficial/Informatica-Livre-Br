@@ -82,7 +82,7 @@
                                     @if(!empty($produtos) && $produtos->count() > 0)
                                         <option value="">Selecione</option>
                                         @foreach($produtos as $produto) 
-                                            <option value="{{ $produto->id }}" {{ (old('produto') == $produto->id ? 'selected' : '') }}>{{ $produto->name }}</option>                                                                                                                      
+                                            <option value="{{ $produto->id }}" {{ (old('produto') == $produto->id ? 'selected' : '') }}>{{ $produto->name }} - R${{ $produto->valor }}</option>                                                                                                                      
                                         @endforeach
                                     @else
                                         <option value="">Cadastre um Orçamento</option>

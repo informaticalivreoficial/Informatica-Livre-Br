@@ -46,8 +46,6 @@ class PedidoController extends Controller
 
     public function store(PedidoRequest $request)
     {
-        dd($request->all());
-
         //Cria Pedido
         $data = [
             'plano' => $request->plano,
@@ -76,6 +74,7 @@ class PedidoController extends Controller
             'vencimento' => $request->vencimento,
             'valor'      => str_replace(',', '', str_replace('.', '', $produto->valor)),
             'status'     => $request->status,
+            'tipo_pedido'     => $request->tipo_pedido,
             'created_at' => now()
         ];
 
@@ -101,11 +100,13 @@ class PedidoController extends Controller
     {
         $pedido = Pedido::where('id', $id)->first();
         $empresas = Empresa::orderBy('created_at', 'DESC')->get();
+        $produtos = Produto::orderBy('created_at', 'DESC')->available()->get();
         $gateways = Gateway::orderBy('created_at', 'ASC')->available()->get();
         
         return view('admin.pedidos.edit', [
             'pedido' => $pedido,
             'gateways' => $gateways,
+            'produtos' => $produtos,
             'empresas' => $empresas
         ]);
     }

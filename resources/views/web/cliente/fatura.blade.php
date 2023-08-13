@@ -43,6 +43,13 @@
                 border-radius: 0.25rem;
                 transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
             }
+
+            input[type="radio"] {
+                    visibility: hidden;
+            }
+            .selecionada {
+                opacity: 0.5;
+            }
         </style>
     </head>
     <body>
@@ -142,6 +149,13 @@
                                                     <td class="cs-width_3 cs-text_right">R$ {{str_replace(',00', '', ($item->quantidade * $item->valor))}}</td>
                                                 </tr>
                                                 @endforeach
+                                            @else
+                                                <tr>
+                                                    <td class="cs-width_1">1</td>
+                                                    <td class="cs-width_4">{{$fatura->getProduto->name}}</td>                                        
+                                                    <td class="cs-width_2">R$ {{$fatura->valor}}</td>
+                                                    <td class="cs-width_3 cs-text_right">R$ {{$fatura->valor}}</td>
+                                                </tr>
                                             @endif                                                                                      
                                         </tbody>
                                     </table>
@@ -161,7 +175,7 @@
                                         <table>
                                             <tbody>
                                                 <tr class="cs-border_left">
-                                                    <td class="cs-width_3 cs-semi_bold cs-primary_color cs-focus_bg">Subtoal</td>
+                                                    <td class="cs-width_3 cs-semi_bold cs-primary_color cs-focus_bg">Subtotal</td>
                                                     <td class="cs-width_3 cs-semi_bold cs-focus_bg cs-primary_color cs-text_right">R$ {{$fatura->valor ?? str_replace(',00', '', $fatura->itensTotalValor())}}</td>
                                                 </tr>
                                                 <tr class="cs-border_left">
@@ -190,25 +204,60 @@
                     @endif 
                 </div>
 
-                <div class="cs-invoice_btns cs-hide_print">
-                    <a href="javascript:window.print()" class="cs-invoice_btn cs-color1">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512">
-                            <path d="M384 368h24a40.12 40.12 0 0040-40V168a40.12 40.12 0 00-40-40H104a40.12 40.12 0 00-40 40v160a40.12 40.12 0 0040 40h24" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="32"/>
-                            <rect x="128" y="240" width="256" height="208" rx="24.32" ry="24.32" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="32"/>
-                            <path d="M384 128v-24a40.12 40.12 0 00-40-40H168a40.12 40.12 0 00-40 40v24" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="32"/>
-                            <circle cx="392" cy="184" r="24"/>
-                        </svg>
-                        <span>Imprimir</span>
-                    </a>
-                    @if ($fatura->url_slip && $fatura->status != 'paid' && $fatura->status != 'completed' && $fatura->status != 'canceled')
+                <div style="width: 100% !important;" class="cs-hide_print">
+                    <div style="width: 100%;display:block;">
+                        <p class="lead">Forma de Pagamento:</p>
+                        @if (!empty($gateways) && $gateways->count() > 0)
+                           @foreach ($gateways as $gateway)
+                               <label class="gateway" for="{{$gateway->id}}">
+                                   <img class="m-2" width="120" src="{{$gateway->logomarca}}" alt="{{$gateway->nome}}">
+                               </label>
+                               <input class="gateway" type="radio" name="gateway" value="{{$gateway->id}}" id="{{$gateway->id}}" />
+                           @endforeach
+                        @endif                       
+                    </div>
+                    <div style="width: 100%;display:flex;justify-content:flex-end">
+                        <a href="javascript:window.print()" class="cs-invoice_btn cs-color1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512">
+                                <path d="M384 368h24a40.12 40.12 0 0040-40V168a40.12 40.12 0 00-40-40H104a40.12 40.12 0 00-40 40v160a40.12 40.12 0 0040 40h24" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="32"/>
+                                <rect x="128" y="240" width="256" height="208" rx="24.32" ry="24.32" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="32"/>
+                                <path d="M384 128v-24a40.12 40.12 0 00-40-40H168a40.12 40.12 0 00-40 40v24" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="32"/>
+                                <circle cx="392" cy="184" r="24"/>
+                            </svg>
+                            <span>Imprimir</span>
+                        </a>
                         <a href="{{$fatura->url_slip}}" target="_blank" class="cs-invoice_btn cs-color2">
                             <span>Pagar Fatura</span>
                         </a>
-                    @endif                    
+                    </div>
+                                        
                 </div>
             </div>
         </div>
-        <script src="{{url(asset('frontend/assets/css/fatura.js'))}}"></script>        
-        <script src="{{url(asset('frontend/assets/css/html2canvas.min.js'))}}"></script>        
+        <script src="{{url(asset('frontend/assets/js/core.min.js'))}}"></script>
+        <script src="{{url(asset('frontend/assets/js/fatura.js'))}}"></script>        
+        <script src="{{url(asset('frontend/assets/css/html2canvas.min.js'))}}"></script>   
+        <script>
+            $(function () {           
+            
+                $(".gateway").each(function(){
+                    if($(this).find('input[type="radio"]').first().attr("checked")){
+                        $(this).addClass('selecionada');
+                    }else{
+                        $(this).removeClass('selecionada');
+                    }
+                });
+
+                $(".gateway").on("click", function(e){
+                    $(".gateway").removeClass('selecionada');
+                    $(this).addClass('selecionada');
+                    var $radio = $(this).find('input[type="radio"]');
+                    $radio.prop("checked",!$radio.prop("checked"));
+
+                    e.preventDefault();
+                });           
+                
+            });
+        </script>     
     </body>
 </html>
