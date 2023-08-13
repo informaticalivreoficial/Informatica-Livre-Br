@@ -219,5 +219,13 @@ class PedidoController extends Controller
             'success' => 'success'
         ]);
     }
+
+    public function SetGateway(Request $request)
+    {        
+        $pedido = Pedido::find($request->pedido);
+        $pedido->gateway = $request->gateway;
+        $pedido->save();
+        return response()->json(['success' => true]);
+    }
     
 }

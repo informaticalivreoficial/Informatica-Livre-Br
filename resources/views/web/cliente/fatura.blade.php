@@ -209,10 +209,10 @@
                         <p class="lead">Forma de Pagamento:</p>
                         @if (!empty($gateways) && $gateways->count() > 0)
                            @foreach ($gateways as $gateway)
-                               <label class="gateway" for="{{$gateway->id}}">
+                               <label class="gateway" for="{{$gateway->id}}" data-id="{{ $gateway->id }}">
                                    <img class="m-2" width="120" src="{{$gateway->logomarca}}" alt="{{$gateway->nome}}">
                                </label>
-                               <input class="gateway" type="radio" name="gateway" value="{{$gateway->id}}" id="{{$gateway->id}}" />
+                               <input class="gateway" type="radio" name="gateway" value="{{$gateway->id}}"  />
                            @endforeach
                         @endif                       
                     </div>
@@ -226,7 +226,7 @@
                             </svg>
                             <span>Imprimir</span>
                         </a>
-                        <a href="{{$fatura->url_slip}}" target="_blank" class="cs-invoice_btn cs-color2">
+                        <a href="" target="_blank" class="cs-invoice_btn cs-color2">
                             <span>Pagar Fatura</span>
                         </a>
                     </div>
@@ -236,7 +236,7 @@
         </div>
         <script src="{{url(asset('frontend/assets/js/core.min.js'))}}"></script>
         <script src="{{url(asset('frontend/assets/js/fatura.js'))}}"></script>        
-        <script src="{{url(asset('frontend/assets/css/html2canvas.min.js'))}}"></script>   
+        <script src="{{url(asset('frontend/assets/js/html2canvas.min.js'))}}"></script>   
         <script>
             $(function () {           
             
@@ -245,17 +245,34 @@
                         $(this).addClass('selecionada');
                     }else{
                         $(this).removeClass('selecionada');
-                    }
+                    }                    
                 });
 
-                $(".gateway").on("click", function(e){
+                $(".gateway").on("click", function(e){  
+                    
                     $(".gateway").removeClass('selecionada');
                     $(this).addClass('selecionada');
+
+                    var gateway_id = $(this).data('id');
+                    $.ajax({
+                        type: 'GET',
+                        dataType: 'JSON',
+                        url: "{{ route('pedidos.SetGateway') }}",
+                        data: {
+                            'gateway': gateway_id,
+                            'pedido': "{{$fatura->id}}"
+                        },
+                        success:function(data) {
+                            
+                        }
+                    });
+                                       
                     var $radio = $(this).find('input[type="radio"]');
                     $radio.prop("checked",!$radio.prop("checked"));
+                     
 
                     e.preventDefault();
-                });           
+                });
                 
             });
         </script>     

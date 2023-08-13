@@ -152,6 +152,7 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::delete('pedidos/deleteon', [PedidoController::class, 'deleteon'])->name('pedidos.deleteon');
     Route::get('pedidos/delete', [PedidoController::class, 'delete'])->name('pedidos.delete'); 
     Route::get('pedidos/set-status', [PedidoController::class, 'setStatus'])->name('pedidos.setStatus'); 
+    Route::get('pedidos/set-gateway', [PedidoController::class, 'SetGateway'])->name('pedidos.SetGateway'); 
     Route::get('orcamentos/set-status', [OrcamentoController::class, 'orcamentoSetStatus'])->name('orcamento.orcamentoSetStatus'); 
     Route::delete('orcamentos/deleteon', [OrcamentoController::class, 'deleteon'])->name('orcamento.deleteon');
     Route::get('orcamentos/delete', [OrcamentoController::class, 'delete'])->name('orcamento.delete'); 
