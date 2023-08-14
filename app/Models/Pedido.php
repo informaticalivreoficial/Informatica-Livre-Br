@@ -63,10 +63,10 @@ class Pedido extends Model
         }
     }
 
-    public function setVencimentoAttribute($value)
-    {
-        $this->attributes['vencimento'] = (!empty($value) ? $this->convertStringToDate($value) : null);
-    }
+    // public function setVencimentoAttribute($value)
+    // {
+    //     $this->attributes['vencimento'] = (!empty($value) ? $this->convertStringToDate($value) : null);
+    // }
 
     public function setValorAttribute($value)
     {

@@ -36,7 +36,8 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
     Route::get('teste-qrcode', [WebController::class, 'qrcode'])->name('qrcode'); 
     Route::get('/', [WebController::class, 'home'])->name('home');   
     
-    Route::get('pagar/{pedido}', [PedidoController::class, 'pagar'])->name('pagar');
+    //Pagamentos
+    Route::get('pagar/{uuid}', [ClienteController::class, 'pagar'])->name('pagar');
     Route::post('notification/pagHiper', [PedidoController::class, 'getTransaction'])->name('getTransaction');
 
     //****************************** Política de Privacidade ******************************/

@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\Gateway;
+use App\Models\ItemPedido;
 use App\Models\Pedido;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use WebMaster\PagHiper\PagHiper;
 
 class ClienteController extends Controller
@@ -27,35 +29,84 @@ class ClienteController extends Controller
         ]);
     }
 
-    public function pagarPagHiper($fatura)
+    public function pagar($uuid)
     {
-        $fatura = Pedido::where('id', $fatura)->first();
-        $data = [
-            'order_id' => $fatura->id,
-            'payer_name' => $fatura->getEmpresa->alias_name,
-            'payer_email' => $fatura->getEmpresa->email,
-            'payer_phone' => $fatura->getEmpresa->celular, // fixou ou móvel
-            'payer_street' => 'Av Brigadeiro Faria Lima',
-            'payer_number' => '1461',
-            'payer_complement' => 'Torre Sul 4º Andar',
-            'payer_district' => 'Jardim Paulistano',
-            'payer_city' => 'São Paulo',
-            'payer_state' => 'SP', // apenas sigla do estado
-            'payer_zip_code' => '01452002',
-            'payer_cpf_cnpj' => ($fatura->getEmpresa->cnpj ? $fatura->getEmpresa->cnpj : $fatura->getEmpresa->owner->cpf),
-            'days_due_date' => Carbon::parse($fatura->vencimento)->diffInDays(Carbon::parse(Carbon::now())),
-            'type_bank_slip' => 'boletoa4',
-            'notification_url' => 'https://mysite.com/notification/paghiper/',
-            'items' => [
-                [
+        $fatura = Pedido::where('uuid', $uuid)->first();
+
+        if($fatura->gateway == 2){
+            $data = [
+                'order_id' => $fatura->id,
+                'payer_name' => $fatura->getEmpresa->alias_name,
+                'payer_email' => $fatura->getEmpresa->email,
+                'payer_phone' => str_replace(['.', '-', '(', ')', ' '], "", $fatura->getEmpresa->celular), // fixou ou móvel
+                'payer_street' => $fatura->getEmpresa->rua,
+                'payer_number' => $fatura->getEmpresa->num,
+                'payer_complement' => $fatura->getEmpresa->complemento,
+                'payer_district' => $fatura->getEmpresa->bairro,
+                'payer_city' => $fatura->getEmpresa->cidade,
+                'payer_state' => $fatura->getEmpresa->uf, // apenas sigla do estado
+                'payer_zip_code' => str_replace(['.', '-', ' '], "", $fatura->getEmpresa->cep),
+                'payer_cpf_cnpj' => str_replace(['.','-','/'], "", ($fatura->getEmpresa->cnpj ? $fatura->getEmpresa->cnpj : $fatura->getEmpresa->owner->cpf)),
+                'days_due_date' => Carbon::parse($fatura->vencimento)->diffInDays(Carbon::parse(Carbon::now())),
+                'type_bank_slip' => 'boletoa4',
+                'notification_url' => 'https://webhook.site/d8762b26-8f9c-4e78-9cf0-aa4d08e6cddc',
+                // 'items' => [
+                //     [
+                //         'item_id' => 1,
+                //         'description' => $fatura->pedidoObject->planoObject->name,
+                //         'quantity' => 1,
+                //         'price_cents' => str_replace('.', '', $fatura->valor)
+                //     ]
+                // ]
+            ];
+
+            if(!empty($fatura->itens()) && $fatura->itens->count() > 0){
+                $itensPedido = ItemPedido::where('pedido', $fatura->id)->get();
+                if(!empty($itensPedido) && $itensPedido->count() > 0){
+                    $items = [];
+                    foreach($itensPedido as $item){
+                        $items['items'][] = [                    
+                            'description' => $item->descricao,
+                            'quantity' => $item->quantidade,
+                            'item_id' => $item->id,
+                            'price_cents' => str_replace(',', '.', str_replace('.', '', $item->valor))                    
+                        ];
+                    }
+                }
+            }else{
+                $items['items'][] = [                                        
                     'item_id' => 1,
-                    'description' => $fatura->pedidoObject->planoObject->name,
+                    'description' => $fatura->getProduto->name,
                     'quantity' => 1,
-                    'price_cents' => str_replace('.', '', $fatura->valor)
-                ]
-            ]
-        ];  
-        dd($data);
-        //return $this->gerarBoleto($data);       
+                    'price_cents' => str_replace(',', '', $fatura->valor)   
+                ];
+            }
+
+            $array = array_merge($data, $items); 
+            return $this->gerarBoleto($array);       
+        }
+         
+               
+    }
+
+    public function gerarBoleto($data)
+    {
+        $paghiper = new PagHiper(
+            env('PAGHIPER_APIKEY'), 
+            env('PAGHIPER_TOKEM')
+        );
+        $transaction = $paghiper->billet()->create($data);
+        
+        if(!empty($transaction) && $transaction['result'] == 'success'){
+            $fatura = Pedido::where('id', $transaction['order_id'])->first();
+            $fatura->transaction_id = $transaction['transaction_id'];
+            $fatura->status = $transaction['status'];
+            $fatura->valor = str_replace(',', '.', str_replace('.', '', $transaction['value_cents']));
+            $fatura->url_slip = $transaction['bank_slip']['url_slip'];
+            $fatura->digitable_line = $transaction['bank_slip']['digitable_line'];
+            $fatura->vencimento = $transaction['due_date'];
+            $fatura->save(); 
+            return Redirect::away($fatura->url_slip);           
+        }  
     }
 }

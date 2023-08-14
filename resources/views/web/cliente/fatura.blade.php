@@ -121,7 +121,7 @@
                                             @endif
                                         @endif
                                         @if($fatura->getEmpresa->cidade)  
-                                        <br>{{\App\Helpers\Cidade::getCidadeNome($fatura->getEmpresa->cidade, 'cidades')}}
+                                        <br>{{$fatura->getEmpresa->cidade}}
                                         @endif
                                     @endif
                                 </p>
@@ -205,17 +205,21 @@
                 </div>
 
                 <div style="width: 100% !important;" class="cs-hide_print">
-                    <div style="width: 100%;display:block;">
-                        <p class="lead">Forma de Pagamento:</p>
-                        @if (!empty($gateways) && $gateways->count() > 0)
-                           @foreach ($gateways as $gateway)
-                               <label class="gateway" for="{{$gateway->id}}" data-id="{{ $gateway->id }}">
-                                   <img class="m-2" width="120" src="{{$gateway->logomarca}}" alt="{{$gateway->nome}}">
-                               </label>
-                               <input class="gateway" type="radio" name="gateway" value="{{$gateway->id}}"  />
-                           @endforeach
-                        @endif                       
-                    </div>
+                   
+                    @if ($fatura->status != 'canceled' || $fatura->status != 'paid' || $fatura->status != 'completed')
+                        <div style="width: 100%;display:block;">
+                            <p class="lead">Forma de Pagamento:</p>
+                            @if (!empty($gateways) && $gateways->count() > 0)
+                            @foreach ($gateways as $gateway)
+                                <label class="gateway {{ ($gateway->id == $fatura->gateway ? 'selecionada' : '') }}" for="{{$gateway->id}}" data-id="{{ $gateway->id }}">
+                                    <img class="m-2" width="120" src="{{$gateway->logomarca}}" alt="{{$gateway->nome}}">
+                                </label>
+                                <input class="gateway" type="radio" name="gateway" value="{{$gateway->id}}" {{ ($gateway->id == $fatura->gateway ? 'checked' : '') }} />
+                            @endforeach
+                            @endif                       
+                        </div>  
+                    @endif
+                    
                     <div style="width: 100%;display:flex;justify-content:flex-end">
                         <a href="javascript:window.print()" class="cs-invoice_btn cs-color1">
                             <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512">
@@ -226,9 +230,11 @@
                             </svg>
                             <span>Imprimir</span>
                         </a>
-                        <a href="" target="_blank" class="cs-invoice_btn cs-color2">
-                            <span>Pagar Fatura</span>
-                        </a>
+                        @if ($fatura->status != 'canceled' || $fatura->status != 'paid' || $fatura->status != 'completed')
+                            <a target="_blank" href="{{$fatura->url_slip ?? route('web.pagar', [ 'uuid' => $fatura->uuid ])}}" class="cs-invoice_btn cs-color2 setBoleto">
+                                <span>Pagar Fatura</span>
+                            </a>
+                        @endif                        
                     </div>
                                         
                 </div>
@@ -241,11 +247,11 @@
             $(function () {           
             
                 $(".gateway").each(function(){
-                    if($(this).find('input[type="radio"]').first().attr("checked")){
-                        $(this).addClass('selecionada');
-                    }else{
-                        $(this).removeClass('selecionada');
-                    }                    
+                    // if($(this).find('input[type="radio"]').first().attr("checked")){
+                    //     $(this).addClass('selecionada');
+                    // }else{
+                    //     $(this).removeClass('selecionada');
+                    // }                    
                 });
 
                 $(".gateway").on("click", function(e){  
@@ -272,6 +278,12 @@
                      
 
                     e.preventDefault();
+                });
+
+                $('.setBoleto').click(function() {
+                    setTimeout(function() {
+                        location.reload();
+                    }, 3000);
                 });
                 
             });
