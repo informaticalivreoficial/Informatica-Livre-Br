@@ -75,7 +75,7 @@
                                                 $cover = url(asset('backend/assets/images/image.jpg'));
                                             }
                                         @endphp
-                                        <img id="preview" src="{{$cover}}" alt="{{ old('alias_name') }}" title="{{ old('alias_name') }}"/>
+                                        <img id="preview" src="{{$cover}}" alt="{{ old('alias_name') ?? $empresa->alias_name }}" title="{{ old('alias_name') ?? $empresa->alias_name }}"/>
                                         <input id="img-input" type="file" name="logomarca">
                                     </div>                                                
                                 </div>

@@ -13,8 +13,17 @@ class CreateCofresTable extends Migration
      */
     public function up()
     {
-        Schema::create('cofres', function (Blueprint $table) {
-            $table->id();
+        Schema::create('cofre', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->string('email')->nullable();
+            $table->string('logomarca')->nullable();
+            $table->string('login')->nullable();            
+            $table->string('password')->nullable();
+            $table->string('token')->nullable();
+            $table->integer('status')->default('0');
+            $table->text('content')->nullable();
+
             $table->timestamps();
         });
     }
@@ -26,6 +35,6 @@ class CreateCofresTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cofres');
+        Schema::dropIfExists('cofre');
     }
 }

@@ -378,7 +378,11 @@ return [
                 ],
             ]
         ],
-        
+        [
+            'text' => 'Cofre',
+            'url'  => 'admin/cofre',
+            'icon' => 'fas fa-lock',
+        ],
     ],
 
     /*

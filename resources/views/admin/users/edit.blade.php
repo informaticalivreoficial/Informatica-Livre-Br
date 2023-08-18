@@ -378,10 +378,10 @@
                                                     <label for="client" class="form-check-label">Cliente</label>
                                                 </div>
                                                 @if(\Illuminate\Support\Facades\Auth::user()->superadmin == 1)
-                                                <div class="form-check d-inline mx-2">
-                                                    <input id="superadmin" class="form-check-input" type="checkbox"  name="superadmin" {{ (old('superadmin') == 'on' || old('superadmin') == true ? 'checked' : ($user->superadmin == true ? 'checked' : '')) }}>
-                                                    <label for="superadmin" class="form-check-label">Super Administrador</label>
-                                                </div>
+                                                    <div class="form-check d-inline mx-2">
+                                                        <input id="superadmin" class="form-check-input" type="checkbox"  name="superadmin" {{ (old('superadmin') == 'on' || old('superadmin') == true ? 'checked' : ($user->superadmin == true ? 'checked' : '')) }}>
+                                                        <label for="superadmin" class="form-check-label">Super Administrador</label>
+                                                    </div>
                                                 @endif
                                             </div>
                                         </div>                                        

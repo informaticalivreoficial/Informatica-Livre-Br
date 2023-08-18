@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\{
     EmpresaController,
     ProdutoController,
     CatProdutoController,
+    CofreController,
     NewsletterController,
     NotificationController,
     OrcamentoController,
@@ -271,6 +272,16 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('/notifications', [NotificationController::class, 'notifications'])->name('notifications');
     Route::put('/notification-all-read', [NotificationController::class, 'markAllAsRead']);
     Route::put('/notification-read', [NotificationController::class, 'markAsRead']);
+
+    //********************************* Cofre *******************************************/
+    Route::get('cofre/set-status', [CofreController::class, 'itemSetStatus'])->name('cofre.itemSetStatus');
+    Route::delete('cofre/deleteon', [CofreController::class, 'deleteon'])->name('cofre.deleteon');
+    Route::get('cofre/delete', [CofreController::class, 'delete'])->name('cofre.delete');
+    Route::put('cofre/{id}', [CofreController::class, 'update'])->name('cofre.update');
+    Route::get('cofre/{id}/edit', [CofreController::class, 'edit'])->name('cofre.edit');
+    Route::get('cofre/create', [CofreController::class, 'create'])->name('cofre.create');
+    Route::post('cofre/store', [CofreController::class, 'store'])->name('cofre.store');
+    Route::get('/cofre', [CofreController::class, 'index'])->name('cofre.index');
 
     Route::get('/', [AdminController::class, 'home'])->name('home');
 });
