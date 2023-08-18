@@ -115,16 +115,8 @@ class UserController extends Controller
             return Redirect::back()->with(['color' => 'danger', 'message' => 'Data de nascimento inválida!']);
         }
 
-        if($request->estado_civil == 'casado'){
-            $nasc_conjuje = Carbon::createFromFormat('d/m/Y', $request->nasc_conjuje)->format('d-m-Y');
-            if(Carbon::parse($nasc_conjuje)->age < 18){
-                return Redirect::back()->with(['color' => 'danger', 'message' => 'Data de nascimento do conjuje inválida!']);
-            }            
-        }
-
         if(!empty($request->file('avatar'))){
             Storage::delete($user->avatar);
-            //Cropper::flush($user->avatar);
             $user->avatar = '';
         }
 
