@@ -47,7 +47,7 @@ class ClienteController extends Controller
                 'payer_state' => $fatura->getEmpresa->uf, // apenas sigla do estado
                 'payer_zip_code' => str_replace(['.', '-', ' '], "", $fatura->getEmpresa->cep),
                 'payer_cpf_cnpj' => str_replace(['.','-','/'], "", ($fatura->getEmpresa->cnpj ? $fatura->getEmpresa->cnpj : $fatura->getEmpresa->owner->cpf)),
-                'days_due_date' => Carbon::parse($fatura->vencimento)->diffInDays(Carbon::parse(Carbon::now())),
+                'days_due_date' => (Carbon::parse($fatura->vencimento)->lt(Carbon::parse(Carbon::now())) ? '5' : Carbon::parse($fatura->vencimento)->diffInDays(Carbon::parse(Carbon::now()))),
                 'type_bank_slip' => 'boletoa4',
                 'notification_url' => 'https://webhook.site/d8762b26-8f9c-4e78-9cf0-aa4d08e6cddc',
                 // 'items' => [
@@ -82,7 +82,7 @@ class ClienteController extends Controller
                 ];
             }
 
-            $array = array_merge($data, $items); 
+            $array = array_merge($data, $items); //dd($array);
             return $this->gerarBoleto($array);       
         }
          
