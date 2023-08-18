@@ -49,15 +49,7 @@ class ClienteController extends Controller
                 'payer_cpf_cnpj' => str_replace(['.','-','/'], "", ($fatura->getEmpresa->cnpj ? $fatura->getEmpresa->cnpj : $fatura->getEmpresa->owner->cpf)),
                 'days_due_date' => Carbon::parse($fatura->vencimento)->diffInDays(Carbon::parse(Carbon::now())),
                 'type_bank_slip' => 'boletoa4',
-                'notification_url' => 'https://webhook.site/d8762b26-8f9c-4e78-9cf0-aa4d08e6cddc',
-                // 'items' => [
-                //     [
-                //         'item_id' => 1,
-                //         'description' => $fatura->pedidoObject->planoObject->name,
-                //         'quantity' => 1,
-                //         'price_cents' => str_replace('.', '', $fatura->valor)
-                //     ]
-                // ]
+                'notification_url' => 'https://webhook.site/d8762b26-8f9c-4e78-9cf0-aa4d08e6cddc',                
             ];
 
             if(!empty($fatura->itens()) && $fatura->itens->count() > 0){

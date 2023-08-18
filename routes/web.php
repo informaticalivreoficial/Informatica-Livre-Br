@@ -21,7 +21,8 @@ use App\Http\Controllers\Admin\{
     PedidoController,
     PortifolioController,
     SitemapController,
-    SlideController
+    SlideController,
+    StripePaymentController
 };
 use App\Http\Controllers\Web\{
     ClienteController,
@@ -39,6 +40,9 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
     //Pagamentos
     Route::get('pagar/{uuid}', [ClienteController::class, 'pagar'])->name('pagar');
     Route::post('notification/pagHiper', [PedidoController::class, 'getTransaction'])->name('getTransaction');
+
+    Route::get('stripe', [StripePaymentController::class, 'stripe']);
+    Route::post('stripe', [StripePaymentController::class, 'stripePost'])->name('stripe.post');
 
     //****************************** Política de Privacidade ******************************/
     Route::get('/politica-de-privacidade', [WebController::class, 'politica'])->name('politica');

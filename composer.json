@@ -19,6 +19,7 @@
         "simplesoftwareio/simple-qrcode": "~2",
         "spatie/laravel-analytics": "^3.11",
         "spatie/laravel-sitemap": "^5.9",
+        "stripe/stripe-php": "^10.21",
         "webmasterdro/paghiper-php-sdk": "^3.0"
     },
     "require-dev": {
