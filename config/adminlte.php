@@ -284,6 +284,24 @@ return [
             ]
         ],
         [
+            'text' => 'Serviços',            
+            'icon' => 'fas fa-store',
+            'submenu' => [
+                [
+                    'text' => 'Listar Todos',
+                    'url'  => 'admin/servicos',
+                ],                
+                [
+                    'text' => 'Cadastrar Novo',
+                    'url'  => 'admin/servicos/create',
+                ],                
+                [
+                    'text' => 'Categorias',
+                    'url'  => 'admin/servicos/categorias',
+                ]
+            ]
+        ],
+        [
             'text' => 'Portifólio',            
             'icon' => 'fas fa-project-diagram',
             'submenu' => [

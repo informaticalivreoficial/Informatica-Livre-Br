@@ -30,6 +30,7 @@ use App\Http\Controllers\Web\{
     SendEmailController,
     WebController
 };
+use App\Models\CatServico;
 
 Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
     
@@ -204,7 +205,16 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('produtos/{id}/edit', [ProdutoController::class, 'edit'])->name('produtos.edit');
     Route::get('produtos/create', [ProdutoController::class, 'create'])->name('produtos.create');
     Route::post('produtos/store', [ProdutoController::class, 'store'])->name('produtos.store');
-    Route::get('produtos', [ProdutoController::class, 'index'])->name('produtos.index');    
+    Route::get('produtos', [ProdutoController::class, 'index'])->name('produtos.index');
+    
+    //*************************** Serviços Categorias **********************************/
+    Route::get('servicos/categorias/delete', [CatServico::class, 'delete'])->name('servicos-categorias.delete');
+    Route::delete('servicos/categorias/deleteon', [CatServico::class, 'deleteon'])->name('servicos-categorias.deleteon');
+    Route::get('servicos/categorias/{id}/edit', [CatServico::class, 'edit'])->name('servicos-categorias.edit');
+    Route::put('servicos/categorias/{id}', [CatServico::class, 'update'])->name('servicos-categorias.update');
+    Route::match(['post', 'get'],'servicos/categorias/create/{catpai}', [CatServico::class, 'create'])->name('servicos-categorias.create');
+    Route::post('servicos/categorias/store', [CatServico::class, 'store'])->name('servicos-categorias.store');
+    Route::get('servicos/categorias', [CatServico::class, 'index'])->name('catservicos.index');
 
     //****************************** Empresas *******************************************/
     Route::match(['post', 'get'], 'empresas/fetchCity', [EmpresaController::class, 'fetchCity'])->name('empresas.fetchCity');

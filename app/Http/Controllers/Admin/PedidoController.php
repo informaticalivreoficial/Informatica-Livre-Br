@@ -31,8 +31,8 @@ class PedidoController extends Controller
 
     public function create()
     {
-        $empresas = Empresa::orderBy('created_at', 'DESC')->get();
-        $orcamentos = Orcamento::orderBy('created_at', 'DESC')->get();
+        $empresas = Empresa::orderBy('created_at', 'DESC')->available()->get();
+        $orcamentos = Orcamento::orderBy('created_at', 'DESC')->available()->get();
         $produtos = Produto::orderBy('created_at', 'DESC')->available()->get();
         $gateways = Gateway::orderBy('created_at', 'DESC')->get();
 
@@ -99,7 +99,7 @@ class PedidoController extends Controller
     public function edit($id)
     {
         $pedido = Pedido::where('id', $id)->first();
-        $empresas = Empresa::orderBy('created_at', 'DESC')->get();
+        $empresas = Empresa::orderBy('created_at', 'DESC')->available()->get();
         $produtos = Produto::orderBy('created_at', 'DESC')->available()->get();
         $gateways = Gateway::orderBy('created_at', 'ASC')->available()->get();
         
