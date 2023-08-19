@@ -44,4 +44,5 @@ class Cofre extends Model
 
         return Storage::url($this->logomarca);
     }
+
 }

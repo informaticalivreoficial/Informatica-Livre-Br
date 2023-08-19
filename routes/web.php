@@ -274,6 +274,7 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::put('/notification-read', [NotificationController::class, 'markAsRead']);
 
     //********************************* Cofre *******************************************/
+    Route::get('Senhas-Informatica-Livre.txt', [CofreController::class, 'setTxt'])->name('setTxt');
     Route::get('cofre/set-status', [CofreController::class, 'itemSetStatus'])->name('cofre.itemSetStatus');
     Route::delete('cofre/deleteon', [CofreController::class, 'deleteon'])->name('cofre.deleteon');
     Route::get('cofre/delete', [CofreController::class, 'delete'])->name('cofre.delete');

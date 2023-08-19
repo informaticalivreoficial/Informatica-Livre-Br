@@ -20,7 +20,8 @@
 
     <div class="card">
         <div class="card-header text-right">
-            <a href="{{route('cofre.create')}}" class="btn btn-default"><i class="fas fa-plus mr-2"></i> Cadastrar Item</a>
+            <a title="Baixar TXT" class="btn btn-dark" href="{{route('setTxt')}}"><i class="fas fa-arrow-circle-down"></i></a>
+            <a title="Cadastrar Item" href="{{route('cofre.create')}}" class="btn btn-default"><i class="fas fa-plus mr-2"></i> Cadastrar Item</a>
         </div>
         <!-- /.card-header -->
         <div class="card-body">

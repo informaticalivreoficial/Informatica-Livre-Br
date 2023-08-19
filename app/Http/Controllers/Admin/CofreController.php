@@ -9,6 +9,7 @@ use App\Models\Cofre;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 
 class CofreController extends Controller
@@ -99,5 +100,37 @@ class CofreController extends Controller
             'color' => 'success', 
             'message' => 'Item removido com sucesso!'
         ]);
+    }
+
+    public function setTxt()
+    {
+        $items = Cofre::orderBy('created_at', 'DESC')->available()->get();
+
+        $headers = [
+            'Content-Type' => 'application/plain',
+            'Content-Description' => 'File name',
+        ];
+        
+        $contents = "######################################################################################\n";
+        $contents .= "--------------------------------------------------------------------------------------\n";
+        $contents .= "############################### INFORMÁTICA LIVRE ####################################\n\n";
+        
+        if(!empty($items) && $items->count() > 0){
+            foreach($items as $item){
+                $contents .= "{$item->name}\n";
+                $contents .= "Login: {$item->login}\n";
+                $contents .= "Email: {$item->password}\n";
+                $contents .= "Password: {$item->password}\n";                
+                if($item->token){
+                    $contents .= "Token: {$item->token}\n";
+                }
+                if($item->content){
+                    $contents .= "Notas Adicionais: {$item->token}\n";
+                }
+                $contents .= "\n\n";
+            }
+        }        
+        
+        return Response::make($contents, 200, $headers);
     }
 }
