@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\{
     ParceiroController,
     PedidoController,
     PortifolioController,
+    ServicoController,
     SitemapController,
     SlideController
 };
@@ -215,6 +216,19 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::match(['post', 'get'],'servicos/categorias/create/{catpai}', [CatServico::class, 'create'])->name('servicos-categorias.create');
     Route::post('servicos/categorias/store', [CatServico::class, 'store'])->name('servicos-categorias.store');
     Route::get('servicos/categorias', [CatServico::class, 'index'])->name('catservicos.index');
+
+    //****************************** Serviços *********************************************/
+    Route::match(['get', 'post'], 'servicos/pesquisa', [ProdutoController::class, 'search'])->name('produtos.search');
+    Route::get('servicos/set-status', [ProdutoController::class, 'produtoSetStatus'])->name('produtos.produtoSetStatus');
+    Route::post('servicos/image-set-cover', [ProdutoController::class, 'imageSetCover'])->name('produtos.imageSetCover');
+    Route::delete('servicos/image-remove', [ProdutoController::class, 'imageRemove'])->name('produtos.imageRemove');
+    Route::delete('servicos/deleteon', [ProdutoController::class, 'deleteon'])->name('produtos.deleteon');
+    Route::get('servicos/delete', [ProdutoController::class, 'delete'])->name('produtos.delete');
+    Route::put('servicos/{id}', [ProdutoController::class, 'update'])->name('produtos.update');
+    Route::get('servicos/{id}/edit', [ProdutoController::class, 'edit'])->name('produtos.edit');
+    Route::get('servicos/create', [ProdutoController::class, 'create'])->name('produtos.create');
+    Route::post('servicos/store', [ServicoController::class, 'store'])->name('produtos.store');
+    Route::get('servicos', [ServicoController::class, 'index'])->name('produtos.index');
 
     //****************************** Empresas *******************************************/
     Route::match(['post', 'get'], 'empresas/fetchCity', [EmpresaController::class, 'fetchCity'])->name('empresas.fetchCity');
