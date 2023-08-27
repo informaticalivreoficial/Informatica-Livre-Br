@@ -64,14 +64,15 @@ class PedidoController extends Controller
     }
 
     public function storeProduct(PedidoRequest $request)
-    {
+    {        
         $produto = Produto::where('id', $request->produto)->first();
+        $vencimento = strtotime(Carbon::createFromFormat('d/m/Y',  $request->vencimento));
         //Cria Produto
         $data = [
             'produto'    => $request->produto,
             'empresa'    =>  $request->empresa,
             'gateway'    => $request->gateway,
-            'vencimento' => $request->vencimento,
+            'vencimento' => date('Y-m-d', $vencimento),
             'valor'      => str_replace(',', '', str_replace('.', '', $produto->valor)),
             'status'     => $request->status,
             'tipo_pedido'     => $request->tipo_pedido,
