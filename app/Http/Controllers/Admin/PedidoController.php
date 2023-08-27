@@ -44,25 +44,6 @@ class PedidoController extends Controller
         ]);
     }
 
-    public function store(PedidoRequest $request)
-    {
-        //Cria Pedido
-        $data = [
-            'plano' => $request->plano,
-            'user' =>  $request->user,
-            'periodo' => $request->periodo,
-            'vencimento' => $request->vencimento,
-            'status' => 1
-        ];
-
-        $pedidoCreate = Pedido::create($data);
-        $pedidoCreate->save();
-
-        // return Redirect::route('pedidos.edit', [
-        //     'id' => $pedidoCreate->id,
-        // ])->with(['color' => 'success', 'message' => 'Pedido cadastrado com sucesso!']);
-    }
-
     public function storeProduct(PedidoRequest $request)
     {        
         $produto = Produto::where('id', $request->produto)->first();
@@ -76,6 +57,7 @@ class PedidoController extends Controller
             'valor'      => str_replace(',', '', str_replace('.', '', $produto->valor)),
             'status'     => $request->status,
             'tipo_pedido'     => $request->tipo_pedido,
+            'notas_adicionais' => $request->notas_adicionais,
             'created_at' => now()
         ];
 
@@ -112,11 +94,25 @@ class PedidoController extends Controller
         ]);
     }
 
-    public function update(PedidoRequest $request, $id)
+    public function updateProduct(PedidoRequest $request, $id)
     {
         $pedidoUpdate = Pedido::where('id', $id)->first();
-        $pedidoUpdate->fill($request->all());
+        $produto = Produto::where('id', $request->produto)->first();
+        $vencimento = strtotime(Carbon::createFromFormat('d/m/Y',  $request->vencimento));
+
+        $data = [
+            'produto'    => $request->produto,
+            'empresa'    =>  $request->empresa,
+            'gateway'    => $request->gateway,
+            'vencimento' => date('Y-m-d', $vencimento),
+            'valor'      => str_replace(',', '', str_replace('.', '', $produto->valor)),
+            'status'     => $request->status,
+            'notas_adicionais' => $request->notas_adicionais,
+            'tipo_pedido'     => $request->tipo_pedido
+        ];
         
+        $pedidoUpdate->update($data);
+
         return Redirect::route('pedidos.edit', [
             'id' => $pedidoUpdate->id,
         ])->with(['color' => 'success', 'message' => 'Pedido atualizado com sucesso!']);

@@ -201,7 +201,7 @@ $config = [
                         <div class="row mb-2">
                             <div class="col-12">   
                                 <label class="labelforms text-muted"><b>Informações Adicionais</b></label>
-                                <x-adminlte-text-editor name="content" v placeholder="Informações Adicionais..." :config="$config">{{ old('notas_adicionais') ?? $produto->notas_adicionais }}</x-adminlte-text-editor>                                                                                     
+                                <x-adminlte-text-editor name="notas_adicionais" v placeholder="Informações Adicionais..." :config="$config">{{ old('notas_adicionais') ?? $pedido->notas_adicionais }}</x-adminlte-text-editor>                                                                                     
                             </div>                        
                         </div>                              
                     

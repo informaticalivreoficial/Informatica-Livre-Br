@@ -20,10 +20,13 @@ class Pedido extends Model
         'valor',
         'url_slip',
         'digitable_line',
+        'notas_adicionais',
         'vencimento',
         'empresa',
         'gateway',
-        'uuid'
+        'uuid',
+        'form_sendat',
+        'transaction_id'
     ];
 
     /**
