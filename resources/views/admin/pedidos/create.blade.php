@@ -2,6 +2,28 @@
 
 @section('title', 'Cadastrar Pedido')
 
+@php
+$config = [
+    "height" => "300",
+    "fontSizes" => ['8', '9', '10', '11', '12', '14', '18'],
+    "lang" => 'pt-BR',
+    "toolbar" => [
+        // [groupName, [list of button]]
+        ['style', ['style']],
+        ['fontname', ['fontname']],
+        ['fontsize', ['fontsize']],
+        ['style', ['bold', 'italic', 'underline', 'clear']],
+        //['font', ['strikethrough', 'superscript', 'subscript']],        
+        ['color', ['color']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['height', ['height']],
+        ['table', ['table']],
+        ['insert', ['link', 'picture', 'video','hr']],
+        ['view', ['fullscreen', 'codeview']],
+    ],
+]
+@endphp
+
 @section('content_header')
 <div class="row mb-2">
     <div class="col-sm-6">
@@ -165,8 +187,9 @@
                     </div>
                     
                     <div class="row mb-2">
-                        <div class="col-12"> 
-                            
+                        <div class="col-12">   
+                            <label class="labelforms text-muted"><b>Informações Adicionais</b></label>
+                            <x-adminlte-text-editor name="content" v placeholder="Informações Adicionais..." :config="$config">{{ old('notas_adicionais') }}</x-adminlte-text-editor>                                                                                     
                         </div>                        
                     </div>                              
                 
