@@ -363,27 +363,6 @@
         }
         document.getElementById("img-input").addEventListener("change", readImage, false);
 
-        $('#state-dd').on('change', function () {
-            var idState = this.value;
-            $("#city-dd").html('Carregando...');
-            $.ajax({
-                url: "{{route('empresas.fetchCity')}}",
-                type: "POST",
-                data: {
-                    estado_id: idState,
-                    _token: '{{csrf_token()}}'
-                },
-                dataType: 'json',
-                success: function (res) {
-                    $('#city-dd').html('<option value="">Selecione a cidade</option>');
-                    $.each(res.cidades, function (key, value) {
-                        $("#city-dd").append('<option value="' + value
-                            .cidade_id + '">' + value.cidade_nome + '</option>');
-                    });
-                }
-            });
-        });
-
     });
 </script>
 

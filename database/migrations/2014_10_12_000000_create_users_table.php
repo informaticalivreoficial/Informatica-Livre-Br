@@ -43,8 +43,8 @@ class CreateUsersTable extends Migration
             $table->string('num')->nullable();
             $table->string('complemento')->nullable();
             $table->string('bairro')->nullable();
-            $table->integer('uf')->nullable();
-            $table->integer('cidade')->nullable();
+            $table->string('uf')->nullable();
+            $table->string('cidade')->nullable();
 
             /** contact */
             $table->string('telefone')->nullable();

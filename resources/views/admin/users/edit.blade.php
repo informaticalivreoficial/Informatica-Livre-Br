@@ -160,47 +160,41 @@
                                             <div id="collapseEndereco" class="panel-collapse collapse show">
                                                 <div class="card-body">
                                                     <div class="row mb-2">
-                                                        <div class="col-12 col-md-4 col-lg-4"> 
+                                                        <div class="col-12 col-md-6 col-lg-2"> 
                                                             <div class="form-group">
-                                                                <label class="labelforms text-muted"><b>Estado:</b></label>
-                                                                <select id="state-dd" class="form-control" name="uf">
-                                                                    @if(!empty($estados))
-                                                                        @foreach($estados as $estado)
-                                                                        <option value="{{$estado->estado_id}}" {{ (old('uf') == $estado->estado_id ? 'selected' : ($user->uf == $estado->estado_id ? 'selected' : '')) }}>{{$estado->estado_nome}}</option>
-                                                                        @endforeach                                                                        
-                                                                    @endif
-                                                                </select>
+                                                                <label class="labelforms text-muted"><b>*CEP:</b></label>
+                                                                <input type="text" class="form-control mask-zipcode" id="cep" placeholder="Digite o CEP" name="cep" value="{{old('cep') ?? $user->cep}}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12 col-md-4 col-lg-3"> 
+                                                            <div class="form-group">
+                                                                <label class="labelforms text-muted"><b>*Estado:</b></label>
+                                                                <input type="text" class="form-control" id="uf" name="uf" value="{{old('uf') ?? $user->uf}}">
                                                             </div>
                                                         </div>
                                                         <div class="col-12 col-md-4 col-lg-4"> 
                                                             <div class="form-group">
-                                                                <label class="labelforms text-muted"><b>Cidade:</b></label>
-                                                                <select id="city-dd" class="form-control" name="cidade">
-                                                                    @if(!empty($cidades) && !empty($user->cidade))
-                                                                        @foreach($cidades as $cidade)
-                                                                        <option value="{{$cidade->cidade_id}}" {{ (old('cidade') == $cidade->cidade_id ? 'selected' : ($user->cidade == $cidade->cidade_id ? 'selected' : '')) }}>{{$cidade->cidade_nome}}</option>
-                                                                        @endforeach                                                                        
-                                                                    @endif
-                                                                </select>
+                                                                <label class="labelforms text-muted"><b>*Cidade:</b></label>
+                                                                <input type="text" class="form-control" id="cidade" name="cidade" value="{{old('cidade') ?? $user->cidade}}">
                                                             </div>
                                                         </div>
-                                                        <div class="col-12 col-md-4 col-lg-4"> 
+                                                        <div class="col-12 col-md-6 col-lg-3"> 
                                                             <div class="form-group">
-                                                                <label class="labelforms text-muted"><b>Bairro:</b></label>
-                                                                <input type="text" class="form-control" placeholder="Bairro" name="bairro" value="{{old('bairro') ?? $user->bairro}}">
+                                                                <label class="labelforms text-muted"><b>*Rua:</b></label>
+                                                                <input type="text" class="form-control" placeholder="Endereço Completo" id="rua" name="rua" value="{{old('rua') ?? $user->rua}}">
                                                             </div>
-                                                        </div>
+                                                        </div>                                            
                                                     </div>
                                                     <div class="row mb-2">
-                                                        <div class="col-12 col-md-6 col-lg-5"> 
+                                                        <div class="col-12 col-md-4 col-lg-3"> 
                                                             <div class="form-group">
-                                                                <label class="labelforms text-muted"><b>Endereço:</b></label>
-                                                                <input type="text" class="form-control" placeholder="Endereço Completo" name="rua" value="{{old('rua') ?? $user->rua}}">
+                                                                <label class="labelforms text-muted"><b>*Bairro:</b></label>
+                                                                <input type="text" class="form-control" placeholder="Bairro" id="bairro" name="bairro" value="{{old('bairro') ?? $user->bairro}}">
                                                             </div>
                                                         </div>
                                                         <div class="col-12 col-md-6 col-lg-2"> 
                                                             <div class="form-group">
-                                                                <label class="labelforms text-muted"><b>Número:</b></label>
+                                                                <label class="labelforms text-muted"><b>*Número:</b></label>
                                                                 <input type="text" class="form-control" placeholder="Número do Endereço" name="num" value="{{old('num') ?? $user->num}}">
                                                             </div>
                                                         </div>
@@ -209,13 +203,7 @@
                                                                 <label class="labelforms text-muted"><b>Complemento:</b></label>
                                                                 <input type="text" class="form-control" placeholder="Complemento (Opcional)" name="complemento" value="{{old('complemento') ?? $user->complemento}}">
                                                             </div>
-                                                        </div>
-                                                        <div class="col-12 col-md-6 col-lg-2"> 
-                                                            <div class="form-group">
-                                                                <label class="labelforms text-muted"><b>CEP:</b></label>
-                                                                <input type="text" class="form-control mask-zipcode" placeholder="Digite o CEP" name="cep" value="{{old('cep') ?? $user->cep}}">
-                                                            </div>
-                                                        </div>
+                                                        </div>                                            
                                                     </div>
                                                 </div>
                                             </div>
