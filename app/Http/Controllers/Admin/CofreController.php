@@ -16,7 +16,7 @@ class CofreController extends Controller
 {
     public function index()
     {
-        $items = Cofre::orderBy('created_at', 'DESC')->paginate(25);
+        $items = Cofre::orderBy('created_at', 'DESC')->paginate(1);
         return view('admin.cofre.index', [
             'items' => $items
         ]);
