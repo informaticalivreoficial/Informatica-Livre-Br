@@ -42,6 +42,7 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
     //Pagamentos
     Route::get('pagar/{uuid}', [ClienteController::class, 'pagar'])->name('pagar');
     Route::post('notification/pagHiper', [PedidoController::class, 'getTransaction'])->name('getTransaction');
+    Route::get('status-do-boleto', [PedidoController::class, 'statusBoleto'])->name('statusBoleto');
 
     //****************************** Política de Privacidade ******************************/
     Route::get('/politica-de-privacidade', [WebController::class, 'politica'])->name('politica');

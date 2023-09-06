@@ -182,6 +182,32 @@ class PedidoController extends Controller
             $_POST['notification_id'], 
             $_POST['idTransacao']
         );
+
+        
+    }
+
+    public function statusBoleto(Request $request)
+    {        
+        $paghiper = new PagHiper(
+            env('PAGHIPER_APIKEY'), 
+            env('PAGHIPER_TOKEM')
+        );
+
+        $transaction = $paghiper->billet()->status($request->pedido);
+        
+        if($transaction['result'] === 'success'){
+            $pedido = Pedido::where('id', $transaction['order_id'])->first();
+            $pedido->status = $transaction['status'];
+            $pedido->vencimento = $transaction['due_date'];
+            $pedido->digitable_line = $transaction['bank_slip']['digitable_line'];
+            $pedido->url_slip = $transaction['bank_slip']['url_slip'];
+            $pedido->url_slip_pdf = $transaction['bank_slip']['url_slip_pdf'];
+            $pedido->save();
+            $json = ['success' => 'Fatura atualizada!'];
+        }else{
+            $json = ['error' => 'Erro ao Atualizar!'];
+        }
+        return response()->json($json);
     }
 
     public function sendFormFaturaClient(Request $request)

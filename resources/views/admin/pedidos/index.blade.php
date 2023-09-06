@@ -90,6 +90,9 @@
                             @endif                                                            
                         </td>
                         <td> 
+                            @if($pedido->transaction_id)
+                                <button title="Sincronizar Fatura" type="button" data-id="{{$pedido->transaction_id}}" class="btn btn-xs btn-dark text-white j_refresh"><i class="fas fa-sync"></i></button>
+                            @endif
                             @if ($pedido->valor && $pedido->vencimento)
                                 <a target="_blank" href="{{route('web.fatura',['uuid' => $pedido->uuid])}}" class="btn btn-xs btn-info text-white"><i class="fas fa-search"></i></a>
                             @endif    
@@ -238,6 +241,34 @@
                     },
                     complete: function(resposta){
                         $(".cli"+id).removeClass('disabled');
+                    }
+                });
+            });
+
+            $('.j_refresh').click(function() {
+                var pedido = $(this).data('id');
+                $.ajax({
+                    type: 'GET',
+                    dataType: 'JSON',
+                    url: "{{ route('web.statusBoleto') }}",
+                    data: {
+                    'pedido': pedido
+                    },
+                    beforeSend: function(){
+                        $('.fa-sync').hide();
+                        $('.j_refresh').attr("disabled", true);
+                        $('.j_refresh').html("<img src=\"{{url('backend/assets/images/loading.gif')}}\" />"); 
+                    },
+                    success:function(data) { 
+                        if(data.success){
+                            toastr.success(data.success);
+                        }else{
+                            toastr.error(data.error);
+                        }
+                    },
+                    complete: function(resposta){
+                        $('.j_refresh').attr("disabled", false);  
+                        $('.j_refresh').html("<i class=\"fas fa-sync\"></i>");                              
                     }
                 });
             });
