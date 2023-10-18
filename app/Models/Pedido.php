@@ -60,7 +60,7 @@ class Pedido extends Model
         }elseif($this->status == 'paid'){
             return '<small class="badge badge-success">Pago</small>';
         }elseif($this->status == 'completed'){
-            return '<small class="badge badge-info">Finalizado</small>'; 
+            return '<small class="badge badge-info">Pago/Finalizado</small>'; 
         }else{
             return '<small class="badge badge-warning">Em Análise</small>'; 
         }

@@ -48,7 +48,7 @@ class PedidoController extends Controller
     {        
         $produto = Produto::where('id', $request->produto)->first();
         $vencimento = strtotime(Carbon::createFromFormat('d/m/Y',  $request->vencimento));
-        //Cria Produto
+        //Cria Pedido
         $data = [
             'produto'    => $request->produto,
             'empresa'    =>  $request->empresa,
@@ -110,6 +110,39 @@ class PedidoController extends Controller
             'notas_adicionais' => $request->notas_adicionais,
             'tipo_pedido'     => $request->tipo_pedido
         ];
+
+        //Cria Fatura
+        if($request->gerarfatura === 'on'){
+            $valor_fatura = ($request->periodo == 1 ? $plano->valor_mensal : 
+                            ($request->periodo == 3 ? $plano->valor_trimestral : 
+                            ($request->periodo == 6 ? $plano->valor_semestral : 
+                            ($request->periodo == 12 ? $plano->valor_anual : null))));
+            $dado = [
+                'pedido'     => $criarPedido->id,
+                'user'       => $request->user,
+                'valor'      => str_replace(',', '', str_replace('.', '', $valor_fatura)),
+                'vencimento' => date('Y-m-d', $vencimento),
+                'status'     => 'pending',
+                'created_at' => now()
+            ];
+
+            $criarFatura = Fatura::create($dado);
+            $criarFatura->save();
+            
+            foreach(range(2, $request->periodo) as $parcela){
+                $vencimento = strtotime('+30 days', $vencimento);
+                $dados[] = [
+                    'pedido'     => $criarPedido->id,
+                    'user'       => $request->user,
+                    'valor'      => str_replace(',', '', str_replace('.', '', $valor_fatura)),
+                    'vencimento' => date('Y-m-d', $vencimento),
+                    'status'     => 'pending',
+                    'created_at' => now()
+                ]; 
+                
+            }     
+            $criarFaturas = Fatura::insert($dados);
+        }
         
         $pedidoUpdate->update($data);
 

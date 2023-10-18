@@ -104,7 +104,7 @@ $config = [
                                     @if(!empty($produtos) && $produtos->count() > 0)
                                         <option value="">Selecione</option>
                                         @foreach($produtos as $produto) 
-                                            <option value="{{ $produto->id }}" {{ (old('produto') == $produto->id ? 'selected' : '') }}>{{ $produto->name }} - R${{ $produto->valor }}</option>                                                                                                                      
+                                            <option value="{{ $produto->id }}" {{ (old('produto') == $produto->id ? 'selected' : '') }}>{{ $produto->name }} {{ ($produto->valor ? '- R$'.$produto->valor : '') }}</option>                                                                                                                      
                                         @endforeach
                                     @else
                                         <option value="">Cadastre um Orçamento</option>
@@ -151,7 +151,7 @@ $config = [
                                     <option value="canceled" {{ (old('status') == 'canceled' ? 'selected' : '') }}>Cancelado</option>
                                     <option value="pending" {{ (old('status') == 'pending' ? 'selected' : '') }}>Pendente</option>
                                     <option value="reserved" {{ (old('status') == 'reserved' ? 'selected' : '') }}>Reservado</option>
-                                    <option value="completed" {{ (old('status') == 'completed' ? 'selected' : '') }}>Completo</option>
+                                    <option value="completed" {{ (old('status') == 'completed' ? 'selected' : '') }}>Completo/Pago</option>
                                     <option value="paid" {{ (old('status') == 'paid' ? 'selected' : '') }}>Aprovado</option>
                                     <option value="processing" {{ (old('status') == 'processing' ? 'selected' : '') }}>Análise</option>
                                     <option value="refunded" {{ (old('status') == 'refunded' ? 'selected' : '') }}>Estornado</option>
