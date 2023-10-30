@@ -71,7 +71,7 @@
                                  @endif
                               @endif
                               @if($pedido->getEmpresa->cidade)  
-                              <br>{{\App\Helpers\Cidade::getCidadeNome($pedido->getEmpresa->cidade, 'cidades')}}
+                              <br>{{$pedido->getEmpresa->cidade}}
                               @endif
                            @endif
                             <br>
