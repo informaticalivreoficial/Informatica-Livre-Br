@@ -85,11 +85,11 @@ $config = [
                         <div class="col-12 col-md-6 col-lg-4"> 
                             <div class="form-group">
                                 <label class="labelforms text-muted"><b>*Serviços:</b> <a style="font-size:11px;" href="{{route('vendas.orcamentos')}}">(Cadastrar Serviço)</a></label>
-                                <select name="produto" class="form-control categoria tipo-servico">
-                                    @if(!empty($produtos) && $produtos->count() > 0)
+                                <select name="servico" class="form-control categoria tipo-servico">
+                                    @if(!empty($servicos) && $servicos->count() > 0)
                                         <option value="">Selecione</option>
-                                        @foreach($produtos as $produto) 
-                                            <option value="{{ $produto->id }}" {{ (old('produto') == $produto->id ? 'selected' : '') }}>{{ $produto->name }}</option>                                                                                                                      
+                                        @foreach($servicos as $servico) 
+                                            <option value="{{ $servico->id }}" {{ (old('servico') == $servico->id ? 'selected' : '') }}>{{ $servico->name }}</option>                                                                                                                      
                                         @endforeach
                                     @else
                                         <option value="">Cadastre um Orçamento</option>

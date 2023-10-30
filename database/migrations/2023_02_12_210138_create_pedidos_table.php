@@ -18,6 +18,7 @@ class CreatePedidosTable extends Migration
             $table->string('status')->nullable();
             $table->unsignedInteger('orcamento')->nullable();
             $table->unsignedInteger('produto')->nullable();
+            $table->unsignedInteger('servico')->nullable();
             $table->unsignedInteger('empresa');
             $table->string('uuid')->nullable();
             $table->date('form_sendat')->nullable();
@@ -34,6 +35,7 @@ class CreatePedidosTable extends Migration
             $table->foreign('empresa')->references('id')->on('empresas')->onDelete('CASCADE');
             $table->foreign('orcamento')->references('id')->on('orcamentos');
             $table->foreign('produto')->references('id')->on('produtos');
+            $table->foreign('servico')->references('id')->on('servicos');
         });
     }
 

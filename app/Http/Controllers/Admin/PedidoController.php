@@ -8,11 +8,13 @@ use App\Http\Requests\Admin\PedidoRequest;
 use App\Mail\Admin\FaturaClientSend;
 use App\Models\Configuracoes;
 use App\Models\Empresa;
+use App\Models\Fatura;
 use App\Models\Gateway;
 use App\Models\ItemPedido;
 use App\Models\Orcamento;
 use App\Models\Pedido;
 use App\Models\Produto;
+use App\Models\Servico;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -34,13 +36,15 @@ class PedidoController extends Controller
         $empresas = Empresa::orderBy('created_at', 'DESC')->available()->get();
         $orcamentos = Orcamento::orderBy('created_at', 'DESC')->available()->get();
         $produtos = Produto::orderBy('created_at', 'DESC')->available()->get();
+        $servicos = Servico::orderBy('created_at', 'DESC')->available()->get();
         $gateways = Gateway::orderBy('created_at', 'DESC')->get();
 
         return view('admin.pedidos.create',[
             'empresas' => $empresas,
             'orcamentos' => $orcamentos,
             'gateways' => $gateways,
-            'produtos' => $produtos
+            'produtos' => $produtos,
+            'servicos' => $servicos
         ]);
     }
 
@@ -71,15 +75,15 @@ class PedidoController extends Controller
 
     public function storeService(PedidoRequest $request)
     {        
-        $produto = Produto::where('id', $request->produto)->first();
+        $servico = Servico::where('id', $request->servico)->first();
         $vencimento = strtotime(Carbon::createFromFormat('d/m/Y',  $request->vencimento));
         //Cria Pedido
         $data = [
-            'produto'    => $request->produto,
+            'servico'    => $request->servico,
             'empresa'    =>  $request->empresa,
             'gateway'    => $request->gateway,
             'vencimento' => date('Y-m-d', $vencimento),
-            'valor'      => str_replace(',', '', str_replace('.', '', $produto->valor)),
+            'valor'      => str_replace(',', '', str_replace('.', '', $servico->valor)),
             'status'     => $request->status,
             'tipo_pedido'     => $request->tipo_pedido,
             'notas_adicionais' => $request->notas_adicionais,
@@ -109,18 +113,20 @@ class PedidoController extends Controller
         $pedido = Pedido::where('id', $id)->first();
         $empresas = Empresa::orderBy('created_at', 'DESC')->available()->get();
         $produtos = Produto::orderBy('created_at', 'DESC')->available()->get();
+        $servicos = Servico::orderBy('created_at', 'DESC')->available()->get();
         $gateways = Gateway::orderBy('created_at', 'ASC')->available()->get();
         
         return view('admin.pedidos.edit', [
             'pedido' => $pedido,
             'gateways' => $gateways,
             'produtos' => $produtos,
-            'empresas' => $empresas
+            'empresas' => $empresas,
+            'servicos' => $servicos
         ]);
     }
 
     public function updateProduct(PedidoRequest $request, $id)
-    {
+    {        
         $pedidoUpdate = Pedido::where('id', $id)->first();
         $produto = Produto::where('id', $request->produto)->first();
         $vencimento = strtotime(Carbon::createFromFormat('d/m/Y',  $request->vencimento));
@@ -167,6 +173,52 @@ class PedidoController extends Controller
                 
             }     
             $criarFaturas = Fatura::insert($dados);
+        }
+        
+        $pedidoUpdate->update($data);
+
+        return Redirect::route('pedidos.edit', [
+            'id' => $pedidoUpdate->id,
+        ])->with(['color' => 'success', 'message' => 'Pedido atualizado com sucesso!']);
+    }
+
+    public function updateService(PedidoRequest $request, $id)
+    {        
+        $pedidoUpdate = Pedido::where('id', $id)->first();
+        $servico = Servico::where('id', $request->servico)->first();
+        $vencimento = strtotime(Carbon::createFromFormat('d/m/Y',  $request->vencimento));
+
+        $valor = ($request->periodo == 1 ? $servico->valor_mensal : 
+                 ($request->periodo == 3 ? $servico->valor_trimestral : 
+                 ($request->periodo == 6 ? $servico->valor_semestral : 
+                 ($request->periodo == 12 ? $servico->valor_anual : null))));
+
+        $data = [
+            'servico'    => $request->servico,
+            'empresa'    =>  $request->empresa,
+            'gateway'    => $request->gateway,
+            'vencimento' => date('Y-m-d', $vencimento),
+            'valor'      => str_replace(',', '', str_replace('.', '', $valor)),
+            'status'     => $request->status,
+            'notas_adicionais' => $request->notas_adicionais,
+            'tipo_pedido'     => $request->tipo_pedido,
+            'periodo' => $request->periodo
+        ];
+
+        //Cria Fatura
+        if($request->gerarfatura === 'on'){
+            
+            $dados = [
+                'pedido'     => $pedidoUpdate->id,
+                'valor'      => str_replace(',', '', str_replace('.', '', $valor)),
+                'vencimento' => date('Y-m-d', $vencimento),
+                'gateway'    => $request->gateway,
+                'status'     => 'pending',
+                'created_at' => now()
+            ];
+
+            $criarFatura = Fatura::create($dados);
+            $criarFatura->save();            
         }
         
         $pedidoUpdate->update($data);

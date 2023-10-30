@@ -97,11 +97,11 @@ $config = [
                             <div class="col-12 col-md-6 col-lg-4"> 
                                 <div class="form-group">
                                     <label class="labelforms text-muted"><b>*Serviços:</b> <a style="font-size:11px;" href="{{route('vendas.orcamentos')}}">(Cadastrar Serviço)</a></label>
-                                    <select name="produto" class="form-control categoria tipo-servico">
-                                        @if(!empty($produtos) && $produtos->count() > 0)
+                                    <select name="servico" class="form-control categoria tipo-servico">
+                                        @if(!empty($servicos) && $servicos->count() > 0)
                                             <option value="">Selecione</option>
-                                            @foreach($produtos as $produto) 
-                                                <option value="{{ $produto->id }}" {{ (old('produto') == $produto->id ? 'selected' : ($produto->id == $pedido->produto ? 'selected' : '')) }}>{{ $produto->name }}</option>                                                                                                                      
+                                            @foreach($servicos as $servico) 
+                                                <option value="{{ $servico->id }}" {{ (old('servico') == $servico->id ? 'selected' : ($servico->id == $pedido->servico ? 'selected' : '')) }}>{{ $servico->name }}</option>                                                                                                                      
                                             @endforeach
                                         @else
                                             <option value="">Cadastre um Orçamento</option>
@@ -212,6 +212,18 @@ $config = [
                             </div>                                   
                         </div>
                         
+                        <div class="row mb-2">
+                            <div class="col-12 col-sm-6 col-md-4 col-lg-2">                                        
+                                <div class="form-group p-3 mb-1">
+                                    <label class="labelforms text-muted"><b> </b></label>
+                                    <div class="form-check mb-2">
+                                        <input id="gerarfatura" class="form-check-input" type="checkbox" name="gerarfatura" {{ (old('gerarfatura') == 'on' || old('gerarfatura') == true ? 'checked' : '') }}>
+                                        <label for="gerarfatura" class="form-check-label text-muted">Gerar Fatura?</label>
+                                    </div>                                            
+                                </div>
+                            </div>                        
+                        </div>
+
                         <div class="row mb-2">
                             <div class="col-12">   
                                 <label class="labelforms text-muted"><b>Informações Adicionais</b></label>

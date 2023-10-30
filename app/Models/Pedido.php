@@ -16,6 +16,8 @@ class Pedido extends Model
         'orcamento',
         'tipo_pedido',
         'produto',
+        'servico',
+        'periodo',
         'status',
         'valor',
         'url_slip',
