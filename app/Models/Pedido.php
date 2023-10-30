@@ -44,6 +44,11 @@ class Pedido extends Model
         return $this->hasOne(Produto::class, 'id', 'produto');
     }
 
+    public function service()
+    {
+        return $this->hasOne(Servico::class, 'id', 'servico');
+    }
+
     public function itens()
     {
         return $this->hasMany(ItemPedido::class, 'pedido', 'id');

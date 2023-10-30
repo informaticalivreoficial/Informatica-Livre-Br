@@ -113,20 +113,20 @@
                             <div class="cs-invoice_right cs-text_right">
                                 <b class="cs-primary_color">Para:</b>
                                 <p>
-                                    {{$fatura->getEmpresa->alias_name}} <br>
-                                    @if($fatura->getEmpresa->rua)	
-                                        {{$fatura->getEmpresa->rua}}
-                                            @if($fatura->getEmpresa->num)
-                                            , {{$fatura->getEmpresa->num}}
+                                    {{$fatura->pedidoObject->getEmpresa->alias_name}} <br>
+                                    @if($fatura->pedidoObject->getEmpresa->rua)	
+                                        {{$fatura->pedidoObject->getEmpresa->rua}}
+                                            @if($fatura->pedidoObject->getEmpresa->num)
+                                            , {{$fatura->pedidoObject->getEmpresa->num}}
                                             @endif
-                                        @if($fatura->getEmpresa->bairro)
-                                        <br>{{$fatura->getEmpresa->bairro}}
-                                            @if($fatura->getEmpresa->cep)
-                                            , {{$fatura->getEmpresa->cep}}
+                                        @if($fatura->pedidoObject->getEmpresa->bairro)
+                                        <br>{{$fatura->pedidoObject->getEmpresa->bairro}}
+                                            @if($fatura->pedidoObject->getEmpresa->cep)
+                                            , {{$fatura->pedidoObject->getEmpresa->cep}}
                                             @endif
                                         @endif
-                                        @if($fatura->getEmpresa->cidade)  
-                                        <br>{{$fatura->getEmpresa->cidade}}
+                                        @if($fatura->pedidoObject->getEmpresa->cidade)  
+                                        <br>{{$fatura->pedidoObject->getEmpresa->cidade}}
                                         @endif
                                     @endif
                                 </p>
@@ -145,8 +145,8 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if (!empty($fatura->itens()) && $fatura->itens->count() > 0)
-                                                @foreach ($fatura->itens()->get() as $item)
+                                            @if (!empty($fatura->pedidoObject->itens()) && $fatura->pedidoObject->itens->count() > 0)
+                                                @foreach ($fatura->pedidoObject->itens()->get() as $item)
                                                 <tr>
                                                     <td class="cs-width_1">{{$item->quantidade}}</td>
                                                     <td class="cs-width_4">{{$item->descricao}}</td>                                        
@@ -154,6 +154,13 @@
                                                     <td class="cs-width_3 cs-text_right">R$ {{str_replace(',00', '', ($item->quantidade * $item->valor))}}</td>
                                                 </tr>
                                                 @endforeach
+                                            @elseif($fatura->pedidoObject->tipo_pedido == 2)
+                                                <tr>
+                                                    <td class="cs-width_1">1</td>
+                                                    <td class="cs-width_4">{{$fatura->pedidoObject->service->name}}</td>                                        
+                                                    <td class="cs-width_2">R$ {{$fatura->valor}}</td>
+                                                    <td class="cs-width_3 cs-text_right">R$ {{$fatura->valor}}</td>
+                                                </tr>
                                             @else
                                                 <tr>
                                                     <td class="cs-width_1">1</td>

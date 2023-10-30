@@ -85,30 +85,40 @@
                          <b>Vencimento:</b> {{Carbon\Carbon::parse($pedido->vencimento)->format('d/m/Y')}}<br>
                       </div>
                    </div>
-                   <div class="row">
-                      <div class="col-12 table-responsive">
-                         <table class="table table-striped">
-                            <thead>
-                               <tr>
-                                  <th>Qtd</th>
-                                  <th>Descrição</th>                                  
-                                  <th>Subtotal</th>
-                               </tr>
-                            </thead>
-                            <tbody>
-                                @if (!empty($pedido->itens()) && $pedido->itens->count() > 0)
+                   
+                  <div class="row">
+                     <div class="col-12 table-responsive">
+                        <table class="table table-striped">
+                           <thead>
+                              <tr>
+                                 <th>Qtd</th>
+                                 <th>Descrição</th>                                  
+                                 <th>Subtotal</th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                              @if ($pedido->tipo_pedido == 0)
+                                 @if (!empty($pedido->itens()) && $pedido->itens->count() > 0)
                                     @foreach ($pedido->itens()->get() as $item)
                                     <tr>
-                                        <td>{{$item->quantidade}}</td>
-                                        <td>{{$item->descricao}}</td>                                        
-                                        <td>R$ {{str_replace(',00', '', $item->valor)}}</td>
+                                          <td>{{$item->quantidade}}</td>
+                                          <td>{{$item->descricao}}</td>                                        
+                                          <td>R$ {{str_replace(',00', '', $item->valor)}}</td>
                                     </tr>
                                     @endforeach
-                                @endif                                                               
-                            </tbody>
-                         </table>
-                      </div>
-                   </div>
+                                 @endif 
+                              @elseif($pedido->tipo_pedido == 2)
+                                 <tr>
+                                       <td>1</td>
+                                       <td>{{$pedido->service->name}}</td>                                        
+                                       <td>R$ {{str_replace(',00', '', $pedido->valor)}}</td>
+                                 </tr>
+                              @endif                                                              
+                           </tbody>
+                        </table>
+                     </div>
+                  </div>
+                   
                    <div class="row">
                       <div class="col-6">
                          <p class="lead">Forma de Pagamento:</p>
@@ -121,34 +131,43 @@
                             @endforeach
                          @endif                       
                       </div>
-                      <div class="col-6">
-                         <p class="lead">Total Hoje {{Carbon\Carbon::parse(now())->format('d/m/Y')}}</p>
-                         <div class="table-responsive">
-                            <table class="table">
-                               <tr>
-                                  <th style="width:50%">Subtotal:</th>
-                                  <td>R$ {{str_replace(',00', '', $pedido->itensTotalValor())}}</td>
-                               </tr>
-                               <tr>
-                                  <th>Desconto (5%)</th>
-                                  <td>$10.34</td>
-                               </tr>
-                               <tr>
-                                  <th>Total:</th>
-                                  <td>R$ {{str_replace(',00', '', $pedido->itensTotalValor())}}</td>
-                               </tr>
-                            </table>
-                         </div>
-                      </div>
+                     <div class="col-6">
+                        <p class="lead">Total Hoje {{Carbon\Carbon::parse(now())->format('d/m/Y')}}</p>
+                        <div class="table-responsive">
+                           <table class="table">
+                           @if ($pedido->tipo_pedido == 2)
+                              <tr>
+                                 <th>Total:</th>
+                                 <td>R$ {{str_replace(',00', '', $pedido->valor)}}</td>
+                              </tr> 
+                           @else
+                              <tr>
+                                 <th style="width:50%">Subtotal:</th>
+                                 <td>R$ {{str_replace(',00', '', $pedido->itensTotalValor())}}</td>
+                              </tr>                               
+                              <tr>
+                                 <th>Total:</th>
+                                 <td>R$ {{str_replace(',00', '', $pedido->itensTotalValor())}}</td>
+                              </tr>
+                           @endif                               
+                           </table>
+                        </div>
+                     </div>
                    </div>
                    <div class="row no-print">
                       <div class="col-12">
                         <a href="javascript:void(0)" onclick="window.print();"class="btn btn-default">
                            <i class="fas fa-print"></i> Imprimir
                         </a>
-                        <a style="margin-right: 5px;" class="btn btn-success float-right" {{($pedido->url_slip ? 'target="_blank"' : '')}} href="{{$pedido->url_slip ?? route('web.pagar',['pedido' => $pedido->id])}}">
-                           <i class="far fa-credit-card"></i> Pagar Agora
-                        </a>
+                        @if ($pedido->tipo_pedido == 2)
+                           <a style="margin-right: 5px;" class="btn btn-success float-right" href="{{route('faturas.list', [ $pedido->id ])}}">
+                              <i class="far fa-credit-card"></i> Ver Faturas
+                           </a>
+                        @else
+                           <a style="margin-right: 5px;" class="btn btn-success float-right" {{($pedido->url_slip ? 'target="_blank"' : '')}} href="{{$pedido->url_slip ?? route('web.pagar',['uuid' => $pedido->uuid])}}">
+                              <i class="far fa-credit-card"></i> Pagar Agora
+                           </a>
+                        @endif                        
                       </div>
                    </div>
                 </div>

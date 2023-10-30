@@ -1,16 +1,16 @@
 @extends('adminlte::page')
 
-@section('title', 'Gerenciar Pedidos')
+@section('title', 'Gerenciar Faturas')
 
 @section('content_header')
 <div class="row mb-2">
     <div class="col-sm-6">
-        <h1><i class="fas fa-search mr-2"></i> Pedidos</h1>
+        <h1><i class="fas fa-search mr-2"></i> Faturas</h1>
     </div>
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">                    
             <li class="breadcrumb-item"><a href="{{route('home')}}">Painel de Controle</a></li>
-            <li class="breadcrumb-item active">Pedidos</li>
+            <li class="breadcrumb-item active">Faturas</li>
         </ol>
     </div>
 </div>
@@ -52,11 +52,11 @@
                 @endif
             </div>           
         </div>
-        @if(!empty($pedidos) && $pedidos->count() > 0)
+        @if(!empty($faturas) && $faturas->count() > 0)
             <table class="table table-bordered table-striped projects">
                 <thead>
                     <tr>
-                        <th class="text-center">Empresa</th>                                                
+                        <th class="text-center">Data</th>                                                
                         <th class="text-center">Vencimento</th>                        
                         <th class="text-center">Valor</th>                        
                         <th class="text-center">Status</th>
@@ -65,41 +65,36 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($pedidos as $pedido)                    
+                    @foreach($faturas as $fatura)                    
                     <tr>
-                        <td>{{$pedido->getEmpresa->alias_name}}</td>                        
-                        <td class="text-center">{{Carbon\Carbon::parse($pedido->vencimento)->format('d/m/Y')}}</td> 
-                        <td class="text-center">R$ {{$pedido->valor ?? str_replace(',00', '', $pedido->itensTotalValor())}}</td>                       
+                        <td class="text-center">{{Carbon\Carbon::parse($fatura->created_at)->format('d/m/Y')}}</td>                        
+                        <td class="text-center">{{Carbon\Carbon::parse($fatura->vencimento)->format('d/m/Y')}}</td> 
+                        <td class="text-center">R$ {{$fatura->valor}}</td>                       
                         
                         <td class="text-center">
-                            @if ($pedido->valor && $pedido->vencimento)
-                                {!!$pedido->getStatus()!!}
-                            @else
-                                ------------
-                            @endif
+                            {!!$fatura->getStatus()!!}
                         </td> 
                         <td class="text-center">
-                            @if ($pedido->valor && $pedido->vencimento)
-                                @if ($pedido->form_sendat == null)
-                                    <a href="javascript:void(0)" class="btn btn-xs btn-success text-white j_enviaform cli{{ $pedido->id }}" data-id="{{ $pedido->id }}">Enviar Fatura <i class="fas fa-check"></i></a>
+                            @if ($fatura->valor && $fatura->vencimento)
+                                @if ($fatura->form_sendat == null)
+                                    <a href="javascript:void(0)" class="btn btn-xs btn-success text-white j_enviaform cli{{ $fatura->id }}" data-id="{{ $fatura->id }}">Enviar Fatura <i class="fas fa-check"></i></a>
                                 @else
-                                    <a href="javascript:void(0)" class="btn btn-xs btn-secondary text-white j_enviaform cli{{ $pedido->id }}" data-id="{{ $pedido->id }}">Reenviar Fatura <i class="fas fa-check"></i></a>
+                                    <a href="javascript:void(0)" class="btn btn-xs btn-secondary text-white j_enviaform cli{{ $fatura->id }}" data-id="{{ $fatura->id }}">Reenviar Fatura <i class="fas fa-check"></i></a>
                                 @endif
                             @else
                                 ------------
                             @endif                                                            
                         </td>
                         <td> 
-                            @if($pedido->transaction_id)
-                                <button title="Sincronizar Fatura" type="button" data-id="{{$pedido->transaction_id}}" class="btn btn-xs btn-dark text-white j_refresh"><i class="fas fa-sync"></i></button>
+                            @if($fatura->transaction_id)
+                                <button title="Sincronizar Fatura" type="button" data-id="{{$fatura->transaction_id}}" class="btn btn-xs btn-dark text-white j_refresh"><i class="fas fa-sync"></i></button>
                             @endif
-                            @if ($pedido->valor && $pedido->vencimento && $pedido->periodo == null)
-                                <a target="_blank" href="{{route('web.fatura',['uuid' => $pedido->uuid])}}" class="btn btn-xs btn-info text-white"><i class="fas fa-search"></i></a>
+                            @if ($fatura->valor && $fatura->vencimento && $fatura->periodo == null)
+                                <a target="_blank" href="{{route('web.fatura',['uuid' => $fatura->uuid])}}" class="btn btn-xs btn-info text-white"><i class="fas fa-search"></i></a>
                             @else
-                                <a href="{{route('pedidos.show',['id' => $pedido->id])}}" class="btn btn-xs btn-info text-white"><i class="fas fa-search"></i></a>
+                                <a href="{{route('faturas.show',['id' => $fatura->id])}}" class="btn btn-xs btn-info text-white"><i class="fas fa-search"></i></a>
                             @endif    
-                            <a href="{{route('pedidos.edit',['id' => $pedido->id])}}" class="btn btn-xs btn-default"><i class="fas fa-pen"></i></a>                        
-                            <button type="button" class="btn btn-xs btn-danger text-white j_modal_btn" data-id="{{$pedido->id}}" data-toggle="modal" data-target="#modal-default">
+                            <button type="button" class="btn btn-xs btn-danger text-white j_modal_btn" data-id="{{$fatura->id}}" data-toggle="modal" data-target="#modal-default">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </td>
@@ -119,9 +114,9 @@
     </div>
     <div class="card-footer paginacao">
         @if (isset($filters))
-            {{ $pedidos->appends($filters)->links() }}
+            {{ $faturas->appends($filters)->links() }}
         @else
-            {{ $pedidos->links() }}
+            {{ $faturas->links() }}
         @endif          
     </div>
     <!-- /.card-body -->
@@ -154,9 +149,9 @@
             <form id="frm" action="" method="post">            
             @csrf
             @method('DELETE')
-            <input id="id_pedido" name="pedido_id" type="hidden" value=""/>
+            <input id="id_fatura" name="fatura_id" type="hidden" value=""/>
                 <div class="modal-header">
-                    <h4 class="modal-title">Remover Pedido!</h4>
+                    <h4 class="modal-title">Remover fatura!</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -200,26 +195,7 @@
               });
             });
 
-            $('.j_modal_btn').click(function() {
-                var pedido_id = $(this).data('id');                
-                $.ajax({
-                    type: 'GET',
-                    dataType: 'JSON',
-                    url: "{{ route('pedidos.delete') }}",
-                    data: {
-                       'id': pedido_id
-                    },
-                    success:function(data) {
-                        if(data.error){
-                            $('.j_param_data').html(data.error);
-                            $('#id_pedido').val(data.id);
-                            $('#frm').prop('action','{{ route('pedidos.deleteon') }}');
-                        }else{
-                            $('#frm').prop('action','{{ route('pedidos.deleteon') }}');
-                        }
-                    }
-                });
-            });
+            
 
             $('.j_enviaform').click(function() {
                 var id = $(this).data('id');                
@@ -248,13 +224,13 @@
             });
 
             $('.j_refresh').click(function() {
-                var pedido = $(this).data('id');
+                var fatura = $(this).data('id');
                 $.ajax({
                     type: 'GET',
                     dataType: 'JSON',
                     url: "{{ route('web.statusBoleto') }}",
                     data: {
-                    'pedido': pedido
+                    'fatura': fatura
                     },
                     beforeSend: function(){
                         $('.fa-sync').hide();

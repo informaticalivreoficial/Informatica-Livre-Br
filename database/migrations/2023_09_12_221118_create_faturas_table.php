@@ -16,6 +16,7 @@ class CreateFaturasTable extends Migration
         Schema::create('faturas', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('pedido');
+            $table->string('uuid')->nullable();
             $table->string('transaction_id')->nullable();
             $table->timestamp('paid_date')->nullable();
             $table->date('vencimento')->nullable();

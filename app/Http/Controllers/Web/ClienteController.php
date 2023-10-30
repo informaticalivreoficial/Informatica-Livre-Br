@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\Fatura;
 use App\Models\Gateway;
 use App\Models\ItemPedido;
 use App\Models\Pedido;
@@ -20,7 +21,7 @@ class ClienteController extends Controller
 
     public function fatura($uuid)
     {
-        $fatura = Pedido::where('uuid', $uuid)->first();
+        $fatura = Fatura::where('uuid', $uuid)->first();
         $gateways = Gateway::orderBy('created_at', 'ASC')->available()->get();
          
         return view('web.cliente.fatura',[
@@ -31,22 +32,22 @@ class ClienteController extends Controller
 
     public function pagar($uuid)
     {
-        $fatura = Pedido::where('uuid', $uuid)->first();
+        $fatura = Fatura::where('uuid', $uuid)->first();
 
         if($fatura->gateway == 2){
             $data = [
                 'order_id' => $fatura->id,
-                'payer_name' => $fatura->getEmpresa->alias_name,
-                'payer_email' => $fatura->getEmpresa->email,
-                'payer_phone' => str_replace(['.', '-', '(', ')', ' '], "", $fatura->getEmpresa->celular), // fixou ou móvel
-                'payer_street' => $fatura->getEmpresa->rua,
-                'payer_number' => $fatura->getEmpresa->num,
-                'payer_complement' => $fatura->getEmpresa->complemento,
-                'payer_district' => $fatura->getEmpresa->bairro,
-                'payer_city' => $fatura->getEmpresa->cidade,
-                'payer_state' => $fatura->getEmpresa->uf, // apenas sigla do estado
-                'payer_zip_code' => str_replace(['.', '-', ' '], "", $fatura->getEmpresa->cep),
-                'payer_cpf_cnpj' => str_replace(['.','-','/'], "", ($fatura->getEmpresa->cnpj ? $fatura->getEmpresa->cnpj : $fatura->getEmpresa->owner->cpf)),
+                'payer_name' => $fatura->pedidoObject->getEmpresa->alias_name,
+                'payer_email' => $fatura->pedidoObject->getEmpresa->email,
+                'payer_phone' => str_replace(['.', '-', '(', ')', ' '], "", $fatura->pedidoObject->getEmpresa->celular), // fixou ou móvel
+                'payer_street' => $fatura->pedidoObject->getEmpresa->rua,
+                'payer_number' => $fatura->pedidoObject->getEmpresa->num,
+                'payer_complement' => $fatura->pedidoObject->getEmpresa->complemento,
+                'payer_district' => $fatura->pedidoObject->getEmpresa->bairro,
+                'payer_city' => $fatura->pedidoObject->getEmpresa->cidade,
+                'payer_state' => $fatura->pedidoObject->getEmpresa->uf, // apenas sigla do estado
+                'payer_zip_code' => str_replace(['.', '-', ' '], "", $fatura->pedidoObject->getEmpresa->cep),
+                'payer_cpf_cnpj' => str_replace(['.','-','/'], "", ($fatura->pedidoObject->getEmpresa->cnpj ? $fatura->pedidoObject->getEmpresa->cnpj : $fatura->pedidoObject->getEmpresa->owner->cpf)),
                 'days_due_date' => (Carbon::parse($fatura->vencimento)->lt(Carbon::parse(Carbon::now())) ? '5' : Carbon::parse($fatura->vencimento)->diffInDays(Carbon::parse(Carbon::now()))),
                 'type_bank_slip' => 'boletoa4',
                 'notification_url' => 'https://webhook.site/d8762b26-8f9c-4e78-9cf0-aa4d08e6cddc',
@@ -60,7 +61,7 @@ class ClienteController extends Controller
                 // ]
             ];
 
-            if(!empty($fatura->itens()) && $fatura->itens->count() > 0){
+            if(!empty($fatura->pedidoObject->itens()) && $fatura->pedidoObject->itens->count() > 0){
                 $itensPedido = ItemPedido::where('pedido', $fatura->id)->get();
                 if(!empty($itensPedido) && $itensPedido->count() > 0){
                     $items = [];
@@ -73,10 +74,17 @@ class ClienteController extends Controller
                         ];
                     }
                 }
+            }elseif($fatura->pedidoObject->tipo_pedido == 2){               
+                $items['items'][] = [                                        
+                    'item_id' => 1,
+                    'description' => $fatura->pedidoObject->service->name,
+                    'quantity' => 1,
+                    'price_cents' => str_replace(',', '', filter_var($fatura->valor, FILTER_SANITIZE_NUMBER_INT))   
+                ];
             }else{
                 $items['items'][] = [                                        
                     'item_id' => 1,
-                    'description' => $fatura->getProduto->name,
+                    'description' => $fatura->pedidoObject->getProduto->name,
                     'quantity' => 1,
                     'price_cents' => str_replace(',', '', $fatura->valor)   
                 ];

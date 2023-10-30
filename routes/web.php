@@ -139,6 +139,7 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('bancos/refresh', [BancoController::class, 'refresh'])->name('bancos.refresh');
     
     //******************** Vendas *************************************************************/
+    Route::get('pedidos/faturas/{pedido}', [PedidoController::class, 'faturas'])->name('faturas.list');
     Route::get('pedidos/show/{id}', [PedidoController::class, 'show'])->name('pedidos.show');
     Route::get('pedidos/create', [PedidoController::class, 'create'])->name('pedidos.create');
     Route::post('pedidos/store', [PedidoController::class, 'store'])->name('pedidos.store');

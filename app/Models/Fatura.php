@@ -13,6 +13,7 @@ class Fatura extends Model
 
     protected $fillable = [
         'transaction_id',
+        'uudi',
         'paid_date',
         'form_sendat',
         'vencimento',

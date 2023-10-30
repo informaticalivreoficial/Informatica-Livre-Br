@@ -108,6 +108,14 @@ class PedidoController extends Controller
         ]);
     }
 
+    public function faturas($pedido)
+    {
+        $faturas = Fatura::orderBy('created_at', 'ASC')->where('pedido', $pedido)->paginate(25);
+        return view('admin.pedidos.faturas',[
+            'faturas' => $faturas
+        ]);
+    }
+
     public function edit($id)
     {
         $pedido = Pedido::where('id', $id)->first();
@@ -358,6 +366,13 @@ class PedidoController extends Controller
         $pedido = Pedido::find($request->pedido);
         $pedido->gateway = $request->gateway;
         $pedido->save();
+
+        $allFaturas = Fatura::where('pedido', $pedido->id)->get();
+        foreach ($allFaturas as $fatura) {
+            $fatura->gateway = $pedido->gateway;
+            $fatura->save();
+        }
+
         return response()->json(['success' => true]);
     }
     
