@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class ServicoRequest extends FormRequest
 {
@@ -13,7 +14,7 @@ class ServicoRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return Auth::check();
     }
 
     /**
@@ -24,7 +25,10 @@ class ServicoRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name' => ['required', 'min:3', 'max:255'],
+            'categoria' => 'required',
+            //'valor' => 'required_if:tipo_pagamento,1',
+            'content' => 'nullable|min:3'
         ];
     }
 }

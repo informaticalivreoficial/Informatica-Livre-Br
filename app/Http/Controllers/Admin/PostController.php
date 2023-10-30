@@ -185,7 +185,6 @@ class PostController extends Controller
     {
         $imageDelete = PostGb::where('id', $request->image)->first();
         Storage::delete($imageDelete->path);
-        Cropper::flush($imageDelete->path);
         $imageDelete->delete();
         $json = [
             'success' => true,

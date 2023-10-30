@@ -69,6 +69,31 @@ class PedidoController extends Controller
         ])->with(['color' => 'success', 'message' => 'Pedido cadastrado com sucesso!']);
     }
 
+    public function storeService(PedidoRequest $request)
+    {        
+        $produto = Produto::where('id', $request->produto)->first();
+        $vencimento = strtotime(Carbon::createFromFormat('d/m/Y',  $request->vencimento));
+        //Cria Pedido
+        $data = [
+            'produto'    => $request->produto,
+            'empresa'    =>  $request->empresa,
+            'gateway'    => $request->gateway,
+            'vencimento' => date('Y-m-d', $vencimento),
+            'valor'      => str_replace(',', '', str_replace('.', '', $produto->valor)),
+            'status'     => $request->status,
+            'tipo_pedido'     => $request->tipo_pedido,
+            'notas_adicionais' => $request->notas_adicionais,
+            'created_at' => now()
+        ];
+
+        $pedidoCreate = Pedido::create($data);
+        $pedidoCreate->save();
+
+        return Redirect::route('pedidos.edit', [
+            'id' => $pedidoCreate->id,
+        ])->with(['color' => 'success', 'message' => 'Pedido cadastrado com sucesso!']);
+    }
+
     public function show($id)
     {
         $pedido = Pedido::where('id', $id)->first();

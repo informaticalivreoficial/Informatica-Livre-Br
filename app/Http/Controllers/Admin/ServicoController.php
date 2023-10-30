@@ -3,6 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\CatServicoRequest;
+use App\Http\Requests\Admin\ServicoRequest;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use App\Models\CatServico;
+use App\Models\GbServico;
 use App\Models\Servico;
 use Illuminate\Http\Request;
 
@@ -19,17 +28,16 @@ class ServicoController extends Controller
 
     public function create()
     {
-        $catProdutos = $this->catProdutoService->getCategorias();
+        $catServicos = CatServico::orderBy('titulo', 'ASC')->available()->whereNull('id_pai')->get();
 
-        return view('admin.produtos.create',[
-            'catProdutos' => $catProdutos
+        return view('admin.servicos.create',[
+            'catServicos' => $catServicos
         ]);
     }
 
-    public function store(ProdutoRequest $request)
+    public function store(ServicoRequest $request)
     {
-        $produtoCreate = $this->produtoService->createProduto($request->all());        
-
+        $servicoCreate = Servico::create($request->all()); 
         $validator = Validator::make($request->only('files'), ['files.*' => 'image']);
 
         if ($validator->fails() === true) {
@@ -41,33 +49,40 @@ class ServicoController extends Controller
 
         if ($request->allFiles()) {
             foreach ($request->allFiles()['files'] as $image) {
-                $produtoImage = new ProdutoGb();
-                $produtoImage->produto = $produtoCreate->id;
-                $produtoImage->path = $image->storeAs('produtos/' . $produtoCreate->id, Str::slug($request->name) . '-' . str_replace('.', '', microtime(true)) . '.' . $image->extension());
-                $produtoImage->save();
-                unset($produtoImage);
+                $servicoImage = new GbServico();
+                $servicoImage->servico = $servicoCreate->id;
+                $servicoImage->path = $image->storeAs('servicos/' . $servicoCreate->id, Str::slug($request->name) . '-' . str_replace('.', '', microtime(true)) . '.' . $image->extension());
+                $servicoImage->save();
+                unset($servicoImage);
             }
         }
         
-        return Redirect::route('produtos.edit', $produtoCreate->id)->with([
+        return Redirect::route('servicos.edit', $servicoCreate->id)->with([
             'color' => 'success', 
-            'message' => 'Produto cadastrado com sucesso!'
+            'message' => 'Serviço cadastrado com sucesso!'
         ]);        
     }
 
     public function edit($id)
     {
-        $catProdutos = $this->catProdutoService->getCategorias();
-        $produto = $this->produtoService->getProduto($id);    
-        return view('admin.produtos.edit', [
-            'produto' => $produto,
-            'catProdutos' => $catProdutos
+        $catServicos = CatServico::orderBy('created_at', 'DESC')
+                                ->whereNull('id_pai')
+                                ->available()
+                                ->get();
+        $servico = Servico::where('id', $id)->first();    
+        return view('admin.servicos.edit', [
+            'servico' => $servico,
+            'catServicos' => $catServicos
         ]);
     }
 
-    public function update(ProdutoRequest $request, $id)
+    public function update(ServicoRequest $request, $id)
     {     
-        $produtoUpdate = $this->produtoService->updateProduto($request->all(), $id);
+        $servicoUpdate = Servico::where('id', $id)->first();
+        $servicoUpdate->fill($request->all());
+
+        $servicoUpdate->save();
+        $servicoUpdate->setSlug();
 
         $validator = Validator::make($request->only('files'), ['files.*' => 'image']);
 
@@ -80,65 +95,84 @@ class ServicoController extends Controller
 
         if ($request->allFiles()) {
             foreach ($request->allFiles()['files'] as $image) {
-                $produtoImage = new ProdutoGb();
-                $produtoImage->produto = $produtoUpdate->id;
-                $produtoImage->path = $image->storeAs('produtos/' . $produtoUpdate->id, Str::slug($request->name) . '-' . str_replace('.', '', microtime(true)) . '.' . $image->extension());
-                $produtoImage->save();
-                unset($produtoImage);
+                $servicoImage = new GbServico();
+                $servicoImage->servico = $servicoUpdate->id;
+                $servicoImage->path = $image->storeAs('servicos/' . $servicoUpdate->id, Str::slug($request->name) . '-' . str_replace('.', '', microtime(true)) . '.' . $image->extension());
+                $servicoImage->save();
+                unset($servicoImage);
             }
         }
 
-        return Redirect::route('produtos.edit', [
-            'id' => $produtoUpdate->id
-        ])->with(['color' => 'success', 'message' => 'Produto atualizado com sucesso!']);
+        return Redirect::route('servicos.edit', [
+            'id' => $servicoUpdate->id
+        ])->with(['color' => 'success', 'message' => 'Serviço atualizado com sucesso!']);
     } 
 
     public function search(Request $request)
     {
         $filters = $request->only('filter');
 
-        $produtos = $this->produtoService->searchProduto($request->filter);
+        $servicos = Servico::where('name', 'LIKE', "%{$filters}%")
+                            ->orWhere('content', 'LIKE', "%{$filters}%")
+                            ->paginate(25);
 
-        return view('admin.produtos.index',[
-            'produtos' => $produtos,
+        return view('admin.servicos.index',[
+            'servicos' => $servicos,
             'filters' => $filters
         ]);
     }
 
     public function imageSetCover(Request $request)
     {
-        $imageSetCover = $this->produtoService->setCover($request->image);
-        return response()->json($imageSetCover);
+        $imageSetCover = GbServico::where('id', $request->image)->first();
+        $allImage = GbServico::where('servico', $imageSetCover->servico)->get();
+        foreach ($allImage as $image) {
+            $image->cover = null;
+            $image->save();
+        }
+        $imageSetCover->cover = true;
+        $imageSetCover->save();
+        $json = [
+            'success' => true,
+        ];
+        return response()->json($json);
     }
 
     public function imageRemove(Request $request)
     {
-        $imageDelete = $this->produtoService->imageRemoveGb($request->image);
-        return response()->json($imageDelete);
+        $imageDelete = GbServico::where('id', $request->image)->first();
+        Storage::delete($imageDelete->path);
+        $imageDelete->delete();
+        $json = [
+            'success' => true,
+        ];
+        return response()->json($json);
     }
     
-    public function produtoSetStatus(Request $request)
+    public function servicoSetStatus(Request $request)
     {   
-        $produtoSetStatus = $this->produtoService->produtoSetStatus($request->id, $request->status);       
-        return response()->json($produtoSetStatus);
+        $servico = Servico::find($request->id);
+        $servico->status = $request->status;
+        $servico->save();
+        return response()->json(['success' => true]);
     }
 
     public function delete(Request $request)
     {
-        $produtodelete = $this->produtoService->getProduto($request->id);
-        $produtoGb = $this->produtoService->getGbImage($produtodelete->id);
+        $servicodelete = Servico::where('id', $request->id)->first();
+        $servicoGb = GbServico::where('servico', $servicodelete->id)->first();
         $nome = \App\Helpers\Renato::getPrimeiroNome(Auth::user()->name);
 
-        if(!empty($produtodelete)){
-            if(!empty($produtoGb)){
+        if(!empty($servicodelete)){
+            if(!empty($servicoGb)){
                 $json = [
-                    'error' => "<b>$nome</b> você tem certeza que deseja excluir este produto? Existem imagens adicionadas e todas serão excluídas!",
-                    'id' => $produtodelete->id
+                    'error' => "<b>$nome</b> você tem certeza que deseja excluir este serviço? Existem imagens adicionadas e todas serão excluídas!",
+                    'id' => $servicodelete->id
                 ];                
             }else{
                 $json = [
-                    'error' => "<b>$nome</b> você tem certeza que deseja excluir este produto?",
-                    'id' => $produtodelete->id
+                    'error' => "<b>$nome</b> você tem certeza que deseja excluir este serviço?",
+                    'id' => $servicodelete->id
                 ]; 
             }            
         }else{
@@ -149,18 +183,156 @@ class ServicoController extends Controller
     
     public function deleteon(Request $request)
     {
-        $produtodelete = $this->produtoService->getProduto($request->produto_id); 
-        $imageDelete = $this->produtoService->getGbImage($produtodelete->id);
+        $servicodelete = Servico::where('id', $request->servico_id)->first();  
+        $imageDelete = GbServico::where('servico', $servicodelete->id)->first();
         
-        if(!empty($produtodelete)){
+        if(!empty($servicodelete)){
             if(!empty($imageDelete)){
-                $this->produtoService->imageRemoveGbAll($produtodelete->id);                
+                $imageDelete = GBServico::where('servico', $servicodelete->id)->first();
+                Storage::delete($imageDelete->path);
+                $imageDelete->delete();
+                Storage::deleteDirectory('servicos/'.$servicodelete->id);               
             }
-            $this->produtoService->deleteProduto($produtodelete->id);
+            $servicodelete->delete();
         }
-        return Redirect::route('produtos.index')->with([
+        return Redirect::route('servicos.index')->with([
             'color' => 'success', 
-            'message' => 'O produto '.$produtodelete->name.' foi removido com sucesso!'
+            'message' => 'O serviço '.$servicodelete->name.' foi removido com sucesso!'
         ]);
+    }
+
+    public function categorias()
+    {
+        $categorias = CatServico::where('id_pai', null)->orderBy('tipo', 'ASC')
+                    ->orderBy('status', 'ASC')
+                    ->orderBy('created_at', 'DESC')->paginate(25);
+        return view('admin.servicos.categorias',[
+            'categorias' => $categorias
+        ]);
+    }
+
+    public function categoriaCreate(Request $request, $catpai)
+    {        
+        $catpai = CatServico::where('id', $request->catpai)->first();
+        
+        return view('admin.servicos.categoria-create',[
+            'catpai' => $catpai
+        ]);
+    }
+
+    public function categoriaStore(CatServicoRequest $request)
+    {
+        $criarCategoria = CatServico::create($request->all());
+        $criarCategoria->fill($request->all());
+
+        $criarCategoria->setSlug();
+        
+        if($request->id_pai != null){
+            return Redirect::route('servicos-categorias.edit', [
+                'id' => $criarCategoria->id,
+            ])->with(['color' => 'success', 'message' => 'Sub Categoria cadastrada com sucesso!']);
+        }else{
+            return Redirect::route('servicos-categorias.edit', [
+                'id' => $criarCategoria->id,
+            ])->with(['color' => 'success', 'message' => 'Categoria cadastrada com sucesso!']);
+        }
+    }
+
+    public function categoriaEdit($id)
+    {
+        $categoria = CatServico::where('id', $id)->first();
+        if($categoria->id_pai != 'null'){
+            $catpai = CatServico::where('id', $categoria->id_pai)->first();
+        }else{
+            $catpai = 'null';
+        }
+        return view('admin.servicos.categoria-edit', [
+            'categoria' => $categoria,
+            'catpai' => $catpai
+        ]);
+    }
+
+    public function categoriaUpdate(CatServicoRequest $request, $id)
+    {
+        $categoria = CatServico::where('id', $id)->first();
+        $categoria->fill($request->all());
+
+        $categoria->save();
+        $categoria->setSlug();
+        
+        if($categoria->id_pai != null){
+            return Redirect::route('servicos-categorias.edit', [
+                'id' => $categoria->id,
+            ])->with(['color' => 'success', 'message' => 'Sub Categoria atualizada com sucesso!']);
+        }else{
+            return Redirect::route('servicos-categorias.edit', [
+                'id' => $categoria->id,
+            ])->with(['color' => 'success', 'message' => 'Categoria atualizada com sucesso!']);
+        }
+        
+    }
+
+    public function categoriaDelete(Request $request)
+    {
+        $categoria = CatServico::where('id', $request->id)->first();
+        $subcategoria = CatServico::where('id_pai', $request->id)->first();
+        $produtos = Servico::where('categoria', $request->id)->first();
+        $nome = \App\Helpers\Renato::getPrimeiroNome(Auth::user()->name);
+
+        if(!empty($categoria) && empty($subcategoria)){
+            if($categoria->id_pai == null){
+                $json = "<b>$nome</b> você tem certeza que deseja excluir esta categoria?";
+                return response()->json(['erroron' => $json,'id' => $categoria->id]);
+            }else{
+                // se tiver posts
+                if(!empty($produtos)){
+                    $json = "<b>$nome</b> você tem certeza que deseja excluir esta sub categoria? Ela possui serviços e tudo será excluído!";
+                    return response()->json(['erroron' => $json,'id' => $categoria->id]);
+                }else{
+                    $json = "<b>$nome</b> você tem certeza que deseja excluir esta sub categoria?";
+                    return response()->json(['erroron' => $json,'id' => $categoria->id]);
+                }                
+            }            
+        }
+        if(!empty($categoria) && !empty($subcategoria)){
+            $json = "<b>$nome</b> esta categoria possui sub categorias! É peciso excluílas primeiro!";
+            return response()->json(['error' => $json,'id' => $categoria->id]);
+        }else{
+            return response()->json(['error' => 'Erro ao excluir']);
+        }        
+    }
+
+    public function categoriaDeleteon(Request $request)
+    {
+        $categoria = CatServico::where('id', $request->categoria_id)->first();  
+        $produto = Servico::where('categoria', $request->id)->first();
+        
+        $categoriaR = $categoria->titulo;
+
+        if(!empty($categoria)){
+            if(!empty($produto)){
+                $produtogb = GbServico::where('servico', $produto->id)->first();
+                if(!empty($produtogb)){
+                    Storage::delete($produtogb->path);
+                    $produtogb->delete();
+                }
+                
+                Storage::deleteDirectory('servicos/'.$produto->id);
+                $categoria->delete();
+            }
+            $categoria->delete();
+        }
+
+        if($categoria->id_pai != null){
+            return Redirect::route('catservicos.index')->with([
+                'color' => 'success', 
+                'message' => 'A sub categoria '.$categoriaR.' foi removida com sucesso!'
+            ]);
+        }else{
+            return Redirect::route('catservicos.index')->with([
+                'color' => 'success', 
+                'message' => 'A categoria '.$categoriaR.' foi removida com sucesso!'
+            ]);
+        }        
     }
 }

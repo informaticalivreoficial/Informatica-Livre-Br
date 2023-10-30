@@ -31,7 +31,6 @@ use App\Http\Controllers\Web\{
     SendEmailController,
     WebController
 };
-use App\Models\CatServico;
 
 Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
     
@@ -210,17 +209,17 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('produtos', [ProdutoController::class, 'index'])->name('produtos.index');
     
     //*************************** Serviços Categorias **********************************/
-    Route::get('servicos/categorias/delete', [CatServico::class, 'delete'])->name('servicos-categorias.delete');
-    Route::delete('servicos/categorias/deleteon', [CatServico::class, 'deleteon'])->name('servicos-categorias.deleteon');
-    Route::get('servicos/categorias/{id}/edit', [CatServico::class, 'edit'])->name('servicos-categorias.edit');
-    Route::put('servicos/categorias/{id}', [CatServico::class, 'update'])->name('servicos-categorias.update');
-    Route::match(['post', 'get'],'servicos/categorias/create/{catpai}', [CatServico::class, 'create'])->name('servicos-categorias.create');
-    Route::post('servicos/categorias/store', [CatServico::class, 'store'])->name('servicos-categorias.store');
-    Route::get('servicos/categorias', [CatServico::class, 'index'])->name('catservicos.index');
+    Route::get('servicos/categorias/delete', [ServicoController::class, 'categoriaDelete'])->name('servicos-categorias.delete');
+    Route::delete('servicos/categorias/deleteon', [ServicoController::class, 'categoriaDeleteon'])->name('servicos-categorias.deleteon');
+    Route::get('servicos/categorias/{id}/edit', [ServicoController::class, 'categoriaEdit'])->name('servicos-categorias.edit');
+    Route::put('servicos/categorias/{id}', [ServicoController::class, 'categoriaUpdate'])->name('servicos-categorias.update');
+    Route::match(['post', 'get'],'servicos/categorias/create/{catpai}', [ServicoController::class, 'categoriaCreate'])->name('servicos-categorias.create');
+    Route::post('servicos/categorias/store', [ServicoController::class, 'categoriaStore'])->name('servicos-categorias.store');
+    Route::get('servicos/categorias', [ServicoController::class, 'categorias'])->name('servicos-categorias.index');
 
     //****************************** Serviços *********************************************/
     Route::match(['get', 'post'], 'servicos/pesquisa', [ServicoController::class, 'search'])->name('servicos.search');
-    Route::get('servicos/set-status', [ServicoController::class, 'servicoSetStatus'])->name('servicos.produtoSetStatus');
+    Route::get('servicos/set-status', [ServicoController::class, 'servicoSetStatus'])->name('servicos.servicoSetStatus');
     Route::post('servicos/image-set-cover', [ServicoController::class, 'imageSetCover'])->name('servicos.imageSetCover');
     Route::delete('servicos/image-remove', [ServicoController::class, 'imageRemove'])->name('servicos.imageRemove');
     Route::delete('servicos/deleteon', [ServicoController::class, 'deleteon'])->name('servicos.deleteon');
