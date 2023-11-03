@@ -34,7 +34,7 @@
             <p>
                 <b>Resumo da fatura:</b><br>                
                 Data de vencimento: {{Carbon\Carbon::parse($fatura->vencimento)->format('d/m/Y')}}<br>
-                Valor da fatura: R$ {{$fatura->valor ?? str_replace(',00', '', $fatura->itensTotalValor())}}<br> 
+                Valor da fatura: R$ {{$fatura->valor}}<br> 
             </p>
             <p>
                 <b>Código de Barras:</b><br>

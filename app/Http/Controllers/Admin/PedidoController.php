@@ -110,9 +110,11 @@ class PedidoController extends Controller
 
     public function faturas($pedido)
     {
+        $getPedido = Pedido::where('id', $pedido)->first();
         $faturas = Fatura::orderBy('created_at', 'ASC')->where('pedido', $pedido)->paginate(25);
         return view('admin.pedidos.faturas',[
-            'faturas' => $faturas
+            'faturas' => $faturas,
+            'getPedido' => $getPedido
         ]);
     }
 
@@ -212,17 +214,16 @@ class PedidoController extends Controller
             'tipo_pedido'     => $request->tipo_pedido,
             'periodo' => $request->periodo
         ];
-
+        
         //Cria Fatura
         if($request->gerarfatura === 'on'){
             
             $dados = [
                 'pedido'     => $pedidoUpdate->id,
-                'valor'      => str_replace(',', '', str_replace('.', '', $valor)),
+                'valor'      => $valor,
                 'vencimento' => date('Y-m-d', $vencimento),
                 'gateway'    => $request->gateway,
-                'status'     => 'pending',
-                'created_at' => now()
+                'status'     => 'pending'
             ];
 
             $criarFatura = Fatura::create($dados);
@@ -331,20 +332,20 @@ class PedidoController extends Controller
     public function sendFormFaturaClient(Request $request)
     {
         $Configuracoes = Configuracoes::where('id', '1')->first();
-        $pedido = Pedido::where('id', $request->id)->first();
-        $pedido->form_sendat = now();
-        $pedido->save();
+        $fatura = Fatura::where('id', $request->id)->first();
+        $fatura->form_sendat = now();
+        $fatura->save();
 
         $data = [            
             'sitename' => $Configuracoes->nomedosite,
             'siteemail' => $Configuracoes->email,
-            'client_name' => $pedido->getEmpresa->owner->name,
-            'client_email' => $pedido->getEmpresa->owner->email,
-            'uuid' => $pedido->uuid,
-            'empresa' => $pedido->getEmpresa->alias_name,
+            'client_name' => $fatura->pedidoObject->getEmpresa->owner->name,
+            'client_email' => $fatura->pedidoObject->getEmpresa->owner->email,
+            'uuid' => $fatura->uuid,
+            'empresa' => $fatura->pedidoObject->getEmpresa->alias_name,
         ];
 
-        Mail::send(new FaturaClientSend($data, $pedido));
+        Mail::send(new FaturaClientSend($data, $fatura));
         
         return response()->json([
             'retorno' => true

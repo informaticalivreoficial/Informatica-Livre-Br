@@ -5,7 +5,7 @@
 @section('content_header')
 <div class="row mb-2">
     <div class="col-sm-6">
-        <h1><i class="fas fa-search mr-2"></i> Faturas</h1>
+        <h1><i class="fas fa-search mr-2"></i> Faturas => {{$getPedido->getEmpresa->alias_name}}</h1>
     </div>
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">                    
@@ -56,17 +56,20 @@
             <table class="table table-bordered table-striped projects">
                 <thead>
                     <tr>
+                        <th class="text-center">#</th>                                                
+                        <th class="text-center">Descrição</th>                                                
                         <th class="text-center">Data</th>                                                
                         <th class="text-center">Vencimento</th>                        
                         <th class="text-center">Valor</th>                        
                         <th class="text-center">Status</th>
-                        <th class="text-center">Envio</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($faturas as $fatura)                    
                     <tr>
+                        <td class="text-center">{{$fatura->id}}</td> 
+                        <td class="text-center">{{$fatura->pedidoObject->service->name}}</td>                        
                         <td class="text-center">{{Carbon\Carbon::parse($fatura->created_at)->format('d/m/Y')}}</td>                        
                         <td class="text-center">{{Carbon\Carbon::parse($fatura->vencimento)->format('d/m/Y')}}</td> 
                         <td class="text-center">R$ {{$fatura->valor}}</td>                       
@@ -74,18 +77,14 @@
                         <td class="text-center">
                             {!!$fatura->getStatus()!!}
                         </td> 
-                        <td class="text-center">
+                        <td> 
                             @if ($fatura->valor && $fatura->vencimento)
                                 @if ($fatura->form_sendat == null)
                                     <a href="javascript:void(0)" class="btn btn-xs btn-success text-white j_enviaform cli{{ $fatura->id }}" data-id="{{ $fatura->id }}">Enviar Fatura <i class="fas fa-check"></i></a>
                                 @else
                                     <a href="javascript:void(0)" class="btn btn-xs btn-secondary text-white j_enviaform cli{{ $fatura->id }}" data-id="{{ $fatura->id }}">Reenviar Fatura <i class="fas fa-check"></i></a>
                                 @endif
-                            @else
-                                ------------
-                            @endif                                                            
-                        </td>
-                        <td> 
+                            @endif
                             @if($fatura->transaction_id)
                                 <button title="Sincronizar Fatura" type="button" data-id="{{$fatura->transaction_id}}" class="btn btn-xs btn-dark text-white j_refresh"><i class="fas fa-sync"></i></button>
                             @endif

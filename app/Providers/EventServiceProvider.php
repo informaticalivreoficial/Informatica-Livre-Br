@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Fatura;
 use App\Models\Pedido;
+use App\Observers\FaturaObserver;
 use App\Observers\PedidoObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -30,5 +32,6 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         Pedido::observe(PedidoObserver::class);
+        Fatura::observe(FaturaObserver::class);
     }
 }

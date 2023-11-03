@@ -33,7 +33,7 @@ class ClienteController extends Controller
     public function pagar($uuid)
     {
         $fatura = Fatura::where('uuid', $uuid)->first();
-
+        
         if($fatura->gateway == 2){
             $data = [
                 'order_id' => $fatura->id,
@@ -89,16 +89,17 @@ class ClienteController extends Controller
                     'price_cents' => str_replace(',', '', $fatura->valor)   
                 ];
             }
-
-            $array = array_merge($data, $items); //dd($array);
-            return $this->gerarBoleto($array);       
+            
+            $array = array_merge($data, $items); 
+            return $this->gerarBoleto($array); 
+                  
         }
          
                
     }
 
     public function gerarBoleto($data)
-    {
+    {        
         $paghiper = new PagHiper(
             env('PAGHIPER_APIKEY'), 
             env('PAGHIPER_TOKEM')
@@ -106,7 +107,7 @@ class ClienteController extends Controller
         $transaction = $paghiper->billet()->create($data);
         
         if(!empty($transaction) && $transaction['result'] == 'success'){
-            $fatura = Pedido::where('id', $transaction['order_id'])->first();
+            $fatura = Fatura::where('id', $transaction['order_id'])->first();
             $fatura->transaction_id = $transaction['transaction_id'];
             $fatura->status = $transaction['status'];
             $fatura->valor = str_replace(',', '.', str_replace('.', '', $transaction['value_cents']));
