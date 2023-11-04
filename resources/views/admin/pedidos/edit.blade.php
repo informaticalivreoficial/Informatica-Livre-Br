@@ -212,17 +212,19 @@ $config = [
                             </div>                                   
                         </div>
                         
-                        <div class="row mb-2">
-                            <div class="col-12 col-sm-6 col-md-4 col-lg-2">                                        
-                                <div class="form-group p-3 mb-1">
-                                    <label class="labelforms text-muted"><b> </b></label>
-                                    <div class="form-check mb-2">
-                                        <input id="gerarfatura" class="form-check-input" type="checkbox" name="gerarfatura" {{ (old('gerarfatura') == 'on' || old('gerarfatura') == true ? 'checked' : '') }}>
-                                        <label for="gerarfatura" class="form-check-label text-muted">Gerar Fatura?</label>
-                                    </div>                                            
-                                </div>
-                            </div>                        
-                        </div>
+                        @if (!$pedido->faturas()->count() > 0)
+                            <div class="row mb-2">
+                                <div class="col-12 col-sm-6 col-md-4 col-lg-2">                                        
+                                    <div class="form-group p-3 mb-1">
+                                        <label class="labelforms text-muted"><b> </b></label>
+                                        <div class="form-check mb-2">
+                                            <input id="gerarfatura" class="form-check-input" type="checkbox" name="gerarfatura" {{ (old('gerarfatura') == 'on' || old('gerarfatura') == true ? 'checked' : '') }}>
+                                            <label for="gerarfatura" class="form-check-label text-muted">Gerar Fatura?</label>
+                                        </div>                                            
+                                    </div>
+                                </div>                        
+                            </div>
+                        @endif                        
 
                         <div class="row mb-2">
                             <div class="col-12">   

@@ -17,8 +17,11 @@ class Fatura extends Model
         'paid_date',
         'form_sendat',
         'vencimento',
+        'gateway',
         'pedido',
         'valor',
+        'url_slip',
+        'digitable_line',
         'status'      
     ];
 

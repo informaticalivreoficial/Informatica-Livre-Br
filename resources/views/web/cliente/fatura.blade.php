@@ -10,6 +10,8 @@
 
         <link rel="icon" href="{{$configuracoes->getfaveicon()}}" type="image/x-icon">
 
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+
         <style>
             .badge-primary {
                 color: #fff;
@@ -265,7 +267,13 @@
         <script src="{{url(asset('frontend/assets/js/fatura.js'))}}"></script>        
         <script src="{{url(asset('frontend/assets/js/html2canvas.min.js'))}}"></script>   
         <script>
-            $(function () {           
+            $(function () {   
+                
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
             
                 $(".gateway").each(function(){
                     // if($(this).find('input[type="radio"]').first().attr("checked")){
@@ -284,7 +292,7 @@
                     $.ajax({
                         type: 'GET',
                         dataType: 'JSON',
-                        url: "{{ route('pedidos.SetGateway') }}",
+                        url: "{{ route('web.SetGateway') }}",
                         data: {
                             'gateway': gateway_id,
                             'pedido': "{{$fatura->id}}"

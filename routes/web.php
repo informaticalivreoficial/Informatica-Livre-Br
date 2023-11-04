@@ -62,6 +62,7 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
     //***************************** Cliente ********************************************/
     Route::get('/cliente/login', [ClienteController::class, 'login'])->name('login');
     Route::get('/cliente/minha-fatura/{uuid}', [ClienteController::class, 'fatura'])->name('fatura');
+    Route::get('cliente/minha-fatura/set-gateway', [ClienteController::class, 'SetGateway'])->name('SetGateway');
    
     //**************************** Emails ********************************************/
     Route::get('/atendimento', [WebController::class, 'atendimento'])->name('atendimento');

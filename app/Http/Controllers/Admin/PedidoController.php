@@ -222,7 +222,7 @@ class PedidoController extends Controller
                 'pedido'     => $pedidoUpdate->id,
                 'valor'      => $valor,
                 'vencimento' => date('Y-m-d', $vencimento),
-                'gateway'    => $request->gateway,
+                'gateway'    => $pedidoUpdate->gateway,
                 'status'     => 'pending'
             ];
 
@@ -367,7 +367,7 @@ class PedidoController extends Controller
         $pedido = Pedido::find($request->pedido);
         $pedido->gateway = $request->gateway;
         $pedido->save();
-
+        
         $allFaturas = Fatura::where('pedido', $pedido->id)->get();
         foreach ($allFaturas as $fatura) {
             $fatura->gateway = $pedido->gateway;

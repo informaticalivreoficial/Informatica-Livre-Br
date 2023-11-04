@@ -54,6 +54,11 @@ class Pedido extends Model
         return $this->hasMany(ItemPedido::class, 'pedido', 'id');
     }
 
+    public function faturas()
+    {
+        return $this->hasMany(Fatura::class, 'pedido', 'id');
+    }
+
     /**
      * Accerssors and Mutators
     */
