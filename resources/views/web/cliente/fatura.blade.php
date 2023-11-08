@@ -275,13 +275,13 @@
                     }
                 });
             
-                $(".gateway").each(function(){
+                //$(".gateway").each(function(){
                     // if($(this).find('input[type="radio"]').first().attr("checked")){
                     //     $(this).addClass('selecionada');
                     // }else{
                     //     $(this).removeClass('selecionada');
                     // }                    
-                });
+                //});
 
                 $(".gateway").on("click", function(e){  
                     
