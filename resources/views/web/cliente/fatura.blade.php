@@ -65,7 +65,7 @@
                                     <b class="cs-primary_color">Fatura:</b>
                                     #{{$fatura->id}}
                                 </p>
-                                <p class="cs-invoice_date cs-primary_color cs-m0">     
+                                <p class="cs-invoice_date cs-primary_color cs-m0" style="margin-bottom: 20px;">     
                                     <b class="cs-primary_color">Data: </b>                               
                                     {{Carbon\Carbon::parse($fatura->created_at)->format('d/m/Y')}}
                                     <br>
@@ -77,8 +77,21 @@
                                     @endif
                                     
                                     <br>
-                                    {!!$fatura->getStatus()!!}
+                                    {!!$fatura->getStatus()!!}                                    
                                 </p>
+                                @if (Carbon\Carbon::parse($fatura->vencimento)->lt(Carbon\Carbon::now()))
+                                    @if ($fatura->status != 'canceled' || $fatura->status != 'paid' || $fatura->status != 'completed')
+                                        <a target="_blank" href="{{route('web.pagar', [ 'uuid' => $fatura->uuid ])}}" class="cs-invoice_btn cs-color2 setBoleto cs-hide_print">
+                                            <span>Pagar Fatura</span>
+                                        </a>
+                                    @endif
+                                @else
+                                    @if ($fatura->status != 'canceled' || $fatura->status != 'paid' || $fatura->status != 'completed')
+                                        <a target="_blank" href="{{$fatura->url_slip ?? route('web.pagar', [ 'uuid' => $fatura->uuid ])}}" class="cs-invoice_btn cs-color2 setBoleto cs-hide_print">
+                                            <span>Pagar Fatura</span>
+                                        </a>
+                                    @endif
+                                @endif
                             </div>
                             <div class="cs-invoice_right cs-text_right">
                                 <div class="cs-logo cs-mb5">                                
@@ -87,7 +100,7 @@
                                         height="{{env('LOGOMARCA_GERENCIADOR_HEIGHT')}}" 
                                         src="{{$configuracoes->getlogoadmin()}}" 
                                         alt="{{$configuracoes->nomedosite}}">
-                                </div>
+                                </div>                                
                             </div>
                         </div>
                         <div class="cs-invoice_head cs-mb10">

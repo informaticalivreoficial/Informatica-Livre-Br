@@ -202,7 +202,7 @@ class PedidoController extends Controller
                  ($request->periodo == 3 ? $servico->valor_trimestral : 
                  ($request->periodo == 6 ? $servico->valor_semestral : 
                  ($request->periodo == 12 ? $servico->valor_anual : null))));
-
+        
         $data = [
             'servico'    => $request->servico,
             'empresa'    =>  $request->empresa,
@@ -220,7 +220,7 @@ class PedidoController extends Controller
             
             $dados = [
                 'pedido'     => $pedidoUpdate->id,
-                'valor'      => $valor,
+                'valor'      => floatval(str_replace(',', '.', str_replace('.', '', $valor))),
                 'vencimento' => date('Y-m-d', $vencimento),
                 'gateway'    => $pedidoUpdate->gateway,
                 'status'     => 'pending'

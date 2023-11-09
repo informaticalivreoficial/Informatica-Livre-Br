@@ -29,7 +29,7 @@ class CreateFaturasTable extends Migration
 
             $table->timestamps();
 
-            $table->foreign('pedido')->references('id')->on('pedidos')->onDelete('CASCADE');
+            $table->foreign('pedido')->references('id')->on('pedidos');
         });
     }
 

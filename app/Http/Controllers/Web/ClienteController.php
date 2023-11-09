@@ -22,8 +22,7 @@ class ClienteController extends Controller
     public function fatura($uuid)
     {
         $fatura = Fatura::where('uuid', $uuid)->first();
-        $gateways = Gateway::orderBy('created_at', 'ASC')->available()->get();
-         
+        $gateways = Gateway::orderBy('created_at', 'ASC')->available()->get();         
         return view('web.cliente.fatura',[
             'fatura' => $fatura,
             'gateways' => $gateways,
@@ -110,7 +109,7 @@ class ClienteController extends Controller
             $fatura = Fatura::where('id', $transaction['order_id'])->first();
             $fatura->transaction_id = $transaction['transaction_id'];
             $fatura->status = $transaction['status'];
-            $fatura->valor = str_replace(',', '.', str_replace('.', '', $transaction['value_cents']));
+            $fatura->valor = floatval(number_format($transaction['value_cents'] / 100, 2, '.', ''));
             $fatura->url_slip = $transaction['bank_slip']['url_slip'];
             $fatura->digitable_line = $transaction['bank_slip']['digitable_line'];
             $fatura->vencimento = $transaction['due_date'];

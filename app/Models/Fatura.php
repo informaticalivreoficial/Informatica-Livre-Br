@@ -65,10 +65,10 @@ class Fatura extends Model
         }
     }
     
-    public function setValorAttribute($value)
-    {
-        $this->attributes['valor'] = (!empty($value) ? floatval($this->convertStringToDouble($value)) : null);
-    }
+    // public function setValorAttribute($value)
+    // {
+    //     $this->attributes['valor'] = (!empty($value) ? floatval($this->convertStringToDouble($value)) : null);
+    // }
 
     private function convertStringToDouble($param)
     {
