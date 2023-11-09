@@ -79,15 +79,7 @@
                             @endif
                         </td> 
                         <td class="text-center">
-                            @if ($pedido->valor && $pedido->vencimento)
-                                @if ($pedido->form_sendat == null)
-                                    <a href="javascript:void(0)" class="btn btn-xs btn-success text-white j_enviaform cli{{ $pedido->id }}" data-id="{{ $pedido->id }}">Enviar Fatura <i class="fas fa-check"></i></a>
-                                @else
-                                    <a href="javascript:void(0)" class="btn btn-xs btn-secondary text-white j_enviaform cli{{ $pedido->id }}" data-id="{{ $pedido->id }}">Reenviar Fatura <i class="fas fa-check"></i></a>
-                                @endif
-                            @else
-                                ------------
-                            @endif                                                            
+                            ------------                                                          
                         </td>
                         <td> 
                             @if($pedido->transaction_id)
@@ -221,31 +213,31 @@
                 });
             });
 
-            $('.j_enviaform').click(function() {
-                var id = $(this).data('id');                
-                $.ajax({
-                    type: 'GET',
-                    dataType: 'JSON',
-                    url: "{{ route('pedidos.sendFormFaturaClient') }}",
-                    data: {
-                       'id': id
-                    },
-                    beforeSend: function(){
-                        $(".cli"+id).addClass('disabled')
-                        $(".cli"+id).html("Carregando...");  
-                    },
-                    success:function(data) {
-                        if(data.retorno == true){
-                            $(".cli"+id).html("Reenviar Fatura <i class=\"fas fa-check\"></i>");
-                        } else{
-                            $(".cli"+id).html("Enviar Fatura <i class=\"fas fa-check\"></i>");
-                        }
-                    },
-                    complete: function(resposta){
-                        $(".cli"+id).removeClass('disabled');
-                    }
-                });
-            });
+            // $('.j_enviaform').click(function() {
+            //     var id = $(this).data('id');                
+            //     $.ajax({
+            //         type: 'GET',
+            //         dataType: 'JSON',
+            //         url: "{{ route('pedidos.sendFormFaturaClient') }}",
+            //         data: {
+            //            'id': id
+            //         },
+            //         beforeSend: function(){
+            //             $(".cli"+id).addClass('disabled')
+            //             $(".cli"+id).html("Carregando...");  
+            //         },
+            //         success:function(data) {
+            //             if(data.retorno == true){
+            //                 $(".cli"+id).html("Reenviar Fatura <i class=\"fas fa-check\"></i>");
+            //             } else{
+            //                 $(".cli"+id).html("Enviar Fatura <i class=\"fas fa-check\"></i>");
+            //             }
+            //         },
+            //         complete: function(resposta){
+            //             $(".cli"+id).removeClass('disabled');
+            //         }
+            //     });
+            // });
 
             $('.j_refresh').click(function() {
                 var pedido = $(this).data('id');

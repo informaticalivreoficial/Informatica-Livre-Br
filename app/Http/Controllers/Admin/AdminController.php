@@ -12,6 +12,7 @@ use Spatie\Analytics\Period;
 use App\Models\{
     CatPost,
     Empresa,
+    Fatura,
     Orcamento,
     User,
     Post,
@@ -64,10 +65,10 @@ class AdminController extends Controller
         $empresasAvailable = Empresa::available()->count();
         $empresasUnavailable = Empresa::unavailable()->count();
         $empresasTotal = Empresa::all()->count();
-        //Pedidos
-        // $pedidosApproved = Pedido::approved()->count();
-        // $pedidosInprocess = Pedido::inprocess()->count();
-        // $pedidosRejected = Pedido::rejected()->count();
+        //Faturas
+        $faturasApproved = Fatura::approved()->count();
+        $faturasInprocess = Fatura::inprocess()->count();
+        $faturasRejected = Fatura::rejected()->count();
 
         //Analitcs
         $visitasHoje = Analytics::fetchMostVisitedPages(Period::days(1));
@@ -107,10 +108,10 @@ class AdminController extends Controller
             'empresasAvailable' => $empresasAvailable,
             'empresasUnavailable' => $empresasUnavailable,
             'empresasTotal' => $empresasTotal,
-            //Pedidos
-            // 'pedidosApproved' => $pedidosApproved,
-            // 'pedidosInprocess' => $pedidosInprocess,
-            // 'pedidosRejected' => $pedidosRejected,
+            //Faturas
+            'faturasApproved' => $faturasApproved,
+            'faturasInprocess' => $faturasInprocess,
+            'faturasRejected' => $faturasRejected,
             //Analytics
             'visitasHoje' => $visitasHoje,
             //'visitas365' => $visitas365,

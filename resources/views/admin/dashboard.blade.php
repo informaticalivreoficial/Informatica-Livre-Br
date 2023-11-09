@@ -61,10 +61,10 @@
             <span class="info-box-icon bg-teal"><a href="{{--route('embarcacoes.index')--}}" title="Pedidos"><i class="fa far fa-money-check"></i></a></span>
 
             <div class="info-box-content">
-                <span class="info-box-text"><b>Pedidos</b></span>
-                <span class="info-box-text">Aprovados: {{-- $pedidosApproved --}}</span>
-                <span class="info-box-text">Processando: {{-- $pedidosInprocess --}}</span>
-                <span class="info-box-text">Cancelado: {{-- $pedidosRejected --}}</span>
+                <span class="info-box-text"><b>Faturas</b></span>
+                <span class="info-box-text">Aprovadas: {{ $faturasApproved }}</span>
+                <span class="info-box-text">Processando: {{ $faturasInprocess }}</span>
+                <span class="info-box-text">Cancelado: {{ $faturasRejected }}</span>
             </div>
             <!-- /.info-box-content -->
         </div>

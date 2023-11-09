@@ -28,14 +28,19 @@ class Fatura extends Model
     /**
      * Scopes
     */
-    public function scopeAvailable($query)
+    public function scopeApproved($query)
     {
-        return $query->where('status', 1);
+        return $query->where('status', 'completed')->orWhere('status', 'paid');
     }
 
-    public function scopeUnavailable($query)
+    public function scopeInprocess($query)
     {
-        return $query->where('status', 0);
+        return $query->where('status', 'processing')->orWhere('status', 'pending');
+    }
+
+    public function scopeRejected($query)
+    {
+        return $query->where('status', 'canceled');
     }
 
     /**

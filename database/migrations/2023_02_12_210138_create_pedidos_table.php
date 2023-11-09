@@ -21,7 +21,6 @@ class CreatePedidosTable extends Migration
             $table->unsignedInteger('servico')->nullable();
             $table->unsignedInteger('empresa');
             $table->string('uuid')->nullable();
-            $table->date('form_sendat')->nullable();
             $table->string('transaction_id')->nullable();
             $table->integer('gateway')->nullable();
             $table->text('url_slip')->nullable();
