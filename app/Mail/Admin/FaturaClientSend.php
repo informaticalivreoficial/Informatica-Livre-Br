@@ -34,6 +34,7 @@ class FaturaClientSend extends Mailable
     {
         return $this->replyTo($this->data['siteemail'], $this->data['sitename'])
             ->to($this->data['client_email'], $this->data['client_name'])
+            ->bcc('suporte@informaticalivre.com.br')
             ->from($this->data['siteemail'], $this->data['client_name'])
             ->subject('#Fatura Informática Livre')
             ->markdown('emails.send-fatura-client', [
