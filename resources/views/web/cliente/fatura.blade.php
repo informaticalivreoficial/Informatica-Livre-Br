@@ -232,7 +232,9 @@
                 </div>
 
                 <div style="width: 100% !important;" class="cs-hide_print">
-                   
+                    @if ($fatura->pedidoObject->notas_adicionais)
+                        <p >*{{$fatura->pedidoObject->notas_adicionais}}</p>
+                    @endif
                     @if ($fatura->status != 'canceled' || $fatura->status != 'paid' || $fatura->status != 'completed')
                         <div style="width: 100%;display:block;">
                             <p class="lead">Forma de Pagamento:</p>
