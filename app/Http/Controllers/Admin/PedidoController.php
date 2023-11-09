@@ -339,8 +339,8 @@ class PedidoController extends Controller
         $data = [            
             'sitename' => $Configuracoes->nomedosite,
             'siteemail' => $Configuracoes->email,
-            'client_name' => $fatura->pedidoObject->getEmpresa->owner->name,
-            'client_email' => $fatura->pedidoObject->getEmpresa->owner->email,
+            'client_name' => $fatura->pedidoObject->getEmpresa->social_name,
+            'client_email' => $fatura->pedidoObject->getEmpresa->email,
             'uuid' => $fatura->uuid,
             'empresa' => $fatura->pedidoObject->getEmpresa->alias_name,
         ];
