@@ -64,7 +64,7 @@ class Fatura extends Model
         }elseif($this->status == 'paid'){
             return '<small class="badge badge-success">Pago</small>';
         }elseif($this->status == 'completed'){
-            return '<small class="badge badge-info">Finalizado/Pago</small>'; 
+            return '<small class="badge badge-success">Finalizado/Pago</small>'; 
         }else{
             return '<small class="badge badge-warning">Em Análise</small>'; 
         }

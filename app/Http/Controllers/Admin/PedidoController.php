@@ -306,22 +306,23 @@ class PedidoController extends Controller
     }
 
     public function statusBoleto(Request $request)
-    {        
+    {      
+        //dd($request->all());  
         $paghiper = new PagHiper(
             env('PAGHIPER_APIKEY'), 
             env('PAGHIPER_TOKEM')
         );
 
-        $transaction = $paghiper->billet()->status($request->pedido);
+        $transaction = $paghiper->billet()->status($request->fatura);
         
         if($transaction['result'] === 'success'){
-            $pedido = Pedido::where('id', $transaction['order_id'])->first();
-            $pedido->status = $transaction['status'];
-            $pedido->vencimento = $transaction['due_date'];
-            $pedido->digitable_line = $transaction['bank_slip']['digitable_line'];
-            $pedido->url_slip = $transaction['bank_slip']['url_slip'];
-            $pedido->url_slip_pdf = $transaction['bank_slip']['url_slip_pdf'];
-            $pedido->save();
+            $fatura = Fatura::where('id', $transaction['order_id'])->first();
+            $fatura->status = $transaction['status'];
+            $fatura->vencimento = $transaction['due_date'];
+            $fatura->digitable_line = $transaction['bank_slip']['digitable_line'];
+            $fatura->url_slip = $transaction['bank_slip']['url_slip'];
+            $fatura->url_slip_pdf = $transaction['bank_slip']['url_slip_pdf'];
+            $fatura->save();
             $json = ['success' => 'Fatura atualizada!'];
         }else{
             $json = ['error' => 'Erro ao Atualizar!'];

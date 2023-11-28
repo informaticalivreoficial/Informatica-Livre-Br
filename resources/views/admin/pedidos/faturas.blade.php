@@ -78,7 +78,7 @@
                             {!!$fatura->getStatus()!!}
                         </td> 
                         <td> 
-                            @if ($fatura->valor && $fatura->vencimento)
+                            @if ($fatura->valor && $fatura->vencimento && $fatura->status != 'completed' && $fatura->status != 'paid' && $fatura->status != 'canceled')
                                 @if ($fatura->form_sendat == null)
                                     <a href="javascript:void(0)" class="btn btn-xs btn-success text-white j_enviaform cli{{ $fatura->id }}" data-id="{{ $fatura->id }}">Enviar Fatura <i class="fas fa-check"></i></a>
                                 @else

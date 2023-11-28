@@ -79,15 +79,10 @@
                                     <br>
                                     {!!$fatura->getStatus()!!}                                    
                                 </p>
+                                
                                 @if (Carbon\Carbon::parse($fatura->vencimento)->lt(Carbon\Carbon::now()))
-                                    @if ($fatura->status != 'canceled' || $fatura->status != 'paid' || $fatura->status != 'completed')
+                                    @if ($fatura->status != 'canceled' && $fatura->status != 'paid' && $fatura->status != 'completed')
                                         <a target="_blank" href="{{route('web.pagar', [ 'uuid' => $fatura->uuid ])}}" class="cs-invoice_btn cs-color2 setBoleto cs-hide_print">
-                                            <span>Pagar Fatura</span>
-                                        </a>
-                                    @endif
-                                @else
-                                    @if ($fatura->status != 'canceled' || $fatura->status != 'paid' || $fatura->status != 'completed')
-                                        <a target="_blank" href="{{$fatura->url_slip ?? route('web.pagar', [ 'uuid' => $fatura->uuid ])}}" class="cs-invoice_btn cs-color2 setBoleto cs-hide_print">
                                             <span>Pagar Fatura</span>
                                         </a>
                                     @endif
@@ -260,14 +255,8 @@
                             <span>Imprimir</span>
                         </a>
                         @if (Carbon\Carbon::parse($fatura->vencimento)->lt(Carbon\Carbon::now()))
-                            @if ($fatura->status != 'canceled' || $fatura->status != 'paid' || $fatura->status != 'completed')
+                            @if ($fatura->status != 'canceled' && $fatura->status != 'paid' && $fatura->status != 'completed')
                                 <a target="_blank" href="{{route('web.pagar', [ 'uuid' => $fatura->uuid ])}}" class="cs-invoice_btn cs-color2 setBoleto">
-                                    <span>Pagar Fatura</span>
-                                </a>
-                            @endif
-                        @else
-                            @if ($fatura->status != 'canceled' || $fatura->status != 'paid' || $fatura->status != 'completed')
-                                <a target="_blank" href="{{$fatura->url_slip ?? route('web.pagar', [ 'uuid' => $fatura->uuid ])}}" class="cs-invoice_btn cs-color2 setBoleto">
                                     <span>Pagar Fatura</span>
                                 </a>
                             @endif
