@@ -20,7 +20,7 @@ class ClienteController extends Controller
     }
 
     public function fatura($uuid)
-    {
+    {        
         $fatura = Fatura::where('uuid', $uuid)->first();
         $gateways = Gateway::orderBy('created_at', 'ASC')->available()->get();         
         return view('web.cliente.fatura',[

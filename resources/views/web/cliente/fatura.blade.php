@@ -226,7 +226,7 @@
                     @endif 
                 </div>
 
-                <div style="width: 100% !important;" class="cs-hide_print">
+                <div style="width: 100% !important;" class="cs-hide_print">                    
                     @if ($fatura->pedidoObject->notas_adicionais)
                         <p >*{{$fatura->pedidoObject->notas_adicionais}}</p>
                     @endif
@@ -235,10 +235,10 @@
                             <p class="lead">Forma de Pagamento:</p>
                             @if (!empty($gateways) && $gateways->count() > 0)
                             @foreach ($gateways as $gateway)
-                                <label class="gateway {{ ($gateway->id == $fatura->gateway ? 'selecionada' : '') }}" for="{{$gateway->id}}" data-id="{{ $gateway->id }}">
+                                <label class="gw {{ ($gateway->id == $fatura->gateway ? 'selecionada' : '') }}" for="{{$gateway->id}}" data-id="{{ $gateway->id }}">
                                     <img class="m-2" width="120" src="{{$gateway->logomarca}}" alt="{{$gateway->nome}}">
                                 </label>
-                                <input class="gateway" type="radio" name="gateway" value="{{$gateway->id}}" {{ ($gateway->id == $fatura->gateway ? 'checked' : '') }} />
+                                <input type="radio" name="gw" value="{{$gateway->id}}" {{ ($gateway->id == $fatura->gateway ? 'checked' : '') }} />
                             @endforeach
                             @endif                       
                         </div>  
@@ -267,7 +267,7 @@
                 </div>
             </div>
         </div>
-        <script src="{{url(asset('frontend/assets/js/core.min.js'))}}"></script>
+        <script src="{{url(asset('frontend/assets/js/jquery.min.js'))}}"></script>
         <script src="{{url(asset('frontend/assets/js/fatura.js'))}}"></script>        
         <script src="{{url(asset('frontend/assets/js/html2canvas.min.js'))}}"></script>   
         <script>
@@ -287,9 +287,9 @@
                     // }                    
                 //});
 
-                $(".gateway").on("click", function(e){  
+                $(".gw").click(function(){  
                     
-                    $(".gateway").removeClass('selecionada');
+                    $(".gw").removeClass('selecionada');
                     $(this).addClass('selecionada');
 
                     var gateway_id = $(this).data('id');
@@ -298,19 +298,15 @@
                         dataType: 'JSON',
                         url: "{{ route('web.SetGateway') }}",
                         data: {
-                            'gateway': gateway_id,
-                            'pedido': "{{$fatura->id}}"
+                            'gw': gateway_id,
+                            'fatura': "{{$fatura->id}}"
                         },
-                        success:function(data) {
-                            
-                        }
+                        success:function(data) {}
                     });
                                        
                     var $radio = $(this).find('input[type="radio"]');
-                    $radio.prop("checked",!$radio.prop("checked"));
-                     
+                    $radio.prop("checked",!$radio.prop("checked"));                     
 
-                    e.preventDefault();
                 });
 
                 $('.setBoleto').click(function() {
