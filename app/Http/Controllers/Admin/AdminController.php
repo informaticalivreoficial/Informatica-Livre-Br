@@ -78,7 +78,7 @@ class AdminController extends Controller
         $top_browser = Analytics::fetchTopBrowsers(Period::months(5), 10);
 
         $analyticsData = Analytics::get(
-                Period::months(6), 
+                \Spatie\Analytics\Period::months(6), 
                 metrics: ['totalUsers', 'sessions', 'screenPageViews'], 
                 dimensions: ['month'],
                 //orderBy: [OrderBy::metric('data', true)],
