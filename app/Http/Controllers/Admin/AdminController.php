@@ -19,6 +19,7 @@ use App\Models\{
     Produto
 };
 
+
 class AdminController extends Controller
 {
     public function home()
@@ -81,9 +82,11 @@ class AdminController extends Controller
                 Period::months(6), 
                 metrics: ['totalUsers', 'sessions', 'screenPageViews'], 
                 dimensions: ['month'],
-                //orderBy: [OrderBy::metric('data', true)],
         );   
-         
+        $sortedData = $analyticsData->sortBy('month');
+            
+            
+        
         return view('admin.dashboard',[
             'time' => $time,
             'usersAvailable' => $usersAvailable,
@@ -115,7 +118,7 @@ class AdminController extends Controller
             //Analytics
             'visitasHoje' => $visitasHoje,
             //'visitas365' => $visitas365,
-            'analyticsData' => $analyticsData,
+            'analyticsData' => $sortedData,
             'top_browser' => $top_browser
         ]);
     }

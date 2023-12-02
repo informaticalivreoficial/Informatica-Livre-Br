@@ -163,6 +163,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         //Intervention\Image\ImageServiceProvider::class,
         //SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
+        Spatie\Analytics\AnalyticsServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -232,6 +233,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         //'Image' => Intervention\Image\Facades\Image::class,
         //'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
+        'Analytics' => Spatie\Analytics\AnalyticsFacade::class,
 
     ],
 
