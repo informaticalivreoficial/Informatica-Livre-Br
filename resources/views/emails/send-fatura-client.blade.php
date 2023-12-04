@@ -21,7 +21,7 @@
             </div>                        
         </div>
         <div style="background:#FFF; font:16px Trebuchet MS, Arial, Helvetica, sans-serif; color:#333; line-height:150%;">       
-            <h1 style="font-size:20px; color:#000; background:#F4F4F4; padding:10px;">Olá <strong style="color:#09F;">{{\App\Helpers\Renato::getPrimeiroNome($nome)}}</strong>!</h1>
+            <h1 style="font-size:20px; color:#000; background:#F4F4F4; padding:10px;">Olá <strong style="color:#09F;">{{$nome}}</strong>!</h1>
             <p>
                 Você está recebendo a sua fatura para pagamento. Para acessá-la, 
                 basta clicar no link abaixo:

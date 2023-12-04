@@ -297,7 +297,6 @@ class PedidoController extends Controller
 
     public function statusBoleto(Request $request)
     {      
-        //dd($request->all());  
         $paghiper = new PagHiper(
             env('PAGHIPER_APIKEY'), 
             env('PAGHIPER_TOKEM')
