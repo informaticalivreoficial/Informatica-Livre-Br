@@ -12,17 +12,13 @@ use App\Http\Controllers\Admin\{
     CatPostController,
     ConfigController,
     EmpresaController,
-    ProdutoController,
-    CatProdutoController,
     CofreController,
     FaturaController,
     NewsletterController,
     NotificationController,
-    OrcamentoController,
     ParceiroController,
     PedidoController,
     PortifolioController,
-    ServicoController,
     SitemapController,
     SlideController
 };

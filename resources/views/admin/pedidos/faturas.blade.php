@@ -10,6 +10,7 @@
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">                    
             <li class="breadcrumb-item"><a href="{{route('home')}}">Painel de Controle</a></li>
+            <li class="breadcrumb-item"><a href="{{route('pedidos.index')}}">Pedidos</a></li>
             <li class="breadcrumb-item active">Faturas</li>
         </ol>
     </div>
@@ -131,7 +132,7 @@
             @method('DELETE')
             <input id="id_fatura" name="fatura_id" type="hidden" value=""/>
                 <div class="modal-header">
-                    <h4 class="modal-title">Remover fatura!</h4>
+                    <h4 class="modal-title">Remover Fatura!</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -144,7 +145,7 @@
                     <button type="submit" class="btn btn-primary">Excluir Agora</button>
                 </div>
             </form>
-        </div>       
+        </div>        
     </div>
 </div>
 @stop
@@ -178,11 +179,37 @@
                     success:function(data) {
                         if(data.error){
                             $('.j_param_data').html(data.error);
-                            $('#id_pedido').val(data.id);
+                            $('#id_fatura').val(data.id);
                             $('#frm').prop('action','{{ route('faturas.deleteon') }}');
                         }else{
                             $('#frm').prop('action','{{ route('faturas.deleteon') }}');
                         }
+                    }
+                });
+            });
+
+            $('.j_enviaform').click(function() {
+                var id = $(this).data('id');                
+                $.ajax({
+                    type: 'GET',
+                    dataType: 'JSON',
+                    url: "{{ route('pedidos.sendFormFaturaClient') }}",
+                    data: {
+                       'id': id
+                    },
+                    beforeSend: function(){
+                        $(".cli"+id).addClass('disabled')
+                        $(".cli"+id).html("Carregando...");  
+                    },
+                    success:function(data) {
+                        if(data.retorno == true){
+                            $(".cli"+id).html("Reenviar Fatura <i class=\"fas fa-check\"></i>");
+                        } else{
+                            $(".cli"+id).html("Enviar Fatura <i class=\"fas fa-check\"></i>");
+                        }
+                    },
+                    complete: function(resposta){
+                        $(".cli"+id).removeClass('disabled');
                     }
                 });
             });

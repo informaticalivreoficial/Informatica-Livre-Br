@@ -12,17 +12,17 @@ class FaturaClientSend extends Mailable
 {
     use Queueable, SerializesModels;
 
-    private $data, $pedido;
+    private $data, $fatura;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(array $data, $pedido)
+    public function __construct(array $data, $fatura)
     {
         $this->data = $data;
-        $this->pedido = $pedido;
+        $this->fatura = $fatura;
     }
 
     /**
@@ -40,7 +40,7 @@ class FaturaClientSend extends Mailable
             ->markdown('emails.send-fatura-client', [
                 'uuid' => $this->data['uuid'],
                 'nome' => $this->data['client_name'],
-                'fatura' => $this->pedido,
+                'fatura' => $this->fatura,
         ]);
     }
 }

@@ -20,8 +20,9 @@ Route::prefix('admin')->middleware('auth')->group( function(){
 
     //******************** Vendas *************************************************************/
     Route::get('pedidos/faturas/{pedido}', [FaturaController::class, 'faturas'])->name('faturas.list');
-    Route::delete('pedidos/faturas/deleteon', [FaturaController::class, 'deleteon'])->name('faturas.deleteon');
-    Route::get('pedidos/faturas/delete', [FaturaController::class, 'delete'])->name('faturas.delete');
+    Route::delete('pedidos/fatura/deleteon', [FaturaController::class, 'deleteon'])->name('faturas.deleteon');
+    Route::get('pedidos/fatura/delete', [FaturaController::class, 'delete'])->name('faturas.delete');
+    Route::get('pedidos/sendFormFaturaClient', [FaturaController::class, 'sendFormFaturaClient'])->name('pedidos.sendFormFaturaClient');
 
     Route::get('pedidos/show/{id}', [PedidoController::class, 'show'])->name('pedidos.show');
     Route::get('pedidos/create', [PedidoController::class, 'create'])->name('pedidos.create');
@@ -33,7 +34,7 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::put('pedidos-service/{id}', [PedidoController::class, 'updateService'])->name('pedidos.updateService');
     Route::get('pedidos/{id}/edit', [PedidoController::class, 'edit'])->name('pedidos.edit');
     Route::get('pedidos', [PedidoController::class, 'index'])->name('pedidos.index'); 
-    Route::get('pedidos/sendFormFaturaClient', [PedidoController::class, 'sendFormFaturaClient'])->name('pedidos.sendFormFaturaClient');   
+       
         
     Route::post('itemPedidos/store', [PedidoController::class, 'storeItem'])->name('storeItem.store');
 

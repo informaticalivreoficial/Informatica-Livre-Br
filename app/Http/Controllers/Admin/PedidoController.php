@@ -236,7 +236,7 @@ class PedidoController extends Controller
             'order_id' => $pedido->id,
             'payer_name' => $pedido->getEmpresa->alias_name,
             'payer_email' => $pedido->getEmpresa->email,
-            'payer_cpf_cnpj' => ($pedido->getEmpresa->cnpj ? $pedido->getEmpresa->cnpj : $pedido->getEmpresa->owner->cpf),
+            'payer_cpf_cnpj' => ($pedido->getEmpresa->document_company ? $pedido->getEmpresa->document_company : $pedido->getEmpresa->owner->cpf),
             'days_due_date' => Carbon::parse($pedido->vencimento)->diffInDays(Carbon::parse(Carbon::now())),
             'type_bank_slip' => 'boletoa4',
         ];
@@ -292,9 +292,7 @@ class PedidoController extends Controller
         $transaction = $paghiper->notification()->response(
             $_POST['notification_id'], 
             $_POST['idTransacao']
-        );
-
-        
+        );        
     }
 
     public function statusBoleto(Request $request)
@@ -320,29 +318,6 @@ class PedidoController extends Controller
             $json = ['error' => 'Erro ao Atualizar!'];
         }
         return response()->json($json);
-    }
-
-    public function sendFormFaturaClient(Request $request)
-    {
-        $Configuracoes = Configuracoes::where('id', '1')->first();
-        $fatura = Fatura::where('id', $request->id)->first();
-        $fatura->form_sendat = now();
-        $fatura->save();
-
-        $data = [            
-            'sitename' => $Configuracoes->nomedosite,
-            'siteemail' => $Configuracoes->email,
-            'client_name' => $fatura->pedidoObject->getEmpresa->social_name,
-            'client_email' => $fatura->pedidoObject->getEmpresa->email,
-            'uuid' => $fatura->uuid,
-            'empresa' => $fatura->pedidoObject->getEmpresa->alias_name,
-        ];
-
-        Mail::send(new FaturaClientSend($data, $fatura));
-        
-        return response()->json([
-            'retorno' => true
-        ]);
     }
 
     public function storeItem(ItemPedidoRequest $request)
