@@ -123,8 +123,6 @@
 <!-- /.card -->
 
 
-
-
 <div class="modal fade" id="modal-default">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -180,7 +178,7 @@
                     success:function(data) {
                         if(data.error){
                             $('.j_param_data').html(data.error);
-                            $('#id_fatura').val(data.id);
+                            $('#id_pedido').val(data.id);
                             $('#frm').prop('action','{{ route('faturas.deleteon') }}');
                         }else{
                             $('#frm').prop('action','{{ route('faturas.deleteon') }}');

@@ -1,5 +1,14 @@
 <?php
 
+use App\Http\Controllers\Admin\{
+    BancoController,
+    CatProdutoController,
+    FaturaController,
+    OrcamentoController,
+    PedidoController,
+    ProdutoController,
+    ServicoController
+};
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -10,7 +19,10 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('bancos/refresh', [BancoController::class, 'refresh'])->name('bancos.refresh');
 
     //******************** Vendas *************************************************************/
-    Route::get('pedidos/faturas/{pedido}', [PedidoController::class, 'faturas'])->name('faturas.list');
+    Route::get('pedidos/faturas/{pedido}', [FaturaController::class, 'faturas'])->name('faturas.list');
+    Route::delete('pedidos/faturas/deleteon', [FaturaController::class, 'deleteon'])->name('faturas.deleteon');
+    Route::get('pedidos/faturas/delete', [FaturaController::class, 'delete'])->name('faturas.delete');
+
     Route::get('pedidos/show/{id}', [PedidoController::class, 'show'])->name('pedidos.show');
     Route::get('pedidos/create', [PedidoController::class, 'create'])->name('pedidos.create');
     Route::post('pedidos/store', [PedidoController::class, 'store'])->name('pedidos.store');

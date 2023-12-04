@@ -108,15 +108,7 @@ class PedidoController extends Controller
         ]);
     }
 
-    public function faturas($pedido)
-    {
-        $getPedido = Pedido::where('id', $pedido)->first();
-        $faturas = Fatura::orderBy('created_at', 'ASC')->where('pedido', $pedido)->paginate(25);
-        return view('admin.pedidos.faturas',[
-            'faturas' => $faturas,
-            'getPedido' => $getPedido
-        ]);
-    }
+    
 
     public function edit($id)
     {
