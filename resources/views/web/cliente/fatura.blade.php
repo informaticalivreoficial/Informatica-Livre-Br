@@ -82,9 +82,15 @@
                                 
                                 @if (Carbon\Carbon::parse($fatura->vencimento)->lt(Carbon\Carbon::now()) == false)
                                     @if ($fatura->status != 'canceled' && $fatura->status != 'paid' && $fatura->status != 'completed')
-                                        <a target="_blank" href="{{route('web.pagar', [ 'uuid' => $fatura->uuid ])}}" class="cs-invoice_btn cs-color2 setBoleto cs-hide_print">
-                                            <span>Pagar Fatura</span>
-                                        </a>
+                                        @if ($fatura->url_slip)
+                                            <a target="_blank" href="{{$fatura->url_slip}}" class="cs-invoice_btn cs-color2 setBoleto">
+                                                <span>Pagar Fatura</span>
+                                            </a>
+                                        @else
+                                            <a target="_blank" href="{{route('web.pagar', [ 'uuid' => $fatura->uuid ])}}" class="cs-invoice_btn cs-color2 setBoleto">
+                                                <span>Pagar Fatura</span>
+                                            </a>
+                                        @endif 
                                     @endif
                                 @endif
                             </div>
@@ -256,9 +262,15 @@
                         </a>
                         @if (Carbon\Carbon::parse($fatura->vencimento)->lt(Carbon\Carbon::now()) == false)
                             @if ($fatura->status != 'canceled' && $fatura->status != 'paid' && $fatura->status != 'completed')
-                                <a target="_blank" href="{{route('web.pagar', [ 'uuid' => $fatura->uuid ])}}" class="cs-invoice_btn cs-color2 setBoleto">
-                                    <span>Pagar Fatura</span>
-                                </a>
+                                @if ($fatura->url_slip)
+                                    <a target="_blank" href="{{$fatura->url_slip}}" class="cs-invoice_btn cs-color2 setBoleto">
+                                        <span>Pagar Fatura</span>
+                                    </a>
+                                @else
+                                    <a target="_blank" href="{{route('web.pagar', [ 'uuid' => $fatura->uuid ])}}" class="cs-invoice_btn cs-color2 setBoleto">
+                                        <span>Pagar Fatura</span>
+                                    </a>
+                                @endif                                
                             @endif
                         @endif
                                                 

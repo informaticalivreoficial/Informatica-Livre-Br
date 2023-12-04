@@ -93,8 +93,6 @@ class ClienteController extends Controller
             return $this->gerarBoleto($array); 
                   
         }
-         
-               
     }
 
     public function gerarBoleto($data)
