@@ -122,24 +122,7 @@
 </div>
 <!-- /.card -->
 
-<div class="modal fade" id="modal-content">
-    <div class="modal-dialog">
-        <div class="modal-content">  
-            <div class="modal-header">
-                <h4 class="modal-title">Orçamento</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <span class="j_data"></span>
-            </div>
-            <div class="modal-footer justify-content-between">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Sair</button>                    
-            </div>            
-        </div>       
-    </div>
-</div>
+
 
 
 <div class="modal fade" id="modal-default">
@@ -171,12 +154,10 @@
 @section('plugins.Toastr', true)
 
 @section('css')
-<link rel="stylesheet" href="{{url(asset('backend/plugins/ekko-lightbox/ekko-lightbox.css'))}}">
 <link href="{{url(asset('backend/plugins/bootstrap-toggle/bootstrap-toggle.min.css'))}}" rel="stylesheet">
 @stop
 
-@section('js')
-    <script src="{{url(asset('backend/plugins/ekko-lightbox/ekko-lightbox.min.js'))}}"></script>
+@section('js')    
     <script src="{{url(asset('backend/plugins/bootstrap-toggle/bootstrap-toggle.min.js'))}}"></script>
     <script>
        $(function () {           
@@ -185,43 +166,29 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
-            });
-           
-            $(document).on('click', '[data-toggle="lightbox"]', function(event) {
-              event.preventDefault();
-              $(this).ekkoLightbox({
-                alwaysShowClose: true
-              });
-            });
+            }); 
 
-            
-
-            $('.j_enviaform').click(function() {
-                var id = $(this).data('id');                
+            $('.j_modal_btn').click(function() {
+                var fatura_id = $(this).data('id');                
                 $.ajax({
                     type: 'GET',
                     dataType: 'JSON',
-                    url: "{{ route('pedidos.sendFormFaturaClient') }}",
+                    url: "{{ route('faturas.delete') }}",
                     data: {
-                       'id': id
-                    },
-                    beforeSend: function(){
-                        $(".cli"+id).addClass('disabled')
-                        $(".cli"+id).html("Carregando...");  
+                       'id': fatura_id
                     },
                     success:function(data) {
-                        if(data.retorno == true){
-                            $(".cli"+id).html("Reenviar Fatura <i class=\"fas fa-check\"></i>");
-                        } else{
-                            $(".cli"+id).html("Enviar Fatura <i class=\"fas fa-check\"></i>");
+                        if(data.error){
+                            $('.j_param_data').html(data.error);
+                            $('#id_fatura').val(data.id);
+                            $('#frm').prop('action','{{ route('faturas.deleteon') }}');
+                        }else{
+                            $('#frm').prop('action','{{ route('faturas.deleteon') }}');
                         }
-                    },
-                    complete: function(resposta){
-                        $(".cli"+id).removeClass('disabled');
                     }
                 });
             });
-
+            
             $('.j_refresh').click(function() {
                 var fatura = $(this).data('id');
                 $.ajax({
