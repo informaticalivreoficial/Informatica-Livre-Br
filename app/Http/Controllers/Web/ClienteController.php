@@ -88,7 +88,7 @@ class ClienteController extends Controller
                     'price_cents' => str_replace(',', '', $fatura->valor)   
                 ];
             }
-            
+            dd($data);
             $array = array_merge($data, $items); 
             return $this->gerarBoleto($array); 
                   
