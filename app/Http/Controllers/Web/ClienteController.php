@@ -46,7 +46,7 @@ class ClienteController extends Controller
                 'payer_city' => $fatura->pedidoObject->getEmpresa->cidade,
                 'payer_state' => $fatura->pedidoObject->getEmpresa->uf, // apenas sigla do estado
                 'payer_zip_code' => str_replace(['.', '-', ' '], "", $fatura->pedidoObject->getEmpresa->cep),
-                'payer_cpf_cnpj' => ($fatura->pedidoObject->getEmpresa->document_company == null ? str_replace(['.','-'], "", $fatura->pedidoObject->getEmpresa->owner->cpf) : str_replace(['.','-','/'], "", $fatura->pedidoObject->getEmpresa->document_company)),
+                'payer_cpf_cnpj' => (!$fatura->pedidoObject->getEmpresa->document_company ? str_replace(['.','-'], "", $fatura->pedidoObject->getEmpresa->owner->cpf) : str_replace(['.','-','/'], "", $fatura->pedidoObject->getEmpresa->document_company)),
                 'days_due_date' => (Carbon::parse($fatura->vencimento)->lt(Carbon::parse(Carbon::now())) ? '5' : Carbon::parse($fatura->vencimento)->diffInDays(Carbon::parse(Carbon::now()))),
                 'type_bank_slip' => 'boletoa4',
                 'notification_url' => 'https://webhook.site/d8762b26-8f9c-4e78-9cf0-aa4d08e6cddc',
@@ -88,7 +88,7 @@ class ClienteController extends Controller
                     'price_cents' => str_replace(',', '', $fatura->valor)   
                 ];
             }
-            dd($fatura->pedidoObject->getEmpresa->owner->cpf);
+            dd($fatura->pedidoObject->getEmpresa->document_company);
             $array = array_merge($data, $items); 
             return $this->gerarBoleto($array); 
                   
