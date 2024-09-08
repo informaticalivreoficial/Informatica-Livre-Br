@@ -34,9 +34,7 @@
             <p><b>Resumo da fatura:</b><br>                
                 Data de vencimento: {{Carbon\Carbon::parse($fatura->vencimento)->format('d/m/Y')}}<br>
                 Valor da fatura: R$ {{$fatura->valor}}<br>
-                Descrição: {{$fatura->content}}
-            </p>
-            {{--<p><b>Código de Barras:</b><br>{{$fatura->digitable_line}}</p> --}}           
+                Descrição: {{$fatura->content}}</p>           
             <p>att,<br>
                 Renato Montanari<br>
                 Analista de TI<br>

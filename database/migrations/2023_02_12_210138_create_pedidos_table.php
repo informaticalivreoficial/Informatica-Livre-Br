@@ -27,7 +27,7 @@ class CreatePedidosTable extends Migration
             $table->string('digitable_line')->nullable();
             $table->date('vencimento')->nullable();
             $table->integer('valor')->nullable();
-            $table->string('notas_adicionais')->nullable();
+            $table->text('notas_adicionais')->nullable();
 
             $table->timestamps();
 

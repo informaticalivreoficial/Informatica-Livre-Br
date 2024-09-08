@@ -73,26 +73,30 @@ $config = [
                     <li class="nav-item">
                         <a class="nav-link" id="custom-tabs-four-itens-tab" data-toggle="pill" href="#custom-tabs-four-itens" role="tab" aria-controls="custom-tabs-four-itens" aria-selected="true">Itens do pedido</a>
                     </li> 
+                    <li class="nav-item">
+                        <a class="nav-link" id="custom-tabs-four-faturas-tab" data-toggle="pill" href="#custom-tabs-four-faturas" role="tab" aria-controls="custom-tabs-four-faturas" aria-selected="true">Faturas</a>
+                    </li> 
                 </ul>
             </div>
             <div class="card-body">
-                <div class="row mb-2">
-                    <div class="col-12"> 
-                        <div class="form-group">
-                            <label class="labelforms text-muted"><b>Tipo de pedido</b></label>
-                            <div class="form-check">
-                                <input id="tipo-orcamento" class="form-check-input" type="radio" value="1" name="tipo_pedido" {{(old('tipo_pedido') == '1' ? 'checked' : ($pedido->tipo_pedido == 1 ? 'checked' : ''))}}>
-                                <label for="tipo-orcamento" class="form-check-label mr-5">Orçamento</label>
-                                <input id="tipo-produto" class="form-check-input" type="radio" value="0" name="tipo_pedido" {{(old('tipo_pedido') == '0' ? 'checked' : ($pedido->tipo_pedido == 0 ? 'checked' : '') )}}>
-                                <label for="tipo-produto" class="form-check-label mr-5">Produto</label>
-                                <input id="tipo-servico" class="form-check-input" type="radio" value="2" name="tipo_pedido" {{(old('tipo_pedido') == '2' ? 'checked' : ($pedido->tipo_pedido == 2 ? 'checked' : '') )}}>
-                                <label for="tipo-servico" class="form-check-label">Serviço</label>
-                            </div>
-                        </div>
-                    </div>                        
-                </div>
+                
                 <div class="tab-content" id="custom-tabs-four-tabContent">
                     <div class="tab-pane fade show active" id="custom-tabs-four-home" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
+                        <div class="row mb-2">
+                            <div class="col-12"> 
+                                <div class="form-group">
+                                    <label class="labelforms text-muted"><b>Tipo de pedido</b></label>
+                                    <div class="form-check">
+                                        <input id="tipo-orcamento" class="form-check-input" type="radio" value="1" name="tipo_pedido" {{(old('tipo_pedido') == '1' ? 'checked' : ($pedido->tipo_pedido == 1 ? 'checked' : ''))}}>
+                                        <label for="tipo-orcamento" class="form-check-label mr-5">Orçamento</label>
+                                        <input id="tipo-produto" class="form-check-input" type="radio" value="0" name="tipo_pedido" {{(old('tipo_pedido') == '0' ? 'checked' : ($pedido->tipo_pedido == 0 ? 'checked' : '') )}}>
+                                        <label for="tipo-produto" class="form-check-label mr-5">Produto</label>
+                                        <input id="tipo-servico" class="form-check-input" type="radio" value="2" name="tipo_pedido" {{(old('tipo_pedido') == '2' ? 'checked' : ($pedido->tipo_pedido == 2 ? 'checked' : '') )}}>
+                                        <label for="tipo-servico" class="form-check-label">Serviço</label>
+                                    </div>
+                                </div>
+                            </div>                        
+                        </div>
                         <div class="row mb-2 mt-2"> 
                             <div class="col-12 col-md-6 col-lg-4"> 
                                 <div class="form-group">
@@ -283,6 +287,70 @@ $config = [
                                     Cadastrar item para o pedido
                                 </button>                                                        
                             </div>                       
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade show" id="custom-tabs-four-faturas" role="tabpanel" aria-labelledby="custom-tabs-four-faturas-tab">
+                        <div class="row mb-2 mt-3">
+                            @if(!empty($pedido->faturas()->get()) && $pedido->faturas()->count() > 0)
+                                <div class="col-12">
+                                    <table class="table table-bordered table-striped projects">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center">#</th>                                                
+                                                <th class="text-center">Descrição</th>                                                
+                                                <th class="text-center">Data</th>                                                
+                                                <th class="text-center">Vencimento</th>                        
+                                                <th class="text-center">Valor</th>                        
+                                                <th class="text-center">Status</th>
+                                                <th>Ações</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($pedido->faturas()->get() as $fatura)                    
+                                            <tr>
+                                                <td class="text-center">{{$fatura->id}}</td> 
+                                                <td class="text-center">{{$fatura->pedidoObject->service->name}}</td>                        
+                                                <td class="text-center">{{Carbon\Carbon::parse($fatura->created_at)->format('d/m/Y')}}</td>                        
+                                                <td class="text-center">{{Carbon\Carbon::parse($fatura->vencimento)->format('d/m/Y')}}</td> 
+                                                <td class="text-center">R$ {{$fatura->valor}}</td>                       
+                                                
+                                                <td class="text-center">
+                                                    {!!$fatura->getStatus()!!}
+                                                </td> 
+                                                <td> 
+                                                    @if ($fatura->valor && $fatura->vencimento && $fatura->status != 'completed' && $fatura->status != 'paid' && $fatura->status != 'canceled')
+                                                        @if ($fatura->form_sendat == null)
+                                                            <a href="javascript:void(0)" class="btn btn-xs btn-success text-white j_enviaform cli{{ $fatura->id }}" data-id="{{ $fatura->id }}">Enviar Fatura <i class="fas fa-check"></i></a>
+                                                        @else
+                                                            <a href="javascript:void(0)" class="btn btn-xs btn-secondary text-white j_enviaform cli{{ $fatura->id }}" data-id="{{ $fatura->id }}">Reenviar Fatura <i class="fas fa-check"></i></a>
+                                                        @endif
+                                                    @endif
+                                                    @if($fatura->transaction_id)
+                                                        <button title="Sincronizar Fatura" type="button" data-id="{{$fatura->transaction_id}}" class="btn btn-xs btn-dark text-white j_refresh"><i class="fas fa-sync"></i></button>
+                                                    @endif
+                                                    @if ($fatura->valor && $fatura->vencimento && $fatura->periodo == null)
+                                                        <a target="_blank" href="{{route('web.fatura',['uuid' => $fatura->uuid])}}" class="btn btn-xs btn-info text-white"><i class="fas fa-search"></i></a>
+                                                    @else
+                                                        <a href="{{route('faturas.show',['id' => $fatura->id])}}" class="btn btn-xs btn-info text-white"><i class="fas fa-search"></i></a>
+                                                    @endif    
+                                                    <button type="button" class="btn btn-xs btn-danger text-white j_modal_btn" data-id="{{$fatura->id}}" data-toggle="modal" data-target="#modal-default">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>                
+                                    </table>
+                                </div> 
+                            @else                                
+                                <div class="col-12">                                                        
+                                    <div class="alert alert-info p-3">
+                                        Não foram encontrados registros!
+                                    </div>                                                        
+                                </div>                         
+                            @endif 
+                                                   
                         </div>
                     </div>
 
