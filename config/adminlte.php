@@ -261,6 +261,10 @@ return [
                 [
                     'text' => 'Finalizados',
                     'url' => 'admin/finalizados',
+                ],
+                [
+                    'text' => 'Faturas',
+                    'url' => 'admin/vendas/faturas',
                 ]                
             ],
             

@@ -23,7 +23,10 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::delete('pedidos/fatura/deleteon', [FaturaController::class, 'deleteon'])->name('faturas.deleteon');
     Route::get('pedidos/fatura/delete', [FaturaController::class, 'delete'])->name('faturas.delete');
     Route::get('pedidos/sendFormFaturaClient', [FaturaController::class, 'sendFormFaturaClient'])->name('pedidos.sendFormFaturaClient');
-
+    Route::post('vendas/faturas/store', [FaturaController::class, 'store'])->name('vendas.faturas.store');
+    Route::get('vendas/faturas/create', [FaturaController::class, 'create'])->name('vendas.faturas.create');
+    Route::get('vendas/faturas', [FaturaController::class, 'index'])->name('vendas.faturas');
+    
     Route::get('pedidos/show/{id}', [PedidoController::class, 'show'])->name('pedidos.show');
     Route::get('pedidos/create', [PedidoController::class, 'create'])->name('pedidos.create');
     Route::post('pedidos/store', [PedidoController::class, 'store'])->name('pedidos.store');

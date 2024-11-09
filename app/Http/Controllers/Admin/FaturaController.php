@@ -30,6 +30,19 @@ class FaturaController extends Controller
         // return response()->json(['success' => true]);
     }
 
+    public function index()
+    {
+        $faturas = Fatura::orderBy('created_at', 'DESC')->paginate(50);
+        return view('admin.vendas.faturas',[
+            'faturas' => $faturas,
+        ]);
+    }
+
+    public function create()
+    {
+        return view('admin.vendas.faturas-create');
+    }
+
     public function faturas($pedido)
     {
         $getPedido = Pedido::where('id', $pedido)->first();

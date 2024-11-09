@@ -58,7 +58,7 @@
     </div>       
     <div class="col-12 col-sm-6 col-md-4 col-lg-3">
         <div class="info-box">
-            <span class="info-box-icon bg-teal"><a href="{{--route('embarcacoes.index')--}}" title="Pedidos"><i class="fa far fa-money-check"></i></a></span>
+            <span class="info-box-icon bg-teal"><a href="{{route('vendas.faturas')}}" title="Faturas"><i class="fa far fa-money-check"></i></a></span>
 
             <div class="info-box-content">
                 <span class="info-box-text"><b>Faturas</b></span>
