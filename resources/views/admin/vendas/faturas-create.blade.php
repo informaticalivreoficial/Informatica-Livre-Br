@@ -84,16 +84,17 @@ $config = [
                     <div class="row mb-2 mt-2"> 
                         <div class="col-12 col-md-6 col-lg-4"> 
                             <div class="form-group">
-                                <label class="labelforms text-muted"><b>*Serviços:</b> <a style="font-size:11px;" href="{{route('vendas.orcamentos')}}">(Cadastrar Serviço)</a></label>
-                                <select name="servico" class="form-control categoria tipo-servico">
-                                    @if(!empty($servicos) && $servicos->count() > 0)
-                                        <option value="">Selecione</option>
-                                        @foreach($servicos as $servico) 
-                                            <option value="{{ $servico->id }}" {{ (old('servico') == $servico->id ? 'selected' : '') }}>{{ $servico->name }}</option>                                                                                                                      
+                                <label class="labelforms text-muted"><b>*Empresa:</b> <a style="font-size:11px;" href="{{route('empresas.index')}}">(Cadastrar Empresa)</a></label>
+                                <select name="empresa" class="form-control categoria">
+                                    @if(!empty($empresas) && $empresas->count() > 0)
+                                        <option value="">Selecione a Empresa</option>
+                                        @foreach($empresas as $empresa) 
+                                            <option value="{{ $empresa->id }}" {{ (old('empresa') == $empresa->id ? 'selected' : '') }}>{{ $empresa->id }} - {{ $empresa->alias_name }}</option>                                                                                                                      
                                         @endforeach
                                     @else
-                                        <option value="">Cadastre um Orçamento</option>
-                                    @endif                                                                                
+                                        <option value="">Cadastre uma Empresa</option>
+                                    @endif
+                                                                                
                                 </select>
                             </div>
                         </div> 

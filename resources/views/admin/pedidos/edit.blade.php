@@ -310,7 +310,7 @@ $config = [
                                             @foreach($pedido->faturas()->get() as $fatura)                    
                                             <tr>
                                                 <td class="text-center">{{$fatura->id}}</td> 
-                                                <td class="text-center">{{$fatura->pedidoObject->service->name}}</td>                        
+                                                <td class="text-center">{{$fatura->pedidoObject->service->name ?? ''}}</td>                        
                                                 <td class="text-center">{{Carbon\Carbon::parse($fatura->created_at)->format('d/m/Y')}}</td>                        
                                                 <td class="text-center">{{Carbon\Carbon::parse($fatura->vencimento)->format('d/m/Y')}}</td> 
                                                 <td class="text-center">R$ {{$fatura->valor}}</td>                       

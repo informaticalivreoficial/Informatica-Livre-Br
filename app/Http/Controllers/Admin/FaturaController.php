@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Mail\Admin\FaturaClientSend;
 use App\Models\Configuracoes;
+use App\Models\Empresa;
 use App\Models\Fatura;
 use App\Models\Pedido;
 use Illuminate\Http\Request;
@@ -40,7 +41,10 @@ class FaturaController extends Controller
 
     public function create()
     {
-        return view('admin.vendas.faturas-create');
+        $empresas = Empresa::orderBy('created_at', 'DESC')->available()->get();
+        return view('admin.vendas.faturas-create',[
+            'empresas' => $empresas
+        ]);
     }
 
     public function faturas($pedido)
