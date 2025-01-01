@@ -180,7 +180,7 @@
                                             @else
                                                 <tr>
                                                     <td class="cs-width_1">1</td>
-                                                    <td class="cs-width_4">{{$fatura->getProduto->name}}</td>                                        
+                                                    <td class="cs-width_4">{{$fatura->getProduto->name ?? ''}}</td>                                        
                                                     <td class="cs-width_2">R$ {{$fatura->valor}}</td>
                                                     <td class="cs-width_3 cs-text_right">R$ {{$fatura->valor}}</td>
                                                 </tr>
