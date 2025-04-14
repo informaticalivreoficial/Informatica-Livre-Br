@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Analytics;
 use Spatie\Analytics\Period;
 use App\Models\{
@@ -22,6 +23,7 @@ use App\Models\{
 
 class AdminController extends Controller
 {
+    
     public function home()
     {
         //Users
@@ -76,16 +78,14 @@ class AdminController extends Controller
         
         // $visitas365 = Analytics::fetchTotalVisitorsAndPageViews(Period::months(5));
         
-        // $top_browser = Analytics::fetchTopBrowsers(Period::months(5), 10);
+        $top_browser = Analytics::fetchTopBrowsers(Period::months(5), 10);
 
-        // $analyticsData = Analytics::get(
-        //         Period::months(6), 
-        //         metrics: ['totalUsers', 'sessions', 'screenPageViews'], 
-        //         dimensions: ['month'],
-        // );   
-        // $sortedData = $analyticsData->sortBy('month');
-            
-            
+        $analyticsData = Analytics::get(
+                Period::months(6), 
+                metrics: ['totalUsers', 'sessions', 'screenPageViews'], 
+                dimensions: ['month'],
+        );   
+        $sortedData = $analyticsData->sortBy('month');
         
         return view('admin.dashboard',[
             'time' => $time,
@@ -118,8 +118,8 @@ class AdminController extends Controller
             //Analytics
             //'visitasHoje' => $visitasHoje,
             //'visitas365' => $visitas365,
-            //'analyticsData' => $sortedData,
-            //'top_browser' => $top_browser
+            'analyticsData' => $sortedData,
+            'top_browser' => $top_browser
         ]);
     }
 }
