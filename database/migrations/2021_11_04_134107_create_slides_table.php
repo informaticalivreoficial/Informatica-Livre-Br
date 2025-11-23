@@ -15,18 +15,18 @@ class CreateSlidesTable extends Migration
     {
         Schema::create('slides', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('titulo');
-            $table->string('subtitulo')->nullable();
-            $table->string('botaolabel')->nullable();
-            $table->string('imagem')->nullable();
+            $table->string('title');
+            $table->string('subtitle')->nullable();
+            $table->string('butom_label')->nullable();
+            $table->string('image')->nullable();
             $table->text('content')->nullable();
             $table->string('link')->nullable();
-            $table->integer('target')->nullable();
+            $table->boolean('target')->nullable();
             $table->string('slug')->nullable();
-            $table->string('categoria')->nullable();
-            $table->date('expira')->nullable();
-            $table->integer('status')->nullable();
-            $table->integer('exibir_titulo')->nullable();
+            $table->string('category')->nullable();
+            $table->date('expired_at')->nullable();
+            $table->boolean('status')->nullable();
+            $table->boolean('view_title')->nullable();
             
             $table->timestamps();
         });

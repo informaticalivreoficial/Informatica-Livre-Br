@@ -16,12 +16,12 @@ class CreateCatPostsTable extends Migration
         Schema::create('cat_post', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('id_pai')->unsigned()->nullable();
-            $table->string('titulo');
+            $table->string('title');
             $table->text('content')->nullable();
             $table->string('slug')->nullable();
             $table->string('tags')->nullable();
             $table->bigInteger('views')->default(0);
-            $table->string('tipo')->nullable();
+            $table->string('type')->nullable();
             $table->integer('status')->nullable();
             
             $table->timestamps();

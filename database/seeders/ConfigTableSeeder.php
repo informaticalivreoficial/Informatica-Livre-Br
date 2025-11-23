@@ -13,18 +13,21 @@ class ConfigTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('configuracoes')->insert([
+        DB::table('config')->insert([
             'id' => 1,
             'email' => 'teste@teste.com.br',
-            'nomedosite' => 'teste',
+            'app_name' => 'Nome da Aplicação',
+            'zipcode' => '11680000',
+            'city' => 'Ubatuba',
+            'state' => 'SP',
             'rss' => 'teste',
             'sitemap' => 'teste',
             'rss_data' => now(),
             'sitemap_data' => now(),
-            
-            'telefone1' => '(XX) XXXX-XXXX',
-            'telefone2' => '(XX) XXXXX-XXXX',
-            'telefone3' => '(XX) XXXXX-XXXX'            
-        ]); 
+            'template' => 'default',
+            'phone' => '(11) 1111-1111',
+            'cell_phone' => '(11) 11111-1111',
+            'whatsapp' => '(11) 11111-1111'            
+        ]);  
     }
 }
