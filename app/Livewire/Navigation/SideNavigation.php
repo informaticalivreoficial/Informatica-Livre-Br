@@ -37,7 +37,7 @@ class SideNavigation extends Component
             'clientCount' => $clientCount,
             'timeCount' => $timeCount,   
             'postsCount' => $postsCount, 
-            'propertyCount' => $propertyCount,
+            //'propertyCount' => $propertyCount,
             'config' => $config,
         ]);
     }

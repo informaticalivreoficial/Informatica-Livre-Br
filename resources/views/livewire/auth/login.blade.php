@@ -1,7 +1,7 @@
 <div class="container-fluid d-flex align-items-center justify-content-center" style="height: 100vh;">
     <div class="bg-white p-4 rounded shadow-lg" style="width: 25rem;">
         <img width="{{env('LOGOMARCA_GERENCIADOR_WIDTH')}}" height="{{env('LOGOMARCA_GERENCIADOR_HEIGHT')}}" 
-            src="{{$configuracoes->getlogo()}}" alt="{{$configuracoes->app_name}}"
+            src="{{$config->getlogo()}}" alt="{{$config->app_name}}"
                 class="mx-auto d-block mb-4 cursor-pointer" />
        
 

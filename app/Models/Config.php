@@ -10,159 +10,132 @@ class Config extends Model
 {
     use HasFactory;
 
-    protected $table = 'config';
+    protected $table = 'config'; 
 
     protected $fillable = [
         'status',
-        'ano_de_inicio',
-        'nomedosite',
+        'init_date',
+        'app_name',        
+        'social_name',
+        'alias_name',
+        'slug',
         'cnpj',
         'ie',
-        'dominio',
+        'domain',
+        'subdomain',
         'template',
+
         //Imagens
-        'logomarca',
-        'logomarca_admin',        
-        'logomarca_footer',
+        'logo',
+        'logo_admin',        
+        'logo_footer',
         'favicon',        
         'metaimg',
         'imgheader',
-        'marcadagua',
-        //SMTP
-        'smtp_host',
-        'smtp_port',
-        'smtp_user',
-        'smtp_pass',
-        //Contato
-        'telefone1',
-        'telefone2',
-        'telefone3',
+        'watermark',
+
+        //contact 
+        'phone',
+        'cell_phone',
         'whatsapp',
         'skype',
+        'telegram',
         'email',
-        'email1',
-        //Endereço
-        'cep',
-        'rua',
-        'num',
-        'complemento',
-        'bairro',
-        'uf',
-        'cidade',
-        //Social links
-        'facebook',
-        'twitter',
-        'youtube',
-        'instagram',
-        'linkedin',
-        'vimeo',
-        'fliccr',
-        'soundclound',
-        'snapchat',
+        'additional_email',
+         
+        //Address      
+        'display_address', 'zipcode', 'street', 'number', 'complement', 'neighborhood', 'state', 'city',
+
+        //Social
+        'facebook', 'twitter', 'instagram', 'youtube', 'linkedin',
+
         //Seo
-        'descricao',
-        'mapa_google',
-        'metatags',
-        'rss',
-        'rss_data',
-        'sitemap',
+        'information', 
+        'privacy_policy',
+        'maps_google', 
+        'metatags', 'rss', 
+        'rss_data', 
+        'sitemap', 
         'sitemap_data',
-        'politicas_de_privacidade'
-    ];
+        'analytics_id'
+    ];    
 
     /**
      * Accerssors and Mutators
-    */        
+    */    
     public function getmetaimg()
     {
-        //$image = $this->metaimg;        
         if(empty($this->metaimg) || !Storage::disk()->exists($this->metaimg)) {
-            return url(asset('backend/assets/images/image.jpg'));
+            return url(asset('theme/images/image.jpg'));
         } 
-        //return Storage::url(Cropper::thumb($this->metaimg, env('METAIMG_WIDTH'), env('METAIMG_HEIGHT')));
         return Storage::url($this->metaimg);
     }
     
-    public function getlogomarca()
+    public function getlogo()
     {
-        //$image = $this->logomarca; 
-        if(empty($this->logomarca) || !Storage::disk()->exists($this->logomarca)) {
-            return url(asset('backend/assets/images/image.jpg'));
-        } 
-        //return Storage::url(Cropper::thumb($this->logomarca, env('LOGOMARCA_WIDTH'), env('LOGOMARCA_HEIGHT')));
-        return Storage::url($this->logomarca);
+        if (empty($this->logo) || !Storage::disk()->exists($this->logo)) {
+            return asset('theme/images/image.jpg');
+        }
+
+        return Storage::url($this->logo);
     }
     
     public function getlogoadmin()
     {
-        //$image = $this->logomarca_admin;        
-        if(empty($this->logomarca_admin) || !Storage::disk()->exists($this->logomarca_admin)) {
-            return url(asset('backend/assets/images/image.jpg'));
+        if(empty($this->logo_admin) || !Storage::disk()->exists($this->logo_admin)) {
+            return url(asset('theme/images/image.jpg'));
         } 
-        //return Storage::url(Cropper::thumb($this->logomarca_admin, env('LOGOMARCA_GERENCIADOR_WIDTH'), env('LOGOMARCA_GERENCIADOR_HEIGHT')));
-        return Storage::url($this->logomarca_admin);
+        return Storage::url($this->logo_admin);
     }
     
     public function getfaveicon()
     {
-        //$image = $this->favicon;        
         if(empty($this->favicon) || !Storage::disk()->exists($this->favicon)) {
-            return url(asset('backend/assets/images/image.jpg'));
+            return url(asset('theme/images/image.jpg'));
         } 
-        //return Storage::url(Cropper::thumb($this->favicon, env('FAVEICON_WIDTH'), env('FAVEICON_HEIGHT')));
         return Storage::url($this->favicon);
     }
     
-    public function getmarcadagua()
+    public function getwatermark()
     {
-        if(empty($this->marcadagua) || !Storage::disk()->exists($this->marcadagua)) {
-            return url(asset('backend/assets/images/image.jpg'));
+        if(empty($this->watermark) || !Storage::disk()->exists($this->watermark)) {
+            return url(asset('theme/images/image.jpg'));
         } 
-        return Storage::url($this->marcadagua);
+        return Storage::url($this->watermark);
     }
     
-    public function gettopodosite()
+    public function getheadersite()
     {
-        //$image = $this->imgheader;        
         if(empty($this->imgheader) || !Storage::disk()->exists($this->imgheader)) {
-            return url(asset('backend/assets/images/image.jpg'));
+            return url(asset('theme/images/image.jpg'));
         } 
-        //return Storage::url(Cropper::thumb($this->imgheader, env('IMGHEADER_WIDTH'), env('IMGHEADER_HEIGHT')));
         return Storage::url($this->imgheader);
     }
     
-    public function setCepAttribute($value)
+    public function setZipcodeAttribute($value)
     {
-        $this->attributes['cep'] = (!empty($value) ? $this->clearField($value) : null);
-    }
-    
-    public function getCepAttribute($value)
-    {
-        if (empty($value)) {
-            return null;
-        }
-
-        return substr($value, 0, 5) . '-' . substr($value, 5, 3);
+        $this->attributes['zipcode'] = (!empty($value) ? $this->clearField($value) : null);
     }
     
     public function setWhatsappAttribute($value)
     {
         $this->attributes['whatsapp'] = (!empty($value) ? $this->clearField($value) : null);
     }
-    
-    //Formata o celular para exibir
-    public function getWhatsappAttribute($value)
+
+    public function setPhoneAttribute($value)
     {
-        if (empty($value)) {
-            return null;
-        }
-        return  
-            substr($value, 0, 0) . '(' .
-            substr($value, 0, 2) . ') ' .
-            substr($value, 2, 5) . '-' .
-            substr($value, 7, 4) ;
+        $this->attributes['phone'] = (!empty($value) ? $this->clearField($value) : null);
     }
 
+    public function setCellPhoneAttribute($value)
+    {
+        $this->attributes['cell_phone'] = (!empty($value) ? $this->clearField($value) : null);
+    }
+
+    public function setDisplayAddressAttribute($value)
+    {
+        $this->attributes['display_address'] = ($value == true || $value == '1' ? 1 : 0);
+    }
     
     private function convertStringToDate(?string $param)
     {

@@ -48,7 +48,7 @@ class RouteServiceProvider extends ServiceProvider
                 ->namespace($this->namespace)
                 ->group(function (){
                     require base_path('routes/web.php');
-                    require base_path('routes/sales.php');
+                    //require base_path('routes/sales.php');
                 });
                 
         });

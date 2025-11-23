@@ -1,6 +1,6 @@
 <aside class="main-sidebar sidebar-light-teal elevation-4">
     <!-- Brand Logo -->
-    <a href="#" class="">
+    <a href="#" class="pt-3 d-flex justify-content-center">
         <img src="{{$config->getlogoadmin()}}" alt="{{$config->app_name}}"
             class="brand-image elevation-3">        
     </a>
@@ -71,7 +71,7 @@
                     </a>
                 </li>     
                 <li class="nav-item">
-                    <a href="" class="nav-link {{ Route::is('slides.*') ? 'active' : '' }}">
+                    <a href="{{route('slides.index')}}" class="nav-link {{ Route::is('slides.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-film"></i>
                         <p>Banners</p>
                     </a>

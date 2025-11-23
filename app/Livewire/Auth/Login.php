@@ -17,6 +17,12 @@ class Login extends Component
 {
     public $email = "";
     public $password = "";
+    public $config;
+
+    public function mount()
+    {
+        $this->config = \App\Models\Config::first();
+    }
 
     // Log the user in
     public function login()
@@ -63,6 +69,8 @@ class Login extends Component
     #[Title('Login')]
     public function render()
     {
-        return view('livewire.auth.login');
+        return view('livewire.auth.login', [
+            'config' => $this->config,
+        ]);
     }
 }
