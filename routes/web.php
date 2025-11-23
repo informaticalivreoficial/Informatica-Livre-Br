@@ -1,7 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Auth;
+use App\Livewire\Auth\Login;
+use App\Livewire\Auth\Register;
 use Illuminate\Support\Facades\Route;
+use App\Livewire\Dashboard\Dashboard;
 use App\Http\Controllers\Admin\{
     AdminController,
     BancoController,
@@ -48,18 +50,18 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
     Route::get('consultoria/orcamentos/form-client/{token}', [WebController::class, 'formClient'])->name('formClient');
 
     //** Página Destaque */
-    Route::get('/destaque', 'WebController@spotlight')->name('spotlight');
+    //Route::get('/destaque', 'WebController@spotlight')->name('spotlight');
     
     //** Página Inicial */
-    Route::match(['post', 'get'], '/filtro', 'WebController@filter')->name('filter');
+    //Route::match(['post', 'get'], '/filtro', 'WebController@filter')->name('filter');
 
     //****************************** Parceiros *********************************************/
-    Route::get('/parceiro/{slug}', [WebController::class, 'parceiro'])->name('parceiro');
+    //Route::get('/parceiro/{slug}', [WebController::class, 'parceiro'])->name('parceiro');
 
     //***************************** Cliente ********************************************/
-    Route::get('/cliente/login', [ClienteController::class, 'login'])->name('login');
-    Route::get('/cliente/minha-fatura/{uuid}', [ClienteController::class, 'fatura'])->name('fatura');
-    Route::get('cliente/minha-fatura/set-gateway', [FaturaController::class, 'SetGateway'])->name('SetGateway');
+    //Route::get('/cliente/login', [ClienteController::class, 'login'])->name('login');
+    //Route::get('/cliente/minha-fatura/{uuid}', [ClienteController::class, 'fatura'])->name('fatura');
+    //Route::get('cliente/minha-fatura/set-gateway', [FaturaController::class, 'SetGateway'])->name('SetGateway');
    
     //**************************** Emails ********************************************/
     Route::get('/atendimento', [WebController::class, 'atendimento'])->name('atendimento');
@@ -90,7 +92,9 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
 
 });
 
-Route::prefix('admin')->middleware('auth')->group( function(){
+Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], function () {
+
+    Route::get('/', Dashboard::class)->name('admin');
 
     //******************************* Newsletter *********************************************/
     Route::match(['post', 'get'], 'listas/padrao', [NewsletterController::class, 'padraoMark'])->name('listas.padrao');
@@ -238,7 +242,11 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::post('cofre/store', [CofreController::class, 'store'])->name('cofre.store');
     Route::get('/cofre', [CofreController::class, 'index'])->name('cofre.index');
 
-    Route::get('/', [AdminController::class, 'home'])->name('home');
+    //Route::get('/', [AdminController::class, 'home'])->name('home');
 });
 
-Auth::routes();
+// Authentication routes
+Route::group(['prefix' => 'auth'], function () {
+    Route::get('login', Login::class)->name('login');
+    Route::get('register', Register::class)->name('register');
+});
