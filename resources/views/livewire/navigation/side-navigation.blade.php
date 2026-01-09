@@ -132,6 +132,12 @@
                         </li>
                     </ul>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('safes.index') }}" class="nav-link">
+                        <i class="fas fa-lock"></i> 
+                        <p>Cofre</p>
+                    </a>
+                </li>
                 {{-- Segurança 
                 <li class="nav-item">
                     <a href="#" class="nav-link">

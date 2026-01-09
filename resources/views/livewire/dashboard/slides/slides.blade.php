@@ -62,7 +62,7 @@
                         <tbody>
                             @foreach($slides as $slide)
                             @php
-                                $expiredAt = \Carbon\Carbon::createFromFormat('d/m/Y', $slide->expired_at);
+                                $expiredAt = $slide->expired_at; // já é Carbon
                                 $diffInDays = now()->diffInDays($expiredAt, false);
                             @endphp
                             <tr class="border-t border-gray-200 hover:bg-gray-50 {{ $slide->status ? '' : 'bg-yellow-50' }}">
@@ -82,15 +82,15 @@
                                 <td class="px-4 py-2 text-center">
                                     @if ($diffInDays < 0)
                                         <span class="px-2 py-1 rounded text-white bg-red-600">
-                                            Expirado ({{ $slide->expired_at }})
+                                            Expirado ({{ $slide->expired_at->format('d/m/Y') }})
                                         </span>
                                     @elseif ($diffInDays <= 30)
                                         <span class="px-2 py-1 rounded text-black bg-yellow-300">
-                                            Expira em {{ $diffInDays }} dias ({{ $slide->expired_at }})
+                                            Expira em {{ $diffInDays }} dias ({{ $slide->expired_at->format('d/m/Y') }})
                                         </span>
                                     @else
                                         <span class="px-2 py-1 rounded text-white bg-green-600">
-                                            {{ $slide->expired_at }}
+                                            {{ $slide->expired_at->format('d/m/Y') }}
                                         </span>
                                     @endif
                                 </td>
@@ -111,7 +111,7 @@
                                 <!-- Ações -->
                                 <td class="px-4 py-4 flex items-center justify-center gap-2 h-full">
                                     <!-- Switch -->
-                                    <label class="switch flex-shrink-0">
+                                    <label style="top:4px !important;" class="switch flex-shrink-0">
                                         <input type="checkbox" 
                                             value="{{ $slide->status }}"  
                                             wire:change="toggleStatus({{ $slide->id }})" 

@@ -129,6 +129,46 @@
     <script src="https://cdn.jsdelivr.net/npm/basiclightbox@5/dist/basicLightbox.min.js"></script>
 
     @stack('scripts') 
-    
+
+    <script>
+        window.addEventListener('swal', (event) => {
+            const data = event.detail?.[0] ?? {};
+
+            const {
+                title = 'Aviso',
+                text = '',
+                icon = 'success',
+                timer = null,
+                confirmButtonText = 'OK',
+                showConfirmButton = true,
+            } = data;
+
+            Swal.fire({
+                title,
+                text,
+                icon,
+                timer,
+                showConfirmButton,
+                confirmButtonText,
+            });
+        });
+
+        window.addEventListener('swal:confirm', (event) => {
+            const data = event.detail?.[0] ?? {};
+
+            Swal.fire({
+                title: data.title ?? 'Tem certeza?',
+                text: data.text ?? '',
+                icon: data.icon ?? 'warning',
+                showCancelButton: true,
+                confirmButtonText: data.confirmButtonText ?? 'Confirmar',
+                cancelButtonText: data.cancelButtonText ?? 'Cancelar',
+            }).then((result) => {
+                if (result.isConfirmed && data.onConfirmEvent) {
+                    Livewire.dispatch(data.onConfirmEvent, data.onConfirmParams ?? []);
+                }
+            });
+        });
+    </script>
 </body>
 </html>

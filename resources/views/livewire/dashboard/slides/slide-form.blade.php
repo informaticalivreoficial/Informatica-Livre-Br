@@ -29,18 +29,24 @@
                         </div>
                     </div>
                     <div class="col-12 col-sm-6 col-md-6 col-lg-6">
-                        <label class="labelforms text-muted"><b>URL</b> <small class="text-info">(Ex: https://www.dominio.com)</small></label>
-                        <input class="form-control" wire:model="link" />
-                    </div>                    
+                        <div class="form-group">
+                            <label class="labelforms"><b>SubTítulo:</b></label>
+                            <input class="form-control" wire:model="subtitle" />
+                        </div>
+                    </div>                                        
                 </div>
                 <div class="row">
-                    <div class="col-12 col-md-4 col-lg-4">
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-5">
+                        <label class="labelforms text-muted"><b>URL</b> <small class="text-info">(Ex: https://www.dominio.com)</small></label>
+                        <input class="form-control" wire:model="link" />
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-2">
                         <div class="form-group" x-data="{ value: @entangle('expired_at').defer }" x-init="initFlatpickr()" x-ref="datepicker">
-                            <label class="labelforms"><b>Data de Expiração</b></label>
+                            <label class="labelforms"><b>Expira</b></label>
                             <input type="text" class="form-control" wire:model="expired_at" id="datepicker" />                                                                                                                                                                          
                         </div>
                     </div>
-                    <div class="col-12 col-md-4 col-lg-4"> 
+                    <div class="col-12 col-md-4 col-lg-2"> 
                         <div class="form-group">
                             <label class="labelforms text-muted"><b>Destino</b></label>
                             <select class="form-control" wire:model="target">
@@ -50,7 +56,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-12 col-md-4 col-lg-4"> 
+                    <div class="col-12 col-md-4 col-lg-3"> 
                         <div class="form-group">
                             <label class="labelforms text-muted"><b>Exibir Título?</b></label>
                             <select class="form-control" wire:model="view_title">
@@ -64,7 +70,7 @@
                 <div class="row">
                     <div class="col-12 p-4 border rounded shadow">
                         <label class="block text-sm font-medium text-gray-700 mb-2">
-                            <b>Imagem do Banner (recomendado: 2200x1200)</b>
+                            <b>Imagem do Banner (recomendado: 1920x696)</b>
                         </label>
 
                         <div 
@@ -153,17 +159,7 @@
 
 </div>
 
-<script>
-    document.addEventListener('atualizado', function() {
-        Swal.fire({
-            title: 'Sucesso!',
-            text: "Slide atualizado com sucesso!",
-            icon: 'success',
-            timerProgressBar: true,
-            showConfirmButton: false,
-            timer: 3000 // Fecha automaticamente após 3 segundos
-        });
-    });
+<script>  
 
     document.addEventListener('cadastrado', function() {
         Swal.fire({
@@ -175,6 +171,17 @@
             timer: 3000 // Fecha automaticamente após 3 segundos
         }).then(() => {
             window.location.href = `/admin/slides/${slide}/editar`;
+        });
+    });
+
+    document.addEventListener('atualizado', function() {
+        Swal.fire({
+            title: 'Sucesso!',
+            text: "Slide atualizado com sucesso!",
+            icon: 'success',
+            timerProgressBar: true,
+            showConfirmButton: false,
+            timer: 3000 // Fecha automaticamente após 3 segundos
         });
     });
     

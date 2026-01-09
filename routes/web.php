@@ -44,6 +44,8 @@ use App\Http\Controllers\Web\{
     SendEmailController,
     WebController
 };
+use App\Livewire\Dashboard\Safe\Safe;
+use App\Livewire\Dashboard\Safe\SafeForm;
 
 Route::group(['as' => 'web.'], function () {
     
@@ -236,6 +238,11 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
     Route::get('slides/{slide}/editar', SlideForm::class)->name('slides.edit');
     Route::get('slides/cadastrar', SlideForm::class)->name('slides.create');
     Route::get('slides', Slides::class)->name('slides.index');
+
+    //****************************** Cofre *******************************************/
+    Route::get('cofre/{safe}/editar', SafeForm::class)->name('safe.edit');
+    Route::get('cofre/cadastrar', SafeForm::class)->name('safe.create');
+    Route::get('cofre', Safe::class)->name('safes.index');
 
     // Route::get('/notifications', [NotificationController::class, 'notifications'])->name('notifications');
     // Route::put('/notification-all-read', [NotificationController::class, 'markAllAsRead']);

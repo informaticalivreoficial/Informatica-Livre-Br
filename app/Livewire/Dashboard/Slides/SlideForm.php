@@ -13,6 +13,7 @@ class SlideForm extends Component
     public ?Slide $slide = null;
 
     public $title;
+    public $subtitle;
     public $link;
     public $target;
     public $view_title;
@@ -38,6 +39,7 @@ class SlideForm extends Component
         if ($slide->exists) {
             $this->isEditing = true; // Estamos editando
             $this->title = $slide->title;
+            $this->subtitle = $slide->subtitle;
             $this->link = $slide->link;
             $this->content = $slide->content;
             $this->target = $slide->target;       // pega do banco
@@ -64,6 +66,7 @@ class SlideForm extends Component
         }
 
         $this->slide->title = $this->title;
+        $this->slide->subtitle = $this->subtitle;
         $this->slide->link = $this->link;
         $this->slide->target = $this->target;        // ✅ salvar corretamente
         $this->slide->view_title = $this->view_title; // ✅ salvar corretamente
