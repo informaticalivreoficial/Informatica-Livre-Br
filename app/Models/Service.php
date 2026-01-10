@@ -2,10 +2,64 @@
 
 namespace App\Models;
 
+use App\Enums\BillingInterval;
+use App\Enums\BillingType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Service extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'category_id',
+        'user_id',
+        'name',
+        'description',
+        'price',
+        'billing_type',   // one_time | recurring
+        'interval',       // monthly | quarterly | semiannual | yearly
+        'is_public',
+        'status',
+    ];
+
+    protected $casts = [
+        'price' => 'decimal:2',
+        'is_public' => 'boolean',
+        'status' => 'boolean',
+        'interval' => BillingInterval::class,
+    ];
+
+    protected static function booted()
+    {
+        static::deleting(function ($service) {
+            if ($service->subscriptions()->exists()) {
+                throw new \Exception('Serviço possui vínculos.');
+            }
+        });
+    }
+
+    /* ================= RELATIONSHIPS ================= */
+
+    public function category()
+    {
+        return $this->belongsTo(ServiceCategorie::class);
+    }
+
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }    
+
+    /* ================= SCOPES ================= */
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'active');
+    }    
+
+    public function scopePublic($query)
+    {
+        return $query->where('is_public', true);
+    }
 }

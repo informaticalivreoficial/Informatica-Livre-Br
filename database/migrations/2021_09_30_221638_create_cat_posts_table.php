@@ -14,7 +14,7 @@ class CreateCatPostsTable extends Migration
     public function up()
     {
         Schema::create('cat_post', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
             $table->integer('id_pai')->unsigned()->nullable();
             $table->string('title');
             $table->text('content')->nullable();

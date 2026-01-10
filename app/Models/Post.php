@@ -15,14 +15,14 @@ class Post extends Model
     protected $table = 'posts'; 
 
     protected $fillable = [
-        'autor',
+        'user_id',
         'tipo',
         'titulo',
         'content',
         'slug',
         'tags',
         'views',
-        'categoria',
+        'category_id',
         'comentarios',
         'cat_pai',        
         'status',
@@ -50,12 +50,12 @@ class Post extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'autor', 'id');
+        return $this->belongsTo(User::class);
     }
     
     public function categoriaObject()
     {
-        return $this->hasOne(CatPost::class, 'id', 'categoria');
+        return $this->hasOne(CatPost::class, 'id', 'category_id');
     }
     
     public function userObject()

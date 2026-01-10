@@ -44,13 +44,13 @@
                         <li class="nav-item">
                             <a href="{{route('users.index')}}" class="nav-link {{ Route::is('users.index') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Clientes <span class="badge badge-info right">{{$clientCount}}</span></p>
+                                <p>Clientes <span class="badge badge-info right">{{--$clientCount--}}</span></p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{route('users.time')}}" class="nav-link {{ Route::is('users.time') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Time <span class="badge badge-info right">{{$timeCount}}</span></p>
+                                <p>Time <span class="badge badge-info right">{{--$timeCount--}}</span></p>
                             </a>
                         </li>
                         <li class="nav-item">
@@ -62,10 +62,10 @@
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a href="" class="nav-link {{ Route::is('properties.*') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-home"></i>
+                    <a href="{{route('services.index')}}" class="nav-link {{ Route::is('services.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-store"></i>
                         <p>
-                            Imóveis
+                            Serviços
                             <span class="badge badge-info right">{{--$propertyCount--}}</span>
                         </p>
                     </a>
@@ -87,7 +87,7 @@
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>
                                     Listar Todos
-                                    <span class="badge badge-info right">{{$postsCount}}</span>
+                                    <span class="badge badge-info right">{{--$postsCount--}}</span>
                                 </p>
                             </a>
                         </li>

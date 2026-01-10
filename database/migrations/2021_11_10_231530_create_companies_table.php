@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('companies', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
             $table->unsignedInteger('user')->nullable();
             $table->string('social_name')->nullable();
             $table->string('alias_name')->nullable();
@@ -20,6 +20,15 @@ return new class extends Migration
             $table->string('document_company_secondary')->nullable();
             $table->text('information')->nullable();
             $table->integer('status')->default('0');
+
+            /** logo */
+            $table->string('logo')->nullable();
+
+            /** social */
+            $table->string('facebook')->nullable();
+            $table->string('twitter')->nullable();
+            $table->string('instagram')->nullable();
+            $table->string('linkedin')->nullable();
 
             /** address */
             $table->string('zipcode')->nullable();

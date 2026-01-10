@@ -13,12 +13,15 @@ class Company extends Model
 
     protected $fillable = [
         'user',
+        'logo',
         'social_name',
         'alias_name',
         'document_company',
         'document_company_secondary',
         'information',
         'status',
+        //Redes Sociais
+        'facebook', 'twitter', 'instagram', 'linkedin',
         //contact 
         'phone', 'cell_phone', 'whatsapp', 'telegram', 'email', 'additional_email',
         //Address      
@@ -41,15 +44,34 @@ class Company extends Model
     /**
      * Relationships
     */
+
+    public function services()
+    {
+        return $this->belongsToMany(Service::class, 'company_services')
+            ->withPivot([
+                'amount',
+                'interval',
+                'starts_at',
+                'ends_at',
+                'active',
+            ])
+            ->withTimestamps();
+    }
+
+    // public function subscriptions()
+    // {
+    //     return $this->hasMany(Subscription::class);
+    // }
+
+    // public function invoices()
+    // {
+    //     return $this->hasMany(Invoice::class);
+    // }
+
     public function owner()
     {
         return $this->hasOne(User::class, 'id', 'user');
-    }
-    
-    public function manifest()
-    {
-        return $this->hasMany(Manifest::class, 'company', 'id');
-    }
+    }    
 
     /**
      * Accerssors and Mutators

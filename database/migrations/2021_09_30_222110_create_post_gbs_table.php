@@ -14,14 +14,12 @@ class CreatePostGbsTable extends Migration
     public function up()
     {
         Schema::create('post_gb', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('post');
+            $table->id();
+            $table->foreignId('post')->constrained('posts')->cascadeOnDelete();
             $table->string('path');
             $table->boolean('cover')->nullable();
 
             $table->timestamps();
-
-            $table->foreign('post')->references('id')->on('posts')->onDelete('CASCADE');
         });
     }
 

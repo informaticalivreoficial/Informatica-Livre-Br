@@ -46,6 +46,8 @@ use App\Http\Controllers\Web\{
 };
 use App\Livewire\Dashboard\Safe\Safe;
 use App\Livewire\Dashboard\Safe\SafeForm;
+use App\Livewire\Dashboard\Service\ServiceForm;
+use App\Livewire\Dashboard\Service\ServiceIndex;
 
 Route::group(['as' => 'web.'], function () {
     
@@ -243,6 +245,11 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
     Route::get('cofre/{safe}/editar', SafeForm::class)->name('safe.edit');
     Route::get('cofre/cadastrar', SafeForm::class)->name('safe.create');
     Route::get('cofre', Safe::class)->name('safes.index');
+
+    //****************************** Serviços ****************************************/
+    Route::get('/services', ServiceIndex::class)->name('services.index');
+    Route::get('/services/create', ServiceForm::class)->name('services.create');
+    Route::get('/services/{service}/edit', ServiceForm::class)->name('services.edit');
 
     // Route::get('/notifications', [NotificationController::class, 'notifications'])->name('notifications');
     // Route::put('/notification-all-read', [NotificationController::class, 'markAllAsRead']);

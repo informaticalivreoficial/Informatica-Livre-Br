@@ -14,7 +14,7 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = [
-        'name', 'password', 'remember_token', 'code',
+        'name', 'password', 'remember_token',
         'gender',
         'cpf',
         'rg',
@@ -28,9 +28,7 @@ class User extends Authenticatable
         //Contact
         'phone', 'cell_phone', 'whatsapp', 'skype', 'telegram', 'email', 'additional_email',
         //Social
-        'facebook', 'twitter', 'instagram', 'youtube', 'fliccr', 'linkedin',
-        //Function
-        'admin', 'client', 'editor', 'superadmin',
+        'facebook', 'twitter', 'instagram', 'linkedin',        
         'status',
         'information'
     ];

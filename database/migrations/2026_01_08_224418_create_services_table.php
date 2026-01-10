@@ -12,7 +12,41 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('services', function (Blueprint $table) {
-            $table->id();
+             $table->id();
+
+            // Relacionamentos
+            $table->foreignId('category_id')
+                ->nullable()
+                ->constrained('service_categories')
+                ->nullOnDelete();
+
+            $table->foreignId('user_id')
+                ->constrained()
+                ->cascadeOnDelete();
+
+            // Dados principais
+            $table->string('name');
+            $table->text('description')->nullable();
+
+            // Valores
+            $table->decimal('price', 10, 2)->nullable();
+
+            // Tipo de cobrança
+            $table->enum('billing_type', ['one_time', 'recurring'])
+                ->default('one_time');
+
+            // Intervalo de recorrência
+            $table->enum('interval', [
+                'monthly',
+                'quarterly',
+                'semiannual',
+                'yearly'
+            ])->nullable();
+
+            // Controle
+            $table->boolean('is_public')->default(false); // Exibir no frontend
+            $table->boolean('status')->default(true);    // Ativo / Inativo
+
             $table->timestamps();
         });
     }

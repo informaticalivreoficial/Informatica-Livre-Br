@@ -12,13 +12,13 @@ class SideNavigation extends Component
 {
     public function render()
     {
-        $clientCount = User::where('client', 1)->count();
-        $timeCount = User::where(function($query) {
-            $query->where('editor', 1)
-                ->orWhere('admin', 1)
-                ->orWhere('superadmin', 1);
-        })->count();
-        $postsCount = Post::count();
+        //$clientCount = User::where('client', 1)->count();
+        // $timeCount = User::where(function($query) {
+        //     $query->where('editor', 1)
+        //         ->orWhere('admin', 1)
+        //         ->orWhere('superadmin', 1);
+        // })->count();
+        // $postsCount = Post::count();
         //$propertyCount = Property::count();
         // Manifest count
         //$manifestCount = Manifest::where(function($query) {
@@ -34,9 +34,9 @@ class SideNavigation extends Component
         $config = Config::first();
 
         return view('livewire.navigation.side-navigation',[
-            'clientCount' => $clientCount,
-            'timeCount' => $timeCount,   
-            'postsCount' => $postsCount, 
+            //'clientCount' => $clientCount,
+            //'timeCount' => $timeCount,   
+            //'postsCount' => $postsCount, 
             //'propertyCount' => $propertyCount,
             'config' => $config,
         ]);
