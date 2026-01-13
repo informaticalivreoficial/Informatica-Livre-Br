@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Company extends Model
 {
@@ -26,6 +27,10 @@ class Company extends Model
         'phone', 'cell_phone', 'whatsapp', 'telegram', 'email', 'additional_email',
         //Address      
         'zipcode', 'street', 'number', 'complement', 'neighborhood', 'state', 'city',
+    ];
+
+    protected $casts = [
+        'status' => 'boolean',
     ];
 
     /**
@@ -58,15 +63,15 @@ class Company extends Model
             ->withTimestamps();
     }
 
-    // public function subscriptions()
-    // {
-    //     return $this->hasMany(Subscription::class);
-    // }
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }
 
-    // public function invoices()
-    // {
-    //     return $this->hasMany(Invoice::class);
-    // }
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
+    }
 
     public function owner()
     {
@@ -76,6 +81,23 @@ class Company extends Model
     /**
      * Accerssors and Mutators
     */
+    public function getlogo()
+    {
+        if(empty($this->logo) || !Storage::disk()->exists($this->logo)) {
+            return asset('theme/images/image.jpg');
+        } 
+        return Storage::url($this->logo);
+    }
+
+    public function logoPathForPdf(): string
+    {
+        if ($this->logo && file_exists(storage_path('app/public/' . $this->logo))) {
+            return storage_path('app/public/' . $this->logo);
+        }
+
+        return public_path('theme/images/image.jpg');
+    }
+
     public function setZipcodeAttribute($value)
     {
         $this->attributes['zipcode'] = (!empty($value) ? $this->clearField($value) : null);

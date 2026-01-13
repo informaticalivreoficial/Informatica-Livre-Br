@@ -18,36 +18,20 @@ use App\Livewire\Dashboard\Posts\PostForm;
 use App\Livewire\Dashboard\Posts\Posts;
 use App\Livewire\Dashboard\Slides\SlideForm;
 use App\Livewire\Dashboard\Slides\Slides;
-use App\Http\Controllers\Admin\{
-    AdminController,
-    BancoController,
-    CatPortifolioController,
-    UserController,
-    EmailController,
-    PostController,
-    CatPostController,
-    ConfigController,
-    EmpresaController,
-    CofreController,
-    FaturaController,
-    NewsletterController,
-    NotificationController,
-    ParceiroController,
-    PedidoController,
-    PortifolioController,
-    SitemapController,
-    SlideController
-};
 use App\Http\Controllers\Web\{
-    ClienteController,
-    RssFeedController,
-    SendEmailController,
     WebController
 };
+use App\Livewire\Dashboard\Permissions\Index as PermissionIndex;
+use App\Livewire\Dashboard\Roles\Index as RoleIndex;
+use App\Livewire\Dashboard\Companies\Companies;
+use App\Livewire\Dashboard\Companies\CompanyForm;
 use App\Livewire\Dashboard\Safe\Safe;
 use App\Livewire\Dashboard\Safe\SafeForm;
+use App\Livewire\Dashboard\Service\InvoiceIndex;
 use App\Livewire\Dashboard\Service\ServiceForm;
 use App\Livewire\Dashboard\Service\ServiceIndex;
+use App\Livewire\Dashboard\Service\SubscriptionForm;
+use App\Livewire\Dashboard\Service\SubscriptionIndex;
 
 Route::group(['as' => 'web.'], function () {
     
@@ -114,6 +98,34 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
 
     Route::get('/', Dashboard::class)->name('admin');
     Route::get('configuracoes', Settings::class)->name('settings');
+
+    // Somente Super Admin
+    Route::middleware('role:super-admin')->group(function () {
+        Route::get('empresas', Companies::class)->name('companies.index');
+        Route::get('empresas/cadastrar-empresa', CompanyForm::class)->name('companies.create');
+        Route::get('empresas/{company}/editar-empresa', CompanyForm::class)->name('companies.edit'); 
+        
+        Route::get('usuarios/time', Time::class)->name('users.time');
+    });   
+    
+
+    //****************************** Cofre *******************************************/
+    Route::get('cofre/{safe}/editar', SafeForm::class)->name('safe.edit');
+    Route::get('cofre/cadastrar', SafeForm::class)->name('safe.create');
+    Route::get('cofre', Safe::class)->name('safes.index');
+
+    //****************************** Serviços ****************************************/
+    Route::get('/services', ServiceIndex::class)->name('services.index');
+    Route::get('/services/create', ServiceForm::class)->name('services.create');
+    Route::get('/services/{service}/edit', ServiceForm::class)->name('services.edit');
+    Route::get('/pedidos', SubscriptionIndex::class)->name('services.subscriptions.index');
+    Route::get('/pedidos/create', SubscriptionForm::class)->name('services.subscriptions.create');
+    Route::get('/pedidos/{subscription}/edit', SubscriptionForm::class)->name('services.subscriptions.edit');
+
+    Route::get('/pedidos/{subscription}/faturas', InvoiceIndex::class)->name('services.invoices.index');
+
+    Route::get('/cargos', RoleIndex::class)->name('admin.roles');
+    Route::get('/permissoes', PermissionIndex::class)->name('admin.permissions');
 
     //******************************* Newsletter *********************************************/
     // Route::match(['post', 'get'], 'listas/padrao', [NewsletterController::class, 'padraoMark'])->name('listas.padrao');
@@ -241,15 +253,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
     Route::get('slides/cadastrar', SlideForm::class)->name('slides.create');
     Route::get('slides', Slides::class)->name('slides.index');
 
-    //****************************** Cofre *******************************************/
-    Route::get('cofre/{safe}/editar', SafeForm::class)->name('safe.edit');
-    Route::get('cofre/cadastrar', SafeForm::class)->name('safe.create');
-    Route::get('cofre', Safe::class)->name('safes.index');
-
-    //****************************** Serviços ****************************************/
-    Route::get('/services', ServiceIndex::class)->name('services.index');
-    Route::get('/services/create', ServiceForm::class)->name('services.create');
-    Route::get('/services/{service}/edit', ServiceForm::class)->name('services.edit');
+    
 
     // Route::get('/notifications', [NotificationController::class, 'notifications'])->name('notifications');
     // Route::put('/notification-all-read', [NotificationController::class, 'markAllAsRead']);

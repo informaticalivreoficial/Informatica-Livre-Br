@@ -61,15 +61,34 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item">
-                    <a href="{{route('services.index')}}" class="nav-link {{ Route::is('services.*') ? 'active' : '' }}">
+                @role(['super-admin', 'manager'])
+                    <li class="nav-item">
+                        <a href="{{route('companies.index')}}" class="nav-link {{ Route::is('companies.*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-industry"></i>
+                            <p>Empresas</p>
+                        </a>
+                    </li>
+                @endrole
+                <li class="nav-item {{ Route::is('services.*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ Route::is('services.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-store"></i>
-                        <p>
-                            Serviços
-                            <span class="badge badge-info right">{{--$propertyCount--}}</span>
-                        </p>
+                        <p> Serviços <i class="fas fa-angle-left right"></i></p>
                     </a>
-                </li>     
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{route('services.index')}}" class="nav-link {{ Route::is('services.index') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Listar Serviços</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{route('services.subscriptions.index')}}" class="nav-link {{ Route::is('services.subscriptions.index') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Pedidos <span class="badge badge-info right">{{--$timeCount--}}</span></p>
+                            </a>
+                        </li>                        
+                    </ul>
+                </li>  
                 <li class="nav-item">
                     <a href="{{route('slides.index')}}" class="nav-link {{ Route::is('slides.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-film"></i>
@@ -138,7 +157,7 @@
                         <p>Cofre</p>
                     </a>
                 </li>
-                {{-- Segurança 
+                 
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-shield-alt"></i>
@@ -156,7 +175,7 @@
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Permissões</p>
                             </a>
-                        </li>   --}}                     
+                        </li>                
                     </ul>
                 </li>
             </ul>

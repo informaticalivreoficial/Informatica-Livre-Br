@@ -17,6 +17,8 @@ class Invoice extends Model
         'status',
         'gateway',
         'gateway_reference',
+        'payment_url',
+        'pix_qrcode',
         'paid_at'
     ];
 

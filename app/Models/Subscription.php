@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\BillingInterval;
+use App\Enums\SubscriptionStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -23,30 +24,49 @@ class Subscription extends Model
 
     protected $casts = [
         'interval' => BillingInterval::class,
+        'status' => SubscriptionStatus::class,
         'start_date' => 'date',
         'end_date' => 'date',
         'next_billing_at' => 'date',
         'amount' => 'decimal:2'
     ];
 
-    // public function company()
-    // {
-    //     return $this->belongsTo(Company::class);
-    // }
+    protected static function booted()
+    {
+        static::saving(function ($subscription) {
 
-    // public function service()
-    // {
-    //     return $this->belongsTo(Service::class);
-    // }
+            if ($subscription->service->billing_type === 'one_time') {
+                $subscription->interval = null;
+                $subscription->next_billing_at = null;
+            }
 
-    // public function invoices()
-    // {
-    //     return $this->hasMany(Invoice::class);
-    // }
+            if (
+                $subscription->service->billing_type === 'recurring'
+                && !$subscription->interval
+            ) {
+                throw new \Exception('Serviço recorrente exige intervalo.');
+            }
+        });
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
+
+    public function service()
+    {
+        return $this->belongsTo(Service::class);
+    }
+
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
+    }
 
     public function scopeActive($query)
     {
-        return $query->where('status', 'active');
+        return $query->where('status', SubscriptionStatus::ACTIVE);
     }
 
     public function calculateNextBilling(): void
@@ -54,5 +74,58 @@ class Subscription extends Model
         $this->next_billing_at = 
             $this->next_billing_at
                 ->addMonths($this->interval->months());
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status === SubscriptionStatus::ACTIVE;
+    }
+
+    public function isPaused(): bool
+    {
+        return $this->status === SubscriptionStatus::PAUSED;
+    }
+
+    public function isCanceled(): bool
+    {
+        return $this->status === SubscriptionStatus::CANCELED;
+    }
+
+    public function pause(): void
+    {
+        $this->update([
+            'status' => SubscriptionStatus::PAUSED,
+        ]);
+    }
+
+    public function cancel(): void
+    {
+        $this->update([
+            'status' => SubscriptionStatus::CANCELED,
+            'end_date' => now(),
+        ]);
+    }
+
+    public function generateInvoice(): Invoice
+    {
+        return $this->invoices()->create([
+            'company_id' => $this->company_id,
+            'amount' => $this->amount,
+            'due_date' => $this->next_billing_at ?? $this->start_date,
+            'status' => 'pending',
+        ]);
+    }
+
+    public function billNext(): void
+    {
+        if ($this->status !== 'active') {
+            return;
+        }
+
+        $this->generateInvoice();
+
+        $this->calculateNextBilling();
+
+        $this->save();
     }
 }

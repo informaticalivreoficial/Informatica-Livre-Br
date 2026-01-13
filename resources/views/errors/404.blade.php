@@ -1,25 +1,36 @@
-@extends('errors::minimal')
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Página não encontrada</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
 
-@section('title', __('Página não encontrada'))
+        .box {
+            text-align: center;
+        }
 
-@section('content-error')
-    <section class="section section-single novi-background bg-gray-darker novi-background" style="background-image: url(images/bg-404.jpg);">
-        <div class="section-single-inner">      
-            <div class="section-single-main">
-                <div class="container">
-                    <div class="row justify-content-md-center">
-                        <div class="col-md-9 col-lg-8">
-                            <h5>Desculpe, página não encontrada</h5>
-                            <div class="text-extra-large-bordered">
-                                <p>404</p>
-                            </div> 
-                            <div class="group-xl">
-                                <a class="btn btn-primary" href="{{route('web.home')}}">Voltar para Home</a> 
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>      
-        </div>
-    </section>
-@endsection
+        h1 {
+            font-size: 80px;
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>404</h1>
+        <p>Página não encontrada</p>
+
+        <a href="{{ url('/') }}">
+            Voltar ao início
+        </a>
+    </div>
+</body>
+</html>

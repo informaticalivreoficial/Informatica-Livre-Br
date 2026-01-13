@@ -30,6 +30,9 @@ return new class extends Migration
 
             $table->string('gateway')->nullable();
             $table->string('gateway_reference')->nullable();
+            $table->string('payment_url')->nullable();
+            $table->string('pix_qrcode')->nullable();
+            
 
             $table->timestamp('paid_at')->nullable();
 

@@ -26,7 +26,6 @@ class Service extends Model
     protected $casts = [
         'price' => 'decimal:2',
         'is_public' => 'boolean',
-        'status' => 'boolean',
         'interval' => BillingInterval::class,
     ];
 
@@ -55,7 +54,7 @@ class Service extends Model
 
     public function scopeActive($query)
     {
-        return $query->where('status', 'active');
+        return $query->where('status', 1);
     }    
 
     public function scopePublic($query)

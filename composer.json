@@ -17,7 +17,8 @@
         "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-analytics": "^5.5.1",
         "spatie/laravel-sitemap": "^6.2",
-        "webmasterdro/paghiper-php-sdk": "^3.0"
+        "webmasterdro/paghiper-php-sdk": "^3.0",
+        "spatie/laravel-permission": "^6.3.0"
     },
     "require-dev": {
         "spatie/laravel-ignition": "^2.0",

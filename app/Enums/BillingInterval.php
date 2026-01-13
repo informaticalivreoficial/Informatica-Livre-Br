@@ -8,6 +8,16 @@ enum BillingInterval: string {
     case Semiannual  = 'semiannual';
     case Yearly      = 'yearly';
 
+    public function months(): int
+    {
+        return match ($this) {
+            self::Monthly    => 1,
+            self::Quarterly  => 3,
+            self::Semiannual => 6,
+            self::Yearly     => 12,
+        };
+    }
+
     public function label(): string
     {
         return match ($this) {

@@ -22,14 +22,14 @@ return new class extends Migration
                 ->constrained('companies')
                 ->cascadeOnDelete();
 
-            $table->enum('interval', ['monthly', 'quarterly', 'semiannual', 'yearly']);
+            $table->enum('interval', ['monthly', 'quarterly', 'semiannual', 'yearly'])->nullable();
 
             $table->decimal('amount', 10, 2);
 
             $table->date('start_date');
             $table->date('end_date')->nullable();
 
-            $table->date('next_billing_at');
+            $table->date('next_billing_at')->nullable();
 
             $table->enum('status', ['active', 'paused', 'canceled'])->default('active');
 
