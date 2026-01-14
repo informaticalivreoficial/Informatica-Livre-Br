@@ -32,6 +32,7 @@ use App\Livewire\Dashboard\Service\ServiceForm;
 use App\Livewire\Dashboard\Service\ServiceIndex;
 use App\Livewire\Dashboard\Service\SubscriptionForm;
 use App\Livewire\Dashboard\Service\SubscriptionIndex;
+use App\Livewire\Dashboard\Service\SubscriptionShow;
 
 Route::group(['as' => 'web.'], function () {
     
@@ -121,7 +122,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
     Route::get('/pedidos', SubscriptionIndex::class)->name('services.subscriptions.index');
     Route::get('/pedidos/create', SubscriptionForm::class)->name('services.subscriptions.create');
     Route::get('/pedidos/{subscription}/edit', SubscriptionForm::class)->name('services.subscriptions.edit');
-
+    Route::get('/pedido/{subscription}/show', SubscriptionShow::class)->name('services.subscriptions.show');
     Route::get('/pedidos/{subscription}/faturas', InvoiceIndex::class)->name('services.invoices.index');
 
     Route::get('/cargos', RoleIndex::class)->name('admin.roles');

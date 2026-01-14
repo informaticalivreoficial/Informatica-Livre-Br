@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Validation\ValidationException;
 use App\Services\PagHiperService;
 use App\Enums\SubscriptionStatus;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class InvoiceIndex extends Component
@@ -29,7 +30,7 @@ class InvoiceIndex extends Component
     }
     public function render()
     {
-        return view('livewire.dashboard.service.invoice-index')->with('title', 'Faturas');
+        return view('livewire.dashboard.service.invoice-index')->with('title', 'Cobranças');
     }
 
     protected function rules()
@@ -71,7 +72,8 @@ class InvoiceIndex extends Component
             ]);
         }
 
-        Invoice::create([
+        // ✅ Cria invoice local
+        $invoice = Invoice::create([
             'subscription_id' => $this->subscription->id,
             'company_id'      => $this->subscription->company_id,
             'amount'          => $this->amount,
@@ -79,20 +81,54 @@ class InvoiceIndex extends Component
             'status'          => 'pending',
         ]);
 
-        $this->subscription->load('invoices');
+        // 🔌 Cria cobrança no PagHiper
+        $pagHiper = new PagHiperService();
+        $response = $pagHiper->createInvoice($invoice);
 
-        //$pagHiper = new PagHiperService();
-        //$response = $pagHiper->createInvoice($invoice);
+        // ✅ Atualiza dados do gateway
+        $invoice->update([
+            'gateway'           => 'paghiper',
+            'gateway_reference' => $response['transaction_id'] ?? null,
+            'payment_url'       => $response['bank_slip']['url_slip'] ?? null,
+            'pix_qrcode'        => $response['pix']['qrcode_image'] ?? null,
+        ]);
 
-        // $invoice->update([
-        //     'gateway'           => 'paghiper',
-        //     'gateway_reference' => $response['transaction_id'],
-        //     'payment_url'       => $response['bank_slip']['url_slip'] ?? null,
-        //     'pix_qrcode'        => $response['pix']['qrcode_image'] ?? null,
-        // ]);
+        $this->subscription->load('invoices');        
 
-        $this->reset(['showCreateModal']);
+        $this->reset(['showCreateModal', 'amount', 'due_date']);
 
-        session()->flash('success', 'Fatura criada com sucesso.');
+        $this->dispatch('swal:success', [
+            'title' => 'Fatura criada',
+            'text'  => 'A cobrança foi gerada com sucesso.',
+        ]);
+    }
+
+    public function confirmDelete(int $id): void
+    {
+        $this->dispatch('swal:confirm', [
+            'title' => 'Excluir Cobrança?',
+            'text' => 'Essa ação não pode ser desfeita.',
+            'icon' => 'warning',
+            'confirmButtonText' => 'Sim, excluir',
+            'cancelButtonText' => 'Cancelar',
+            'confirmEvent' => 'deleteInvoice',
+            'confirmParams' => [$id],
+        ]);
+    }
+
+    #[On('deleteInvoice')]
+    public function deleteInvoice(int $id): void
+    {
+        $invoice = Invoice::findOrFail($id);        
+
+        $invoice->delete();
+
+        $this->dispatch('swal', [
+            'title' => 'Excluído!',
+            'text'  => 'Cobrança foi removida com sucesso.',
+            'icon'  => 'success',
+            'timer' => 2000,
+            'showConfirmButton' => false,
+        ]);
     }
 }

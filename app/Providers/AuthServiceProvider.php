@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Models\Company;
+use App\Models\Subscription;
 use App\Models\User;
 use App\Policies\CompanyPolicy;
+use App\Policies\SubscriptionPolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
@@ -19,6 +21,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         User::class       => UserPolicy::class,        
         Company::class    => CompanyPolicy::class,
+        Subscription::class => SubscriptionPolicy::class,
     ];
 
     /**

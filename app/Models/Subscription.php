@@ -34,7 +34,6 @@ class Subscription extends Model
     protected static function booted()
     {
         static::saving(function ($subscription) {
-
             if ($subscription->service->billing_type === 'one_time') {
                 $subscription->interval = null;
                 $subscription->next_billing_at = null;
@@ -45,6 +44,12 @@ class Subscription extends Model
                 && !$subscription->interval
             ) {
                 throw new \Exception('Serviço recorrente exige intervalo.');
+            }
+        });
+
+        static::deleting(function ($subscription) {
+            if ($subscription->invoices()->exists()) {
+                throw new \Exception('Esta subscription possui faturas e não pode ser excluída.');
             }
         });
     }

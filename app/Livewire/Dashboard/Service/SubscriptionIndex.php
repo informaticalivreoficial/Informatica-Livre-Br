@@ -5,6 +5,7 @@ namespace App\Livewire\Dashboard\Service;
 use App\Models\Subscription;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\Attributes\On;
 
 class SubscriptionIndex extends Component
 {
@@ -12,6 +13,8 @@ class SubscriptionIndex extends Component
 
     protected $paginationTheme = 'tailwind';
 
+    public ?int $subscriptionIdToDelete = null;
+    
     // 🔍 filtros
     public $searchCompany = '';
     public $searchService = '';
@@ -44,5 +47,58 @@ class SubscriptionIndex extends Component
             ->paginate(10);
 
         return view('livewire.dashboard.service.subscription-index', compact('subscriptions'))->with('title', 'Pedidos');
+    }
+
+    public function confirmDelete(int $id): void
+    {
+        $subscription = Subscription::with(['company', 'service'])->findOrFail($id);
+
+        $this->authorize('delete', $subscription);
+
+        // Verificar ANTES de pedir confirmação
+        if ($subscription->invoices()->exists()) {
+            $this->dispatch('swal:error', [
+                'title' => 'Ação não permitida',
+                'text'  => 'Este pedido possui faturas e não pode ser excluído.',
+            ]);
+            return;
+        }
+
+        $this->subscriptionIdToDelete = $subscription->id;
+
+        $this->dispatch('swal:confirm', [
+            'title' => 'Excluir Pedido?',
+            'text'  => "Empresa: {$subscription->company->alias_name}\nServiço: {$subscription->service->name}",
+            'icon'  => 'warning',
+            'confirmButtonText' => 'Sim, excluir',
+            'cancelButtonText'  => 'Cancelar',
+            'confirmEvent' => 'deleteConfirmed',
+        ]);
+    }
+
+    #[On('deleteConfirmed')]
+    public function deleteConfirmed(): void
+    {
+        if (!$this->subscriptionIdToDelete) {
+            return;
+        }
+
+        $subscription = Subscription::findOrFail($this->subscriptionIdToDelete);
+
+        try {
+            $subscription->delete();
+
+            $this->dispatch('swal:success', [
+                'title' => 'Excluído!',
+                'text'  => 'Pedido excluído com sucesso.',
+            ]);
+        } catch (\Throwable $e) {
+            $this->dispatch('swal:error', [
+                'title' => 'Erro',
+                'text'  => $e->getMessage(), // Agora vai mostrar a mensagem correta
+            ]);
+        }
+
+        $this->reset('subscriptionIdToDelete');
     }
 }

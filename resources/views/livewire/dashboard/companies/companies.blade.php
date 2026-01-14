@@ -61,7 +61,7 @@
                                     />
                                 </td>
                                 <td>{{$company->alias_name}}</td>
-                                <td class="text-center"></td>
+                                <td class="text-center">{{$company->invoices()->count()}}</td>
                                 <td class="text-center"></td>
                                 <td>  
                                     <div class="flex items-center justify-center gap-1">                              

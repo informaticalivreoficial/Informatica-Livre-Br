@@ -40,8 +40,7 @@
         "psr-4": {
             "Tests\\": "tests/"
         },        
-        "files": [           
-            "app/Helpers/isActive.php", 
+        "files": [  
             "app/Helpers/funcoesGlobais.php"
         ]
     },

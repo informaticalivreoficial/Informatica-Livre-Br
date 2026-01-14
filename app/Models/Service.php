@@ -32,9 +32,8 @@ class Service extends Model
     protected static function booted()
     {
         static::deleting(function ($service) {
-            if ($service->subscriptions()->exists()) {
-                throw new \Exception('Serviço possui vínculos.');
-            }
+            // Bloqueia, mas NÃO lança exception
+            return !$service->subscriptions()->exists();
         });
     }
 

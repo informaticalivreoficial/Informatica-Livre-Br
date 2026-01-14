@@ -14,7 +14,7 @@ return [
     |
     */
     'paghiper' => [
-        'key' => env('PAGHIPER_API_KEY'),
+        'api_key' => env('PAGHIPER_API_KEY'),
         'token' => env('PAGHIPER_API_TOKEN'),
         'url' => env('PAGHIPER_API_URL'),
     ],

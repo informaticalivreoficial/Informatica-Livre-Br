@@ -106,20 +106,19 @@
                                 </span>
                             </td>
 
-                            <td class="text-right">
-                                <a
-                                    href="{{ route('services.subscriptions.edit', $subscription) }}"
-                                    class="text-blue-600 hover:underline"
-                                >
-                                    Editar
-                                </a>
-
-                                <a
-                                    href="{{ route('services.invoices.index', $subscription) }}"
-                                    class="text-gray-600 hover:underline"
-                                >
-                                    Faturas
-                                </a>
+                            <td class="text-right"> 
+                                
+                                <a href="{{ route('services.invoices.index', $subscription->id) }}" class="btn btn-xs btn-success text-white" title="Ver Faturas"><i class="fas fa-credit-card"></i></a>
+                                
+                                <a href="{{ route('services.subscriptions.show', $subscription) }}" class="btn btn-xs btn-info text-white" title="Visualizar"><i class="fas fa-search"></i></a>
+                                
+                                <a href="{{ route('services.subscriptions.edit', $subscription) }}" class="btn btn-xs btn-default" title="Editar"><i class="fas fa-pen"></i></a>                        
+                                <button 
+                                        wire:click="confirmDelete({{ $subscription->id }})"
+                                        type="button"  title="Excluir"
+                                        class="btn btn-xs bg-danger text-white">
+                                        <i class="fas fa-trash"></i>
+                                </button>
                             </td>
                         </tr>
                     @empty

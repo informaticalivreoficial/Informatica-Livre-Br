@@ -48,21 +48,21 @@ class ServiceIndex extends Component
             'icon' => 'warning',
             'confirmButtonText' => 'Sim, excluir',
             'cancelButtonText' => 'Cancelar',
-            'onConfirmEvent' => 'deleteService',
-            'onConfirmParams' => [$id], // 👈 PASSA O ID
+            'confirmEvent' => 'deleteService',
+            'confirmParams' => [$id],
         ]);
     }
 
     #[On('deleteService')]
     public function deleteService(int $id): void
     {
-        $service = Service::withCount('subscriptions')->findOrFail($id);
+        $service = Service::findOrFail($id);
 
-        if ($service->subscriptions_count > 0) {
+        if ($service->subscriptions()->exists()) {
             $this->dispatch('swal', [
                 'title' => 'Não é possível excluir',
-                'text' => 'Este serviço possui assinaturas vinculadas.',
-                'icon' => 'error',
+                'text'  => 'Este serviço possui assinaturas vinculadas.',
+                'icon'  => 'error',
             ]);
             return;
         }
@@ -71,8 +71,8 @@ class ServiceIndex extends Component
 
         $this->dispatch('swal', [
             'title' => 'Excluído!',
-            'text' => 'Serviço removido com sucesso.',
-            'icon' => 'success',
+            'text'  => 'Serviço removido com sucesso.',
+            'icon'  => 'success',
             'timer' => 2000,
             'showConfirmButton' => false,
         ]);

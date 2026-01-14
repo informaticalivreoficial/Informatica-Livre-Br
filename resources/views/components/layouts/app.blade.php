@@ -131,28 +131,29 @@
     @stack('scripts') 
 
     <script>
-        window.addEventListener('swal', (event) => {
-            const data = event.detail?.[0] ?? {};
+        // Listener genérico para todos os tipos de SweetAlert
+        ['swal', 'swal:error', 'swal:success', 'swal:info', 'swal:warning'].forEach(eventName => {
+            window.addEventListener(eventName, (event) => {
+                const data = event.detail?.[0] ?? {};
 
-            const {
-                title = 'Aviso',
-                text = '',
-                icon = 'success',
-                timer = null,
-                confirmButtonText = 'OK',
-                showConfirmButton = true,
-            } = data;
+                // Define o ícone baseado no tipo de evento
+                let defaultIcon = 'info';
+                if (eventName === 'swal:error') defaultIcon = 'error';
+                if (eventName === 'swal:success') defaultIcon = 'success';
+                if (eventName === 'swal:warning') defaultIcon = 'warning';
 
-            Swal.fire({
-                title,
-                text,
-                icon,
-                timer,
-                showConfirmButton,
-                confirmButtonText,
+                Swal.fire({
+                    title: data.title ?? 'Aviso',
+                    text: data.text ?? '',
+                    icon: data.icon ?? defaultIcon,
+                    timer: data.timer ?? null,
+                    showConfirmButton: data.showConfirmButton ?? true,
+                    confirmButtonText: data.confirmButtonText ?? 'OK',
+                });
             });
         });
 
+        // Listener para confirmação (precisa de lógica especial)
         window.addEventListener('swal:confirm', (event) => {
             const data = event.detail?.[0] ?? {};
 
@@ -164,8 +165,8 @@
                 confirmButtonText: data.confirmButtonText ?? 'Confirmar',
                 cancelButtonText: data.cancelButtonText ?? 'Cancelar',
             }).then((result) => {
-                if (result.isConfirmed && data.onConfirmEvent) {
-                    Livewire.dispatch(data.onConfirmEvent, data.onConfirmParams ?? []);
+                if (result.isConfirmed && data.confirmEvent) {
+                    Livewire.dispatch(data.confirmEvent, data.confirmParams ?? []);
                 }
             });
         });
