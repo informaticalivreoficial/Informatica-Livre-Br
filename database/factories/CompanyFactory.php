@@ -18,6 +18,8 @@ class CompanyFactory extends Factory
     public function definition(): array
     {
         return [
+            'responsable_name' => $this->faker->name(),
+            'responsable_email' => $this->faker->email,
             'social_name' => $this->faker->company,
             'alias_name' => $this->faker->companySuffix,
             'document_company' => $this->faker->cnpj(false),

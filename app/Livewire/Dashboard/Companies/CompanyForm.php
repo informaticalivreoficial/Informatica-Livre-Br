@@ -20,6 +20,9 @@ class CompanyForm extends Component
 
     
 
+    public ?string $responsable_name = null;
+    public ?string $responsable_email = null;
+    public ?string $responsable_cpf = null;
     public ?string $social_name = null;
     public ?string $alias_name = null;
     public ?string $document_company = null;
@@ -36,6 +39,8 @@ class CompanyForm extends Component
         $companyId = $this->company->id ?? null;
 
         return [
+            'social_name' => 'required|string',
+            'responsable_name' => 'required|string',
             'zipcode' => 'required|min:8|max:10',
             'email' => ['required', 'email', Rule::unique('companies', 'email')->ignore($companyId)],
             'cell_phone' => 'required|string|min:15',
@@ -76,6 +81,9 @@ class CompanyForm extends Component
 
         $data = [
             'logo' => $this->logoPath,
+            'responsable_name' => $this->responsable_name,
+            'responsable_email' => $this->responsable_email,
+            'responsable_cpf' => $this->responsable_cpf,
             'social_name' => $this->social_name,
             'alias_name' => $this->alias_name,
             'zipcode' => $this->zipcode,
@@ -129,6 +137,9 @@ class CompanyForm extends Component
 
     protected function fillFromCompany(Company $company): void
     {
+        $this->responsable_name = $company->responsable_name;
+        $this->responsable_email = $company->responsable_email;
+        $this->responsable_cpf = $company->responsable_cpf;
         $this->social_name = $company->social_name;
         $this->alias_name = $company->alias_name;
         $this->zipcode = $company->zipcode;

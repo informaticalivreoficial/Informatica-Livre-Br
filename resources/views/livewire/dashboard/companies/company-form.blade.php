@@ -50,20 +50,44 @@
                         <div class="col-12 col-sm-6 col-md-3 col-lg-6">
                             <div class="form-group">
                                 <label class="labelforms"><b>*Nome Fantasia:</b></label>
-                                <input class="form-control" placeholder="Nome da empresa" id="alias_name" wire:model="alias_name" />
+                                <input class="form-control @error('alias_name') is-invalid @enderror" placeholder="Nome da empresa" id="alias_name" wire:model="alias_name" />
+                                @error('alias_name')
+                                    <span class="error erro-feedback">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
                         <div class="col-12 col-sm-6 col-md-3 col-lg-6">
-                            <label class="labelforms"><b>Razão Social:</b></label>
-                            <input class="form-control" id="social_name" wire:model="social_name" />
+                            <div class="form-group">
+                                <label class="labelforms"><b>Razão Social:</b></label>
+                                <input class="form-control" id="social_name" wire:model="social_name" />
+                            </div>
                         </div>
                         <div class="col-12 col-sm-6 col-md-3 col-lg-6">
-                            <label class="labelforms"><b>CNPJ:</b></label>
-                            <input class="form-control" x-mask="99.999.999/9999-99" id="document_company" wire:model="document_company" />
+                            <div class="form-group">
+                                <label class="labelforms"><b>CNPJ:</b></label>
+                                <input class="form-control" x-mask="99.999.999/9999-99" id="document_company" wire:model="document_company" />
+                            </div>
                         </div>
                         <div class="col-12 col-sm-6 col-md-3 col-lg-6">
-                            <label class="labelforms"><b>Inscrição Estadual:</b></label>
-                            <input class="form-control" id="document_company_secondary" wire:model="document_company_secondary" />
+                            <div class="form-group">
+                                <label class="labelforms"><b>Inscrição Estadual:</b></label>
+                                <input class="form-control" id="document_company_secondary" wire:model="document_company_secondary" />
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-3 col-lg-6">
+                            <div class="form-group">
+                                <label class="labelforms"><b>Responsável:</b></label>
+                                <input class="form-control @error('responsable_name') is-invalid @enderror" id="responsable_name" wire:model="responsable_name" />
+                                @error('responsable_name')
+                                    <span class="error erro-feedback">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-3 col-lg-6">
+                            <div class="form-group">
+                                <label class="labelforms"><b>Email do Responsável:</b></label>
+                                <input class="form-control" id="responsable_email" wire:model="responsable_email" />
+                            </div>
                         </div>
                     </div>
                     

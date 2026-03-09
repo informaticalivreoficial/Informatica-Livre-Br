@@ -31,7 +31,7 @@
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
     
     {{-- Toastr --}}
-    <link rel="stylesheet" href="{{ asset('theme/plugins/toastr/toastr.min.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
@@ -88,6 +88,11 @@
         <livewire:navigation.footer />
     </div>
 
+    @auth
+        <livewire:components.support-modal />
+        <livewire:components.toastr-notification />
+    @endauth
+
     {{-- jQuery --}}
     <script src="{{ asset('theme/plugins/jquery/jquery.min.js') }}"></script> 
 
@@ -124,7 +129,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     {{-- Toastr --}}
-    <script src="{{ asset('theme/plugins/toastr/toastr.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/basiclightbox@5/dist/basicLightbox.min.js"></script>
 

@@ -13,7 +13,9 @@ class Company extends Model
     protected $table = 'companies';
 
     protected $fillable = [
-        'user',
+        'responsable_name',
+        'responsable_email',
+        'responsable_cpf',
         'logo',
         'social_name',
         'alias_name',

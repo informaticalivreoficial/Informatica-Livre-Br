@@ -145,6 +145,12 @@
                 <i class="fas fa-expand-arrows-alt"></i>
             </a>
         </li>
+
+        <li class="nav-item dropdown">
+            <a href="javascript:void(0)" onclick="Livewire.dispatch('open-support-modal')" title="Suporte" class="nav-link">
+                <i class="fas fa-life-ring" style="color: rgb(223, 87, 87);"></i>
+            </a>
+        </li>
         
         @auth
             <livewire:auth.button-logout />
