@@ -24,9 +24,10 @@ class Service extends Model
     ];
 
     protected $casts = [
-        'price' => 'decimal:2',
-        'is_public' => 'boolean',
-        'interval' => BillingInterval::class,
+        'price'        => 'decimal:2',
+        'is_public'    => 'boolean',
+        'interval'     => BillingInterval::class,
+        'billing_type' => BillingType::class,
     ];
 
     protected static function booted()

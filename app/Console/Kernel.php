@@ -26,6 +26,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('CheckOrcamentoClient:create')->everyMinute()->withoutOverlapping();
         $schedule->command('companies:generate-tokens')->everyMinute()->withoutOverlapping();
+        $schedule->command('invoices:process-recurring')->dailyAt('00:00');
     }
 
     /**

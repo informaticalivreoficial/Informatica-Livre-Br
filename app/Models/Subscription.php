@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\BillingInterval;
+use App\Enums\BillingType;
 use App\Enums\SubscriptionStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -35,13 +36,13 @@ class Subscription extends Model
     protected static function booted()
     {
         static::saving(function ($subscription) {
-            if ($subscription->service->billing_type === 'one_time') {
+            if ($subscription->service->billing_type === BillingType::ONE_TIME) {
                 $subscription->interval = null;
                 $subscription->next_billing_at = null;
             }
 
             if (
-                $subscription->service->billing_type === 'recurring'
+                $subscription->service->billing_type === BillingType::RECURRING
                 && !$subscription->interval
             ) {
                 throw new \Exception('Serviço recorrente exige intervalo.');
@@ -77,9 +78,9 @@ class Subscription extends Model
 
     public function calculateNextBilling(): void
     {
-        $this->next_billing_at = 
-            $this->next_billing_at
-                ->addMonths($this->interval->months());
+        $this->next_billing_at = $this->next_billing_at
+            ->copy()
+            ->addMonths($this->interval->months());
     }
 
     public function isActive(): bool
@@ -124,14 +125,12 @@ class Subscription extends Model
 
     public function billNext(): void
     {
-        if ($this->status !== 'active') {
+        if (!$this->isActive()) { 
             return;
         }
 
         $this->generateInvoice();
-
         $this->calculateNextBilling();
-
         $this->save();
     }
 }

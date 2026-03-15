@@ -25,6 +25,10 @@ use App\Livewire\Dashboard\Permissions\Index as PermissionIndex;
 use App\Livewire\Dashboard\Roles\Index as RoleIndex;
 use App\Livewire\Dashboard\Companies\Companies;
 use App\Livewire\Dashboard\Companies\CompanyForm;
+use App\Livewire\Dashboard\Portifolio\PortifolioCategories;
+use App\Livewire\Dashboard\Portifolio\PortifolioCategoriesForm;
+use App\Livewire\Dashboard\Portifolio\PortifolioForm;
+use App\Livewire\Dashboard\Portifolio\PortifolioIndex;
 use App\Livewire\Dashboard\Safe\Safe;
 use App\Livewire\Dashboard\Safe\SafeForm;
 use App\Livewire\Dashboard\Service\InvoiceIndex;
@@ -180,6 +184,18 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
     // Route::get('portifolio/categorias', [CatPortifolioController::class, 'index'])->name('catportifolio.index');
 
     //*************************** Portifólio *******************************************/
+    Route::get('/portifolio/categorias', PortifolioCategories::class)->name('portifolio.categories.index');
+    Route::get('/portifolio/categorias/criar', PortifolioCategoriesForm::class)
+        ->name('portifolio.categories.create');
+    Route::get('/portifolio/categorias/{catPortifolio}/editar', PortifolioCategoriesForm::class)
+        ->name('portifolio.categories.edit');
+
+    Route::get('/portifolio', PortifolioIndex::class)
+        ->name('portifolio.index');
+    Route::get('/portifolio/criar', PortifolioForm::class)
+        ->name('portifolio.create');
+    Route::get('/portifolio/{portifolio}/editar', PortifolioForm::class)
+        ->name('portifolio.edit');
     // Route::match(['get', 'post'], 'portifolio/pesquisa', [PortifolioController::class, 'search'])->name('portifolio.search');
     // Route::get('portifolio/set-status', [PortifolioController::class, 'portifolioSetStatus'])->name('portifolio.portifolioSetStatus');
     // Route::post('portifolio/image-set-cover', [PortifolioController::class, 'imageSetCover'])->name('portifolio.imageSetCover');
