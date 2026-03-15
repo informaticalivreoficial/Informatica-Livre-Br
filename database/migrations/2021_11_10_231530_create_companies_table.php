@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique();
+            $table->string('api_token', 64)->unique()->nullable();
             $table->string('responsable_name');
             $table->string('responsable_email');
             $table->string('responsable_cpf')->nullable();

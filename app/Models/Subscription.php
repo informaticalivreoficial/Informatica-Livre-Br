@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\BillingInterval;
 use App\Enums\SubscriptionStatus;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -111,13 +112,13 @@ class Subscription extends Model
         ]);
     }
 
-    public function generateInvoice(): Invoice
+    public function generateInvoice(?Carbon $due_date = null): Invoice
     {
         return $this->invoices()->create([
             'company_id' => $this->company_id,
-            'amount' => $this->amount,
-            'due_date' => $this->next_billing_at ?? $this->start_date,
-            'status' => 'pending',
+            'amount'     => $this->amount,
+            'due_date'   => $due_date ?? $this->next_billing_at ?? $this->start_date,
+            'status'     => 'pending',
         ]);
     }
 

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class Company extends Model
 {
@@ -13,6 +14,8 @@ class Company extends Model
     protected $table = 'companies';
 
     protected $fillable = [
+        'uuid',
+        'api_token',
         'responsable_name',
         'responsable_email',
         'responsable_cpf',
@@ -34,6 +37,22 @@ class Company extends Model
     protected $casts = [
         'status' => 'boolean',
     ];
+
+    protected static function booted()
+    {
+        static::creating(function ($company) {
+            $company->uuid      = Str::uuid();
+            $company->api_token = Str::random(64);
+        });
+    }
+
+    // Gera novo token manualmente se precisar
+    public function regenerateToken(): string
+    {
+        $token = Str::random(64);
+        $this->update(['api_token' => $token]);
+        return $token;
+    }
 
     /**
      * Scopes

@@ -27,11 +27,7 @@ class InvoiceIndex extends Component
             'service',
             'invoices' => fn ($q) => $q->orderByDesc('due_date'),
         ]);
-    }
-    public function render()
-    {
-        return view('livewire.dashboard.service.invoice-index')->with('title', 'Cobranças');
-    }
+    }    
 
     protected function rules()
     {
@@ -103,6 +99,67 @@ class InvoiceIndex extends Component
         ]);
     }
 
+    public function generateBoleto(int $invoiceId): void
+    {
+        $invoice = Invoice::with(['company', 'subscription.service'])
+            ->findOrFail($invoiceId);
+
+        // Já tem boleto — só redireciona
+        if ($invoice->payment_url) {
+            $this->dispatch('openUrl', url: $invoice->payment_url);
+            return;
+        }
+
+        try {
+            $pagHiper = new PagHiperService();
+            $response = $pagHiper->createInvoice($invoice);
+
+            $invoice->update([
+                'gateway'           => 'paghiper',
+                'gateway_reference' => $response['transaction_id'] ?? null,
+                'payment_url'       => $response['bank_slip']['url_slip'] ?? null,
+                'pix_qrcode'        => $response['pix']['qrcode_image'] ?? null,
+            ]);
+
+            $this->subscription->load('invoices');
+
+            $this->dispatch('openUrl', url: $invoice->payment_url);
+
+        } catch (\Exception $e) {
+            $this->dispatch('swal:error', [
+                'title' => 'Erro ao gerar boleto',
+                'text'  => $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function markAsPaid(int $id): void
+    {
+        $invoice = Invoice::findOrFail($id);
+
+        if ($invoice->status !== 'pending') {
+            $this->dispatch('swal:error', [
+                'title' => 'Erro',
+                'text'  => 'Apenas faturas pendentes podem ser marcadas como pagas.',
+            ]);
+            return;
+        }
+
+        $invoice->update([
+            'status'  => 'paid',
+            'paid_at' => now(),
+        ]);
+
+        $this->subscription->load('invoices');
+
+        $this->dispatch('swal:success', [
+            'title' => 'Pago!',
+            'text'  => 'Fatura marcada como paga com sucesso.',
+            'timer' => 2000,
+            'showConfirmButton' => false,
+        ]);
+    }
+
     public function confirmDelete(int $id): void
     {
         $this->dispatch('swal:confirm', [
@@ -130,5 +187,10 @@ class InvoiceIndex extends Component
             'timer' => 2000,
             'showConfirmButton' => false,
         ]);
+    }
+
+    public function render()
+    {
+        return view('livewire.dashboard.service.invoice-index')->with('title', 'Cobranças');
     }
 }

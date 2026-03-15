@@ -7,7 +7,6 @@ use App\Models\Company;
 use App\Models\Service;
 use App\Models\Subscription;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 
@@ -18,17 +17,17 @@ class SubscriptionForm extends Component
     public $company_id;
     public $service_id;
     public $interval;
-    public $amount;
+    public $amount = 0;
     public $start_date;
     public $status = 'active';
 
     public $companies = [];
     public $services = [];
 
+    public $next_billing_at = null;
+
     public function mount(?Subscription $subscription = null)
     {
-        //$this->authorize('create', Subscription::class);
-
         $this->subscription = $subscription;
 
         $this->companies = Company::orderBy('alias_name')->get();
@@ -38,9 +37,14 @@ class SubscriptionForm extends Component
             $this->company_id = $subscription->company_id;
             $this->service_id = $subscription->service_id;
             $this->interval   = $subscription->interval?->value; // ✅
-            $this->amount     = (float) $subscription->amount;
+            $this->amount     = $subscription->amount;
             $this->start_date = $subscription->start_date?->toDateString();
-            $this->status     = $subscription->status->value;     // ✅
+            $this->status     = $subscription->status->value; 
+            
+            // 👈 Próxima cobrança já salva no banco
+        $this->next_billing_at = $subscription->next_billing_at?->format('d/m/Y');
+
+            $this->dispatch('reinitPlugins', amount: $this->amount ?? 0);
         } else {
             $this->start_date = now()->toDateString();
         }
@@ -48,14 +52,35 @@ class SubscriptionForm extends Component
 
     public function updatedServiceId()
     {
+        
         $service = Service::find($this->service_id);
 
         if (!$service) {
             return;
         }
+        
+        $this->amount = $service->price;
+        $this->interval = $service->interval?->value;
 
-        $this->amount   = (float) $service->price;
-        $this->interval = $service->interval?->value; // ✅ string
+        // 👈 Calcula previsão se já tiver start_date
+        if ($this->start_date && $this->interval) {
+            $intervalEnum = BillingInterval::from($this->interval);
+            $this->next_billing_at = Carbon::parse($this->start_date)
+                ->addMonths($intervalEnum->months())
+                ->format('d/m/Y');
+        }
+
+        $this->dispatch('reinitPlugins', amount: $this->amount);
+    }
+
+    public function updatedStartDate()
+    {
+        if ($this->start_date && $this->interval) {
+            $intervalEnum = BillingInterval::from($this->interval);
+            $this->next_billing_at = Carbon::parse($this->start_date)
+                ->addMonths($intervalEnum->months())
+                ->format('d/m/Y');
+        }
     }
 
     protected function rules()
@@ -110,15 +135,29 @@ class SubscriptionForm extends Component
             ]
         );
 
-        // 🧾 Gera invoice apenas na criação
+        // 🧾 Gera invoices apenas na criação
         if (!$this->subscription) {
-            $subscription->generateInvoice();
+            $startDate = Carbon::parse($this->start_date);
+
+            // 1ª invoice — vence 10 dias após o início
+            $subscription->generateInvoice(due_date: $startDate->copy()->addDays(10));
+
+            // 2ª invoice — próximo ciclo + 10 dias
+            if ($nextBillingAt) {
+                $subscription->generateInvoice(due_date: $nextBillingAt->copy());
+            }
         }
 
-        return redirect()
-            ->route('services.subscriptions.index')
-            ->with('success', 'Subscription salva com sucesso.');
+        $this->dispatch('swal:success', [
+            'title' => 'Sucesso!',
+            'text'  => $subscription->wasRecentlyCreated
+                ? 'Pedido cadastrado com sucesso!'
+                : 'Pedido atualizado com sucesso!',
+            'timer' => 2000,
+            'showConfirmButton' => false,
+        ]);        
     }
+
     public function render()
     {
         return view('livewire.dashboard.service.subscription-form');

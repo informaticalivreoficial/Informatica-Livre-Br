@@ -26,13 +26,13 @@ return new class extends Migration
 
             $table->date('due_date');
 
-            $table->string('status')->default('pending'); // pending | paid | failed
+            $table->string('status')->default('pending'); // pending | paid | failed | canceled
 
             $table->string('gateway')->nullable();
             $table->string('gateway_reference')->nullable();
             $table->string('payment_url')->nullable();
             $table->string('pix_qrcode')->nullable();
-            
+            $table->string('boleto_barcode')->nullable();            
 
             $table->timestamp('paid_at')->nullable();
 

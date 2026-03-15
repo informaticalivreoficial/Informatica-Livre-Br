@@ -16,12 +16,12 @@ class PagHiperService
         $daysUntilDue = max(3, now()->diffInDays($invoice->due_date, false));
         
         // Remove pontuação do CPF/CNPJ
-        $document = $invoice->company->document 
-            ? preg_replace('/\D/', '', $invoice->company->document)
+        $document = $invoice->company->document_company 
+            ? preg_replace('/\D/', '', $invoice->company->document_company)
             : null;
 
         $payload = [
-            'api_key'        => config('services.paghiper.api_key'), // 👈 Corrigido
+            'apiKey'        => config('services.paghiper.api_key'), // 👈 Corrigido
             'token'          => config('services.paghiper.token'),    // 👈 Adicionado
             'order_id'       => 'INV-' . $invoice->id,
             'payer_email'    => $invoice->company->email ?? 'financeiro@empresa.com',
@@ -31,6 +31,7 @@ class PagHiperService
             'type_bank_slip' => 'boletoA4', // ou 'boletoPix'
             'items' => [
                 [
+                    'item_id'     => (string) $invoice->id,
                     'description' => $invoice->subscription->service->name,
                     'quantity'    => 1,
                     'price_cents' => (int) bcmul($invoice->amount, '100', 0), // 👈 Corrigido

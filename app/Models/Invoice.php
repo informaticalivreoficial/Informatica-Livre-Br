@@ -19,6 +19,7 @@ class Invoice extends Model
         'gateway_reference',
         'payment_url',
         'pix_qrcode',
+        'boleto_barcode',
         'paid_at'
     ];
 

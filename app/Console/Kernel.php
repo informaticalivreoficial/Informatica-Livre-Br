@@ -25,6 +25,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('CheckOrcamentoClient:create')->everyMinute()->withoutOverlapping();
+        $schedule->command('companies:generate-tokens')->everyMinute()->withoutOverlapping();
     }
 
     /**

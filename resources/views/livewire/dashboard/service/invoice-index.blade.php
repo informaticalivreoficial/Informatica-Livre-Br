@@ -63,27 +63,47 @@
                             </td>
 
                             <td>
-                                <span class="px-2 py-1 rounded text-xs
-                                    @class([
-                                        'bg-green-100 text-green-700' => $invoice->status === 'paid',
-                                        'bg-yellow-100 text-yellow-700' => $invoice->status === 'pending',
-                                        'bg-red-100 text-red-700' => $invoice->status === 'canceled',
-                                    ])
+                                <span class="badge
+                                    @if($invoice->status === 'paid') badge-success
+                                    @elseif($invoice->status === 'pending') badge-warning
+                                    @elseif($invoice->status === 'canceled') badge-danger
+                                    @endif
                                 ">
                                     {{ ucfirst($invoice->status) }}
                                 </span>
                             </td>
 
                             <td class="text-right space-x-2">
-                                <button class="btn btn-xs btn-outline">
-                                    Ver
-                                </button>
+                                @if ($invoice->status !== 'paid')
+                                    <button
+                                        wire:click="generateBoleto({{ $invoice->id }})"
+                                        wire:loading.attr="disabled"
+                                        wire:target="generateBoleto({{ $invoice->id }})"
+                                        class="btn btn-xs btn-outline"
+                                    >
+                                        <span wire:loading.remove wire:target="generateBoleto({{ $invoice->id }})">
+                                            <i class="fas fa-barcode mr-1"></i>
+                                            {{ $invoice->payment_url ? 'Ver Boleto' : 'Gerar Boleto' }}
+                                        </span>
+                                        <span wire:loading wire:target="generateBoleto({{ $invoice->id }})">
+                                            <i class="fas fa-spinner fa-spin mr-1"></i> Aguarde...
+                                        </span>
+                                    </button>
+                                @endif                                
 
-                                @if ($invoice->status === 'pending')
-                                    <button class="btn btn-xs btn-success">
-                                        Marcar paga
+                                @if (
+                                    $invoice->status === 'pending' || 
+                                    $invoice->status === 'canceled' || 
+                                    $invoice->status === 'failed')
+                                    <button
+                                        wire:click="markAsPaid({{ $invoice->id }})"
+                                        wire:confirm="Confirmar pagamento da fatura #{{ $invoice->id }}?"
+                                        class="btn btn-xs btn-success"
+                                    >
+                                        <i class="fas fa-check mr-1"></i> Marcar paga
                                     </button>
                                 @endif
+
                                 <button 
                                     wire:click="confirmDelete({{ $invoice->id }})"
                                     type="button" title="Excluir"
@@ -147,3 +167,13 @@
     @endif
 
 </div>
+
+@push('scripts')
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.on('openUrl', ({ url }) => {
+                window.open(url, '_blank');
+            });
+        });
+    </script>
+@endpush
