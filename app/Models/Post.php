@@ -30,10 +30,24 @@ class Post extends Model
         'publish_at'
     ];
 
+    protected static function booted()
+    {
+        static::saving(function ($post) {
+            $post->setSlug();
+        });
+
+        static::deleting(function ($post) {
+            // Deleta a pasta inteira com todas as imagens
+            Storage::disk('public')->deleteDirectory("posts/{$post->id}");
+
+            // Deleta os registros do banco
+            $post->images()->delete();
+        });
+    }
+
     /**
      * Scopes
      */
-
     public function scopePostson($query)
     {
         return $query->where('status', 1);
@@ -132,14 +146,22 @@ class Post extends Model
     
     public function setSlug()
     {
-        if(!empty($this->titulo)){
-            $post = Post::where('titulo', $this->titulo)->first(); 
-            if(!empty($post) && $post->id != $this->id){
-                $this->attributes['slug'] = Str::slug($this->titulo) . '-' . $this->id;
-            }else{
-                $this->attributes['slug'] = Str::slug($this->titulo);
-            }            
-            $this->save();
+        if (!empty($this->title)) {
+    
+            $baseSlug = Str::slug($this->title);
+            $slug = $baseSlug;
+            $count = 1;
+    
+            while (
+                Post::where('slug', $slug)
+                    ->where('id', '!=', $this->id)
+                    ->exists()
+            ) {
+                $slug = $baseSlug . '-' . str_pad($count, 2, '0', STR_PAD_LEFT);
+                $count++;
+            }
+    
+            $this->attributes['slug'] = $slug;
         }
     }
     
