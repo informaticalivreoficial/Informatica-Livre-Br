@@ -13,9 +13,11 @@ return new class extends Migration
     {
         Schema::create('portifolio_gbs', function (Blueprint $table) {
             $table->id();
+            $table->integer('order_img')->default(0);
             $table->unsignedBigInteger('portifolio');
             $table->string('path');
             $table->boolean('cover')->nullable();
+            $table->boolean('watermark')->nullable();
 
             $table->timestamps();
 

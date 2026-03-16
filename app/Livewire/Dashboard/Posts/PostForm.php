@@ -93,6 +93,8 @@ class PostForm extends Component
                 $q->where('admin', 1)
                   ->orWhere('editor', 1);
             })
+            ->where('superadmin', 0) // exclui superadmins
+            ->where('client', 0)     // exclui clients
             ->orderBy('name')
             ->get();
 

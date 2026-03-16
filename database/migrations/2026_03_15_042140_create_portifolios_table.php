@@ -21,10 +21,10 @@ return new class extends Migration
             $table->string('slug')->nullable();
             $table->string('headline')->nullable();
             $table->string('tags')->nullable();
-            $table->bigInteger('views')->default(0);            
-            $table->integer('cat_pai')->nullable();
+            $table->bigInteger('views')->default(0);
             $table->integer('status')->nullable();
-            $table->integer('exibir')->nullable();
+            $table->integer('exibir')->default(0);
+            $table->integer('display_marked_water')->nullable();
             $table->string('thumb_legenda')->nullable(); 
             $table->decimal('value', 10, 2)->nullable();
             

@@ -16,15 +16,30 @@ class PortifolioGB extends Model
         'portifolio',
         'path',
         'cover',
+        'watermark',
+        'order_img',
     ];
 
     protected $casts = [
         'cover' => 'boolean',
+        'watermark' => 'boolean',
+        'order_img' => 'integer',
     ];
 
+    /**
+     * Relations
+    */
     public function portifolio()
     {
         return $this->belongsTo(Portifolio::class, 'portifolio');
+    }    
+
+    /**
+     * Scopes
+    */
+    public function scopeCover($query)
+    {
+        return $query->where('cover', true);
     }
 
     public function getUrlAttribute(): string
@@ -32,8 +47,11 @@ class PortifolioGB extends Model
         return Storage::url($this->path);
     }
 
-    public function scopeCover($query)
+    /**
+     * Accerssors and Mutators
+    */
+    public function setWatermarkAttribute($value)
     {
-        return $query->where('cover', true);
+        $this->attributes['watermark'] = ($value == true || $value == '1' ? 1 : 0);
     }
 }

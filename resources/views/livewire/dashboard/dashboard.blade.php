@@ -28,14 +28,28 @@
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                     <div class="info-box">
                         <span class="info-box-icon bg-info">
-                            <a href="{{-- route('properties.index') --}}" title="Imóveis">
-                                <i class="fa far fa-home"></i>
+                            <a href="{{ route('companies.index') }}" title="Empresas">
+                                <i class="fa far fa-industry"></i>
                             </a>
                         </span>            
                         <div class="info-box-content">
-                            <span class="info-box-text"><b>Imóveis</b></span>
-                            <span class="info-box-text">{{ now()->year }}: {{-- $propertyYearCount --}}</span>
-                            <span class="info-box-text">Total: {{-- $propertyCount --}}</span>
+                            <span class="info-box-text"><b>Empresas</b></span>
+                            <span class="info-box-text">{{ now()->year }}: {{ $companyYearCount }}</span>
+                            <span class="info-box-text">Total: {{ $companyCount }}</span>
+                        </div>            
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-green">
+                            <a href="{{ route('companies.index') }}" title="Faturas">
+                                <i class="fa far fa-money-check"></i>
+                            </a>
+                        </span>            
+                        <div class="info-box-content">
+                            <span class="info-box-text"><b>Faturas</b></span>
+                            <span class="info-box-text">{{ now()->year }}: {{ $invoicesYearCount }}</span>
+                            <span class="info-box-text">Total: {{ $invoicesCount }}</span>
                         </div>            
                     </div>
                 </div>

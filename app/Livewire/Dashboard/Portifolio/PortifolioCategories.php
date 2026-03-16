@@ -75,7 +75,7 @@ class PortifolioCategories extends Component
             return;
         }
 
-        if($category->countposts() > 0){
+        if($category->portifolios()->count() > 0){
             $text = 'Essa categoria possui posts cadastrados e todos serão removidos. Deseja excluir mesmo assim?';
         }
 

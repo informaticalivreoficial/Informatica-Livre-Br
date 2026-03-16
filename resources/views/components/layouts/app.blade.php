@@ -23,23 +23,20 @@
     <link rel="stylesheet" href="{{ asset('theme/dist/css/adminlte.min.css') }}">
     {{-- overlayScrollbars --}}
     <link rel="stylesheet" href="{{ asset('theme/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
-    {{-- Daterange picker --}}
-    <link rel="stylesheet" href="{{ asset('theme/plugins/daterangepicker/daterangepicker.css') }}">
-    {{-- summernote --}}
-    <link rel="stylesheet" href="{{ asset('theme/plugins/summernote/summernote-bs4.min.css') }}">
+    
     {{-- Tom Select --}}
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
     
     {{-- Toastr --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-
     {{-- General Styles --}}
     <link rel="stylesheet" href="{{ asset('theme/dist/css/styles.css') }}">
     <link rel="stylesheet" href="{{ asset('theme/dist/css/action-buttons.css') }}">
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/basiclightbox@5/dist/basicLightbox.min.css">
+
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 
     <style>
         .basicLightbox {
@@ -106,13 +103,11 @@
     
     {{-- daterangepicker --}}
     <script src="{{ asset('theme/plugins/moment/moment.min.js') }}"></script>
-    <script src="{{ asset('theme/plugins/daterangepicker/daterangepicker.js') }}"></script>
 
     {{-- Tempusdominus Bootstrap 4 --}}
     <script src="{{ asset('theme/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
 
-    {{-- Summernote --}}
-    <script src="{{ asset('theme/plugins/summernote/summernote-bs4.min.js') }}"></script>
+    
     {{-- Tom Select --}}
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
 
@@ -121,17 +116,22 @@
 
     <script src="{{ asset('theme/dist/js/adminlte.js') }}"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     {{-- Toastr --}}
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/basiclightbox@5/dist/basicLightbox.min.js"></script>
+
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script src="https://unpkg.com/quill-image-resize-module/image-resize.min.js"></script>
+
+    {{-- 👈 Registra UMA vez aqui, antes do alpine:init --}}
+    <script>
+        if (typeof ImageResize !== 'undefined') {
+            Quill.register('modules/imageResize', ImageResize.default, true);
+        }
+    </script>
 
     @stack('scripts') 
 
@@ -174,6 +174,136 @@
                     Livewire.dispatch(data.confirmEvent, data.confirmParams ?? []);
                 }
             });
+        });
+
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('quillEditor', ({ value, model }) => ({
+                quill: null,
+
+                init() {
+                    if (this.quill) return; // 🔥 evita duplicar editor
+
+                    // 🔥 Registrar módulo de redimensionamento
+                    // if (typeof ImageResize !== 'undefined') {
+                    //     Quill.register('modules/imageResize', ImageResize.default);
+                    // }
+
+                    this.quill = new Quill(this.$refs.editor, {
+                        theme: 'snow',
+                        placeholder: 'Digite aqui...',
+                        modules: {
+                            toolbar: [
+                                [{ header: [1, 2, 3, false] }],
+                                [{ font: [] }, { size: ['small', false, 'large', 'huge'] }],
+                                ['bold', 'italic', 'underline', 'strike'],
+                                [{ color: [] }, { background: [] }],
+                                [{ align: [] }],
+                                [{ list: 'ordered' }, { list: 'bullet' }],
+                                ['blockquote'],
+                                ['link', 'image'],
+                                ['clean'],
+                            ],
+                            // 🖼️ Módulo de redimensionamento visual
+                            imageResize: {
+                                displaySize: true,
+                                modules: ['Resize', 'DisplaySize']
+                            }
+                        },
+                    });
+
+                    // 🔥 SCROLL AQUI
+                    const editorEl = this.$refs.editor.querySelector('.ql-editor');
+                    editorEl.style.maxHeight = '350px';
+                    editorEl.style.overflowY = 'auto';
+
+                    // Conteúdo inicial (edit)
+                    if (value) {
+                        this.quill.root.innerHTML = value;
+                    }
+
+                    // 🔥 SINCRONIZAÇÃO INICIAL (create FIX)
+                    this.sync();
+
+                    // Atualização ao digitar
+                    this.quill.on('text-change', () => {
+                        this.sync();
+                    });
+
+                    // Adicionar suporte a alinhamento de imagens
+                    this.addImageAlignmentSupport();
+                },
+
+                sync() {
+                    const html = this.quill.root.innerHTML;
+                    const componentEl = this.$el.closest('[wire\\:id]');
+
+                    if (!componentEl || typeof Livewire === 'undefined') return;
+
+                    const component = Livewire.find(componentEl.getAttribute('wire:id'));
+                    if (component) {
+                        component.set(model, html, false);
+                    }
+                },
+
+                addImageAlignmentSupport() {
+                    this.quill.root.addEventListener('click', (e) => {
+                        if (e.target.tagName === 'IMG') {
+                            const parent = e.target.closest('p');
+                            if (parent) {
+                                const alignment = parent.className.match(/ql-align-(\w+)/);
+                                if (alignment) {
+                                    const alignType = alignment[1];
+                                    this.applyImageAlignment(e.target, alignType);
+                                }
+                            }
+                        }
+                    });
+
+                    const observer = new MutationObserver((mutations) => {
+                        mutations.forEach((mutation) => {
+                            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                                const target = mutation.target;
+                                const img = target.querySelector('img');
+                                if (img) {
+                                    const alignment = target.className.match(/ql-align-(\w+)/);
+                                    if (alignment) {
+                                        this.applyImageAlignment(img, alignment[1]);
+                                    }
+                                }
+                            }
+                        });
+                    });
+
+                    observer.observe(this.quill.root, {
+                        attributes: true,
+                        attributeFilter: ['class'],
+                        subtree: true
+                    });
+                },
+
+                applyImageAlignment(img, alignment) {
+                    img.style.marginLeft = '';
+                    img.style.marginRight = '';
+                    img.style.display = 'block';
+
+                    switch(alignment) {
+                        case 'center':
+                            img.style.marginLeft = 'auto';
+                            img.style.marginRight = 'auto';
+                            break;
+                        case 'right':
+                            img.style.marginLeft = 'auto';
+                            img.style.marginRight = '0';
+                            break;
+                        case 'left':
+                            img.style.marginLeft = '0';
+                            img.style.marginRight = 'auto';
+                            break;
+                    }
+
+                    this.sync();
+                },
+            }));
         });
     </script>
 </body>

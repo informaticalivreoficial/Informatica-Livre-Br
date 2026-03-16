@@ -21,24 +21,24 @@ class Portifolio extends Model
         'headline',
         'tags',
         'views',
-        'cat_pai',
         'status',
         'exibir',
         'thumb_legenda',
         'value',
         'data_inicio',
         'data_termino',
+        'display_marked_water'
     ];
 
     protected $casts = [
-        'status'      => 'boolean',
-        'exibir'      => 'boolean',
+        'status'      => 'integer',
+        'exibir'      => 'integer',
         'value'       => 'decimal:2',
         'data_inicio' => 'date',
         'data_termino'=> 'date',
     ];
 
-    public function category()
+    public function categoryRelation()
     {
         return $this->belongsTo(CatPortifolio::class, 'category');
     }
@@ -50,12 +50,12 @@ class Portifolio extends Model
 
     public function images()
     {
-        return $this->hasMany(PortifolioGb::class, 'portifolio');
+        return $this->hasMany(PortifolioGB::class, 'portifolio');
     }
 
     public function cover()
     {
-        return $this->hasOne(PortifolioGb::class, 'portifolio')->where('cover', true);
+        return $this->hasOne(PortifolioGB::class, 'portifolio')->where('cover', true);
     }
 
     public function scopeActive($query)

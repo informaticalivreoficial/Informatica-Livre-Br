@@ -6,9 +6,9 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
-        "coffeecode/cropper": "^2.0.4",
         "coffeecode/optimizer": "^2.1.1",
         "guzzlehttp/guzzle": "^7.2",
+        "intervention/image": "^3.11",
         "laravel/framework": "^10.0",
         "livewire/livewire": "^3.5",
         "laravel/sanctum": "^3.2",
@@ -16,7 +16,7 @@
         "laravel/ui": "^4.2",
         "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-analytics": "^5.5.1",
-        "spatie/laravel-sitemap": "^6.2",
+        "spatie/laravel-sitemap": "^7.1",
         "webmasterdro/paghiper-php-sdk": "^3.0",
         "spatie/laravel-permission": "^6.3.0"
     },

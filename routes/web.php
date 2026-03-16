@@ -84,7 +84,7 @@ Route::group(['as' => 'web.'], function () {
     // Route::match(['get', 'post'],'/blog/pesquisar', [WebController::class, 'searchBlog'])->name('blog.searchBlog');
 
     //****************************** Portifólio *******************************************/
-    //Route::get('/portifolio/{slug}', [WebController::class, 'projeto'])->name('projeto');
+    Route::get('/portifolio/{slug}', [WebController::class, 'projeto'])->name('projeto');
     //Route::get('/portifolio', [WebController::class, 'portifolio'])->name('portifolio');
 
     //*************************************** Páginas *******************************************/
@@ -185,17 +185,12 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
 
     //*************************** Portifólio *******************************************/
     Route::get('/portifolio/categorias', PortifolioCategories::class)->name('portifolio.categories.index');
-    Route::get('/portifolio/categorias/criar', PortifolioCategoriesForm::class)
-        ->name('portifolio.categories.create');
-    Route::get('/portifolio/categorias/{catPortifolio}/editar', PortifolioCategoriesForm::class)
-        ->name('portifolio.categories.edit');
+    
 
-    Route::get('/portifolio', PortifolioIndex::class)
-        ->name('portifolio.index');
-    Route::get('/portifolio/criar', PortifolioForm::class)
-        ->name('portifolio.create');
-    Route::get('/portifolio/{portifolio}/editar', PortifolioForm::class)
-        ->name('portifolio.edit');
+    Route::get('/portifolio', PortifolioIndex::class)->name('portifolio.index');
+    Route::get('/portifolio/cadastrar', PortifolioForm::class)->name('portifolio.create');
+    Route::get('/portifolio/{portifolio}/editar', PortifolioForm::class)->name('portifolio.edit');
+
     // Route::match(['get', 'post'], 'portifolio/pesquisa', [PortifolioController::class, 'search'])->name('portifolio.search');
     // Route::get('portifolio/set-status', [PortifolioController::class, 'portifolioSetStatus'])->name('portifolio.portifolioSetStatus');
     // Route::post('portifolio/image-set-cover', [PortifolioController::class, 'imageSetCover'])->name('portifolio.imageSetCover');
