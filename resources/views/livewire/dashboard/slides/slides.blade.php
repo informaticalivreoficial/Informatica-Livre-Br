@@ -35,16 +35,7 @@
             </div>
         </div>        
         <!-- /.card-header -->
-        <div class="card-body">
-            <div class="row">
-                <div class="col-12">                
-                    @if(session()->exists('message'))
-                        @message(['color' => session()->get('color')])
-                            {{ session()->get('mensagem') }}
-                        @endmessage
-                    @endif
-                </div>            
-            </div>
+        <div class="card-body">            
             @if($slides->count() > 0)
                 <div class="overflow-x-auto" x-data="{ showModal: false, imageUrl: '' }">
                     <table class="table-auto w-full border-collapse border border-gray-200">
@@ -62,17 +53,24 @@
                         <tbody>
                             @foreach($slides as $slide)
                             @php
-                                $expiredAt = $slide->expired_at; // já é Carbon
-                                $diffInDays = now()->diffInDays($expiredAt, false);
+                                try {
+                                    $expiredAt = $slide->expired_at 
+                                        ? \Carbon\Carbon::createFromFormat('d/m/Y', $slide->expired_at)
+                                        : null;
+                                    $diffInDays = $expiredAt ? now()->diffInDays($expiredAt, false) : null;
+                                } catch (\Exception $e) {
+                                    $expiredAt = null;
+                                    $diffInDays = null;
+                                }
                             @endphp
                             <tr class="border-t border-gray-200 hover:bg-gray-50 {{ $slide->status ? '' : 'bg-yellow-50' }}">
                                 <!-- Imagem -->
                                 <td class="px-4 py-2 text-center">
                                     <img 
-                                        src="{{ url($slide->getimagem()) }}" 
+                                        src="{{ $slide->getimagem() }}" 
                                         alt="{{ $slide->title }}" 
                                         class="w-32 mx-auto cursor-pointer rounded-lg hover:scale-105 transition-transform"
-                                        @click="showModal = true; imageUrl = '{{ addslashes(url($slide->getimagem())) }}'">
+                                        @click="showModal = true; imageUrl = '{{ addslashes($slide->getimagem()) }}'">
                                 </td>
 
                                 <!-- Título -->
@@ -80,18 +78,14 @@
 
                                 <!-- Expiração -->
                                 <td class="px-4 py-2 text-center">
-                                    @if ($diffInDays < 0)
-                                        <span class="px-2 py-1 rounded text-white bg-red-600">
-                                            Expirado ({{ $slide->expired_at->format('d/m/Y') }})
-                                        </span>
-                                    @elseif ($diffInDays <= 30)
-                                        <span class="px-2 py-1 rounded text-black bg-yellow-300">
-                                            Expira em {{ $diffInDays }} dias ({{ $slide->expired_at->format('d/m/Y') }})
-                                        </span>
+                                    @if(!$expiredAt)
+                                        <span class="px-2 py-1 rounded text-white bg-gray-400">Sem expiração</span>
+                                    @elseif($diffInDays < 0)
+                                        {{-- expirado --}}
+                                    @elseif($diffInDays <= 30)
+                                        {{-- expira em breve --}}
                                     @else
-                                        <span class="px-2 py-1 rounded text-white bg-green-600">
-                                            {{ $slide->expired_at->format('d/m/Y') }}
-                                        </span>
+                                        {{-- ok --}}
                                     @endif
                                 </td>
 
@@ -110,27 +104,22 @@
 
                                 <!-- Ações -->
                                 <td class="px-4 py-4 flex items-center justify-center gap-2 h-full">
-                                    <!-- Switch -->
-                                    <label style="top:4px !important;" class="switch flex-shrink-0">
-                                        <input type="checkbox" 
-                                            value="{{ $slide->status }}"  
-                                            wire:change="toggleStatus({{ $slide->id }})" 
-                                            wire:loading.attr="disabled" 
-                                            {{ $slide->status ? 'checked' : '' }}>
-                                        <span class="slider round"></span>
-                                    </label>
-
-                                    <!-- Edit -->
-                                    <a wire:navigate href="{{ route('slides.edit', $slide->id) }}" 
-                                    class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 hover:text-blue-800 transition flex-shrink-0">
+                                    <x-forms.switch-toggle
+                                        wire:key="safe-switch-{{ $slide->id }}"
+                                        wire:click="toggleStatus({{ $slide->id }})"
+                                        :checked="$slide->status"
+                                        size="sm"
+                                        color="green"
+                                    />
+                                    <a href="{{ route('slides.edit', $slide->id) }}" 
+                                        class="btn btn-xs btn-default" 
+                                        title="Editar">
                                         <i class="fas fa-pen"></i>
                                     </a>
-
-                                    <!-- Delete -->
                                     <button type="button" 
-                                            class="flex items-center justify-center w-8 h-8 rounded-full bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-800 transition flex-shrink-0"
-                                            wire:click="setDeleteId({{ $slide->id }})" 
-                                            title="Excluir">
+                                        class="btn btn-xs bg-danger text-white" 
+                                        title="Excluir Empresa"
+                                        wire:click="setDeleteId({{ $slide->id }})">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </td>

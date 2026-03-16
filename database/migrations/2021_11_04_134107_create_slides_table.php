@@ -13,11 +13,9 @@ class CreateSlidesTable extends Migration
      */
     public function up()
     {
-        Schema::create('slides', function (Blueprint $table) {
-            $table->id();
+        Schema::create('slide', function (Blueprint $table) {
+            $table->increments('id');
             $table->string('title');
-            $table->string('subtitle')->nullable();
-            $table->string('butom_label')->nullable();
             $table->string('image')->nullable();
             $table->text('content')->nullable();
             $table->string('link')->nullable();
@@ -39,6 +37,6 @@ class CreateSlidesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('slides');
+        Schema::dropIfExists('slide');
     }
 }

@@ -4,14 +4,14 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1><i class="fas fa-film mr-2"></i> {{ $slide->exists ? 'Editar' : 'Cadastrar' }}</h1>
+                    <h1><i class="fas fa-film mr-2"></i> {{ $slide ? 'Editar' : 'Cadastrar' }}</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('admin') }}">Painel de Controle</a></li>
                         <li class="breadcrumb-item"><a wire:navigate href="{{ route('slides.index') }}">Banners</a>
                         </li>
-                        <li class="breadcrumb-item active">{{ $slide->exists ? 'Editar' : 'Cadastrar' }}</li>
+                        <li class="breadcrumb-item active">{{ $slide ? 'Editar' : 'Cadastrar' }}</li>
                     </ol>
                 </div>
             </div>
@@ -29,24 +29,28 @@
                         </div>
                     </div>
                     <div class="col-12 col-sm-6 col-md-6 col-lg-6">
-                        <div class="form-group">
-                            <label class="labelforms"><b>SubTítulo:</b></label>
-                            <input class="form-control" wire:model="subtitle" />
-                        </div>
-                    </div>                                        
-                </div>
-                <div class="row">
-                    <div class="col-12 col-sm-6 col-md-6 col-lg-5">
                         <label class="labelforms text-muted"><b>URL</b> <small class="text-info">(Ex: https://www.dominio.com)</small></label>
                         <input class="form-control" wire:model="link" />
-                    </div>
-                    <div class="col-12 col-md-4 col-lg-2">
-                        <div class="form-group" x-data="{ value: @entangle('expired_at').defer }" x-init="initFlatpickr()" x-ref="datepicker">
-                            <label class="labelforms"><b>Expira</b></label>
-                            <input type="text" class="form-control" wire:model="expired_at" id="datepicker" />                                                                                                                                                                          
+                    </div>                    
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-4 col-lg-4">
+                        <div class="form-group">
+                            <label class="labelforms"><b>Data de Expiração</b></label>
+                            <div wire:ignore>
+                                <input 
+                                    type="text" 
+                                    id="expired_at"
+                                    class="form-control"
+                                    wire:model="expired_at"
+                                    placeholder="DD/MM/YYYY"
+                                    autocomplete="off"
+                                />
+                            </div>
+                            @error('expired_at') <span class="text-red-500">{{ $message }}</span> @enderror
                         </div>
                     </div>
-                    <div class="col-12 col-md-4 col-lg-2"> 
+                    <div class="col-12 col-md-4 col-lg-4"> 
                         <div class="form-group">
                             <label class="labelforms text-muted"><b>Destino</b></label>
                             <select class="form-control" wire:model="target">
@@ -56,7 +60,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-12 col-md-4 col-lg-3"> 
+                    <div class="col-12 col-md-4 col-lg-4"> 
                         <div class="form-group">
                             <label class="labelforms text-muted"><b>Exibir Título?</b></label>
                             <select class="form-control" wire:model="view_title">
@@ -70,12 +74,12 @@
                 <div class="row">
                     <div class="col-12 p-4 border rounded shadow">
                         <label class="block text-sm font-medium text-gray-700 mb-2">
-                            <b>Imagem do Banner (recomendado: 1920x696)</b>
+                            <b>Imagem do Banner (recomendado: 2200x1200)</b>
                         </label>
 
                         <div 
                             x-data="{
-                                preview: '{{ $slide->getimagem() }}',
+                                preview: '{{ $slide ? $slide->getimagem() : asset('theme/images/image.jpg') }}',
                                 updatePreview(event) {
                                     const file = event.target.files[0];
                                     if (file) {
@@ -148,7 +152,7 @@
                 <div class="row text-right mt-3">
                     <div class="col-12 mb-4">
                         <button type="button" wire:click="save" class="btn btn-lg btn-success p-3">
-                            <i class="nav-icon fas fa-check mr-2"></i> {{ $slide->exists ? 'Atualizar Agora' : 'Salvar Agora' }}
+                            <i class="nav-icon fas fa-check mr-2"></i> {{ $slide ? 'Atualizar Agora' : 'Salvar Agora' }}
                         </button>
                     </div>
                 </div>                
@@ -159,87 +163,28 @@
 
 </div>
 
-<script>  
-
-    document.addEventListener('cadastrado', function() {
-        Swal.fire({
-            title: 'Sucesso!',
-            text: "Slide cadastrado com sucesso!",
-            icon: 'success',
-            timerProgressBar: true,
-            showConfirmButton: true,
-            timer: 3000 // Fecha automaticamente após 3 segundos
-        }).then(() => {
-            window.location.href = `/admin/slides/${slide}/editar`;
-        });
-    });
-
-    document.addEventListener('atualizado', function() {
-        Swal.fire({
-            title: 'Sucesso!',
-            text: "Slide atualizado com sucesso!",
-            icon: 'success',
-            timerProgressBar: true,
-            showConfirmButton: false,
-            timer: 3000 // Fecha automaticamente após 3 segundos
-        });
-    });
-    
-    document.addEventListener("livewire:navigated", () => {
-        $('#description').summernote({
-            height: 300,
-            toolbar: [
-                ['style', ['bold', 'italic', 'underline', 'clear']],
-                ['font', ['strikethrough', 'superscript', 'subscript']],
-                ['fontsize', ['fontsize']],
-                ['color', ['color']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['height', ['height']]
-            ],
-            callbacks: {
-                onChange: function(contents, $editable) {
-                    Livewire.dispatch('updatePrivacyPolicy', { value: contents });
-                }
-            }
-        });
-    });    
+<script>          
 
     function initFlatpickr() {
-        let input = document.getElementById('datepicker');
-        if (!input) return;
+        const el = document.getElementById('expired_at');
+        if (!el) return;
 
-        flatpickr(input, {
-            dateFormat: "d/m/Y",
-            allowInput: true,
-            minDate: "today",
-            //defaultDate: input.value, // Carrega a data inicial corretamente
+        if (el._flatpickr) el._flatpickr.destroy();
+
+        // 👈 Pega o valor atual do wire:model
+        const currentValue = el.value;
+
+        flatpickr(el, {
+            dateFormat: 'd/m/Y',
+            locale: 'pt',
+            minDate: 'today',
+            defaultDate: currentValue || null,
             onChange: function(selectedDates, dateStr) {
-                input.dispatchEvent(new Event('input')); // Força atualização no Alpine.js
-            },
-            locale: {
-                firstDayOfWeek: 1,
-                weekdays: {
-                    shorthand: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
-                    longhand: ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'],
-                },
-                months: {
-                    shorthand: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
-                    longhand: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
-                },
-                today: "Hoje",
-                clear: "Limpar",
-                weekAbbreviation: "Sem",
-                scrollTitle: "Role para aumentar",
-                toggleTitle: "Clique para alternar",
+                @this.set('expired_at', dateStr);
             }
         });
     }
 
-    document.addEventListener("livewire:load", () => {
-        initFlatpickr();
-    });
-
-    document.addEventListener("livewire:updated", () => {
-        initFlatpickr();
-    });    
+    document.addEventListener('DOMContentLoaded', () => initFlatpickr());
+    document.addEventListener('livewire:navigated', () => initFlatpickr());    
 </script>

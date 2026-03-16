@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Support\Cropper;
@@ -29,6 +28,28 @@ class Slide extends Model
         'category'
     ];
 
+    protected static function booted()
+    {
+        // Gerar slug automaticamente
+        static::saving(function ($slide) {
+            $slide->setSlug();
+        });
+
+        // 👈 Deleta imagem antiga ao atualizar
+        static::updating(function ($slide) {
+            if ($slide->isDirty('image') && $slide->getOriginal('image')) {
+                Storage::disk('public')->delete($slide->getOriginal('image'));
+            }
+        });
+
+        // 👈 Deleta imagem ao excluir registro
+        static::deleting(function ($slide) {
+            if ($slide->image) {
+                Storage::disk('public')->delete($slide->image);
+            }
+        });
+    }
+
     /**
      * Scopes
     */
@@ -47,21 +68,21 @@ class Slide extends Model
     */
     public function getimagem()
     {
-        if (empty($this->image) || !Storage::disk()->exists($this->image)) {
+        if (empty($this->image) || !Storage::disk('public')->exists($this->image)) {
             return asset('theme/images/image.jpg');
         }
 
-        //return \App\Support\ImageService::makeThumb($this->image, 2200, 1200);
-
-        // if(empty($this->image) || !Storage::disk()->exists($this->image)) {
-        //     return url(asset('theme/images/image.jpg'));
-        // } 
-        return Storage::url($this->image);
+        return Storage::url(Cropper::thumb($this->image, 2200, 1200));
     }
 
     public function setExpiredAtAttribute($value)
     {
-        $this->attributes['expired_at'] = (!empty($value) ? $this->convertStringToDate($value) : null);
+        if (empty($value)) {
+            $this->attributes['expired_at'] = null;
+            return;
+        }
+
+        $this->attributes['expired_at'] = Carbon::parse($value)->format('Y-m-d'); // 👈 salva Y-m-d no banco
     }
 
     public function setTargetAttribute($value)
@@ -72,40 +93,26 @@ class Slide extends Model
     public function setStatusAttribute($value)
     {
         $this->attributes['status'] = ($value == '1' ? 1 : 0);
-    }
-    
-    public function getExpiredAtAttribute($value): ?\Carbon\Carbon
-    {
-        return $value ? \Carbon\Carbon::parse($value) : null;
-    }
-
-    public function getCreatedAtAttribute($value)
-    {
-        if (empty($value)) {
-            return null;
-        }
-        return \Carbon\Carbon::parse($value)->format('d/m/Y');
-    }
+    }   
 
     public function setSlug()
     {
-        if(!empty($this->title)){
-            $slide = Slide::where('title', $this->title)->first(); 
-            if(!empty($slide) && $slide->id != $this->id){
-                $this->attributes['slug'] = Str::slug($this->title) . '-' . $this->id;
-            }else{
-                $this->attributes['slug'] = Str::slug($this->title);
-            }            
-            $this->save();
+        if (!empty($this->title)) {
+    
+            $baseSlug = Str::slug($this->title);
+            $slug = $baseSlug;
+            $count = 1;
+    
+            while (
+                Slide::where('slug', $slug)
+                    ->where('id', '!=', $this->id)
+                    ->exists()
+            ) {
+                $slug = $baseSlug . '-' . str_pad($count, 2, '0', STR_PAD_LEFT);
+                $count++;
+            }
+    
+            $this->attributes['slug'] = $slug;
         }
-    }
-
-    private function convertStringToDate(?string $param): ?\Carbon\Carbon
-    {
-        if (empty($param)) {
-            return null;
-        }
-
-        return \Carbon\Carbon::createFromFormat('d/m/Y', $param);
     }
 }

@@ -12,6 +12,8 @@ use App\Enums\PostType;
 use App\Models\CatPost;
 use App\Models\PostGb;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class PostForm extends Component
 {
@@ -66,7 +68,7 @@ class PostForm extends Component
             'thumb_caption' => 'nullable|string|max:255',
             'comments' => 'required|boolean',
             'tags' => 'nullable|array',
-            'images.*' => 'nullable|image|max:2048',
+            'images.*' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
         ];
     }
 
@@ -76,25 +78,11 @@ class PostForm extends Component
         'category.required' => 'Selecione uma categoria',
         'title.required' => 'O título é obrigatório',
         'content.required' => 'O conteúdo é obrigatório',
-    ];
-
-    public function render()
-    {
-        $titlee = $this->post->exists ? 'Editar Post' : 'Cadastrar Post';
-        return view('livewire.dashboard.posts.post-form',[
-            'titlee' => $titlee,
-        ]);
-    }
+    ];    
 
     public function mount(Post $post)
     {
-        // ✅ Carregar autores disponíveis
-        $this->autores = User::where(function ($q) {
-                $q->where('admin', 1)
-                  ->orWhere('editor', 1);
-            })
-            ->where('superadmin', 0) // exclui superadmins
-            ->where('client', 0)     // exclui clients
+        $this->autores = User::role(['super-admin', 'manager', 'employee'])
             ->orderBy('name')
             ->get();
 
@@ -178,42 +166,59 @@ class PostForm extends Component
 
             // Salvar ou atualizar
             if ($this->post->exists) {
-                $this->post->update($data);                
-                $message = 'Post atualizado com sucesso!';
+                $this->post->update($data);
             } else {
                 $this->post = Post::create($data);
-                $message = 'Post criado com sucesso!';
             }
 
             $maxImages = env('MAX_PROPERTY_IMAGES', 20);
             $existingImages = $this->post->images()->count();
             $allowed = $maxImages - $existingImages;
             if (count($this->images ?? []) > $allowed) {
-                $this->dispatch('swal', [
+                $this->dispatch('swal:warning', [
                     'title' => 'Atenção!',
                     'text' => "Você já atingiu o limite máximo de {$maxImages} imagens para este post.",
                     'icon' => 'warning',
+                    'showConfirmButton' => false,
                 ]);
                 return;
             }
 
             // Salvar imagens
-            foreach ($this->images as $index => $image) {
-                if ($index >= $allowed) break; // garante que só serão salvas as permitidas
+            $manager = new ImageManager(new Driver());
 
-                $path = $image->store('posts/' . $this->post->id, 'public');
+            foreach ($this->images as $index => $image) {
+                if ($index >= $allowed) break;
+
+                $filename = uniqid() . '.webp';
+                $path     = 'posts/' . $this->post->id . '/' . $filename;
+
+                $img     = $manager->read($image->getRealPath());
+                $img->scaleDown(width: 1920);
+                $encoded = $img->toWebp(85);
+
+                Storage::disk('public')->put($path, $encoded);
+
+                // Primeira imagem é capa se não tiver nenhuma
+                $hasCover = PostGb::where('post', $this->post->id)
+                    ->where('cover', true)
+                    ->exists();
+
                 PostGb::create([
-                    'post' => $this->post->id,
-                    'path' => $path,
-                    'cover' => $this->cover ?? null,
+                    'post'  => $this->post->id,
+                    'path'  => $path,
+                    'cover' => (!$hasCover && $index === 0),
                 ]);
             }
+
             $this->reset('images');
 
-            $this->dispatch('swal', [
-                'icon' => 'success',
+            $this->dispatch('swal:success', [
+                'title' => 'Sucesso!',
+                'text'  => $this->post->wasRecentlyCreated
+                    ? 'Post cadastrado com sucesso!'
+                    : 'Post atualizado com sucesso!',
                 'timer' => 2000,
-                'title' => $message,
                 'showConfirmButton' => false,
             ]);
 
@@ -318,5 +323,30 @@ class PostForm extends Component
         } else {
             $this->cat_pai = null;
         }
+    }
+
+    public function updatedImages(): void
+    {
+        $hasHeic = collect($this->images)->contains(function ($image) {
+            return strtolower($image->getClientOriginalExtension()) === 'heic';
+        });
+
+        if ($hasHeic) {
+            $this->dispatch('swal:warning', [
+                'title' => 'Formato não suportado!',
+                'text'  => 'Imagens no formato HEIC (iPhone) não são aceitas. Converta para JPG ou PNG antes de enviar.',
+                'icon'  => 'warning',
+            ]);
+
+            $this->reset('images');
+        }
+    }
+
+    public function render()
+    {
+        $titlee = $this->post->exists ? 'Editar Post' : 'Cadastrar Post';
+        return view('livewire.dashboard.posts.post-form',[
+            'titlee' => $titlee,
+        ]);
     }
 }
