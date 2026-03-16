@@ -1,102 +1,238 @@
-@extends('web.master.master')
+@extends('web.layouts.app')
+
+@section('title', 'Informática Livre - Desenvolvimento de Sites e Sistemas em Ubatuba/SP')
+@section('description', 'Desenvolvimento de sites, sistemas e soluções digitais para empresas em Ubatuba/SP e região.')
 
 @section('content')
 
-@if (!empty($slides) && $slides->count() > 0)
-<section class="swiper-container swiper-slider swiper-variant-1 bg-black" data-loop="false" data-autoplay="5500" data-simulate-touch="true">
-    <div class="swiper-wrapper text-center">
-        @foreach ($slides as $slide)
-            <div class="swiper-slide" data-slide-bg="{{$slide->getimagem()}}">
-                <div class="swiper-slide-caption">
-                    <div class="container">
-                    <div class="row justify-content-md-center">
-                        <div class="col-md-11 col-lg-10 col-xl-9">
-                        <h2 class="slider-header" data-caption-animate="fadeInUp" data-caption-delay="0s">{{$slide->titulo}}</h2>
-                        <p class="text-bigger slider-text" data-caption-animate="fadeInUp" data-caption-delay="100">{{$slide->subtitulo ?? ''}}</p>
-                        @if ($slide->botaolabel)
-                            <div class="group-xl-responsive">
-                                <a class="btn btn-xl btn-primary-contrast" data-caption-animate="fadeInUp" data-caption-delay="250" href="{{$slide->link}}" {{($slide->target == 1 ? 'target="_blank"' : '')}}>{{$slide->botaolabel}}</a>
+    {{-- HERO / SLIDER --}}
+    <section x-data="{ current: 0, total: {{ $slides->count() ?: 1 }} }" 
+        x-init="setInterval(() => current = (current + 1) % total, 5000)"
+        class="relative w-full overflow-hidden bg-gray-900"
+        style="min-height: 520px;"
+    >
+        @forelse($slides as $index => $slide)
+            <div 
+                x-show="current === {{ $index }}"
+                x-transition:enter="transition-opacity duration-700"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="transition-opacity duration-700"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                class="absolute inset-0"
+            >
+                <img 
+                    src="{{ $slide->image ? Storage::url($slide->image) : asset('theme/images/image.jpg') }}" 
+                    alt="{{ $slide->title }}"
+                    class="w-full h-full object-cover opacity-60"
+                >
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="text-center text-white px-4">
+                        @if($slide->view_title)
+                            <h1 class="text-4xl md:text-6xl font-extrabold mb-4 drop-shadow-lg">
+                                {{ $slide->title }}
+                            </h1>
+                        @endif
+                        @if($slide->content)
+                            <p class="text-lg md:text-2xl mb-8 text-gray-200 drop-shadow">
+                                {{ $slide->content }}
+                            </p>
+                        @endif
+                        @if($slide->link)
+                            <a href="{{ $slide->link }}" 
+                                target="{{ $slide->target ? '_blank' : '_self' }}"
+                                class="bg-teal-500 hover:bg-teal-600 text-white px-8 py-3 rounded-lg font-semibold text-lg transition">
+                                Saiba Mais
+                            </a>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        @empty
+            <div class="absolute inset-0 bg-gradient-to-r from-teal-800 to-teal-600 flex items-center justify-center">
+                <div class="text-center text-white px-4">
+                    <h1 class="text-4xl md:text-6xl font-extrabold mb-4">Informática Livre</h1>
+                    <p class="text-xl md:text-2xl mb-8 text-teal-100">Desenvolvimento de sites e sistemas em Ubatuba/SP</p>
+                    <a href="{{ route('web.contato') }}" class="bg-white text-teal-700 px-8 py-3 rounded-lg font-semibold text-lg hover:bg-teal-50 transition">
+                        Solicitar Orçamento
+                    </a>
+                </div>
+            </div>
+        @endforelse
+
+        {{-- Dots --}}
+        @if($slides->count() > 1)
+            <div class="absolute bottom-4 left-0 w-full flex justify-center gap-2">
+                @foreach($slides as $index => $slide)
+                    <button 
+                        @click="current = {{ $index }}"
+                        :class="current === {{ $index }} ? 'bg-white' : 'bg-white/40'"
+                        class="w-3 h-3 rounded-full transition"
+                    ></button>
+                @endforeach
+            </div>
+        @endif
+    </section>
+
+    {{-- SERVIÇOS --}}
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">O que fazemos</h2>
+                <p class="text-gray-500 max-w-xl mx-auto">Soluções digitais completas para o seu negócio crescer online.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-md transition text-center">
+                    <div class="w-16 h-16 bg-teal-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-laptop-code text-teal-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Criação de Sites</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">Sites modernos, rápidos e responsivos para sua empresa se destacar no digital.</p>
+                </div>
+                <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-md transition text-center">
+                    <div class="w-16 h-16 bg-teal-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-cogs text-teal-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Sistemas Web</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">Sistemas personalizados para automatizar e otimizar os processos da sua empresa.</p>
+                </div>
+                <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-md transition text-center">
+                    <div class="w-16 h-16 bg-teal-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-share-alt text-teal-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Redes Sociais</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">Conectamos seu site com as principais redes sociais para ampliar seu alcance.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- PORTFÓLIO --}}
+    @if($trabalhos->count() > 0)
+        <section class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Nossos Trabalhos</h2>
+                    <p class="text-gray-500 max-w-xl mx-auto">Conheça alguns dos projetos que desenvolvemos para nossos clientes.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    @foreach($trabalhos as $trabalho)
+                        <a href="{{ route('web.portifolio.single', $trabalho->slug) }}" 
+                            class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition">
+                            <div class="overflow-hidden h-52">
+                                @if($trabalho->cover)
+                                    <img 
+                                        src="{{ Storage::url($trabalho->cover->path) }}" 
+                                        alt="{{ $trabalho->name }}"
+                                        class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                                    >
+                                @else
+                                    <div class="w-full h-full bg-gray-100 flex items-center justify-center">
+                                        <i class="fas fa-image text-gray-300 text-4xl"></i>
+                                    </div>
+                                @endif
                             </div>
-                        @endif                        
-                        </div>
-                    </div>
-                    </div>
-                </div>
-            </div>
-        @endforeach 
-    </div>
-    <div class="swiper-scrollbar"></div>
-    <div class="swiper-nav-wrap">
-        <div class="swiper-button-prev"></div>
-        <div class="swiper-button-next"></div>
-    </div>
-</section>    
-@endif
-
-
-<section class="section section-50 section-md-60 section-lg-75 bg-gray-lighter novi-background">
-    <div class="container">
-        <div class="row row-40 justify-content-md-center align-items-md-center flex-row-md-reverse">
-            <div class="col-md-5 col-xl-4 text-start">
-                <div class="box-container-small text-start">
-                    <h3><span>Super Imóveis</h3>
-                    <p class="text-secondary">
-                    Administre e venda imóveis de uma forma inteligente e profissional, nosso sistema é 
-                    integrado com as principais plataformas de imóveis do mercado imobiliário.
-                    </p>
-                    <a class="btn btn-xl btn-primary" href="https://superimoveis.info/planos" target="_blank">Quero 1 Mês Gratis</a>
-                </div>
-            </div>
-            <div class="col-md-7 col-xl-8">
-                <div class="image-wrap-1"><img src="{{url(asset('frontend/assets/images/landing-1-790x377.png'))}}" alt="" width="790" height="377" />
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-
-@if (!empty($empresas) && $empresas->count() > 0)
-<section class="section section-66 section-md-top-90 section-md-bottom-75">
-    <div class="container">
-        <h3>Nossos Clientes</h3>
-        <div class="slick-slider slick-slider-1" data-arrows="false" data-loop="true" data-dots="true" data-swipe="true" data-items="1" data-sm-items="2" data-md-items="3" data-lg-items="5" data-xl-items="6" data-slide-to-scroll="1">
-            @php $rowCount = 0; @endphp
-            <div class="item">
-                @foreach ($empresas as $empresa)
-                    <div class="link-image-wrap">
-                        <a class="link-image" href="javascript:void(0)">
-                            <img src="{{$empresa->nocover()}}" alt="" width="126" height="68" />
+                            <div class="p-5">
+                                <span class="text-xs text-teal-600 font-medium uppercase tracking-wide">
+                                    {{ $trabalho->categoryRelation->title ?? '' }}
+                                </span>
+                                <h3 class="text-lg font-semibold text-gray-800 mt-1 group-hover:text-teal-600 transition">
+                                    {{ $trabalho->name }}
+                                </h3>
+                                @if($trabalho->headline)
+                                    <p class="text-sm text-gray-500 mt-1 line-clamp-2">{{ $trabalho->headline }}</p>
+                                @endif
+                            </div>
                         </a>
-                    </div>
-                    @php $rowCount++  @endphp
-                    @php if($rowCount % 2 == 0) echo '</div><div class="item">';  @endphp                    
-                @endforeach  
-            </div>                      
-        </div>
-    </div>
-</section>  
-
-<section class="section section-60 section-md-100 bg-accent novi-background">
-    <div class="container text-center text-lg-start">
-        <div class="row row-30 align-items-md-center justify-content-lg-center">
-            <div class="col-lg-8 col-xl-7">
-                <h3>Solicite Agora um Orçamento</h3>
+                    @endforeach
+                </div>
+                <div class="text-center mt-10">
+                    <a href="{{ route('web.portifolio') }}" class="border border-teal-600 text-teal-600 hover:bg-teal-600 hover:text-white px-8 py-3 rounded-lg font-medium transition">
+                        Ver todos os trabalhos
+                    </a>
+                </div>
             </div>
-            <div class="col-lg-4 col-xl-3">
-                <a class="btn btn-xl btn-black-outline" href="{{route('web.formorcamento')}}">Quero um Orçamento</a>
+        </section>
+    @endif
+
+    {{-- CLIENTES --}}
+    @if($clientes->count() > 0)
+        <section class="py-16 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Nossos Clientes</h2>
+                    <p class="text-gray-500">Empresas que confiam no nosso trabalho</p>
+                </div>
+                <div class="flex flex-wrap justify-center items-center gap-8">
+                    @foreach($clientes as $cliente)
+                        @if($cliente->logo)
+                            <div class="grayscale hover:grayscale-0 transition duration-300">
+                                <img 
+                                    src="{{ Storage::url($cliente->logo) }}" 
+                                    alt="{{ $cliente->alias_name }}"
+                                    class="h-14 object-contain"
+                                    title="{{ $cliente->alias_name }}"
+                                >
+                            </div>
+                        @endif
+                    @endforeach
+                </div>
             </div>
+        </section>
+    @endif
+
+    {{-- POSTS --}}
+    @if($posts->count() > 0)
+        <section class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Dicas & Novidades</h2>
+                    <p class="text-gray-500 max-w-xl mx-auto">Fique por dentro das últimas novidades do mundo digital.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    @foreach($posts as $post)
+                        <a href="{{ route('web.blog.single', $post->slug) }}" 
+                            class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition">
+                            @if($post->cover)
+                                <div class="overflow-hidden h-48">
+                                    <img 
+                                        src="{{ Storage::url($post->cover->path) }}" 
+                                        alt="{{ $post->title }}"
+                                        class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                                    >
+                                </div>
+                            @endif
+                            <div class="p-5">
+                                <p class="text-xs text-gray-400 mb-2">
+                                    {{ $post->publish_at ? \Carbon\Carbon::parse($post->publish_at)->format('d/m/Y') : $post->created_at->format('d/m/Y') }}
+                                </p>
+                                <h3 class="text-lg font-semibold text-gray-800 group-hover:text-teal-600 transition line-clamp-2">
+                                    {{ $post->title }}
+                                </h3>
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
+                <div class="text-center mt-10">
+                    <a href="{{ route('web.blog') }}" class="border border-teal-600 text-teal-600 hover:bg-teal-600 hover:text-white px-8 py-3 rounded-lg font-medium transition">
+                        Ver todos os posts
+                    </a>
+                </div>
+            </div>
+        </section>
+    @endif
+
+    {{-- CTA ORÇAMENTO --}}
+    <section class="py-20 bg-gradient-to-r from-teal-700 to-teal-500">
+        <div class="max-w-4xl mx-auto px-4 text-center text-white">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">Pronto para começar?</h2>
+            <p class="text-teal-100 text-lg mb-8">Entre em contato e solicite um orçamento sem compromisso.</p>
+            <a href="{{ route('web.contato') }}" 
+                class="bg-white text-teal-700 hover:bg-teal-50 px-10 py-4 rounded-lg font-bold text-lg transition inline-block">
+                Solicitar Orçamento
+            </a>
         </div>
-    </div>
-</section>
-@endif
-
-@endsection
-
-@section('css')
-
-@endsection
-
-@section('js')
+    </section>
 
 @endsection

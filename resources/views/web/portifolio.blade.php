@@ -1,80 +1,109 @@
-@extends('web.master.master')
+@extends('web.layouts.app')
+
+@section('title', 'Portfólio - Informática Livre')
+@section('description', 'Conheça nossos trabalhos e projetos desenvolvidos para clientes em Ubatuba/SP e região.')
 
 @section('content')
-<section class="section section-30 section-xxl-40 section-xxl-66 section-xxl-bottom-90 novi-background bg-gray-dark page-title-wrap" style="background-image: url({{$configuracoes->gettopodosite()}});">
-    <div class="container">
-        <div class="page-title">
-            <h2>Portifólio</h2>
-        </div>
-    </div>
-</section>
 
-@if (!empty($projetos) && $projetos->count() > 0)
-    <section class="section section-50 section-md-90 section-lg-bottom-120 section-xl-bottom-165">
-        <div class="container isotope-wrap text-center">
-            <div class="row row-40">
-                <div class="col-sm-12">
-                    <ul class="isotope-filters-responsive">
-                        <li>
-                            <p>Selecione uma Categoria:</p>
-                        </li>
-                        <li class="block-top-level">
-                            <button class="isotope-filters-toggle btn btn-sm btn-default" data-custom-toggle="#isotope-1" data-custom-toggle-hide-on-blur="true" data-custom-toggle-disable-on-blur="true">Filter<span class="caret"></span></button>
-                            <div class="isotope-filters isotope-filters-minimal isotope-filters-horizontal" id="isotope-1">
-                                <ul class="list-inline">
-                                    <li><a class="active" data-isotope-filter="*" href="#">Todos</a></li>
-                                    @foreach ($catProjetos as $cat)
-                                        <li><a data-isotope-filter="{{$cat->slug}}" href="#">{{$cat->titulo}}</a></li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                <div class="col-sm-12">
-                    <div class="row isotope isotope-gutter-default" data-lightgallery="group" data-lg-thumbnail="false">
-                        @foreach ($projetos as $projeto)
-                            <div class="col-12 col-md-6 col-lg-4 isotope-item" data-filter="{{$projeto->categoriaObject->slug}}">
-                                <div class="thumbnail thumbnail-variant-3">
-                                    <a class="link link-external" href="{{route('web.projeto',['slug' => $projeto->slug])}}">
-                                        <span class="novi-icon icon icon-sm fa fa-link"></span>
-                                    </a>
-                                    <figure>
-                                        <img class="imgportifolio" src="{{$projeto->cover()}}" alt="{{$projeto->name}}" />
-                                    </figure>
-                                    <div class="caption">
-                                        <a class="link link-original" href="{{$projeto->nocover()}}" data-lightgallery="item"></a>
+    {{-- HERO --}}
+    <section class="bg-gradient-to-r from-teal-700 to-teal-500 py-16">
+        <div class="max-w-7xl mx-auto px-4 text-center text-white">
+            <h1 class="text-4xl md:text-5xl font-extrabold mb-4">Nosso Portfólio</h1>
+            <p class="text-teal-100 text-lg max-w-xl mx-auto">Conheça alguns dos projetos que desenvolvemos para nossos clientes.</p>
+        </div>
+    </section>
+
+    {{-- FILTROS --}}
+    <section class="bg-white border-b sticky top-[73px] z-40">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap gap-3 items-center">
+            <a href="{{ route('site.portifolio') }}"
+                class="px-4 py-2 rounded-full text-sm font-medium transition
+                    {{ !request('categoria') ? 'bg-teal-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-teal-50 hover:text-teal-600' }}">
+                Todos
+            </a>
+            @foreach($categorias as $cat)
+                @foreach($cat->children as $sub)
+                    <a href="{{ route('site.portifolio', ['categoria' => $sub->id]) }}"
+                        class="px-4 py-2 rounded-full text-sm font-medium transition
+                            {{ request('categoria') == $sub->id ? 'bg-teal-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-teal-50 hover:text-teal-600' }}">
+                        {{ $sub->title }}
+                    </a>
+                @endforeach
+            @endforeach
+        </div>
+    </section>
+
+    {{-- GRID --}}
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4">
+            @if($trabalhos->count() > 0)
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    @foreach($trabalhos as $trabalho)
+                        <a href="{{ route('site.portifolio.single', $trabalho->slug) }}"
+                            class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition">
+                            <div class="overflow-hidden h-56">
+                                @if($trabalho->cover)
+                                    <img
+                                        src="{{ Storage::url($trabalho->cover->path) }}"
+                                        alt="{{ $trabalho->name }}"
+                                        class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                                    >
+                                @else
+                                    <div class="w-full h-full bg-gray-100 flex items-center justify-center">
+                                        <i class="fas fa-image text-gray-300 text-4xl"></i>
                                     </div>
+                                @endif
+                            </div>
+                            <div class="p-6">
+                                <span class="text-xs text-teal-600 font-medium uppercase tracking-wide">
+                                    {{ $trabalho->categoryRelation->title ?? '' }}
+                                </span>
+                                <h3 class="text-lg font-semibold text-gray-800 mt-1 group-hover:text-teal-600 transition">
+                                    {{ $trabalho->name }}
+                                </h3>
+                                @if($trabalho->headline)
+                                    <p class="text-sm text-gray-500 mt-2 line-clamp-2">{{ $trabalho->headline }}</p>
+                                @endif
+                                <div class="flex items-center justify-between mt-4">
+                                    @if($trabalho->data_inicio)
+                                        <span class="text-xs text-gray-400">
+                                            <i class="fas fa-calendar mr-1"></i>
+                                            {{ $trabalho->data_inicio->format('m/Y') }}
+                                        </span>
+                                    @endif
+                                    <span class="text-teal-600 text-sm font-medium group-hover:translate-x-1 transition">
+                                        Ver projeto <i class="fas fa-arrow-right ml-1"></i>
+                                    </span>
                                 </div>
                             </div>
-                        @endforeach
-                    </div>
+                        </a>
+                    @endforeach
                 </div>
-            </div>
+
+                {{-- Paginação --}}
+                <div class="mt-12">
+                    {{ $trabalhos->appends(request()->query())->links() }}
+                </div>
+
+            @else
+                <div class="text-center py-20 text-gray-400">
+                    <i class="fas fa-folder-open text-6xl mb-4"></i>
+                    <p class="text-xl">Nenhum trabalho encontrado.</p>
+                </div>
+            @endif
         </div>
-    </section>    
-@endif
+    </section>
 
-<section class="section section-60 section-md-100 bg-accent novi-background">
-    <div class="container text-center text-lg-start">
-        <div class="row row-30 align-items-md-center justify-content-lg-center">
-            <div class="col-lg-8 col-xl-7">
-                <h3>Solicite Agora um Orçamento</h3>
-            </div>
-            <div class="col-lg-4 col-xl-3">
-                <a class="btn btn-xl btn-black-outline" href="{{route('web.formorcamento')}}">Quero um Orçamento</a>
-            </div>
+    {{-- CTA --}}
+    <section class="py-20 bg-gradient-to-r from-teal-700 to-teal-500">
+        <div class="max-w-4xl mx-auto px-4 text-center text-white">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">Gostou do que viu?</h2>
+            <p class="text-teal-100 text-lg mb-8">Entre em contato e vamos criar algo incrível juntos.</p>
+            <a href="{{ route('site.contato') }}"
+                class="bg-white text-teal-700 hover:bg-teal-50 px-10 py-4 rounded-lg font-bold text-lg transition inline-block">
+                Solicitar Orçamento
+            </a>
         </div>
-    </div>
-</section>
+    </section>
 
-@endsection
-
-@section('css')
-    <style>
-        .imgportifolio{
-            width: 370px !important;
-            height: 278px !important;
-        }
-    </style>
 @endsection

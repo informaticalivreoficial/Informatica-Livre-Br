@@ -19,6 +19,8 @@ use App\Livewire\Dashboard\Posts\Posts;
 use App\Livewire\Dashboard\Slides\SlideForm;
 use App\Livewire\Dashboard\Slides\Slides;
 use App\Http\Controllers\Web\{
+    ClienteController,
+    SiteController,
     WebController
 };
 use App\Livewire\Dashboard\Permissions\Index as PermissionIndex;
@@ -26,7 +28,6 @@ use App\Livewire\Dashboard\Roles\Index as RoleIndex;
 use App\Livewire\Dashboard\Companies\Companies;
 use App\Livewire\Dashboard\Companies\CompanyForm;
 use App\Livewire\Dashboard\Portifolio\PortifolioCategories;
-use App\Livewire\Dashboard\Portifolio\PortifolioCategoriesForm;
 use App\Livewire\Dashboard\Portifolio\PortifolioForm;
 use App\Livewire\Dashboard\Portifolio\PortifolioIndex;
 use App\Livewire\Dashboard\Safe\Safe;
@@ -38,11 +39,35 @@ use App\Livewire\Dashboard\Service\SubscriptionForm;
 use App\Livewire\Dashboard\Service\SubscriptionIndex;
 use App\Livewire\Dashboard\Service\SubscriptionShow;
 
+Route::prefix('cliente')->name('cliente.')->group(function () {
+    // Acesso público
+    Route::get('/entrar', [ClienteController::class, 'entrar'])->name('entrar');
+    Route::post('/enviar-link', [ClienteController::class, 'enviarLink'])->name('enviar-link');
+    Route::get('/auth/{token}', [ClienteController::class, 'autenticar'])->name('auth');
+    Route::post('/sair', [ClienteController::class, 'sair'])->name('sair');
+
+    // Painel protegido
+    Route::middleware('cliente.auth')->group(function () {
+        Route::get('/dashboard', [ClienteController::class, 'dashboard'])->name('dashboard');
+        Route::get('/faturas', [ClienteController::class, 'faturas'])->name('faturas');
+        Route::get('/servicos', [ClienteController::class, 'servicos'])->name('servicos');
+        Route::get('/empresa', [ClienteController::class, 'empresa'])->name('empresa');
+    });
+});
+
 Route::group(['as' => 'web.'], function () {
+
+    Route::get('/', [SiteController::class, 'home'])->name('home');
+    Route::get('/portifolio', [SiteController::class, 'portifolio'])->name('portifolio');
+    Route::get('/portifolio/{slug}', [SiteController::class, 'portifolioSingle'])->name('portifolio.single');
+    Route::get('/blog', [SiteController::class, 'blog'])->name('blog.artigos');
+    Route::get('/blog/{slug}', [SiteController::class, 'blogSingle'])->name('blog.artigo');
+    Route::get('/blog/categoria/{slug}', [SiteController::class, 'blogCategoria'])->name('site.blog.categoria');
+    Route::get('/contato', [SiteController::class, 'contato'])->name('contato');
     
     /** Página Inicial */
     //Route::get('teste-qrcode', [WebController::class, 'qrcode'])->name('qrcode'); 
-    Route::get('/', [WebController::class, 'home'])->name('home');   
+    //Route::get('/', [WebController::class, 'home'])->name('home');   
     
     //Pagamentos
     //Route::get('pagar/{uuid}', [ClienteController::class, 'pagar'])->name('pagar');
@@ -84,7 +109,7 @@ Route::group(['as' => 'web.'], function () {
     // Route::match(['get', 'post'],'/blog/pesquisar', [WebController::class, 'searchBlog'])->name('blog.searchBlog');
 
     //****************************** Portifólio *******************************************/
-    Route::get('/portifolio/{slug}', [WebController::class, 'projeto'])->name('projeto');
+    //Route::get('/portifolio/{slug}', [WebController::class, 'projeto'])->name('projeto');
     //Route::get('/portifolio', [WebController::class, 'portifolio'])->name('portifolio');
 
     //*************************************** Páginas *******************************************/

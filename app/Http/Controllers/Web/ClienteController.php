@@ -14,106 +14,130 @@ use WebMaster\PagHiper\PagHiper;
 
 class ClienteController extends Controller
 {
-    public function login()
+    public function entrar()
     {
-        return view('web.cliente.login');
-    }
-
-    public function fatura($uuid)
-    {        
-        $fatura = Fatura::where('uuid', $uuid)->first();
-        $gateways = Gateway::orderBy('created_at', 'ASC')->available()->get();         
-        return view('web.cliente.fatura',[
-            'fatura' => $fatura,
-            'gateways' => $gateways,
-        ]);
-    }
-
-    public function pagar($uuid)
-    {
-        $fatura = Fatura::where('uuid', $uuid)->first();
-        
-        if($fatura->gateway == 2){
-            $data = [
-                'order_id' => $fatura->id,
-                'payer_name' => $fatura->pedidoObject->getEmpresa->alias_name,
-                'payer_email' => $fatura->pedidoObject->getEmpresa->email,
-                'payer_phone' => str_replace(['.', '-', '(', ')', ' '], "", $fatura->pedidoObject->getEmpresa->celular), // fixou ou móvel
-                'payer_street' => $fatura->pedidoObject->getEmpresa->rua,
-                'payer_number' => $fatura->pedidoObject->getEmpresa->num,
-                'payer_complement' => $fatura->pedidoObject->getEmpresa->complemento,
-                'payer_district' => $fatura->pedidoObject->getEmpresa->bairro,
-                'payer_city' => $fatura->pedidoObject->getEmpresa->cidade,
-                'payer_state' => $fatura->pedidoObject->getEmpresa->uf, // apenas sigla do estado
-                'payer_zip_code' => str_replace(['.', '-', ' '], "", $fatura->pedidoObject->getEmpresa->cep),
-                'payer_cpf_cnpj' => ($fatura->pedidoObject->getEmpresa->document_company == null ? str_replace(['.','-'], "", $fatura->pedidoObject->getEmpresa->owner->cpf) : str_replace(['.','-','/'], "", $fatura->pedidoObject->getEmpresa->document_company)),
-                'days_due_date' => (Carbon::parse($fatura->vencimento)->lt(Carbon::parse(Carbon::now())) ? '5' : Carbon::parse($fatura->vencimento)->diffInDays(Carbon::parse(Carbon::now()))),
-                'type_bank_slip' => 'boletoa4',
-                'notification_url' => 'https://webhook.site/d8762b26-8f9c-4e78-9cf0-aa4d08e6cddc',
-                // 'items' => [
-                //     [
-                //         'item_id' => 1,
-                //         'description' => $fatura->pedidoObject->planoObject->name,
-                //         'quantity' => 1,
-                //         'price_cents' => str_replace('.', '', $fatura->valor)
-                //     ]
-                // ]
-            ];
-
-            if(!empty($fatura->pedidoObject->itens()) && $fatura->pedidoObject->itens->count() > 0){
-                $itensPedido = ItemPedido::where('pedido', $fatura->id)->get();
-                if(!empty($itensPedido) && $itensPedido->count() > 0){
-                    $items = [];
-                    foreach($itensPedido as $item){
-                        $items['items'][] = [                    
-                            'description' => $item->descricao,
-                            'quantity' => $item->quantidade,
-                            'item_id' => $item->id,
-                            'price_cents' => str_replace(',', '.', str_replace('.', '', $item->valor))                    
-                        ];
-                    }
-                }
-            }elseif($fatura->pedidoObject->tipo_pedido == 2){               
-                $items['items'][] = [                                        
-                    'item_id' => 1,
-                    'description' => $fatura->pedidoObject->service->name,
-                    'quantity' => 1,
-                    'price_cents' => str_replace(',', '', filter_var($fatura->valor, FILTER_SANITIZE_NUMBER_INT))   
-                ];
-            }else{
-                $items['items'][] = [                                        
-                    'item_id' => 1,
-                    'description' => $fatura->pedidoObject->getProduto->name,
-                    'quantity' => 1,
-                    'price_cents' => str_replace(',', '', $fatura->valor)   
-                ];
-            }
-            //dd($data);
-            $array = array_merge($data, $items); 
-            return $this->gerarBoleto($array); 
-                  
+        if (session('cliente_company_id')) {
+            return redirect()->route('cliente.dashboard');
         }
+
+        return view('web.cliente.entrar');
     }
 
-    public function gerarBoleto($data)
-    {        
-        $paghiper = new PagHiper(
-            env('PAGHIPER_APIKEY'), 
-            env('PAGHIPER_TOKEM')
+    public function enviarLink(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ], [
+            'email.required' => 'Informe seu e-mail.',
+            'email.email'    => 'Informe um e-mail válido.',
+        ]);
+
+        $company = Company::where('email', $request->email)
+            ->orWhere('responsable_email', $request->email)
+            ->first();
+
+        // Sempre mostra sucesso por segurança
+        if (!$company) {
+            return back()->with('success', 'Se o e-mail estiver cadastrado, você receberá o link em breve.');
+        }
+
+        $token = $company->generateMagicToken();
+        $link  = route('cliente.auth', $token);
+
+        // Envia por e-mail
+        Mail::raw(
+            "Olá, {$company->alias_name}!\n\nClique no link abaixo para acessar seu painel:\n\n{$link}\n\nEste link expira em 15 minutos.",
+            function ($mail) use ($company) {
+                $mail->to($company->email ?? $company->responsable_email)
+                    ->subject('Acesso ao Painel do Cliente - Informática Livre');
+            }
         );
-        $transaction = $paghiper->billet()->create($data);
-        
-        if(!empty($transaction) && $transaction['result'] == 'success'){
-            $fatura = Fatura::where('id', $transaction['order_id'])->first();
-            $fatura->transaction_id = $transaction['transaction_id'];
-            $fatura->status = $transaction['status'];
-            $fatura->valor = floatval(number_format($transaction['value_cents'] / 100, 2, '.', ''));
-            $fatura->url_slip = $transaction['bank_slip']['url_slip'];
-            $fatura->digitable_line = $transaction['bank_slip']['digitable_line'];
-            $fatura->vencimento = $transaction['due_date'];
-            $fatura->save(); 
-            return Redirect::away($fatura->url_slip);           
-        }  
+
+        // Envia por WhatsApp via link
+        $whatsapp = preg_replace('/\D/', '', $company->whatsapp ?? $company->cell_phone);
+        if ($whatsapp) {
+            $mensagem = urlencode("Olá, {$company->alias_name}! Acesse seu painel pelo link: {$link} (válido por 15 minutos)");
+            // Armazena o link do WhatsApp na sessão para exibir na view
+            session(['whatsapp_link' => "https://api.whatsapp.com/send?phone=55{$whatsapp}&text={$mensagem}"]);
+        }
+
+        return back()->with('success', 'Link enviado! Verifique seu e-mail e WhatsApp.');
+    }
+
+    public function autenticar(string $token)
+    {
+        $company = Company::where('magic_token', $token)->first();
+
+        if (!$company || !$company->isMagicTokenValid($token)) {
+            return redirect()->route('cliente.entrar')
+                ->with('error', 'Link inválido ou expirado. Solicite um novo.');
+        }
+
+        // Invalida o token após uso
+        $company->update([
+            'magic_token'            => null,
+            'magic_token_expires_at' => null,
+        ]);
+
+        session(['cliente_company_id' => $company->id]);
+
+        return redirect()->route('cliente.dashboard');
+    }
+
+    public function sair()
+    {
+        session()->forget('cliente_company_id');
+        return redirect()->route('cliente.entrar')
+            ->with('success', 'Você saiu do painel.');
+    }
+
+    public function dashboard(Request $request)
+    {
+        $company = $request->cliente_company;
+
+        $totalFaturas    = $company->invoices()->count();
+        $faturasAbertas  = $company->invoices()->where('status', 'pending')->count();
+        $faturasPagas    = $company->invoices()->where('status', 'paid')->count();
+        $totalServicos   = $company->subscriptions()->active()->count();
+
+        return view('web.cliente.dashboard', compact(
+            'company',
+            'totalFaturas',
+            'faturasAbertas',
+            'faturasPagas',
+            'totalServicos'
+        ));
+    }
+
+    public function faturas(Request $request)
+    {
+        $company = $request->cliente_company;
+
+        $faturas = $company->invoices()
+            ->with('subscription.service')
+            ->when(request('status'), fn($q) => $q->where('status', request('status')))
+            ->orderByDesc('due_date')
+            ->paginate(10);
+
+        return view('web.cliente.faturas', compact('company', 'faturas'));
+    }
+
+    public function servicos(Request $request)
+    {
+        $company = $request->cliente_company;
+
+        $servicos = $company->subscriptions()
+            ->with('service')
+            ->latest()
+            ->get();
+
+        return view('web.cliente.servicos', compact('company', 'servicos'));
+    }
+
+    public function empresa(Request $request)
+    {
+        $company = $request->cliente_company;
+        return view('web.cliente.empresa', compact('company'));
     }
 
     

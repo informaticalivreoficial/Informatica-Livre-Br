@@ -16,6 +16,8 @@ class Company extends Model
     protected $fillable = [
         'uuid',
         'api_token',
+        'magic_token',
+        'magic_token_expires_at',
         'responsable_name',
         'responsable_email',
         'responsable_cpf',
@@ -193,6 +195,25 @@ class Company extends Model
             substr($value, 0, 2) . ') ' .
             substr($value, 2, 5) . '-' .
             substr($value, 7, 4) ;
+    }
+
+    public function generateMagicToken(): string
+    {
+        $token = \Illuminate\Support\Str::random(64);
+
+        $this->update([
+            'magic_token'            => $token,
+            'magic_token_expires_at' => now()->addMinutes(15),
+        ]);
+
+        return $token;
+    }
+
+    public function isMagicTokenValid(string $token): bool
+    {
+        return $this->magic_token === $token
+            && $this->magic_token_expires_at
+            && $this->magic_token_expires_at->isFuture();
     }
 
     private function convertStringToDate(?string $param)

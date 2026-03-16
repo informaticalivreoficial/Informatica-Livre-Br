@@ -96,7 +96,7 @@
                                         size="sm"
                                         color="green"
                                     />
-                                    <a target="_blank" href="{{ route('web.projeto', [ 'slug' => $portifolio->slug]) }}" 
+                                    <a target="_blank" href="{{ route('web.portifolio.single', [ 'slug' => $portifolio->slug]) }}" 
                                         class="btn btn-xs btn-info" 
                                         title="Visualizar">
                                         <i class="fas fa-search"></i>
