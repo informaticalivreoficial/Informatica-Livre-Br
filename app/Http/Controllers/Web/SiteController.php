@@ -7,10 +7,20 @@ use App\Models\Company;
 use App\Models\Portifolio;
 use App\Models\Post;
 use App\Models\Slide;
+use App\Support\Seo;
+use App\Models\Config;
 use Illuminate\Http\Request;
 
 class SiteController extends Controller
 {
+    protected $seo, $config;
+
+    public function __construct()
+    {
+        $this->seo = new Seo();
+        $this->config = Config::where('id', 1)->first();
+    }
+
     public function home()
     {
         $slides    = Slide::available()->orderBy('created_at', 'desc')->get();
@@ -23,7 +33,19 @@ class SiteController extends Controller
             ->get();
         $posts = Post::postson()->latest()->take(3)->get();
 
-        return view('web.home', compact('slides', 'clientes', 'trabalhos', 'posts'));
+        $head = $this->seo->render($this->config->app_name ?? env('APP_NAME'),
+            $this->config->information ?? env('APP_NAME'),
+            route('web.home'),
+            $this->config->getmetaimg() ?? url(asset('theme/images/image.jpg'))
+        );
+
+        return view('web.home', [
+            'head' => $head,
+            'slides' => $slides,
+            'clientes' => $clientes,
+            'trabalhos' => $trabalhos,
+            'posts' => $posts
+        ]);
     }
 
     public function portifolio(Request $request)

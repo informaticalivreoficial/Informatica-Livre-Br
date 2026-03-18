@@ -4,9 +4,9 @@
 
             {{-- Logo e descrição --}}
             <div>
-                <img src="{{ asset('storage/configuracoes/logomarca-informatica-livre.png') }}" alt="Informática Livre" class="h-12 mb-4">
+                <img src="{{ $configuracoes->getlogofooter() }}" alt="{{ $configuracoes->app_name }}" class="h-12 mb-4">
                 <p class="text-sm text-gray-400 leading-relaxed">
-                    Desenvolvimento de sites, sistemas e soluções digitais para empresas em Ubatuba/SP e região.
+                    {!! nl2br(e($configuracoes->information)) !!}
                 </p>
                 <div class="flex gap-4 mt-4">
                     <a href="#" class="text-gray-400 hover:text-teal-400 transition"><i class="fab fa-facebook-f"></i></a>
@@ -22,36 +22,49 @@
             <div>
                 <h4 class="text-white font-semibold mb-4">Links Rápidos</h4>
                 <ul class="space-y-2 text-sm">
-                    <li><a href="{{ route('web.home') }}" class="hover:text-teal-400 transition">Home</a></li>
-                    <li><a href="{{ route('web.portifolio') }}" class="hover:text-teal-400 transition">Portfólio</a></li>
+                    <li><a href="{{ route('web.home') }}" class="hover:text-teal-400 transition">Início</a></li>
+                    <li><a href="{{ route('web.portifolio') }}" class="hover:text-teal-400 transition">Nossos Trabalhos</a></li>
                     <li><a href="{{ route('web.blog.artigos') }}" class="hover:text-teal-400 transition">Blog</a></li>
-                    <li><a href="{{ route('web.contato') }}" class="hover:text-teal-400 transition">Contato</a></li>
+                    <li><a href="{{ route('web.contato') }}" class="hover:text-teal-400 transition">Atendimento</a></li>
+                    <li><a href="{{ route('web.terms') }}" class="hover:text-teal-400 transition">Termos e Condições</a></li>
+                    <li><a @click="openModal()" class="hover:text-teal-400 transition cursor-pointer">Preferências de cookies</a></li>
                 </ul>
             </div>
 
             {{-- Contato --}}
             <div>
-                <h4 class="text-white font-semibold mb-4">Contato</h4>
+                <h4 class="text-white font-semibold mb-4">Atendimento</h4>
                 <ul class="space-y-3 text-sm">
                     <li class="flex items-center gap-2">
                         <i class="fas fa-map-marker-alt text-teal-400"></i>
-                        Ubatuba/SP
+                        {{ $configuracoes->city }}/{{ $configuracoes->state }}
                     </li>
-                    <li class="flex items-center gap-2">
-                        <i class="fas fa-phone text-teal-400"></i>
-                        <a href="tel:+5512991385030" class="hover:text-teal-400 transition">(12) 99138-5030</a>
-                    </li>
-                    <li class="flex items-center gap-2">
-                        <i class="fas fa-envelope text-teal-400"></i>
-                        <a href="mailto:suporte@informaticalivre.com.br" class="hover:text-teal-400 transition">suporte@informaticalivre.com.br</a>
-                    </li>
+                    @if ($configuracoes->cell_phone)
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-phone text-teal-400"></i>
+                            <a href="tel:+{{ $configuracoes->cell_phone }}" class="hover:text-teal-400 transition">{{ $configuracoes->cell_phone }}</a>
+                        </li>
+                    @endif
+                    @if ($configuracoes->email)
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-envelope text-teal-400"></i>
+                            <a href="mailto:{{ $configuracoes->email }}" class="hover:text-teal-400 transition">{{ $configuracoes->email }}</a>
+                        </li>
+                    @endif                    
+                    @if ($configuracoes->additional_email)
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-envelope text-teal-400"></i>
+                            <a href="mailto:{{ $configuracoes->additional_email }}" class="hover:text-teal-400 transition">{{ $configuracoes->additional_email }}</a>
+                        </li>
+                    @endif                    
                 </ul>
             </div>
         </div>
 
         <div class="pt-6 flex flex-col md:flex-row justify-between items-center gap-2 text-sm text-gray-500">
-            <p>Informática Livre © {{ date('Y') }} — Todos os direitos reservados</p>
+            <p>© {{ date('Y') }} {{ $configuracoes->app_name }}. Todos os direitos reservados.</p>
             <a href="#" class="hover:text-teal-400 transition">Política de Privacidade</a>
+            <span class="text-xs p-2">Feito com 🖤 por {{env('DESENVOLVEDOR')}}</span>
         </div>
     </div>
 </footer>

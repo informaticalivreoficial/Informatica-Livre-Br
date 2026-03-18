@@ -1,8 +1,5 @@
 @extends('web.layouts.app')
 
-@section('title', 'Informática Livre - Desenvolvimento de Sites e Sistemas em Ubatuba/SP')
-@section('description', 'Desenvolvimento de sites, sistemas e soluções digitais para empresas em Ubatuba/SP e região.')
-
 @section('content')
 
     {{-- HERO / SLIDER --}}
@@ -165,17 +162,15 @@
                     <p class="text-gray-500">Empresas que confiam no nosso trabalho</p>
                 </div>
                 <div class="flex flex-wrap justify-center items-center gap-8">
-                    @foreach($clientes as $cliente)
-                        @if($cliente->logo)
-                            <div class="grayscale hover:grayscale-0 transition duration-300">
-                                <img 
-                                    src="{{ Storage::url($cliente->logo) }}" 
-                                    alt="{{ $cliente->alias_name }}"
-                                    class="h-14 object-contain"
-                                    title="{{ $cliente->alias_name }}"
-                                >
-                            </div>
-                        @endif
+                    @foreach($clientes as $cliente)                        
+                        <div class="grayscale hover:grayscale-0 transition duration-300">
+                            <img 
+                                src="{{ $cliente->getlogo() }}" 
+                                alt="{{ $cliente->alias_name }}"
+                                class="h-14 object-contain"
+                                title="{{ $cliente->alias_name }}"
+                            >
+                        </div>                        
                     @endforeach
                 </div>
             </div>
@@ -192,17 +187,17 @@
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     @foreach($posts as $post)
-                        <a href="{{ route('web.blog.single', $post->slug) }}" 
+                        <a href="{{ route('web.blog.artigo', $post->slug) }}" 
                             class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition">
-                            @if($post->cover)
-                                <div class="overflow-hidden h-48">
-                                    <img 
-                                        src="{{ Storage::url($post->cover->path) }}" 
-                                        alt="{{ $post->title }}"
-                                        class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                                    >
-                                </div>
-                            @endif
+                            
+                            <div class="overflow-hidden h-48">
+                                <img 
+                                    src="{{ $post->cover() }}" 
+                                    alt="{{ $post->title }}"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                                >
+                            </div>
+                            
                             <div class="p-5">
                                 <p class="text-xs text-gray-400 mb-2">
                                     {{ $post->publish_at ? \Carbon\Carbon::parse($post->publish_at)->format('d/m/Y') : $post->created_at->format('d/m/Y') }}
