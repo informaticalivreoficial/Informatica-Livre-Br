@@ -27,14 +27,17 @@
     {{-- FontAwesome --}}
     <link rel="stylesheet" href="{{ asset('theme/plugins/fontawesome-free/css/all.min.css') }}">
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
+    
+    @vite(['resources/css/app.css', 'resources/js/front.js'])
 
     @stack('styles')
 </head>
 <body 
     class="font-['Inter'] bg-white text-gray-800 antialiased" 
-    x-data="cookieConsent"
-    x-init="init()">
+    x-data="cookieConsent">
 
     {{-- Header --}}
     @include('web.components.header')
@@ -114,5 +117,24 @@
     </div>    
 
     @stack('scripts')
+
+    <script>
+        function shareWhatsApp(event) {
+            event.preventDefault();
+
+            const message = "Atendimento {{ $configuracoes->app_name }}";
+
+            const phone = "{{ $configuracoes->whatsapp }}";
+
+            const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
+
+            const whatsappUrl = isMobile
+                ? `https://api.whatsapp.com/send?phone=${phone}&text=${message}`
+                : `https://web.whatsapp.com/send?phone=${phone}&text=${message}`;
+
+            window.open(whatsappUrl, '_blank');
+        }
+    </script>
+
 </body>
 </html>

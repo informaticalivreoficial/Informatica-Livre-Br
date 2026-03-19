@@ -147,8 +147,13 @@
         </li>
 
         <li class="nav-item dropdown">
-            <a href="javascript:void(0)" onclick="Livewire.dispatch('open-support-modal')" title="Suporte" class="nav-link">
-                <i class="fas fa-life-ring" style="color: rgb(223, 87, 87);"></i>
+            <a 
+                href="#"
+                wire:click.prevent="$dispatch('open-support-modal')"
+                title="Suporte"
+                class="nav-link"
+            >
+                <i class="fas fa-life-ring text-red-500"></i>
             </a>
         </li>
         

@@ -9,12 +9,31 @@
                     {!! nl2br(e($configuracoes->information)) !!}
                 </p>
                 <div class="flex gap-4 mt-4">
-                    <a href="#" class="text-gray-400 hover:text-teal-400 transition"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-teal-400 transition"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-teal-400 transition"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="https://api.whatsapp.com/send?phone=5512991385030" target="_blank" class="text-gray-400 hover:text-teal-400 transition">
-                        <i class="fab fa-whatsapp"></i>
-                    </a>
+                    @if ($configuracoes->facebook)
+                        <a target="_blank" href="{{ $configuracoes->facebook }}" class="text-gray-400 hover:text-teal-400 transition"><i class="fab fa-facebook-f"></i></a>
+                    @endif
+                    @if ($configuracoes->twitter)
+                        <a target="_blank" href="{{ $configuracoes->twitter }}" class="text-gray-400 hover:text-teal-400 transition"><i class="fab fa-twitter"></i></a>
+                    @endif
+                    @if ($configuracoes->youtube)
+                        <a target="_blank" href="{{ $configuracoes->youtube }}" class="text-gray-400 hover:text-teal-400 transition"><i class="fab fa-youtube"></i></a>
+                    @endif
+                    @if ($configuracoes->instagram)
+                        <a target="_blank" href="{{ $configuracoes->instagram }}" class="text-gray-400 hover:text-teal-400 transition"><i class="fab fa-instagram"></i></a>
+                    @endif
+                    @if ($configuracoes->linkedin)
+                        <a target="_blank" href="{{ $configuracoes->linkedin }}" class="text-gray-400 hover:text-teal-400 transition"><i class="fab fa-linkedin-in"></i></a>
+                    @endif
+                    
+                    @if ($configuracoes->whatsapp)
+                        <a 
+                            target="_blank" 
+                            class="text-gray-400 hover:text-teal-400 transition cursor-pointer"
+                            onclick="shareWhatsApp(event)"
+                        >
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    @endif                    
                 </div>
             </div>
 
@@ -63,7 +82,7 @@
 
         <div class="pt-6 flex flex-col md:flex-row justify-between items-center gap-2 text-sm text-gray-500">
             <p>© {{ date('Y') }} {{ $configuracoes->app_name }}. Todos os direitos reservados.</p>
-            <a href="#" class="hover:text-teal-400 transition">Política de Privacidade</a>
+            <a href="{{ route('web.privacy') }}" class="hover:text-teal-400 transition">Política de Privacidade</a>
             <span class="text-xs p-2">Feito com 🖤 por {{env('DESENVOLVEDOR')}}</span>
         </div>
     </div>

@@ -111,4 +111,38 @@ class SiteController extends Controller
     {
         return view('web.contato');
     }
+
+    public function privacy()
+    {
+        $head = $this->seo->render('Política de Privacidade - ' . $this->config->app_name ?? env('APP_NAME'),
+            'Leia nossa política de privacidade e saiba como protegemos seus dados.',
+            route('web.privacy'),
+            $this->config->getmetaimg() ?? url(asset('theme/images/image.jpg'))
+        );
+
+        if(empty($this->config->privacy_policy)){
+            return redirect()->route('web.home');
+        }
+
+        return view("web.privacy",[
+            'head' => $head,
+        ]);
+    }
+    
+    public function terms()
+    {
+        $head = $this->seo->render('Termos e Condições - ' . $this->config->app_name ?? env('APP_NAME'),
+            'Leia nossos termos e condições e saiba como seus direitos sejam respeitados.',
+            route('web.terms'),
+            $this->config->getmetaimg() ?? url(asset('theme/images/image.jpg'))
+        );
+
+        if(empty($this->config->terms_condicions)){
+            return redirect()->route('web.home');
+        }
+
+        return view("web.terms-conditions",[
+            'head' => $head,
+        ]);
+    }
 }

@@ -1,8 +1,5 @@
 @extends('web.layouts.app')
 
-@section('title', 'Contato - Informática Livre')
-@section('description', 'Entre em contato com a Informática Livre. Desenvolvimento de sites e sistemas em Ubatuba/SP.')
-
 @section('content')
 
     {{-- HERO --}}

@@ -201,7 +201,7 @@
                                 [{ list: 'ordered' }, { list: 'bullet' }],
                                 ['blockquote'],
                                 ['link', 'image'],
-                                ['clean'],
+                                ['clean'], 
                             ],
                             // 🖼️ Módulo de redimensionamento visual
                             imageResize: {
