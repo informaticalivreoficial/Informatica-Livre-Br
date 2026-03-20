@@ -223,7 +223,7 @@
         <div class="max-w-4xl mx-auto px-4 text-center text-white">
             <h2 class="text-3xl md:text-4xl font-bold mb-4">Pronto para começar?</h2>
             <p class="text-teal-100 text-lg mb-8">Entre em contato e solicite um orçamento sem compromisso.</p>
-            <a href="{{ route('web.contato') }}" 
+            <a href="" 
                 class="bg-white text-teal-700 hover:bg-teal-50 px-10 py-4 rounded-lg font-bold text-lg transition inline-block">
                 Solicitar Orçamento
             </a>

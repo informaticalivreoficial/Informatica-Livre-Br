@@ -107,9 +107,17 @@ class SiteController extends Controller
         return view('web.blog-categoria', compact('posts', 'categoria'));
     }
 
-    public function contato()
+    public function contact()
     {
-        return view('web.contato');
+        $head = $this->seo->render('Atendimento - ' . $this->config->app_name ?? env('APP_NAME'),
+            'Entre em contato conosco, teremos prazer em atendê-lo!',
+            route('web.contact'),
+            $this->config->getmetaimg() ?? url(asset('theme/images/image.jpg'))
+        );
+
+        return view('web.atendimento', [
+            'head' => $head,
+        ]);
     }
 
     public function privacy()

@@ -44,7 +44,7 @@
                     <li><a href="{{ route('web.home') }}" class="hover:text-teal-400 transition">Início</a></li>
                     <li><a href="{{ route('web.portifolio') }}" class="hover:text-teal-400 transition">Nossos Trabalhos</a></li>
                     <li><a href="{{ route('web.blog.artigos') }}" class="hover:text-teal-400 transition">Blog</a></li>
-                    <li><a href="{{ route('web.contato') }}" class="hover:text-teal-400 transition">Atendimento</a></li>
+                    <li><a href="{{ route('web.contact') }}" class="hover:text-teal-400 transition">Atendimento</a></li>
                     <li><a href="{{ route('web.terms') }}" class="hover:text-teal-400 transition">Termos e Condições</a></li>
                     <li><a @click="openModal()" class="hover:text-teal-400 transition cursor-pointer">Preferências de cookies</a></li>
                 </ul>

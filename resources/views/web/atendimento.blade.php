@@ -6,7 +6,7 @@
     <section class="bg-gradient-to-r from-teal-700 to-teal-500 py-16">
         <div class="max-w-7xl mx-auto px-4 text-center text-white">
             <h1 class="text-4xl md:text-5xl font-extrabold mb-4">Fale Conosco</h1>
-            <p class="text-teal-100 text-lg max-w-xl mx-auto">Tire suas dúvidas ou solicite um orçamento. Respondemos rapidamente!</p>
+            <p class="text-teal-100 text-lg max-w-xl mx-auto">Tire suas dúvidas, respondemos rapidamente!</p>
         </div>
     </section>
 
@@ -17,10 +17,8 @@
 
                 {{-- Formulário --}}
                 <div class="lg:col-span-2">
-                    <div class="bg-white rounded-2xl shadow-sm p-8">
-                        <h2 class="text-2xl font-bold text-gray-800 mb-6">Envie uma mensagem</h2>
-
-                        @livewire('web.contact-form')
+                    <div class="bg-white rounded-2xl shadow-sm p-8">                        
+                        <livewire:web.contact-form  />
                     </div>
                 </div>
 
@@ -37,34 +35,47 @@
                                 </div>
                                 <div>
                                     <p class="text-xs text-gray-400 uppercase tracking-wide">Localização</p>
-                                    <p class="text-gray-700 font-medium">Ubatuba/SP</p>
+                                    <p class="text-gray-700 font-medium">
+                                        {{ $configuracoes->city }}/{{ $configuracoes->state }}
+                                    </p>
                                 </div>
                             </li>
-                            <li class="flex items-start gap-3">
-                                <div class="w-10 h-10 bg-teal-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <i class="fab fa-whatsapp text-teal-600"></i>
-                                </div>
-                                <div>
-                                    <p class="text-xs text-gray-400 uppercase tracking-wide">WhatsApp</p>
-                                    <a href="https://api.whatsapp.com/send?phone=5512991385030"
-                                        target="_blank"
-                                        class="text-gray-700 font-medium hover:text-teal-600 transition">
-                                        (12) 99138-5030
-                                    </a>
-                                </div>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <div class="w-10 h-10 bg-teal-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <i class="fas fa-envelope text-teal-600"></i>
-                                </div>
-                                <div>
-                                    <p class="text-xs text-gray-400 uppercase tracking-wide">E-mail</p>
-                                    <a href="mailto:suporte@informaticalivre.com.br"
-                                        class="text-gray-700 font-medium hover:text-teal-600 transition">
-                                        suporte@informaticalivre.com.br
-                                    </a>
-                                </div>
-                            </li>
+                            @if ($configuracoes->whatsapp)
+                                <li class="flex items-start gap-3">
+                                    <div class="w-10 h-10 bg-teal-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <i class="fab fa-whatsapp text-teal-600"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-400 uppercase tracking-wide">WhatsApp</p>
+                                        <a  onclick="shareWhatsApp(event)"
+                                            target="_blank"
+                                            class="text-gray-700 font-medium hover:text-teal-600 transition cursor-pointer">
+                                            {{ $configuracoes->whatsapp }}
+                                        </a>
+                                    </div>
+                                </li>
+                            @endif    
+                            @if ($configuracoes->email)
+                                <li class="flex items-start gap-3">
+                                    <div class="w-10 h-10 bg-teal-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-envelope text-teal-600"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-400 uppercase tracking-wide">E-mail</p>
+                                        <a href="mailto:{{ $configuracoes->email }}"
+                                            class="text-gray-700 font-medium hover:text-teal-600 transition">
+                                            {{ $configuracoes->email }}
+                                        </a>
+                                        @if ($configuracoes->additional_email)
+                                            <br>
+                                            <a href="mailto:{{ $configuracoes->additional_email }}"
+                                                class="text-gray-700 font-medium hover:text-teal-600 transition">
+                                                {{ $configuracoes->additional_email }}
+                                            </a>
+                                        @endif
+                                    </div>
+                                </li>
+                            @endif 
                         </ul>
                     </div>
 
@@ -72,22 +83,42 @@
                     <div class="bg-white rounded-2xl shadow-sm p-6">
                         <h3 class="text-lg font-bold text-gray-800 mb-4">Redes Sociais</h3>
                         <div class="flex gap-3">
-                            <a href="#" target="_blank"
-                                class="w-10 h-10 bg-blue-600 text-white rounded-lg flex items-center justify-center hover:bg-blue-700 transition">
-                                <i class="fab fa-facebook-f"></i>
-                            </a>
-                            <a href="#" target="_blank"
-                                class="w-10 h-10 bg-pink-500 text-white rounded-lg flex items-center justify-center hover:bg-pink-600 transition">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                            <a href="#" target="_blank"
-                                class="w-10 h-10 bg-blue-700 text-white rounded-lg flex items-center justify-center hover:bg-blue-800 transition">
-                                <i class="fab fa-linkedin-in"></i>
-                            </a>
-                            <a href="https://api.whatsapp.com/send?phone=5512991385030" target="_blank"
-                                class="w-10 h-10 bg-green-500 text-white rounded-lg flex items-center justify-center hover:bg-green-600 transition">
-                                <i class="fab fa-whatsapp"></i>
-                            </a>
+                            @if ($configuracoes->facebook)
+                                <a href="{{ $configuracoes->facebook }}" target="_blank"
+                                    class="w-10 h-10 bg-blue-600 text-white rounded-lg flex items-center justify-center hover:bg-blue-700 transition">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                            @endif
+                            @if ($configuracoes->twitter)
+                                <a href="{{ $configuracoes->twitter }}" target="_blank"
+                                    class="w-10 h-10 bg-blue-400 text-white rounded-lg flex items-center justify-center hover:bg-blue-500 transition">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                            @endif
+                            @if ($configuracoes->youtube)
+                                <a href="{{ $configuracoes->youtube }}" target="_blank"
+                                    class="w-10 h-10 bg-red-500 text-white rounded-lg flex items-center justify-center hover:bg-red-600 transition">
+                                    <i class="fab fa-youtube"></i>
+                                </a>
+                            @endif
+                            @if ($configuracoes->instagram)
+                                <a href="{{ $configuracoes->instagram }}" target="_blank"
+                                    class="w-10 h-10 bg-pink-500 text-white rounded-lg flex items-center justify-center hover:bg-pink-600 transition">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                            @endif
+                            @if ($configuracoes->linkedin)
+                                <a href="{{ $configuracoes->linkedin }}" target="_blank"
+                                    class="w-10 h-10 bg-blue-700 text-white rounded-lg flex items-center justify-center hover:bg-blue-800 transition">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                            @endif
+                            @if ($configuracoes->whatsapp)
+                                <a onclick="shareWhatsApp(event)" target="_blank"
+                                    class="w-10 h-10 bg-green-500 text-white rounded-lg flex items-center justify-center hover:bg-green-600 transition cursor-pointer">
+                                    <i class="fab fa-whatsapp"></i>
+                                </a>
+                            @endif  
                         </div>
                     </div>
 

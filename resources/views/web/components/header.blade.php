@@ -47,8 +47,8 @@
             <a href="{{ route('web.home') }}" class="text-gray-700 hover:text-teal-600 font-medium transition">Início</a>
             <a href="{{ route('web.portifolio') }}" class="text-gray-700 hover:text-teal-600 font-medium transition">Nossos Trabalhos</a>
             <a href="{{ route('web.blog.artigos') }}" class="text-gray-700 hover:text-teal-600 font-medium transition">Blog</a>
-            <a href="{{ route('web.contato') }}" class="text-gray-700 hover:text-teal-600 font-medium transition">Atendimento</a>
-            <a href="{{ route('web.contato') }}" class="bg-teal-600 text-white px-5 py-2 rounded-lg hover:bg-teal-700 transition font-medium">
+            <a href="{{ route('web.contact') }}" class="text-gray-700 hover:text-teal-600 font-medium transition">Atendimento</a>
+            <a href="{{ route('web.contact') }}" class="bg-teal-600 text-white px-5 py-2 rounded-lg hover:bg-teal-700 transition font-medium">
                 Solicitar Orçamento
             </a>
         </div>
@@ -67,8 +67,8 @@
                 <a href="{{ route('web.home') }}" class="text-gray-700 hover:text-teal-600 font-medium">Início</a>
                 <a href="{{ route('web.portifolio') }}" class="text-gray-700 hover:text-teal-600 font-medium">Nossos Trabalhos</a>
                 <a href="{{ route('web.blog.artigos') }}" class="text-gray-700 hover:text-teal-600 font-medium">Blog</a>
-                <a href="{{ route('web.contato') }}" class="text-gray-700 hover:text-teal-600 font-medium">Atendimento</a>
-                <a href="{{ route('web.contato') }}" class="bg-teal-600 text-white px-5 py-2 rounded-lg text-center font-medium">
+                <a href="{{ route('web.contact') }}" class="text-gray-700 hover:text-teal-600 font-medium">Atendimento</a>
+                <a href="{{ route('web.contact') }}" class="bg-teal-600 text-white px-5 py-2 rounded-lg text-center font-medium">
                     Solicitar Orçamento
                 </a>
             </div>

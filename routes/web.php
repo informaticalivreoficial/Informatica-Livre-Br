@@ -63,7 +63,7 @@ Route::group(['as' => 'web.'], function () {
     Route::get('/blog', [SiteController::class, 'blog'])->name('blog.artigos');
     Route::get('/blog/{slug}', [SiteController::class, 'blogSingle'])->name('blog.artigo');
     Route::get('/blog/categoria/{slug}', [SiteController::class, 'blogCategoria'])->name('site.blog.categoria');
-    Route::get('/contato', [SiteController::class, 'contato'])->name('contato');
+    Route::get('/atendimento', [SiteController::class, 'contact'])->name('contact');
 
     Route::get('/politica-de-privacidade', [SiteController::class, 'privacy'])->name('privacy');
     Route::get('/termos-e-condicoes', [SiteController::class, 'terms'])->name('terms');

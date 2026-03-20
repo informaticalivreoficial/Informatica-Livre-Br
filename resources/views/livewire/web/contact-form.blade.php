@@ -9,7 +9,11 @@
             </button>
         </div>
     @else
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Envie uma mensagem</h2>
         <div class="space-y-5">
+            {{-- HONEYPOT --}}
+            <input type="hidden" wire:model="bairro">
+            <input type="text" class="hidden" wire:model="cidade">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Nome *</label>

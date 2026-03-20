@@ -12,9 +12,6 @@ window.Swal = Swal
 import IMask from 'imask';
 window.IMask = IMask;
 
-import Alpine from 'alpinejs'
-window.Alpine = Alpine
-
 Alpine.data('cookieConsent', () => ({
     open: false,
     accepted: false,
@@ -54,5 +51,5 @@ Alpine.data('cookieConsent', () => ({
 
 //console.log(window.Alpine.version)
 
-Alpine.start()
+
 

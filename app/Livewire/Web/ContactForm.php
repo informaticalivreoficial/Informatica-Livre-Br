@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Web;
 
+use App\Mail\Atendimento;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 
 class ContactForm extends Component
@@ -12,6 +14,10 @@ class ContactForm extends Component
     public string $subject  = '';
     public string $message  = '';
     public bool   $sent     = false;
+
+    // Campos honeypot (anti-spam)
+    public $bairro;
+    public $cidade;
 
     protected function rules(): array
     {
@@ -34,27 +40,16 @@ class ContactForm extends Component
     ];
 
     public function send(): void
-    {
-        $this->validate();
-
-        try {
-            Mail::raw(
-                "Nome: {$this->name}\nE-mail: {$this->email}\nTelefone: {$this->phone}\n\nMensagem:\n{$this->message}",
-                function ($mail) {
-                    $mail->to('suporte@informaticalivre.com.br')
-                        ->subject("[Contato] {$this->subject}");
-                }
-            );
-
-            $this->reset(['name', 'email', 'phone', 'subject', 'message']);
-            $this->sent = true;
-
-        } catch (\Exception $e) {
-            $this->dispatch('swal:error', [
-                'title' => 'Erro ao enviar',
-                'text'  => 'Ocorreu um erro ao enviar sua mensagem. Tente novamente.',
-            ]);
+    {     
+        if (!empty($this->bairro) || !empty($this->cidade)) {
+            return;
         }
+
+        $validated = $this->validate();
+        
+        Mail::send(new Atendimento($validated));
+        $this->reset(['name', 'email', 'phone', 'subject', 'message']);
+        $this->sent = true;        
     }
 
     public function render()
