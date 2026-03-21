@@ -67,6 +67,8 @@ Route::group(['as' => 'web.'], function () {
     Route::get('/atendimento', [SiteController::class, 'contact'])->name('contact');
     Route::get('/pagina/{slug}', [SiteController::class, 'page'])->name('page');
 
+    Route::get('/consultoria', [SiteController::class, 'consultoria'])->name('consultoria');
+
     Route::get('/politica-de-privacidade', [SiteController::class, 'privacy'])->name('privacy');
     Route::get('/termos-e-condicoes', [SiteController::class, 'terms'])->name('terms');
     

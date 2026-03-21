@@ -4,51 +4,106 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Orcamento extends Model
 {
-    use HasFactory, Notifiable;
-
+    use HasFactory, SoftDeletes;
+ 
     protected $table = 'orcamentos';
-
+ 
     protected $fillable = [
+        'token',
         'name',
         'email',
         'telefone',
-        'content',
+        'cpf',
+        'empresa',
+        'email_empresa',
+        'cnpj',
+        'telefone_fixo',
+        'celular',
+        'whatsapp',
+        'cep',
+        'rua',
+        'numero',
+        'complemento',
+        'bairro',
+        'cidade',
+        'uf',
+        'notas_adicionais',
         'status',
-        'token',
-        'form_sendat'
+        'respondido_em',
     ];
-
+ 
+    protected $casts = [
+        'respondido_em' => 'datetime',
+    ];
+ 
+    /**
+     * Gera token único ao criar
+     */
+    protected static function booted(): void
+    {
+        static::creating(function (Orcamento $orcamento) {
+            $orcamento->token = $orcamento->token ?? Str::uuid();
+        });
+ 
+        static::updating(function (Orcamento $orcamento) {
+            if ($orcamento->isDirty('status') && $orcamento->status === 'respondido') {
+                $orcamento->respondido_em = now();
+            }
+        });
+    }
+ 
     /**
      * Scopes
-    */
-    public function scopeAvailable($query)
+     */
+    public function scopePendente($query)
     {
-        return $query->where('status', 1);
+        return $query->where('status', 'pendente');
     }
-
-    public function scopeUnavailable($query)
+ 
+    public function scopeRespondido($query)
     {
-        return $query->where('status', 0);
+        return $query->where('status', 'respondido');
     }
-
+ 
+    public function scopeEmAndamento($query)
+    {
+        return $query->where('status', 'em_andamento');
+    }
+ 
     /**
-     * Accerssors and Mutators
-    */
-    public function setStatusAttribute($value)
+     * Accessors
+     */
+    public function getLinkAttribute(): string
     {
-        $this->attributes['status'] = ($value == '1' ? 1 : 0);
+        return route('web.orcamento', $this->token);
     }
-
-    public function getCreatedAtAttribute($value)
+ 
+    public function getStatusLabelAttribute(): string
     {
-        if (empty($value)) {
-            return null;
-        }
-
-        return date('d/m/Y', strtotime($value));
+        return match($this->status) {
+            'pendente'     => 'Pendente',
+            'respondido'   => 'Respondido',
+            'em_andamento' => 'Em andamento',
+            'finalizado'   => 'Finalizado',
+            'cancelado'    => 'Cancelado',
+            default        => 'Desconhecido',
+        };
+    }
+ 
+    public function getStatusColorAttribute(): string
+    {
+        return match($this->status) {
+            'pendente'     => 'warning',
+            'respondido'   => 'info',
+            'em_andamento' => 'primary',
+            'finalizado'   => 'success',
+            'cancelado'    => 'danger',
+            default        => 'secondary',
+        };
     }
 }
