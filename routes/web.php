@@ -75,10 +75,6 @@ Route::group(['as' => 'web.'], function () {
     Route::get('/sistemas', [ProdutoController::class, 'index'])->name('web.produtos');
     Route::get('/sistemas/{slug}', [ProdutoController::class, 'show'])->name('web.produto');
     //Route::get('/checkout/{produto}/{plano}', ...)->name('web.checkout'); // próximo passo
-    
-    
-    
-
 });
 
 Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], function () {
@@ -114,58 +110,14 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
 
     Route::get('/cargos', RoleIndex::class)->name('admin.roles');
     Route::get('/permissoes', PermissionIndex::class)->name('admin.permissions');
-
-    //******************************* Newsletter *********************************************/
-    // Route::match(['post', 'get'], 'listas/padrao', [NewsletterController::class, 'padraoMark'])->name('listas.padrao');
-    // Route::get('listas/set-status', [NewsletterController::class, 'listaSetStatus'])->name('listas.listaSetStatus');
-    // Route::get('listas/delete', [NewsletterController::class, 'listaDelete'])->name('listas.delete');
-    // Route::delete('listas/deleteon', [NewsletterController::class, 'listaDeleteon'])->name('listas.deleteon');
-    // Route::put('listas/{id}', [NewsletterController::class, 'listasUpdate'])->name('listas.update');
-    // Route::get('listas/{id}/editar', [NewsletterController::class, 'listasEdit'])->name('listas.edit');
-    // Route::get('listas/cadastrar', [NewsletterController::class, 'listasCreate'])->name('listas.create');
-    // Route::post('listas/store', [NewsletterController::class, 'listasStore'])->name('listas.store');
-    // Route::get('listas', [NewsletterController::class, 'listas'])->name('listas');
-
-    // Route::put('listas/email/{id}', [NewsletterController::class, 'newsletterUpdate'])->name('listas.newsletter.update');
-    // Route::get('listas/email/{id}/edit', [NewsletterController::class, 'newsletterEdit'])->name('listas.newsletter.edit');
-    // Route::get('listas/email/cadastrar', [NewsletterController::class, 'newsletterCreate'])->name('lista.newsletter.create');
-    // Route::post('listas/email/store', [NewsletterController::class, 'newsletterStore'])->name('listas.newsletter.store');
-    // Route::get('listas/emails/categoria/{categoria}', [NewsletterController::class, 'newsletters'])->name('lista.newsletters');
-
+    
     //*********************** Posts *********************************************/
     Route::get('posts/{post}/editar', PostForm::class)->name('posts.edit');
     Route::get('posts/cadastrar', PostForm::class)->name('posts.create');
     Route::get('posts/categorias', CatPosts::class)->name('posts.categories.index');
-    Route::get('posts', Posts::class)->name('posts.index');
-
+    Route::get('posts', Posts::class)->name('posts.index');   
+   
     
-    //******************** Parceiros *********************************************/
-    // Route::match(['post', 'get'], 'parceiros/fetchCity', [ParceiroController::class, 'fetchCity'])->name('parceiros.fetchCity');
-    // Route::get('parceiros/set-status', [ParceiroController::class, 'parceiroSetStatus'])->name('parceiros.parceiroSetStatus');
-    // Route::post('parceiros/image-set-cover', [ParceiroController::class, 'imageSetCover'])->name('parceiros.imageSetCover');
-    // Route::delete('parceiros/image-remove', [ParceiroController::class, 'imageRemove'])->name('parceiros.imageRemove');
-    // Route::delete('parceiros/deleteon', [ParceiroController::class, 'deleteon'])->name('parceiros.deleteon');
-    // Route::get('parceiros/delete', [ParceiroController::class, 'delete'])->name('parceiros.delete');
-    // Route::put('parceiros/{id}', [ParceiroController::class, 'update'])->name('parceiros.update');
-    // Route::get('parceiros/{id}/edit', [ParceiroController::class, 'edit'])->name('parceiros.edit');
-    // Route::get('parceiros/create', [ParceiroController::class, 'create'])->name('parceiros.create');
-    // Route::post('parceiros/store', [ParceiroController::class, 'store'])->name('parceiros.store');
-    // Route::get('parceiros', [ParceiroController::class, 'index'])->name('parceiros.index');
-
-    //******************** Bancos *************************************************************/
-    // Route::get('bancos', [BancoController::class, 'index'])->name('bancos.index');
-    // Route::get('bancos/refresh', [BancoController::class, 'refresh'])->name('bancos.refresh');
-    
-    
-    //*************************** Portifólio Categorias **********************************/
-    // Route::get('portifolio/categorias/delete', [CatPortifolioController::class, 'delete'])->name('portifolio-categorias.delete');
-    // Route::delete('portifolio/categorias/deleteon', [CatPortifolioController::class, 'deleteon'])->name('portifolio-categorias.deleteon');
-    // Route::get('portifolio/categorias/{id}/edit', [CatPortifolioController::class, 'edit'])->name('portifolio-categorias.edit');
-    // Route::put('portifolio/categorias/{id}', [CatPortifolioController::class, 'update'])->name('portifolio-categorias.update');
-    // Route::match(['post', 'get'],'portifolio/categorias/create/{catpai}', [CatPortifolioController::class, 'create'])->name('portifolio-categorias.create');
-    // Route::post('portifolio/categorias/store', [CatPortifolioController::class, 'store'])->name('portifolio-categorias.store');
-    // Route::get('portifolio/categorias', [CatPortifolioController::class, 'index'])->name('catportifolio.index');
-
     //*************************** Portifólio *******************************************/
     Route::get('/portifolio/categorias', PortifolioCategories::class)->name('portifolio.categories.index');
     
