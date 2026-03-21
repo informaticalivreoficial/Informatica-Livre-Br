@@ -38,6 +38,7 @@ use App\Livewire\Dashboard\Service\ServiceIndex;
 use App\Livewire\Dashboard\Service\SubscriptionForm;
 use App\Livewire\Dashboard\Service\SubscriptionIndex;
 use App\Livewire\Dashboard\Service\SubscriptionShow;
+use App\Livewire\Dashboard\Sitemap\SitemapGenerator;
 
 Route::prefix('cliente')->name('cliente.')->group(function () {
     // Acesso público
@@ -132,6 +133,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
 
     Route::get('/', Dashboard::class)->name('admin');
     Route::get('configuracoes', Settings::class)->name('settings');
+    Route::get('sitemap-generator', SitemapGenerator::class)->name('sitemap.generator');
 
     // Somente Super Admin
     Route::middleware('role:super-admin')->group(function () {

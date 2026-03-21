@@ -28,11 +28,25 @@
                     </a>                    
                 </li>
 
-                <li class="nav-item">
-                    <a href="{{route('settings')}}" class="nav-link {{ Route::is('settings') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-cog"></i> 
-                        <p> Configurações</p>
+                <li class="nav-item {{ Route::is(['settings','sitemap.generator']) ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ Route::is(['settings','sitemap.generator']) ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-cog"></i>
+                        <p> Configurações <i class="fas fa-angle-left right"></i></p>
                     </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{route('settings')}}" class="nav-link {{ Route::is('settings') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Sistema</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{route('sitemap.generator')}}" class="nav-link {{ Route::is('sitemap.generator') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Mapa do Site</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
 
                 <li class="nav-item {{ Route::is('users.*') ? 'menu-open' : '' }}">
