@@ -52,25 +52,19 @@
                 <tbody>
                     @forelse($trabalhos as $portifolio)
                         <tr class="border-t border-gray-200 hover:bg-gray-50 {{ $portifolio->status ? '' : 'bg-yellow-100' }}">
-                            <td class="px-4 py-2 text-center">
-                                @if($portifolio->cover)
-                                    <a 
-                                        href="{{ Storage::url($portifolio->cover->path) }}"
-                                        data-basiclightbox
-                                        class="cursor-pointer"
+                            <td class="text-center p-2">                               
+                                <a 
+                                    href="{{ $portifolio->cover() }}"
+                                    data-basiclightbox
+                                    class="cursor-pointer"
+                                >
+                                    <img
+                                        src="{{ $portifolio->thumb() }}"
+                                        alt="{{ $portifolio->name }}"
+                                        class="img-thumbnail"
+                                        style="width:60px !important; height:60px !important; object-fit:cover; object-position:center; display:block;"
                                     >
-                                        <img
-                                            src="{{ Storage::url($portifolio->cover->path) }}"
-                                            alt="{{ $portifolio->name }}"
-                                            class="img-thumbnail"
-                                            style="width:60px; height:60px; object-fit:cover;"
-                                        >
-                                    </a>
-                                @else
-                                    <div class="bg-gray-100 rounded d-flex align-items-center justify-content-center" style="width:60px; height:60px;">
-                                        <i class="fas fa-image text-gray-400"></i>
-                                    </div>
-                                @endif
+                                </a>                                
                             </td>
                             <td class="px-4 py-4">{{ $portifolio->name }}</td>
                             <td class="px-4 py-4 text-center">{{ $portifolio->categoryRelation->title ?? '—' }}</td>

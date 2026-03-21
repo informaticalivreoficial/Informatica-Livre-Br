@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\Cropper;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\File;
@@ -15,20 +16,32 @@ class Post extends Model
     protected $table = 'posts'; 
 
     protected $fillable = [
-        'user_id',
-        'tipo',
-        'titulo',
+        'autor',
+        'type',
+        'title',
         'content',
         'slug',
         'tags',
         'views',
-        'category_id',
-        'comentarios',
+        'category',
+        'comments',
+        'highlight',
         'cat_pai',        
         'status',
-        'thumb_legenda',
+        'menu',
+        'thumb_caption',
         'publish_at'
     ];
+
+    protected $casts = [
+        'status' => 'boolean',
+        'coments' => 'boolean',
+    ];
+
+    protected static function boot()
+    {
+        parent::boot();        
+    }
 
     protected static function booted()
     {
@@ -64,22 +77,32 @@ class Post extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'autor', 'id');
+    }
+
+    public function category()
+    {
+        return $this->hasOne(CatPost::class, 'id', 'category');
     }
     
-    public function categoriaObject()
+    public function categoryObject()
     {
-        return $this->hasOne(CatPost::class, 'id', 'category_id');
+        return $this->hasOne(CatPost::class, 'id', 'category');
     }
     
     public function userObject()
     {
-        return $this->hasOne(User::class, 'id', 'autor');
+        return $this->hasOne(User::class, 'id', 'category');
     }
     
     public function images()
     {
         return $this->hasMany(PostGb::class, 'post', 'id')->orderBy('cover', 'ASC');
+    }
+
+    public function countimages()
+    {
+        return $this->hasMany(PostGb::class, 'post', 'id')->count();
     }
 
     /**
@@ -90,41 +113,34 @@ class Post extends Model
     {
         return Str::words($this->content, '20', ' ...');
     }
-        
+
     public function cover()
     {
         $images = $this->images();
-        $cover = $images->where('cover', 1)->first(['path']);
+        $cover = $images->where('cover', 1)->first(['path']) ??
+                $images->first(['path']);
 
-        if(!$cover) {
-            $images = $this->images();
-            $cover = $images->first(['path']);
+        if (!$cover || empty($cover->path)) {
+            return asset('theme/images/image.jpg');
         }
 
-        if(empty($cover['path']) || !Storage::disk()->exists(env('AWS_PASTA') . $cover['path'])) {
-            return url(asset('backend/assets/images/image.jpg'));
-        }
-
-        //return Storage::url(Cropper::thumb($cover['path'], 720, 480));
-        return Storage::url($cover['path']);
-    }
+        return Storage::url(Cropper::thumb($cover['path'], 720, 480));
+    }    
 
     public function nocover()
     {
         $images = $this->images();
-        $cover = $images->where('cover', 1)->first(['path']);
 
-        if(!$cover) {
-            $images = $this->images();
-            $cover = $images->first(['path']);
+        // Pega capa, se não existir usa a primeira imagem
+        $cover = $images->where('cover', 1)->first(['path'])
+            ?? $images->first(['path']);
+
+        if (empty($cover['path']) || !Storage::disk()->exists($cover['path'])) {
+            return asset('theme/images/image.jpg');
         }
-
-        if(empty($cover['path']) || !Storage::disk()->exists(env('AWS_PASTA') . $cover['path'])) {
-            return url(asset('backend/assets/images/image.jpg'));
-        }
-
+        
         return Storage::url($cover['path']);
-    }
+    } 
     
     public function setStatusAttribute($value)
     {
@@ -136,14 +152,7 @@ class Post extends Model
         $this->attributes['publish_at'] = (!empty($value) ? $this->convertStringToDate($value) : null);
     }
     
-    public function getPublishAtAttribute($value)
-    {
-        if (empty($value)) {
-            return null;
-        }
-        return date('d/m/Y', strtotime($value));
-    }
-    
+        
     public function setSlug()
     {
         if (!empty($this->title)) {

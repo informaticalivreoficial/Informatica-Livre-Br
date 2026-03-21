@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\CatPortifolio;
 use App\Models\Company;
 use App\Models\Portifolio;
 use App\Models\Post;
@@ -25,11 +26,11 @@ class SiteController extends Controller
     {
         $slides    = Slide::available()->orderBy('created_at', 'desc')->get();
         $clientes  = Company::available()->orderBy('alias_name')->get();
-        $trabalhos = Portifolio::with(['cover', 'categoryRelation'])
+        $trabalhos = Portifolio::with(['images', 'categoryRelation'])
             ->active()
             ->public()
             ->latest()
-            ->take(6)
+            ->take(9)
             ->get();
         $posts = Post::postson()->latest()->take(3)->get();
 
@@ -50,16 +51,32 @@ class SiteController extends Controller
 
     public function portifolio(Request $request)
     {
-        $categorias = CatPortifolio::with('children')->whereNull('id_pai')->active()->get();
+        $categorias = CatPortifolio::with(['children' => function($q) {
+            $q->whereHas('portifolios', fn($q) => $q->active()->public());
+        }])
+        ->whereNull('id_pai')
+        ->active()
+        ->whereHas('children.portifolios', fn($q) => $q->active()->public())
+        ->get();
 
-        $trabalhos = Portifolio::with(['cover', 'categoryRelation'])
+        $trabalhos = Portifolio::with(['images', 'categoryRelation'])
             ->active()
             ->public()
             ->when($request->categoria, fn($q) => $q->where('category', $request->categoria))
             ->latest()
-            ->paginate(12);
+            ->paginate(21);
 
-        return view('web.portifolio', compact('trabalhos', 'categorias'));
+        $head = $this->seo->render('Nossos Trabalhos - ' . $this->config->app_name ?? env('APP_NAME'),
+            'Veja nossos trabalhos e saiba mais sobre nossos clientes.',
+            route('web.portifolio'),
+            $this->config->getmetaimg() ?? url(asset('theme/images/image.jpg'))
+        );
+
+        return view('web.portifolio', [
+            'head' => $head,
+            'trabalhos' => $trabalhos,
+            'categorias' => $categorias
+        ]);
     }
 
     public function portifolioSingle($slug)
@@ -72,25 +89,50 @@ class SiteController extends Controller
         // Incrementa views
         $trabalho->increment('views');
 
-        return view('web.portifolio-single', compact('trabalho'));
+        $head = $this->seo->render('Projeto - ' . $trabalho->name . ' - ' . $this->config->app_name ?? env('APP_NAME'),
+            'Projeto desenvolvido pela Informática Livre - ' . $trabalho->name,
+            route('web.portifolio.single', $trabalho->slug),
+            $trabalho->cover() ?? url(asset('theme/images/image.jpg'))
+        );
+
+        return view('web.projeto', [
+            'head' => $head,
+            'trabalho' => $trabalho
+        ]);
     }
 
     public function blog(Request $request)
     {
-        $posts = Post::active()
+        $posts = Post::postson()
             ->when($request->busca, fn($q) => $q->where('title', 'like', "%{$request->busca}%"))
             ->latest()
             ->paginate(12);
 
-        return view('web.blog', compact('posts'));
+        return view('web.blog.artigos', compact('posts'));
     }
 
     public function blogSingle($slug)
     {
-        $post = Post::where('slug', $slug)->active()->firstOrFail();
+        $post = Post::where('slug', $slug)->postson()->firstOrFail();
         $post->increment('views');
 
-        return view('web.blog-single', compact('post'));
+        $recentes = Post::postson()
+            ->where('id', '!=', $post->id)
+            ->latest()
+            ->take(4)
+            ->get();
+
+        $head = $this->seo->render($post->title  . ' - ' . $this->config->app_name ?? env('APP_NAME'),
+            $post->title . ' - ' . $this->config->app_name ?? env('APP_NAME'),
+            route('web.blog.artigo', $post->slug),
+            $post->cover() ?? url(asset('theme/images/image.jpg'))
+        );
+
+        return view('web.blog.artigo', [
+            'head' => $head,
+            'post' => $post,
+            'recentes' => $recentes
+        ]);
     }
 
     public function blogCategoria($slug)
@@ -99,7 +141,7 @@ class SiteController extends Controller
             ->where('status', 1)
             ->firstOrFail();
 
-        $posts = Post::active()
+        $posts = Post::postson()
             ->where('category', $categoria->id)
             ->latest()
             ->paginate(12);

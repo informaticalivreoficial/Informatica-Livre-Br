@@ -9,9 +9,9 @@
     <section class="bg-gradient-to-r from-teal-700 to-teal-500 py-16">
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex items-center gap-2 text-teal-200 text-sm mb-4">
-                <a href="{{ route('site.home') }}" class="hover:text-white transition">Home</a>
+                <a href="{{ route('web.home') }}" class="hover:text-white transition">Home</a>
                 <i class="fas fa-chevron-right text-xs"></i>
-                <a href="{{ route('site.portifolio') }}" class="hover:text-white transition">Portfólio</a>
+                <a href="{{ route('web.portifolio') }}" class="hover:text-white transition">Portfólio</a>
                 <i class="fas fa-chevron-right text-xs"></i>
                 <span class="text-white">{{ $trabalho->name }}</span>
             </div>
@@ -30,16 +30,15 @@
                 {{-- Conteúdo Principal --}}
                 <div class="lg:col-span-2">
 
-                    {{-- Imagem de capa --}}
-                    @if($trabalho->cover)
-                        <div class="rounded-2xl overflow-hidden mb-8 shadow-md">
-                            <img
-                                src="{{ Storage::url($trabalho->cover->path) }}"
-                                alt="{{ $trabalho->name }}"
-                                class="w-full object-cover"
-                            >
-                        </div>
-                    @endif
+                    {{-- Imagem de capa --}}                    
+                    <div class="rounded-2xl overflow-hidden mb-8 shadow-md">
+                        <img
+                            src="{{ $trabalho->cover() }}"
+                            alt="{{ $trabalho->name }}"
+                            class="w-full object-cover"
+                        >
+                    </div>
+                    
 
                     {{-- Descrição --}}
                     @if($trabalho->content)
@@ -52,43 +51,28 @@
                     @if($trabalho->images->count() > 1)
                         <div class="mt-12">
                             <h2 class="text-2xl font-bold text-gray-800 mb-6">Galeria de Imagens</h2>
-                            <div 
-                                x-data="{ lightbox: false, current: '' }"
-                                class="grid grid-cols-2 md:grid-cols-3 gap-4"
-                            >
+
+                            {{-- Miniaturas --}}
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                                 @foreach($trabalho->images as $image)
-                                    <div 
+                                    <div
                                         class="overflow-hidden rounded-xl cursor-pointer group"
-                                        @click="lightbox = true; current = '{{ Storage::url($image->path) }}'"
+                                        x-data
+                                        @click="$dispatch('open-gallery', { index: {{ $loop->index }} })"
                                     >
                                         <img
-                                            src="{{ Storage::url($image->path) }}"
+                                            src="{{ $image->url }}"
                                             alt="{{ $trabalho->name }}"
                                             class="w-full h-48 object-cover group-hover:scale-105 transition duration-500"
                                         >
                                     </div>
                                 @endforeach
-
-                                {{-- Lightbox --}}
-                                <div 
-                                    x-show="lightbox"
-                                    x-cloak
-                                    x-transition
-                                    class="fixed inset-0 bg-black/80 z-[9999] flex items-center justify-center p-4"
-                                    @click.self="lightbox = false"
-                                    @keydown.escape.window="lightbox = false"
-                                >
-                                    <div class="relative max-w-5xl w-full">
-                                        <img :src="current" class="w-full max-h-[80vh] object-contain rounded-xl">
-                                        <button 
-                                            @click="lightbox = false"
-                                            class="absolute -top-4 -right-4 bg-white text-gray-800 w-10 h-10 rounded-full flex items-center justify-center shadow-lg hover:bg-gray-100 transition"
-                                        >
-                                            <i class="fas fa-times"></i>
-                                        </button>
-                                    </div>
-                                </div>
                             </div>
+
+                            {{-- Galeria Livewire --}}
+                            @livewire('web.image-gallery', [
+                                'images' => $trabalho->images->map(fn($img) => ['path' => $img->path])->toArray()
+                            ])
                         </div>
                     @endif
                 </div>
@@ -99,10 +83,10 @@
                         <h3 class="text-lg font-bold text-gray-800 border-b pb-3">Detalhes do Projeto</h3>
 
                         {{-- Cliente --}}
-                        @if($trabalho->company)
+                        @if($trabalho->companyRelation)
                             <div>
                                 <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Cliente</p>
-                                <p class="font-medium text-gray-700">{{ $trabalho->company->alias_name }}</p>
+                                <p class="font-medium text-gray-700">{{ $trabalho->companyRelation->alias_name }}</p>
                             </div>
                         @endif
 
@@ -127,7 +111,7 @@
                             </div>
                         @endif
 
-                        {{-- Valor --}}
+                        {{-- Valor 
                         @if($trabalho->value)
                             <div>
                                 <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Investimento</p>
@@ -135,7 +119,7 @@
                                     R$ {{ number_format($trabalho->value, 2, ',', '.') }}
                                 </p>
                             </div>
-                        @endif
+                        @endif --}}
 
                         {{-- Tags --}}
                         @if($trabalho->tags)
@@ -177,7 +161,7 @@
         <div class="max-w-4xl mx-auto px-4 text-center text-white">
             <h2 class="text-3xl md:text-4xl font-bold mb-4">Quer um projeto como esse?</h2>
             <p class="text-teal-100 text-lg mb-8">Entre em contato e vamos conversar sobre o seu projeto.</p>
-            <a href="{{ route('site.contato') }}"
+            <a href="{{ route('web.contact') }}"
                 class="bg-white text-teal-700 hover:bg-teal-50 px-10 py-4 rounded-lg font-bold text-lg transition inline-block">
                 Solicitar Orçamento
             </a>

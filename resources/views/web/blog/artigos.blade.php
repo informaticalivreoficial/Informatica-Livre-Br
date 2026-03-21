@@ -16,7 +16,7 @@
     {{-- BUSCA --}}
     <section class="bg-white border-b sticky top-[73px] z-40">
         <div class="max-w-7xl mx-auto px-4 py-4">
-            <form method="GET" action="{{ route('site.blog') }}" class="flex gap-3 max-w-md">
+            <form method="GET" action="{{ route('web.blog.artigos') }}" class="flex gap-3 max-w-md">
                 <input
                     type="text"
                     name="busca"
@@ -28,7 +28,7 @@
                     <i class="fas fa-search"></i>
                 </button>
                 @if(request('busca'))
-                    <a href="{{ route('site.blog') }}" class="border border-gray-200 text-gray-500 px-4 py-2 rounded-lg text-sm hover:bg-gray-50 transition">
+                    <a href="{{ route('web.blog.artigos') }}" class="border border-gray-200 text-gray-500 px-4 py-2 rounded-lg text-sm hover:bg-gray-50 transition">
                         <i class="fas fa-times"></i>
                     </a>
                 @endif
@@ -42,22 +42,16 @@
             @if($posts->count() > 0)
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     @foreach($posts as $post)
-                        <a href="{{ route('site.blog.single', $post->slug) }}"
+                        <a href="{{ route('web.blog.artigo', $post->slug) }}"
                             class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition">
 
                             {{-- Imagem --}}
-                            <div class="overflow-hidden h-52">
-                                @if($post->cover)
-                                    <img
-                                        src="{{ Storage::url($post->cover->path) }}"
-                                        alt="{{ $post->title }}"
-                                        class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                                    >
-                                @else
-                                    <div class="w-full h-full bg-gradient-to-br from-teal-50 to-teal-100 flex items-center justify-center">
-                                        <i class="fas fa-newspaper text-teal-300 text-5xl"></i>
-                                    </div>
-                                @endif
+                            <div class="overflow-hidden h-52">                               
+                                <img
+                                    src="{{ $post->cover() }}"
+                                    alt="{{ $post->title }}"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                                >                                
                             </div>
 
                             {{-- Conteúdo --}}
@@ -106,7 +100,7 @@
                         @endif
                     </p>
                     @if(request('busca'))
-                        <a href="{{ route('site.blog') }}" class="mt-4 inline-block text-teal-600 hover:underline">
+                        <a href="{{ route('web.blog.artigos') }}" class="mt-4 inline-block text-teal-600 hover:underline">
                             Ver todos os posts
                         </a>
                     @endif
@@ -120,7 +114,7 @@
         <div class="max-w-4xl mx-auto px-4 text-center text-white">
             <h2 class="text-3xl md:text-4xl font-bold mb-4">Precisa de um site?</h2>
             <p class="text-teal-100 text-lg mb-8">Entre em contato e solicite um orçamento sem compromisso.</p>
-            <a href="{{ route('site.contato') }}"
+            <a href="{{ route('web.contact') }}"
                 class="bg-white text-teal-700 hover:bg-teal-50 px-10 py-4 rounded-lg font-bold text-lg transition inline-block">
                 Solicitar Orçamento
             </a>

@@ -14,15 +14,15 @@ class CreatePostsTable extends Migration
     public function up()
     {
         Schema::create('posts', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('category_id')->constrained('cat_post')->cascadeOnDelete();
+            $table->increments('id');
+            $table->unsignedInteger('autor');
             $table->string('type');
             $table->string('title');
             $table->longText('content')->nullable();
             $table->string('slug')->nullable();
             $table->text('tags')->nullable();
             $table->bigInteger('views')->default(0);
+            $table->unsignedInteger('category');
             $table->integer('cat_pai')->nullable();
             $table->integer('comments')->nullable();
             $table->integer('status')->nullable();
@@ -32,6 +32,9 @@ class CreatePostsTable extends Migration
             $table->date('publish_at')->nullable();
 
             $table->timestamps();
+
+            $table->foreign('autor')->references('id')->on('users')->onDelete('CASCADE');
+            $table->foreign('category')->references('id')->on('cat_post')->onDelete('CASCADE');
         });
     }
 

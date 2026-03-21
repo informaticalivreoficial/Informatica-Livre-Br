@@ -1,8 +1,8 @@
 <aside class="main-sidebar sidebar-light-teal elevation-4">
     <!-- Brand Logo -->
-    <a href="#" class="pt-3 d-flex justify-content-center">
+    <a class="pt-3 d-flex justify-content-center cursor-pointer">
         <img src="{{$config->getlogoadmin()}}" alt="{{$config->app_name}}"
-            class="brand-image elevation-3">        
+            class="brand-image elevation-3" width="147" height="53">        
     </a>
 
     <div class="sidebar mt-3">

@@ -4,7 +4,7 @@
 
             {{-- Logo e descrição --}}
             <div>
-                <img src="{{ $configuracoes->getlogofooter() }}" alt="{{ $configuracoes->app_name }}" class="h-12 mb-4">
+                <img src="{{ $configuracoes->getlogofooter() }}" alt="{{ $configuracoes->app_name }}" class="h-16 mb-4">
                 <p class="text-sm text-gray-400 leading-relaxed">
                     {!! nl2br(e($configuracoes->information)) !!}
                 </p>

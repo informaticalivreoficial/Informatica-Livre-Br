@@ -117,18 +117,12 @@
                     @foreach($trabalhos as $trabalho)
                         <a href="{{ route('web.portifolio.single', $trabalho->slug) }}" 
                             class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition">
-                            <div class="overflow-hidden h-52">
-                                @if($trabalho->cover)
-                                    <img 
-                                        src="{{ Storage::url($trabalho->cover->path) }}" 
-                                        alt="{{ $trabalho->name }}"
-                                        class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                                    >
-                                @else
-                                    <div class="w-full h-full bg-gray-100 flex items-center justify-center">
-                                        <i class="fas fa-image text-gray-300 text-4xl"></i>
-                                    </div>
-                                @endif
+                            <div class="overflow-hidden h-52">                                
+                                <img 
+                                    src="{{ $trabalho->cover() }}" 
+                                    alt="{{ $trabalho->name }}"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                                >                                
                             </div>
                             <div class="p-5">
                                 <span class="text-xs text-teal-600 font-medium uppercase tracking-wide">
@@ -210,7 +204,7 @@
                     @endforeach
                 </div>
                 <div class="text-center mt-10">
-                    <a href="{{ route('web.blog') }}" class="border border-teal-600 text-teal-600 hover:bg-teal-600 hover:text-white px-8 py-3 rounded-lg font-medium transition">
+                    <a href="{{ route('web.blog.artigos') }}" class="border border-teal-600 text-teal-600 hover:bg-teal-600 hover:text-white px-8 py-3 rounded-lg font-medium transition">
                         Ver todos os posts
                     </a>
                 </div>

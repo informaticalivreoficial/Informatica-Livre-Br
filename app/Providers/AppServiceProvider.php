@@ -44,6 +44,10 @@ class AppServiceProvider extends ServiceProvider
             View()->share('configuracoes', null);
         }
 
-        Paginator::useBootstrap(); 	    
+        if (request()->is('admin/*') || request()->is('dashboard*')) {
+            Paginator::useBootstrap();
+        } else {
+            Paginator::useTailwind();
+        }	    
     }
 }

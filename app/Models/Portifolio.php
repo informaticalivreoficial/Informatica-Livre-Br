@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Support\Cropper;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Portifolio extends Model
 {
@@ -43,6 +45,11 @@ class Portifolio extends Model
         return $this->belongsTo(CatPortifolio::class, 'category');
     }
 
+    public function companyRelation()
+    {
+        return $this->belongsTo(Company::class, 'company');
+    }
+
     public function company()
     {
         return $this->belongsTo(Company::class, 'company');
@@ -53,11 +60,6 @@ class Portifolio extends Model
         return $this->hasMany(PortifolioGB::class, 'portifolio');
     }
 
-    public function cover()
-    {
-        return $this->hasOne(PortifolioGB::class, 'portifolio')->where('cover', true);
-    }
-
     public function scopeActive($query)
     {
         return $query->where('status', 1);
@@ -66,5 +68,31 @@ class Portifolio extends Model
     public function scopePublic($query)
     {
         return $query->where('exibir', 1);
+    }
+
+    public function cover()
+    {
+        $images = $this->images();
+        $cover = $images->where('cover', 1)->first(['path']) ??
+                $images->first(['path']);
+
+        if (!$cover || empty($cover->path)) {
+            return asset('theme/images/image.jpg');
+        }
+
+        return Storage::url(Cropper::thumb($cover['path'], 1366, 768));
+    } 
+
+    public function thumb()
+    {
+        $images = $this->images();
+        $cover = $images->where('cover', 1)->first(['path']) ??
+                $images->first(['path']);
+
+        if (!$cover || empty($cover->path)) {
+            return asset('theme/images/image.jpg');
+        }
+
+        return Storage::url(Cropper::thumb($cover['path'], 200, 200));
     }
 }

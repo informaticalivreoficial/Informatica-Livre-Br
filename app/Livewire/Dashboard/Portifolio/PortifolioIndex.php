@@ -91,7 +91,7 @@ class PortifolioIndex extends Component
         $title = 'Portifólio -Lista de Trabalhos';
         $searchableFields = ['name','content','slug'];
         $trabalhos = Portifolio::query()
-            ->with(['categoryRelation', 'cover'])
+            ->with(['categoryRelation', 'images'])
             ->when($this->search, function ($query) use ($searchableFields) {
                 $query->where(function ($q) use ($searchableFields) {
                     foreach ($searchableFields as $field) {

@@ -1,8 +1,5 @@
 @extends('web.layouts.app')
 
-@section('title', 'Portfólio - Informática Livre')
-@section('description', 'Conheça nossos trabalhos e projetos desenvolvidos para clientes em Ubatuba/SP e região.')
-
 @section('content')
 
     {{-- HERO --}}
@@ -16,14 +13,14 @@
     {{-- FILTROS --}}
     <section class="bg-white border-b sticky top-[73px] z-40">
         <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap gap-3 items-center">
-            <a href="{{ route('site.portifolio') }}"
+            <a href="{{ route('web.portifolio') }}"
                 class="px-4 py-2 rounded-full text-sm font-medium transition
                     {{ !request('categoria') ? 'bg-teal-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-teal-50 hover:text-teal-600' }}">
                 Todos
             </a>
             @foreach($categorias as $cat)
                 @foreach($cat->children as $sub)
-                    <a href="{{ route('site.portifolio', ['categoria' => $sub->id]) }}"
+                    <a href="{{ route('web.portifolio', ['categoria' => $sub->id]) }}"
                         class="px-4 py-2 rounded-full text-sm font-medium transition
                             {{ request('categoria') == $sub->id ? 'bg-teal-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-teal-50 hover:text-teal-600' }}">
                         {{ $sub->title }}
@@ -39,20 +36,14 @@
             @if($trabalhos->count() > 0)
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     @foreach($trabalhos as $trabalho)
-                        <a href="{{ route('site.portifolio.single', $trabalho->slug) }}"
+                        <a href="{{ route('web.portifolio.single', $trabalho->slug) }}"
                             class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition">
-                            <div class="overflow-hidden h-56">
-                                @if($trabalho->cover)
-                                    <img
-                                        src="{{ Storage::url($trabalho->cover->path) }}"
-                                        alt="{{ $trabalho->name }}"
-                                        class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                                    >
-                                @else
-                                    <div class="w-full h-full bg-gray-100 flex items-center justify-center">
-                                        <i class="fas fa-image text-gray-300 text-4xl"></i>
-                                    </div>
-                                @endif
+                            <div class="overflow-hidden h-56">                                
+                                <img
+                                    src="{{ $trabalho->cover() }}"
+                                    alt="{{ $trabalho->name }}"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                                >                                
                             </div>
                             <div class="p-6">
                                 <span class="text-xs text-teal-600 font-medium uppercase tracking-wide">
@@ -99,7 +90,7 @@
         <div class="max-w-4xl mx-auto px-4 text-center text-white">
             <h2 class="text-3xl md:text-4xl font-bold mb-4">Gostou do que viu?</h2>
             <p class="text-teal-100 text-lg mb-8">Entre em contato e vamos criar algo incrível juntos.</p>
-            <a href="{{ route('site.contato') }}"
+            <a href="{{ route('web.contact') }}"
                 class="bg-white text-teal-700 hover:bg-teal-50 px-10 py-4 rounded-lg font-bold text-lg transition inline-block">
                 Solicitar Orçamento
             </a>

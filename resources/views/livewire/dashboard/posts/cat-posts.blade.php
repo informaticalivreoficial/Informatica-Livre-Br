@@ -55,7 +55,7 @@
                         <tbody>
                             @foreach($categories as $category)
                                 <tr style="{{ ($category->status == true ? '' : 'background: #fffed8 !important;')  }}">
-                                    <td><i class="fas fa-angle-right"></i> {{$category->title}}</td>
+                                    <td class="font-weight-bold"><i class="fas fa-angle-right text-green-700 mr-2"></i> {{$category->title}}</td>
                                     <td class="text-center">{{ $category->status ? 'Sim' : 'Não' }}</td>
                                     <td class="text-center">{{date('d/m/Y', strtotime($category->created_at))}}</td>
                                     <td class="text-center">{{$category->type}}</td>
@@ -94,7 +94,7 @@
                                 @if ($category->children()->count() > 0)
                                     @foreach($category->children()->get() as $subcategory)                        
                                     <tr style="{{ ($subcategory->status == true ? '' : 'background: #fffed8 !important;')  }}">                            
-                                        <td><i class="fas fa-angle-double-right"></i>  {{$subcategory->title}}</td>
+                                        <td><i class="fas fa-angle-double-right text-green-600 mr-2"></i>  {{$subcategory->title}}</td>
                                         <td class="text-center">{{ $subcategory->status ? 'Sim' : 'Não' }}</td>
                                         <td class="text-center">{{date('d/m/Y', strtotime($subcategory->created_at))}}</td>
                                         <td class="text-center">---------</td>
