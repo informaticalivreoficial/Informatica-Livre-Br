@@ -6,14 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
-class PortifolioGB extends Model
+class ProdutoGB extends Model
 {
     use HasFactory;
 
-    protected $table = 'portifolio_gbs';
+    protected $table = 'produto_gbs';
 
     protected $fillable = [
-        'portifolio',
+        'produto',
         'path',
         'cover',
         'watermark',
@@ -29,14 +29,19 @@ class PortifolioGB extends Model
     /**
      * Relations
     */
-    public function portifolio()
+    public function produto()
     {
-        return $this->belongsTo(Portifolio::class, 'portifolio');
+        return $this->belongsTo(Produto::class, 'produto');
     }    
 
     /**
      * Scopes
     */
+    public function scopeCover($query)
+    {
+        return $query->where('cover', true);
+    }
+
     public function getUrlAttribute(): string
     {
         return Storage::url($this->path);

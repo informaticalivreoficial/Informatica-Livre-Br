@@ -20,6 +20,7 @@ use App\Livewire\Dashboard\Slides\SlideForm;
 use App\Livewire\Dashboard\Slides\Slides;
 use App\Http\Controllers\Web\{
     ClienteController,
+    ProdutoController,
     SiteController,
     WebController
 };
@@ -67,10 +68,13 @@ Route::group(['as' => 'web.'], function () {
     Route::get('/atendimento', [SiteController::class, 'contact'])->name('contact');
     Route::get('/pagina/{slug}', [SiteController::class, 'page'])->name('page');
 
-    Route::get('/consultoria', [SiteController::class, 'consultoria'])->name('consultoria');
-
+    
     Route::get('/politica-de-privacidade', [SiteController::class, 'privacy'])->name('privacy');
     Route::get('/termos-e-condicoes', [SiteController::class, 'terms'])->name('terms');
+
+    Route::get('/sistemas', [ProdutoController::class, 'index'])->name('web.produtos');
+    Route::get('/sistemas/{slug}', [ProdutoController::class, 'show'])->name('web.produto');
+    //Route::get('/checkout/{produto}/{plano}', ...)->name('web.checkout'); // próximo passo
     
     /** Página Inicial */
     //Route::get('teste-qrcode', [WebController::class, 'qrcode'])->name('qrcode'); 

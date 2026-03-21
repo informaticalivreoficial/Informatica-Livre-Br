@@ -195,17 +195,4 @@ class SiteController extends Controller
             'head' => $head,
         ]);
     }
-
-    public function consultoria()
-    {
-        $head = $this->seo->render('Orçamento Perdonalizado - ' . $this->config->app_name ?? env('APP_NAME'),
-            'Precisa de um orçamento personalizado? Entre em contato conosco, teremos prazer em atendê-lo!',
-            route('web.consultoria'),
-            $this->config->getmetaimg() ?? url(asset('theme/images/image.jpg'))
-        );
-
-        return view('web.consultoria', [
-            'head' => $head
-        ]);
-    }
 }
