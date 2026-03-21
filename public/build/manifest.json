@@ -3,8 +3,14 @@
     "file": "assets/index-1lfuMtFk.js",
     "name": "index"
   },
+  "node_modules/alpinejs/dist/module.esm.js": {
+    "file": "assets/module.esm-CrphvaCR.js",
+    "name": "module.esm",
+    "src": "node_modules/alpinejs/dist/module.esm.js",
+    "isDynamicEntry": true
+  },
   "resources/css/app.css": {
-    "file": "assets/app-BTnDQqCZ.css",
+    "file": "assets/app-CaI5Gpwl.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "name": "app",
@@ -22,12 +28,15 @@
     ]
   },
   "resources/js/front.js": {
-    "file": "assets/front-Co1qpomY.js",
+    "file": "assets/front-DJYQSGtH.js",
     "name": "front",
     "src": "resources/js/front.js",
     "isEntry": true,
     "imports": [
       "_index-1lfuMtFk.js"
+    ],
+    "dynamicImports": [
+      "node_modules/alpinejs/dist/module.esm.js"
     ]
   }
 }

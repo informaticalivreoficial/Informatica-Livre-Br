@@ -16,3 +16,4 @@ yarn-error.log
 /.vscode
 /arquivos_locais
 google-credentials.json
+/public/sitemap.xml
