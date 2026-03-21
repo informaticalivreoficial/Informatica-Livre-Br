@@ -31,5 +31,5 @@
         <x-input.date wire:model="ends_at" label="Fim (opcional)" />
 
         <x-input.switch wire:model="active" label="Ativo" />
-    </div>
+    </div>  
 </div>
