@@ -23,10 +23,6 @@ class Posts extends Component
 
     public string $sortDirection = 'desc';
 
-    public bool $active = false;
-
-    public ?int $delete_id = null;
-
     #{Url}
     public function updatingSearch(): void
     {
@@ -70,57 +66,39 @@ class Posts extends Component
         ]);
     }
 
-    public function toggleStatus($postId)
-    {
-        try {
-            $post = Post::findOrFail($postId);
-            $post->status = !$post->status;
-            $post->save();
-
-            // $this->dispatch('swal', [
-            //     'icon' => 'success',
-            //     'title' => 'Status atualizado!',
-            //     'text' => $post->status ? 'Post publicado' : 'Post despublicado',
-            //     'timer' => 2000,
-            //     'showConfirmButton' => false,
-            // ]);
-
-        } catch (\Exception $e) {
-            $this->dispatch('swal', [
-                'icon' => 'error',
-                'title' => 'Erro ao atualizar status',
-                'text' => $e->getMessage(),
-            ]);
-        }
+    public function toggleStatus($id)
+    {              
+        $post = Post::findOrFail($id);
+        $post->status = !$post->status;        
+        $post->save();
     }
 
     public function setDeleteId($id)
     {
-        $this->delete_id = $id;
-        $this->dispatch('delete-prompt');        
+        $this->dispatch('swal:confirm', [
+            'title' => 'Excluir Post?',
+            'text' => 'Essa ação não pode ser desfeita.',
+            'icon' => 'warning',
+            'confirmButtonText' => 'Sim, excluir',
+            'cancelButtonText' => 'Cancelar',
+            'confirmEvent' => 'deletePost',
+            'confirmParams' => [$id],
+        ]);        
     }
 
-    #[On('goOn-Delete')]
-    public function delete(): void
+    #[On('deletePost')]
+    public function deletePost($id): void
     {
-        try {
-            $post = Post::findOrFail($this->delete_id);
+        $post = Post::findOrFail($id);
 
-            $post->delete(); // já dispara o hook no model
+        $post->delete();
 
-            $this->delete_id = null;
-
-            $this->dispatch('swal', [
-                'title' => 'Sucesso!',
-                'icon'  => 'success',
-                'text'  => 'O Post e todas as imagens foram removidas!',
-            ]);
-        } catch (\Exception $e) {
-            $this->dispatch('swal', [
-                'title' => 'Erro!',
-                'icon'  => 'error',
-                'text'  => 'Não foi possível excluir o post.',
-            ]);
-        }
+        $this->dispatch('swal', [
+            'title' => 'Excluído!',
+            'text'  => 'O Post e todas as imagens foram removidas!',
+            'icon'  => 'success',
+            'timer' => 2000,
+            'showConfirmButton' => false,
+        ]);
     }    
 }

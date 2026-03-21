@@ -52,6 +52,7 @@ class Config extends Model
         //Seo
         'information', 
         'privacy_policy',
+        'terms_condicions',
         'maps_google', 
         'metatags', 'rss', 
         'rss_data', 
@@ -110,6 +111,14 @@ class Config extends Model
             return url(asset('theme/images/image.jpg'));
         } 
         return Storage::url($this->imgheader);
+    }
+
+    public function getlogofooter()
+    {
+        if(empty($this->logo_footer) || !Storage::disk()->exists($this->logo_footer)) {
+            return url(asset('theme/images/image.jpg'));
+        } 
+        return Storage::url($this->logo_footer);
     }
     
     public function setZipcodeAttribute($value)

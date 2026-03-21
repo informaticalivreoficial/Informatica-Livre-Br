@@ -178,9 +178,12 @@
                                     <span class="invalid-feedback d-block">{{ $message }}</span>
                                 @enderror
                             </div>
-                            <div class="col-12" wire:ignore> 
-                                <label class="labelforms text-muted"><b>Conteúdo</b></label>                                
-                                <textarea id="content" wire:model="content">{{ $content ?? '' }}</textarea>                                                                                     
+                            <div class="col-12">   
+                                <label class="labelforms"><b>Conteúdo</b></label>
+                                <x-editor-quill 
+                                    :value="$this->content" 
+                                    model="content" 
+                                />                                                                                     
                             </div>
                         </div>                 
                     </div>

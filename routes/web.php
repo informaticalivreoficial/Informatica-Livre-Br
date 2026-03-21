@@ -18,90 +18,65 @@ use App\Livewire\Dashboard\Posts\PostForm;
 use App\Livewire\Dashboard\Posts\Posts;
 use App\Livewire\Dashboard\Slides\SlideForm;
 use App\Livewire\Dashboard\Slides\Slides;
-use App\Http\Controllers\Admin\{
-    AdminController,
-    BancoController,
-    CatPortifolioController,
-    UserController,
-    EmailController,
-    PostController,
-    CatPostController,
-    ConfigController,
-    EmpresaController,
-    CofreController,
-    FaturaController,
-    NewsletterController,
-    NotificationController,
-    ParceiroController,
-    PedidoController,
-    PortifolioController,
-    SitemapController,
-    SlideController
-};
 use App\Http\Controllers\Web\{
     ClienteController,
-    RssFeedController,
-    SendEmailController,
+    ProdutoController,
+    SiteController,
     WebController
 };
+use App\Livewire\Dashboard\Permissions\Index as PermissionIndex;
+use App\Livewire\Dashboard\Roles\Index as RoleIndex;
+use App\Livewire\Dashboard\Companies\Companies;
+use App\Livewire\Dashboard\Companies\CompanyForm;
+use App\Livewire\Dashboard\Portifolio\PortifolioCategories;
+use App\Livewire\Dashboard\Portifolio\PortifolioForm;
+use App\Livewire\Dashboard\Portifolio\PortifolioIndex;
+use App\Livewire\Dashboard\Safe\Safe;
+use App\Livewire\Dashboard\Safe\SafeForm;
+use App\Livewire\Dashboard\Service\InvoiceIndex;
+use App\Livewire\Dashboard\Service\ServiceForm;
+use App\Livewire\Dashboard\Service\ServiceIndex;
+use App\Livewire\Dashboard\Service\SubscriptionForm;
+use App\Livewire\Dashboard\Service\SubscriptionIndex;
+use App\Livewire\Dashboard\Service\SubscriptionShow;
+use App\Livewire\Dashboard\Sitemap\SitemapGenerator;
+
+Route::prefix('cliente')->name('cliente.')->group(function () {
+    // Acesso público
+    Route::get('/entrar', [ClienteController::class, 'entrar'])->name('entrar');
+    Route::post('/enviar-link', [ClienteController::class, 'enviarLink'])->name('enviar-link');
+    Route::get('/auth/{token}', [ClienteController::class, 'autenticar'])->name('auth');
+    Route::post('/sair', [ClienteController::class, 'sair'])->name('sair');
+
+    // Painel protegido
+    Route::middleware('cliente.auth')->group(function () {
+        Route::get('/dashboard', [ClienteController::class, 'dashboard'])->name('dashboard');
+        Route::get('/faturas', [ClienteController::class, 'faturas'])->name('faturas');
+        Route::get('/servicos', [ClienteController::class, 'servicos'])->name('servicos');
+        Route::get('/empresa', [ClienteController::class, 'empresa'])->name('empresa');
+    });
+});
 
 Route::group(['as' => 'web.'], function () {
+
+    Route::get('/', [SiteController::class, 'home'])->name('home');
+    Route::get('/portifolio', [SiteController::class, 'portifolio'])->name('portifolio');
+    Route::get('/portifolio/{slug}', [SiteController::class, 'portifolioSingle'])->name('portifolio.single');
+    Route::get('/blog', [SiteController::class, 'blog'])->name('blog.artigos');
+    Route::get('/blog/{slug}', [SiteController::class, 'blogSingle'])->name('blog.artigo');
+    Route::get('/blog/categoria/{slug}', [SiteController::class, 'blogCategoria'])->name('site.blog.categoria');
+    Route::get('/atendimento', [SiteController::class, 'contact'])->name('contact');
+    Route::get('/pagina/{slug}', [SiteController::class, 'page'])->name('page');
+
     
-    /** Página Inicial */
-    //Route::get('teste-qrcode', [WebController::class, 'qrcode'])->name('qrcode'); 
-    Route::get('/', [WebController::class, 'home'])->name('home');   
+    Route::get('/politica-de-privacidade', [SiteController::class, 'privacy'])->name('privacy');
+    Route::get('/termos-e-condicoes', [SiteController::class, 'terms'])->name('terms');
+
+    Route::get('/sistemas', [ProdutoController::class, 'index'])->name('web.produtos');
+    Route::get('/sistemas/{slug}', [ProdutoController::class, 'show'])->name('web.produto');
+    //Route::get('/checkout/{produto}/{plano}', ...)->name('web.checkout'); // próximo passo
     
-    //Pagamentos
-    //Route::get('pagar/{uuid}', [ClienteController::class, 'pagar'])->name('pagar');
-    //Route::post('notification/pagHiper', [PedidoController::class, 'getTransaction'])->name('getTransaction');
-    //Route::get('status-do-boleto', [PedidoController::class, 'statusBoleto'])->name('statusBoleto');
-
-    //****************************** Política de Privacidade ******************************/
-    // Route::get('/politica-de-privacidade', [WebController::class, 'politica'])->name('politica');
-    // Route::get('/consultoria/produtos', [WebController::class, 'orcamento'])->name('orcamento');
-    // Route::get('/consultoria/orcamento', [WebController::class, 'formorcamento'])->name('formorcamento');
-    // Route::get('/quem-somos', [WebController::class, 'quemsomos'])->name('quemsomos');
-    // Route::get('consultoria/orcamentos/form-client/{token}', [WebController::class, 'formClient'])->name('formClient');
-
-    //** Página Destaque */
-    //Route::get('/destaque', 'WebController@spotlight')->name('spotlight');
     
-    //** Página Inicial */
-    //Route::match(['post', 'get'], '/filtro', 'WebController@filter')->name('filter');
-
-    //****************************** Parceiros *********************************************/
-    //Route::get('/parceiro/{slug}', [WebController::class, 'parceiro'])->name('parceiro');
-
-    //***************************** Cliente ********************************************/
-    //Route::get('/cliente/login', [ClienteController::class, 'login'])->name('login');
-    //Route::get('/cliente/minha-fatura/{uuid}', [ClienteController::class, 'fatura'])->name('fatura');
-    //Route::get('cliente/minha-fatura/set-gateway', [FaturaController::class, 'SetGateway'])->name('SetGateway');
-   
-    //**************************** Emails ********************************************/
-    // Route::get('/atendimento', [WebController::class, 'atendimento'])->name('atendimento');
-    // Route::get('/sendEmail', [SendEmailController::class, 'sendEmail'])->name('sendEmail');
-    // Route::get('/sendNewsletter', [SendEmailController::class, 'sendNewsletter'])->name('sendNewsletter');
-    // Route::get('/sendOrcamento', [SendEmailController::class, 'sendOrcamento'])->name('sendOrcamento');
-    // Route::get('/sendFormCaptacao', [SendEmailController::class, 'sendFormCaptacao'])->name('sendFormCaptacao');    
-    
-    //****************************** Blog ***********************************************/
-    // Route::get('/blog/artigo/{slug}', [WebController::class, 'artigo'])->name('blog.artigo');
-    // Route::get('/blog/categoria/{slug}', [WebController::class, 'categoria'])->name('blog.categoria');
-    // Route::get('/blog', [WebController::class, 'artigos'])->name('blog.artigos');
-    // Route::match(['get', 'post'],'/blog/pesquisar', [WebController::class, 'searchBlog'])->name('blog.searchBlog');
-
-    //****************************** Portifólio *******************************************/
-    //Route::get('/portifolio/{slug}', [WebController::class, 'projeto'])->name('projeto');
-    //Route::get('/portifolio', [WebController::class, 'portifolio'])->name('portifolio');
-
-    //*************************************** Páginas *******************************************/
-    //Route::get('/pagina/{slug}', [WebController::class, 'pagina'])->name('pagina');
-
-    //** Pesquisa */
-    //Route::match(['post', 'get'], '/pesquisa', [WebController::class, 'pesquisa'])->name('pesquisa');
-
-    //** FEED */    
-    //Route::get('feed', [RssFeedController::class, 'feed'])->name('feed');
     
 
 });
@@ -110,6 +85,35 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
 
     Route::get('/', Dashboard::class)->name('admin');
     Route::get('configuracoes', Settings::class)->name('settings');
+    Route::get('sitemap-generator', SitemapGenerator::class)->name('sitemap.generator');
+
+    // Somente Super Admin
+    Route::middleware('role:super-admin')->group(function () {
+        Route::get('empresas', Companies::class)->name('companies.index');
+        Route::get('empresas/cadastrar-empresa', CompanyForm::class)->name('companies.create');
+        Route::get('empresas/{company}/editar-empresa', CompanyForm::class)->name('companies.edit'); 
+        
+        Route::get('usuarios/time', Time::class)->name('users.time');
+    });   
+    
+
+    //****************************** Cofre *******************************************/
+    Route::get('cofre/{safe}/editar', SafeForm::class)->name('safe.edit');
+    Route::get('cofre/cadastrar', SafeForm::class)->name('safe.create');
+    Route::get('cofre', Safe::class)->name('safes.index');
+
+    //****************************** Serviços ****************************************/
+    Route::get('/services', ServiceIndex::class)->name('services.index');
+    Route::get('/services/create', ServiceForm::class)->name('services.create');
+    Route::get('/services/{service}/edit', ServiceForm::class)->name('services.edit');
+    Route::get('/pedidos', SubscriptionIndex::class)->name('services.subscriptions.index');
+    Route::get('/pedidos/create', SubscriptionForm::class)->name('services.subscriptions.create');
+    Route::get('/pedidos/{subscription}/edit', SubscriptionForm::class)->name('services.subscriptions.edit');
+    Route::get('/pedido/{subscription}/show', SubscriptionShow::class)->name('services.subscriptions.show');
+    Route::get('/pedidos/{subscription}/faturas', InvoiceIndex::class)->name('services.invoices.index');
+
+    Route::get('/cargos', RoleIndex::class)->name('admin.roles');
+    Route::get('/permissoes', PermissionIndex::class)->name('admin.permissions');
 
     //******************************* Newsletter *********************************************/
     // Route::match(['post', 'get'], 'listas/padrao', [NewsletterController::class, 'padraoMark'])->name('listas.padrao');
@@ -163,6 +167,13 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
     // Route::get('portifolio/categorias', [CatPortifolioController::class, 'index'])->name('catportifolio.index');
 
     //*************************** Portifólio *******************************************/
+    Route::get('/portifolio/categorias', PortifolioCategories::class)->name('portifolio.categories.index');
+    
+
+    Route::get('/portifolio', PortifolioIndex::class)->name('portifolio.index');
+    Route::get('/portifolio/cadastrar', PortifolioForm::class)->name('portifolio.create');
+    Route::get('/portifolio/{portifolio}/editar', PortifolioForm::class)->name('portifolio.edit');
+
     // Route::match(['get', 'post'], 'portifolio/pesquisa', [PortifolioController::class, 'search'])->name('portifolio.search');
     // Route::get('portifolio/set-status', [PortifolioController::class, 'portifolioSetStatus'])->name('portifolio.portifolioSetStatus');
     // Route::post('portifolio/image-set-cover', [PortifolioController::class, 'imageSetCover'])->name('portifolio.imageSetCover');
@@ -236,6 +247,8 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
     Route::get('slides/{slide}/editar', SlideForm::class)->name('slides.edit');
     Route::get('slides/cadastrar', SlideForm::class)->name('slides.create');
     Route::get('slides', Slides::class)->name('slides.index');
+
+    
 
     // Route::get('/notifications', [NotificationController::class, 'notifications'])->name('notifications');
     // Route::put('/notification-all-read', [NotificationController::class, 'markAllAsRead']);

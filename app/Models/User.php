@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -11,10 +11,10 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     protected $fillable = [
-        'name', 'password', 'remember_token', 'code',
+        'name', 'password', 'remember_token',
         'gender',
         'cpf',
         'rg',
@@ -28,28 +28,16 @@ class User extends Authenticatable
         //Contact
         'phone', 'cell_phone', 'whatsapp', 'skype', 'telegram', 'email', 'additional_email',
         //Social
-        'facebook', 'twitter', 'instagram', 'youtube', 'fliccr', 'linkedin',
-        //Function
-        'admin', 'client', 'editor', 'superadmin',
+        'facebook', 'twitter', 'instagram', 'linkedin',        
         'status',
         'information'
-    ];
+    ];    
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
@@ -57,6 +45,30 @@ class User extends Authenticatable
         'admin' => 'boolean',
         'superadmin' => 'boolean',
     ];
+
+    protected static function booted()
+    {
+        static::deleting(function ($user) {
+            if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
+                Storage::disk('public')->delete($user->avatar);
+            }
+        });
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->hasRole('super-admin');
+    }
+
+    public function isManager(): bool
+    {
+        return $this->hasRole('manager');
+    }
+
+    public function isEmployee(): bool
+    {
+        return $this->hasRole('employee');
+    }
 
     /**
      * Relacionamentos
@@ -78,22 +90,6 @@ class User extends Authenticatable
     /**
      * Accerssors and Mutators
     */
-
-    //Exibe a função do usuário
-    public function getFuncao() {
-        if($this->admin == 1 && $this->client == 0 && $this->superadmin == 0){
-            return 'Administrador';
-        }elseif($this->admin == 0 && $this->client == 1 && $this->superadmin == 0){
-            return 'Cliente';
-        }elseif($this->admin == 0 && $this->client == 0 && $this->editor == 1 && $this->superadmin == 0){
-            return 'Editor';
-        }elseif($this->admin == 1 && $this->client == 1 && $this->superadmin == 0){
-            return 'Administrador/Cliente'; 
-        }else{
-            return 'Super Administrador'; 
-        }
-    }
-
     public function getUrlAvatarAttribute()
     {
         if (!empty($this->avatar)) {

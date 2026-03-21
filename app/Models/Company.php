@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class Company extends Model
 {
@@ -12,18 +14,47 @@ class Company extends Model
     protected $table = 'companies';
 
     protected $fillable = [
-        'user',
+        'uuid',
+        'api_token',
+        'magic_token',
+        'magic_token_expires_at',
+        'responsable_name',
+        'responsable_email',
+        'responsable_cpf',
+        'logo',
         'social_name',
         'alias_name',
         'document_company',
         'document_company_secondary',
         'information',
         'status',
+        //Redes Sociais
+        'facebook', 'twitter', 'instagram', 'linkedin',
         //contact 
         'phone', 'cell_phone', 'whatsapp', 'telegram', 'email', 'additional_email',
         //Address      
         'zipcode', 'street', 'number', 'complement', 'neighborhood', 'state', 'city',
     ];
+
+    protected $casts = [
+        'status' => 'boolean',
+    ];
+
+    protected static function booted()
+    {
+        static::creating(function ($company) {
+            $company->uuid      = Str::uuid();
+            $company->api_token = Str::random(64);
+        });
+    }
+
+    // Gera novo token manualmente se precisar
+    public function regenerateToken(): string
+    {
+        $token = Str::random(64);
+        $this->update(['api_token' => $token]);
+        return $token;
+    }
 
     /**
      * Scopes
@@ -41,19 +72,55 @@ class Company extends Model
     /**
      * Relationships
     */
+
+    public function services()
+    {
+        return $this->belongsToMany(Service::class, 'company_services')
+            ->withPivot([
+                'amount',
+                'interval',
+                'starts_at',
+                'ends_at',
+                'active',
+            ])
+            ->withTimestamps();
+    }
+
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
+    }
+
     public function owner()
     {
         return $this->hasOne(User::class, 'id', 'user');
-    }
-    
-    public function manifest()
-    {
-        return $this->hasMany(Manifest::class, 'company', 'id');
-    }
+    }    
 
     /**
      * Accerssors and Mutators
     */
+    public function getlogo()
+    {
+        if(empty($this->logo) || !Storage::disk()->exists($this->logo)) {
+            return asset('theme/images/image.jpg');
+        } 
+        return Storage::url($this->logo);
+    }
+
+    public function logoPathForPdf(): string
+    {
+        if ($this->logo && file_exists(storage_path('app/public/' . $this->logo))) {
+            return storage_path('app/public/' . $this->logo);
+        }
+
+        return public_path('theme/images/image.jpg');
+    }
+
     public function setZipcodeAttribute($value)
     {
         $this->attributes['zipcode'] = (!empty($value) ? $this->clearField($value) : null);
@@ -128,6 +195,25 @@ class Company extends Model
             substr($value, 0, 2) . ') ' .
             substr($value, 2, 5) . '-' .
             substr($value, 7, 4) ;
+    }
+
+    public function generateMagicToken(): string
+    {
+        $token = \Illuminate\Support\Str::random(64);
+
+        $this->update([
+            'magic_token'            => $token,
+            'magic_token_expires_at' => now()->addMinutes(15),
+        ]);
+
+        return $token;
+    }
+
+    public function isMagicTokenValid(string $token): bool
+    {
+        return $this->magic_token === $token
+            && $this->magic_token_expires_at
+            && $this->magic_token_expires_at->isFuture();
     }
 
     private function convertStringToDate(?string $param)

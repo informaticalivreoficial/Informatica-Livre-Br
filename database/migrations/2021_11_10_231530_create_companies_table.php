@@ -12,14 +12,29 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('companies', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('user')->nullable();
+            $table->id();
+            $table->uuid('uuid')->unique();            
+            $table->string('api_token', 64)->unique()->nullable();
+            $table->string('magic_token', 64)->nullable()->unique();
+            $table->timestamp('magic_token_expires_at')->nullable();
+            $table->string('responsable_name');
+            $table->string('responsable_email');
+            $table->string('responsable_cpf')->nullable();
             $table->string('social_name')->nullable();
             $table->string('alias_name')->nullable();
             $table->string('document_company')->nullable();
             $table->string('document_company_secondary')->nullable();
             $table->text('information')->nullable();
             $table->integer('status')->default('0');
+
+            /** logo */
+            $table->string('logo')->nullable();
+
+            /** social */
+            $table->string('facebook')->nullable();
+            $table->string('twitter')->nullable();
+            $table->string('instagram')->nullable();
+            $table->string('linkedin')->nullable();
 
             /** address */
             $table->string('zipcode')->nullable();

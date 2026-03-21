@@ -1,6 +1,33 @@
+@import 'flatpickr/dist/flatpickr.min.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.flatpickr-calendar * {
+    box-sizing: border-box;
+}
+
+.flatpickr-calendar {
+    font-size: 14px;
+}
+
+.flatpickr-day {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flatpickr-weekday {
+    text-align: center;
+}
+
+.flatpickr-day.selected {
+    @apply bg-green-600 border-green-600 text-white;
+}
+
+.flatpickr-day.inRange {
+    @apply bg-green-100;
+}
 
 @layer components {
   .input-form {

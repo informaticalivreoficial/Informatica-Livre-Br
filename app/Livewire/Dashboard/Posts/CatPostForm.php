@@ -44,12 +44,12 @@ class CatPostForm extends Component
     }
 
     public function save(): void
-    {
+    {        
         $this->validate([
             'title' => 'required|string|max:255',
             'type' => Rule::requiredIf($this->parentId === null),
             'status' => 'required|boolean',
-            'parentId' => 'nullable|exists:cat_post,id',
+            'parentId' => 'nullable|exists:cat_portifolios,id',
         ]);
 
         CatPost::updateOrCreate(
@@ -77,6 +77,10 @@ class CatPostForm extends Component
 
     public function getModalTitleProperty()
     {
+        if ($this->id && $this->parentId) {
+            return 'Editar Subcategoria';
+        }
+
         if ($this->id) {
             return 'Editar Categoria';
         }

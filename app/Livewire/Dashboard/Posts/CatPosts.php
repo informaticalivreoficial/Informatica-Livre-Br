@@ -23,10 +23,6 @@ class CatPosts extends Component
 
     public string $sortDirection = 'desc';
 
-    public bool $active;
-
-    public ?int $delete_id = null;
-
     protected $listeners = ['category-saved' => '$refresh'];
 
     #{Url}
@@ -45,6 +41,69 @@ class CatPosts extends Component
         }
 
         $this->resetPage();
+    }    
+
+    public function toggleStatus($id)
+    {
+        $category = CatPost::with('children')->findOrFail($id);
+
+        $newStatus = ! (bool) $category->status;
+
+        // atualiza a categoria clicada
+        $category->update([
+            'status' => $newStatus,
+        ]);
+
+        // se for PAI, replica para as filhas
+        if ($category->children->isNotEmpty()) {
+            $category->children()->update([
+                'status' => $newStatus,
+            ]);
+        }
+    }
+
+    public function setDeleteId($id)
+    {        
+        $category = CatPost::findOrFail($id);
+
+        if($category->children()->count() > 0){
+            $this->dispatch('swal', [
+                'title' => 'Erro!',
+                'icon'  => 'error',
+                'text'  => 'Não é possível excluir uma categoria que possui subcategorias.',
+            ]);
+            return;
+        }
+
+        if($category->countposts() > 0){
+            $text = 'Essa categoria possui posts cadastrados e todos serão removidos. Deseja excluir mesmo assim?';
+        }
+
+        $this->dispatch('swal:confirm', [
+            'title' => 'Excluir ' . ($category->children()->count() > 0 ? 'SubCategoria' : 'Categoria'),
+            'text' => (isset($text) ? $text : 'Essa ação não pode ser desfeita.'),
+            'icon' => 'warning',
+            'confirmButtonText' => 'Sim, excluir',
+            'cancelButtonText' => 'Cancelar',
+            'confirmEvent' => 'deleteCategory',
+            'confirmParams' => [$id],
+        ]);       
+    }
+
+    #[On('deleteCategory')]
+    public function deleteCategory($id): void
+    {
+        $category = CatPost::findOrFail($id);
+
+        $category->delete();
+
+        $this->dispatch('swal', [
+            'title' => 'Excluído!',
+            'text'  => ($category->children()->count() > 0 ? 'SubCategoria' : 'Categoria') . ' excluída com sucesso.',
+            'icon'  => 'success',
+            'timer' => 2000,
+            'showConfirmButton' => false,
+        ]);
     }
 
     public function render()
@@ -66,45 +125,5 @@ class CatPosts extends Component
             'title' => $title,
             'categories' => $categories,
         ]);
-    }
-
-    public function setDeleteId($id)
-    {
-        $this->delete_id = $id;
-        $this->dispatch('delete-prompt');        
-    }
-
-    #[On('goOn-Delete')]
-    public function delete(): void
-    {
-        try {
-            $category = CatPost::with('children')->findOrFail($this->delete_id);
-
-            // Verifica se possui subcategorias
-            if ($category->children->count() > 0) {
-                $this->dispatch('swal', [
-                    'title' => 'Erro!',
-                    'icon'  => 'error',
-                    'text'  => 'Não é possível excluir uma categoria que possui subcategorias.',
-                ]);
-                return;
-            }
-
-            $category->delete(); // já dispara o hook no model
-
-            $this->delete_id = null;
-
-            $this->dispatch('swal', [
-                'title' => 'Sucesso!',
-                'icon'  => 'success',
-                'text'  => 'Categoria Removida!',
-            ]);
-        } catch (\Exception $e) {
-            $this->dispatch('swal', [
-                'title' => 'Erro!',
-                'icon'  => 'error',
-                'text'  => 'Não foi possível excluir a categoria.',
-            ]);
-        }
     }
 }

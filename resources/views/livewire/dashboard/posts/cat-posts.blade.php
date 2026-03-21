@@ -54,47 +54,72 @@
                         </thead>
                         <tbody>
                             @foreach($categories as $category)
-                                <tr>
-                                    <td><i class="fas fa-angle-right"></i> {{$category->title}}</td>
+                                <tr style="{{ ($category->status == true ? '' : 'background: #fffed8 !important;')  }}">
+                                    <td class="font-weight-bold"><i class="fas fa-angle-right text-green-700 mr-2"></i> {{$category->title}}</td>
                                     <td class="text-center">{{ $category->status ? 'Sim' : 'Não' }}</td>
-                                    <td class="text-center">{{date('d/m/Y H:i', strtotime($category->created_at))}}</td>
+                                    <td class="text-center">{{date('d/m/Y', strtotime($category->created_at))}}</td>
                                     <td class="text-center">{{$category->type}}</td>
-                                    <td class="px-4 py-4 flex items-center justify-center gap-2 h-full">
-                                        <!-- Editar categoria -->
-                                        <a 
-                                            data-id="{{ $category->id }}"
-                                            x-on:click="$dispatch('open-category-modal', { editId: parseInt($el.dataset.id) })"
-                                            class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 hover:text-blue-800 transition flex-shrink-0">
-                                            <i class="fas fa-pen"></i>
-                                        </a>
-
-                                        <!-- Criar subcategoria -->
-                                        <a 
-                                            data-parent-id="{{ $category->id }}"
-                                            x-on:click="$dispatch('open-category-modal', { categoryId: parseInt($el.dataset.parentId) })" 
-                                           class="btn btn-sm btn-success">
-                                           Criar Subcategoria
-                                        </a>  
-                                        <button type="button" class="flex items-center justify-center w-8 h-8 rounded-full bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-800 transition flex-shrink-0" wire:click="setDeleteId({{$category->id}})">
-                                            <i class="fas fa-trash"></i>
-                                        </button>                                 
-                                    </td>
-                                </tr>
-                                @if ($category->children)
-                                    @foreach($category->children as $subcategory)                        
-                                    <tr>                            
-                                        <td><i class="fas fa-angle-double-right"></i>  {{$subcategory->title}}</td>
-                                        <td class="text-center">{{ $subcategory->status ? 'Sim' : 'Não' }}</td>
-                                        <td class="text-center">{{$subcategory->created_at}}</td>
-                                        <td class="text-center">---------</td>
-                                        <td class="px-4 py-4 flex items-center justify-center gap-2 h-full">
+                                    <td>
+                                        <div class="flex items-center gap-2">
+                                            <x-forms.switch-toggle
+                                                wire:key="safe-switch-{{ $category->id }}"
+                                                wire:click="toggleStatus({{ $category->id }})"
+                                                :checked="$category->status"
+                                                size="sm"
+                                                color="green"
+                                            />
                                             <a 
-                                                data-edit-id="{{ $subcategory->id }}"
-                                                x-on:click="$dispatch('open-category-modal', { editId: parseInt($el.dataset.editId) })" 
-                                                class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 hover:text-blue-800 transition flex-shrink-0"><i class="fas fa-pen"></i></a>
-                                            <button wire:click="setDeleteId({{$subcategory->id}})" type="button" class="flex items-center justify-center w-8 h-8 rounded-full bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-800 transition flex-shrink-0">
+                                                data-id="{{ $category->id }}"
+                                                x-on:click="$dispatch('open-category-modal', { editId: parseInt($el.dataset.id) })"
+                                                class="btn btn-xs btn-default">
+                                                <i class="fas fa-pen"></i>
+                                            </a>
+                                            
+                                            <a 
+                                                data-parent-id="{{ $category->id }}"
+                                                x-on:click="$dispatch('open-category-modal', { categoryId: parseInt($el.dataset.parentId) })" 
+                                            class="btn btn-sm btn-success">
+                                            Criar Subcategoria
+                                            </a>  
+
+                                            <button type="button" 
+                                                class="btn btn-xs bg-danger text-white" 
+                                                title="Excluir Categoria"
+                                                wire:click="setDeleteId({{ $category->id }})">
                                                 <i class="fas fa-trash"></i>
                                             </button>
+                                        </div>                                                                         
+                                    </td>
+                                </tr>
+                                @if ($category->children()->count() > 0)
+                                    @foreach($category->children()->get() as $subcategory)                        
+                                    <tr style="{{ ($subcategory->status == true ? '' : 'background: #fffed8 !important;')  }}">                            
+                                        <td><i class="fas fa-angle-double-right text-green-600 mr-2"></i>  {{$subcategory->title}}</td>
+                                        <td class="text-center">{{ $subcategory->status ? 'Sim' : 'Não' }}</td>
+                                        <td class="text-center">{{date('d/m/Y', strtotime($subcategory->created_at))}}</td>
+                                        <td class="text-center">---------</td>
+                                        <td>   
+                                            <div class="flex items-center gap-2">
+                                                <x-forms.switch-toggle
+                                                    wire:key="safe-switch-{{ $subcategory->id }}"
+                                                    wire:click="toggleStatus({{ $subcategory->id }})"
+                                                    :checked="$subcategory->status"
+                                                    size="sm"
+                                                    color="green"
+                                                />
+                                                <a 
+                                                    data-edit-id="{{ $subcategory->id }}"
+                                                    x-on:click="$dispatch('open-category-modal', { editId: parseInt($el.dataset.editId) })" 
+                                                    class="btn btn-xs btn-default"><i class="fas fa-pen"></i>
+                                                </a>
+                                                <button 
+                                                    type="button" 
+                                                    class="btn btn-xs bg-danger text-white" 
+                                                    title="Excluir Subcategoria"
+                                                    wire:click="setDeleteId({{ $subcategory->id }})">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                     @endforeach
@@ -144,32 +169,3 @@
 
    
 </div>
-
-<script>    
-    document.addEventListener('livewire:initialized', () => {
-        @this.on('swal', (event) => {
-            const data = event
-            swal.fire({
-                icon:data[0]['icon'],
-                title:data[0]['title'],
-                text:data[0]['text'],
-            })
-        })
-
-        @this.on('delete-prompt', (event) => {
-            swal.fire({
-                icon: 'warning',
-                title: 'Atenção',
-                text: 'Você tem certeza que deseja excluir esta Categoria?',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Sim, excluir!',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    @this.dispatch('goOn-Delete')
-                }
-            })
-        })
-    });
-</script>

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Support\Cropper;
 use Carbon\Carbon;
 
 class Slide extends Model
@@ -15,24 +16,43 @@ class Slide extends Model
     protected $table = 'slides';
 
     protected $fillable = [
-        'titulo',
-        'subtitulo',
-        'botaolabel',
-        'imagem',
+        'title',
+        'image',
         'content',
         'link',
         'target',
         'slug',
-        'expira',
+        'expired_at',
         'status',
-        'exibir_titulo',
-        'categoria'
+        'view_title',
+        'category'
     ];
+
+    protected static function booted()
+    {
+        // Gerar slug automaticamente
+        static::saving(function ($slide) {
+            $slide->setSlug();
+        });
+
+        // 👈 Deleta imagem antiga ao atualizar
+        static::updating(function ($slide) {
+            if ($slide->isDirty('image') && $slide->getOriginal('image')) {
+                Storage::disk('public')->delete($slide->getOriginal('image'));
+            }
+        });
+
+        // 👈 Deleta imagem ao excluir registro
+        static::deleting(function ($slide) {
+            if ($slide->image) {
+                Storage::disk('public')->delete($slide->image);
+            }
+        });
+    }
 
     /**
      * Scopes
-     */
-
+    */
     public function scopeAvailable($query)
     {
         return $query->where('status', 1);
@@ -48,29 +68,21 @@ class Slide extends Model
     */
     public function getimagem()
     {
-        if(empty($this->imagem) || !Storage::disk()->exists($this->imagem)) {
-            return url(asset('backend/assets/images/image.jpg'));
-        } 
-        return Storage::url($this->imagem);
-    }
-
-    public function getUrlImagemAttribute()
-    {
-        if (!empty($this->imagem)) {
-            return Storage::url($this->imagem);
+        if (empty($this->image) || !Storage::disk('public')->exists($this->image)) {
+            return asset('theme/images/image.jpg');
         }
-        return '';
-    } 
-    
-    public function getDataExpira()
-    {
-        $diff =  Carbon::now()->gt($this->expira);        
-        return $diff;        
+
+        return Storage::url(Cropper::thumb($this->image, 2200, 1200));
     }
 
-    public function setExpiraAttribute($value)
+    public function setExpiredAtAttribute($value)
     {
-        $this->attributes['expira'] = (!empty($value) ? $this->convertStringToDate($value) : null);
+        if (empty($value)) {
+            $this->attributes['expired_at'] = null;
+            return;
+        }
+
+        $this->attributes['expired_at'] = Carbon::parse($value)->format('Y-m-d'); // 👈 salva Y-m-d no banco
     }
 
     public function setTargetAttribute($value)
@@ -81,43 +93,26 @@ class Slide extends Model
     public function setStatusAttribute($value)
     {
         $this->attributes['status'] = ($value == '1' ? 1 : 0);
-    }
-    
-    // public function getExpiraAttribute($value)
-    // {
-    //     if (empty($value)) {
-    //         return null;
-    //     }
-    //     return date('d/m/Y', strtotime($value));
-    // }
-
-    public function getCreatedAtAttribute($value)
-    {
-        if (empty($value)) {
-            return null;
-        }
-        return date('d/m/Y', strtotime($value));
-    }
+    }   
 
     public function setSlug()
     {
-        if(!empty($this->titulo)){
-            $post = Slide::where('titulo', $this->titulo)->first(); 
-            if(!empty($post) && $post->id != $this->id){
-                $this->attributes['slug'] = Str::slug($this->titulo) . '-' . $this->id;
-            }else{
-                $this->attributes['slug'] = Str::slug($this->titulo);
-            }            
-            $this->save();
+        if (!empty($this->title)) {
+    
+            $baseSlug = Str::slug($this->title);
+            $slug = $baseSlug;
+            $count = 1;
+    
+            while (
+                Slide::where('slug', $slug)
+                    ->where('id', '!=', $this->id)
+                    ->exists()
+            ) {
+                $slug = $baseSlug . '-' . str_pad($count, 2, '0', STR_PAD_LEFT);
+                $count++;
+            }
+    
+            $this->attributes['slug'] = $slug;
         }
-    }
-
-    private function convertStringToDate(?string $param)
-    {
-        if (empty($param)) {
-            return null;
-        }
-        list($day, $month, $year) = explode('/', $param);
-        return (new \DateTime($year . '-' . $month . '-' . $day))->format('Y-m-d');
     }
 }

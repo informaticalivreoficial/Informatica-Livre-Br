@@ -1,8 +1,8 @@
 <aside class="main-sidebar sidebar-light-teal elevation-4">
     <!-- Brand Logo -->
-    <a href="#" class="pt-3 d-flex justify-content-center">
+    <a class="pt-3 d-flex justify-content-center cursor-pointer">
         <img src="{{$config->getlogoadmin()}}" alt="{{$config->app_name}}"
-            class="brand-image elevation-3">        
+            class="brand-image elevation-3" width="147" height="53">        
     </a>
 
     <div class="sidebar mt-3">
@@ -28,11 +28,25 @@
                     </a>                    
                 </li>
 
-                <li class="nav-item">
-                    <a href="{{route('settings')}}" class="nav-link {{ Route::is('settings') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-cog"></i> 
-                        <p> Configurações</p>
+                <li class="nav-item {{ Route::is(['settings','sitemap.generator']) ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ Route::is(['settings','sitemap.generator']) ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-cog"></i>
+                        <p> Configurações <i class="fas fa-angle-left right"></i></p>
                     </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{route('settings')}}" class="nav-link {{ Route::is('settings') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Sistema</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{route('sitemap.generator')}}" class="nav-link {{ Route::is('sitemap.generator') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Mapa do Site</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
 
                 <li class="nav-item {{ Route::is('users.*') ? 'menu-open' : '' }}">
@@ -44,13 +58,13 @@
                         <li class="nav-item">
                             <a href="{{route('users.index')}}" class="nav-link {{ Route::is('users.index') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Clientes <span class="badge badge-info right">{{$clientCount}}</span></p>
+                                <p>Clientes <span class="badge badge-info right">{{--$clientCount--}}</span></p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{route('users.time')}}" class="nav-link {{ Route::is('users.time') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Time <span class="badge badge-info right">{{$timeCount}}</span></p>
+                                <p>Time <span class="badge badge-info right">{{--$timeCount--}}</span></p>
                             </a>
                         </li>
                         <li class="nav-item">
@@ -61,15 +75,54 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item">
-                    <a href="" class="nav-link {{ Route::is('properties.*') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-home"></i>
-                        <p>
-                            Imóveis
-                            <span class="badge badge-info right">{{--$propertyCount--}}</span>
-                        </p>
+                @role(['super-admin', 'manager'])
+                    <li class="nav-item">
+                        <a href="{{route('companies.index')}}" class="nav-link {{ Route::is('companies.*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-industry"></i>
+                            <p>Empresas</p>
+                        </a>
+                    </li>
+                @endrole
+                <li class="nav-item {{ Route::is('services.*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ Route::is('services.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-store"></i>
+                        <p> Serviços <i class="fas fa-angle-left right"></i></p>
                     </a>
-                </li>     
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{route('services.index')}}" class="nav-link {{ Route::is('services.index') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Listar Serviços</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{route('services.subscriptions.index')}}" class="nav-link {{ Route::is('services.subscriptions.index') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Pedidos <span class="badge badge-info right">{{--$timeCount--}}</span></p>
+                            </a>
+                        </li>                        
+                    </ul>
+                </li>  
+                <li class="nav-item {{ Route::is('portifolio.*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ Route::is('portifolio.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-project-diagram"></i>
+                        <p> Portifólio <i class="fas fa-angle-left right"></i></p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{route('portifolio.index')}}" class="nav-link {{ Route::is('portifolio.index') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Listar Todos</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{route('portifolio.categories.index')}}" class="nav-link {{ Route::is('portifolio.categories.index') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Categorias</p>
+                            </a>
+                        </li>                        
+                    </ul>
+                </li>  
                 <li class="nav-item">
                     <a href="{{route('slides.index')}}" class="nav-link {{ Route::is('slides.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-film"></i>
@@ -87,7 +140,7 @@
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>
                                     Listar Todos
-                                    <span class="badge badge-info right">{{$postsCount}}</span>
+                                    <span class="badge badge-info right">{{--$postsCount--}}</span>
                                 </p>
                             </a>
                         </li>
@@ -132,7 +185,13 @@
                         </li>
                     </ul>
                 </li>
-                {{-- Segurança 
+                <li class="nav-item">
+                    <a href="{{ route('safes.index') }}" class="nav-link">
+                        <i class="fas fa-lock"></i> 
+                        <p>Cofre</p>
+                    </a>
+                </li>
+                 
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-shield-alt"></i>
@@ -150,7 +209,7 @@
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Permissões</p>
                             </a>
-                        </li>   --}}                     
+                        </li>                
                     </ul>
                 </li>
             </ul>

@@ -71,33 +71,24 @@
                                 
                                 <td class="px-4 py-4">
                                     <div class="flex items-center justify-center gap-2">
-                                        <!-- Switch -->
-                                        <label class="switch flex-shrink-0">
-                                            <input type="checkbox" 
-                                                wire:click="toggleStatus({{ $post->id }})" 
-                                                wire:loading.attr="disabled" 
-                                                {{ $post->status ? 'checked' : '' }}>
-                                            <span class="slider"></span>
-                                        </label>
-
-                                        <!-- View -->
-                                        <a href="{{-- route('posts.show', $post->id) --}}" 
-                                            class="action-btn btn-view" 
-                                            data-tooltip="Visualizar">
+                                        <x-forms.switch-toggle
+                                            wire:key="safe-switch-{{ $post->id }}"
+                                            wire:click="toggleStatus({{ $post->id }})"
+                                            :checked="$post->status"
+                                            size="sm"
+                                            color="green"
+                                        />                                        
+                                        <a target="_blank" href="{{ route('web.' . (
+                                                                    $post->type == 'artigo' ? 'blog.artigo' : (
+                                                                    $post->type == 'noticia' ? 'blog.noticia' : 'page')), $post->slug) }}" 
+                                            class="btn btn-xs btn-info" 
+                                            title="Visualizar">
                                             <i class="fas fa-search"></i>
                                         </a>
-
-                                        <!-- Edit -->
-                                        <a href="{{ route('posts.edit', $post->id) }}" 
-                                            class="action-btn btn-edit" 
-                                            data-tooltip="Editar">
-                                            <i class="fas fa-pen"></i>
-                                        </a>
-
-                                        <!-- Delete -->
+                                        <a title="Editar Post" href="{{ route('posts.edit', $post->id) }}" class="btn btn-xs btn-default"><i class="fas fa-pen"></i></a>
                                         <button type="button" 
-                                            class="action-btn btn-delete" 
-                                            data-tooltip="Excluir"
+                                            class="btn btn-xs bg-danger text-white" 
+                                            title="Excluir Post"
                                             wire:click="setDeleteId({{ $post->id }})">
                                             <i class="fas fa-trash"></i>
                                         </button>
@@ -141,31 +132,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        Livewire.on('swal', (data) => {
-            Swal.fire({
-                icon: data[0].icon,
-                title: data[0].title,
-                text: data[0].text,
-            });
-        });
-
-        Livewire.on('delete-prompt', () => {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Atenção',
-                text: 'Você tem certeza que deseja excluir este post?',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Sim, excluir!',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Livewire.dispatch('goOn-Delete');
-                }
-            });
-        });
-    });
-</script>

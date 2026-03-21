@@ -1,190 +1,148 @@
-@extends('web.master.master')
-
+@extends('web.layouts.app')
 
 @section('content')
-<section class="section section-30 section-xxl-40 section-xxl-66 section-xxl-bottom-90 novi-background bg-gray-dark page-title-wrap" style="background-image: url({{$configuracoes->gettopodosite()}});">
-  <div class="container">
-      <div class="page-title">
-      <h2>Atendimento</h2>
-      </div>
-  </div>
-</section>
-<section class="section section-60 section-md-top-90 section-md-bottom-100">
-  <div class="container">
-      <div class="row row-50 justify-content-md-between">
-        <div class="col-lg-7 col-xl-7">
-            <h3>Preencha o Formulário</h3>
-            <form class="rd-mailform j_formsubmit" method="post" action="" autocomplete="off">
-              @csrf
-            <div class="row row-30">                
-                <div id="js-contact-result" style="margin-bottom: 10px;"></div>
-                <!-- HONEYPOT -->
-                <input type="hidden" class="noclear" name="bairro" value="" />
-                <input type="text" class="noclear" style="display: none;" name="cidade" value="" />
-                <div class="col-md-6 form_hide">
-                    <div class="form-wrap">
-                        <input class="form-input" id="contact-name" type="text" name="nome">
-                        <label class="form-label" for="contact-name">Nome</label>
+
+    {{-- HERO --}}
+    <section class="bg-gradient-to-r from-teal-700 to-teal-500 py-16">
+        <div class="max-w-7xl mx-auto px-4 text-center text-white">
+            <h1 class="text-4xl md:text-5xl font-extrabold mb-4">Fale Conosco</h1>
+            <p class="text-teal-100 text-lg max-w-xl mx-auto">Tire suas dúvidas, respondemos rapidamente!</p>
+        </div>
+    </section>
+
+    {{-- CONTEÚDO --}}
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+
+                {{-- Formulário --}}
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-2xl shadow-sm p-8">                        
+                        <livewire:web.contact-form  />
                     </div>
                 </div>
-                <div class="col-md-6 form_hide">
-                    <div class="form-wrap">
-                        <input class="form-input" id="contact-email" type="email" name="email">
-                        <label class="form-label" for="contact-email">Email</label>
+
+                {{-- Informações --}}
+                <aside class="space-y-6">
+
+                    {{-- Contato --}}
+                    <div class="bg-white rounded-2xl shadow-sm p-6">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">Informações de Contato</h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-start gap-3">
+                                <div class="w-10 h-10 bg-teal-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-map-marker-alt text-teal-600"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-400 uppercase tracking-wide">Localização</p>
+                                    <p class="text-gray-700 font-medium">
+                                        {{ $configuracoes->city }}/{{ $configuracoes->state }}
+                                    </p>
+                                </div>
+                            </li>
+                            @if ($configuracoes->whatsapp)
+                                <li class="flex items-start gap-3">
+                                    <div class="w-10 h-10 bg-teal-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <i class="fab fa-whatsapp text-teal-600"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-400 uppercase tracking-wide">WhatsApp</p>
+                                        <a  onclick="shareWhatsApp(event)"
+                                            target="_blank"
+                                            class="text-gray-700 font-medium hover:text-teal-600 transition cursor-pointer">
+                                            {{ $configuracoes->whatsapp }}
+                                        </a>
+                                    </div>
+                                </li>
+                            @endif    
+                            @if ($configuracoes->email)
+                                <li class="flex items-start gap-3">
+                                    <div class="w-10 h-10 bg-teal-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-envelope text-teal-600"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-400 uppercase tracking-wide">E-mail</p>
+                                        <a href="mailto:{{ $configuracoes->email }}"
+                                            class="text-gray-700 font-medium hover:text-teal-600 transition">
+                                            {{ $configuracoes->email }}
+                                        </a>
+                                        @if ($configuracoes->additional_email)
+                                            <br>
+                                            <a href="mailto:{{ $configuracoes->additional_email }}"
+                                                class="text-gray-700 font-medium hover:text-teal-600 transition">
+                                                {{ $configuracoes->additional_email }}
+                                            </a>
+                                        @endif
+                                    </div>
+                                </li>
+                            @endif 
+                        </ul>
                     </div>
-                </div>
-                <div class="col-sm-12 form_hide">
-                    <div class="form-wrap">
-                        <div class="textarea-lined-wrap">
-                        <textarea class="form-input" id="contact-message" name="mensagem"></textarea>
-                        <label class="form-label" for="contact-message">Mensagem</label>
+
+                    {{-- Redes Sociais --}}
+                    <div class="bg-white rounded-2xl shadow-sm p-6">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">Redes Sociais</h3>
+                        <div class="flex gap-3">
+                            @if ($configuracoes->facebook)
+                                <a href="{{ $configuracoes->facebook }}" target="_blank"
+                                    class="w-10 h-10 bg-blue-600 text-white rounded-lg flex items-center justify-center hover:bg-blue-700 transition">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                            @endif
+                            @if ($configuracoes->twitter)
+                                <a href="{{ $configuracoes->twitter }}" target="_blank"
+                                    class="w-10 h-10 bg-blue-400 text-white rounded-lg flex items-center justify-center hover:bg-blue-500 transition">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                            @endif
+                            @if ($configuracoes->youtube)
+                                <a href="{{ $configuracoes->youtube }}" target="_blank"
+                                    class="w-10 h-10 bg-red-500 text-white rounded-lg flex items-center justify-center hover:bg-red-600 transition">
+                                    <i class="fab fa-youtube"></i>
+                                </a>
+                            @endif
+                            @if ($configuracoes->instagram)
+                                <a href="{{ $configuracoes->instagram }}" target="_blank"
+                                    class="w-10 h-10 bg-pink-500 text-white rounded-lg flex items-center justify-center hover:bg-pink-600 transition">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                            @endif
+                            @if ($configuracoes->linkedin)
+                                <a href="{{ $configuracoes->linkedin }}" target="_blank"
+                                    class="w-10 h-10 bg-blue-700 text-white rounded-lg flex items-center justify-center hover:bg-blue-800 transition">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                            @endif
+                            @if ($configuracoes->whatsapp)
+                                <a onclick="shareWhatsApp(event)" target="_blank"
+                                    class="w-10 h-10 bg-green-500 text-white rounded-lg flex items-center justify-center hover:bg-green-600 transition cursor-pointer">
+                                    <i class="fab fa-whatsapp"></i>
+                                </a>
+                            @endif  
                         </div>
                     </div>
-                </div>
+
+                    {{-- Horário --}}
+                    <div class="bg-white rounded-2xl shadow-sm p-6">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">Horário de Atendimento</h3>
+                        <ul class="space-y-2 text-sm text-gray-600">
+                            <li class="flex justify-between">
+                                <span>Segunda - Sexta</span>
+                                <span class="font-medium text-gray-800">08:00 - 18:00</span>
+                            </li>
+                            <li class="flex justify-between">
+                                <span>Sábado</span>
+                                <span class="font-medium text-gray-800">08:00 - 12:00</span>
+                            </li>
+                            <li class="flex justify-between">
+                                <span>Domingo</span>
+                                <span class="font-medium text-red-500">Fechado</span>
+                            </li>
+                        </ul>
+                    </div>
+                </aside>
             </div>
-            <div class="row row-30 row-sm-50 form_hide">
-                <div class="col-sm-12">
-                    <button class="btn btn-primary btn-block" id="js-contact-btn" type="submit">Enviar Agora</button>
-                </div>                
-            </div>
-            </form>
         </div>
-          <div class="col-lg-5 col-xl-4">
-              <div class="inset-lg-right-15 inset-xl-right-0">
-                  <div class="row row-30 row-md-40">
-                      <div class="col-sm-12">
-                          <div class="row row-30">
-                              <div class="col-md-6 col-lg-12">
-                                  <h5>Suporte</h5>
-                                  <address class="contact-info">
-                                      <p>
-                                        @if($configuracoes->rua)	
-                                          {{$configuracoes->rua}}
-                                          @if($configuracoes->num)
-                                          , {{$configuracoes->num}}
-                                          @endif
-                                          @if($configuracoes->bairro)
-                                          , {{$configuracoes->bairro}}
-                                          @endif
-                                          @if($configuracoes->cidade)  
-                                          - {{\App\Helpers\Cidade::getCidadeNome($configuracoes->cidade, 'cidades')}}
-                                          @endif
-                                        @endif
-                                      </p>
-                                      @if ($configuracoes->telefone1)
-                                        <dl class="list-terms-inline">
-                                            <dt>Telefone</dt>
-                                            <dd><a class="link-secondary" href="tel:{{\App\Helpers\Renato::limpatelefone($configuracoes->telefone1)}}">{{$configuracoes->telefone1}}</a></dd>
-                                            @if ($configuracoes->telefone2)
-                                              <dd style="margin-left: 10px;"><a class="link-secondary" href="tel:{{\App\Helpers\Renato::limpatelefone($configuracoes->telefone2)}}">{{$configuracoes->telefone2}}</a></dd>
-                                            @endif
-                                        </dl>
-                                      @endif
-                                      @if ($configuracoes->telefone3)
-                                        <dl class="list-terms-inline">
-                                            <dt>Telefone</dt>
-                                            <dd><a class="link-secondary" href="tel:{{\App\Helpers\Renato::limpatelefone($configuracoes->telefone3)}}">{{$configuracoes->telefone3}}</a></dd>                                            
-                                        </dl>
-                                      @endif
-                                      @if($configuracoes->whatsapp)
-                                          <dl class="list-terms-inline">
-                                              <span class="novi-icon icon icon-xxs icon-primary fa-whatsapp"></span>
-                                              <dd><a class="link-secondary" href="{{\App\Helpers\WhatsApp::getNumZap($configuracoes->whatsapp ,'Atendimento '.$configuracoes->nomedosite)}}">{{$configuracoes->whatsapp}}</a></dd>  
-                                              @if ($configuracoes->skype)
-                                                <span style="margin-left: 10px;" class="novi-icon icon icon-xxs icon-primary fa-skype"></span>
-                                                <dd><a href="skype:{{$configuracoes->skype}}">{{$configuracoes->skype}}</a></dd>
-                                              @endif                                          
-                                          </dl>                                          
-                                      @endif
-                                      @if ($configuracoes->email)
-                                          <dl class="list-terms-inline">
-                                              <span class="novi-icon icon icon-xxs icon-primary fa-envelope-o"></span>
-                                              <dd><a class="link-primary" href="mailto:{{$configuracoes->email}}">{{$configuracoes->email}}</a></dd>                                              
-                                          </dl>
-                                      @endif                                      
-                                      @if ($configuracoes->email1)
-                                          <dl class="list-terms-inline">
-                                              <span class="novi-icon icon icon-xxs icon-primary fa-envelope-o"></span>
-                                              <dd><a class="link-primary" href="mailto:{{$configuracoes->email1}}">{{$configuracoes->email1}}</a></dd>
-                                          </dl>
-                                      @endif                                      
-                                  </address>
-                              </div>
-                              <div class="col-md-6 col-lg-12">
-                                {!!$configuracoes->mapa_google!!}
-                              </div>                    
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>          
-      </div>
-  </div>
-</section>  
+    </section>
+
 @endsection
-
-@section('css')
-  <style>
-    iframe{
-      height: 350px;
-      width: 100%;
-      display: inline-block;
-      overflow: hidden"
-    }
-  </style>
-@endsection
-
-@section('js')
-  <script>
-    $(function () {
-
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-        // Seletor, Evento/efeitos, CallBack, Ação
-        $('.j_formsubmit').submit(function (){
-            var form = $(this);
-            var dataString = $(form).serialize();
-
-            $.ajax({
-                url: "{{ route('web.sendEmail') }}",
-                data: dataString,
-                type: 'GET',
-                dataType: 'JSON',
-                beforeSend: function(){
-                    form.find("#js-contact-btn").attr("disabled", true);
-                    form.find('#js-contact-btn').html("Carregando...");                
-                    form.find('.alert').fadeOut(500, function(){
-                        $(this).remove();
-                    });
-                },
-                success: function(resposta){
-                    $('html, body').animate({scrollTop:$('#js-contact-result').offset().top-100}, 'slow');
-                    if(resposta.error){
-                        form.find('#js-contact-result').html('<div class="alert alert-danger error-msg">'+ resposta.error +'</div>');
-                        form.find('.error-msg').fadeIn();                    
-                    }else{
-                        form.find('#js-contact-result').html('<div class="alert alert-success error-msg">'+ resposta.sucess +'</div>');
-                        form.find('.error-msg').fadeIn();                    
-                        form.find('input[class!="noclear"]').val('');
-                        form.find('textarea[class!="noclear"]').val('');
-                        form.find('.form_hide').fadeOut(500);
-                    }
-                },
-                complete: function(resposta){
-                    form.find("#js-contact-btn").attr("disabled", false);
-                    form.find('#js-contact-btn').html("Enviar Agora");                                
-                }
-            });
-
-            return false;
-        });
-
-    });
-</script>   
-  @endsection
-  
-  

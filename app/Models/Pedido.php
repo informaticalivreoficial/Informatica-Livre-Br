@@ -10,123 +10,120 @@ class Pedido extends Model
     use HasFactory;
 
     protected $table = 'pedidos';
-
+ 
     protected $fillable = [
-        'empresa',
-        'orcamento',
-        'tipo_pedido',
-        'produto',
-        'servico',
-        'periodo',
+        'codigo',
+        'nome',
+        'email',
+        'telefone',
+        'cpf_cnpj',
+        'subtotal',
+        'desconto',
+        'total',
+        'metodo_pagamento',
+        'status_pagamento',
+        'gateway_id',
+        'gateway_response',
+        'pago_em',
         'status',
-        'valor',
-        'url_slip',
-        'digitable_line',
-        'notas_adicionais',
-        'vencimento',
-        'empresa',
-        'gateway',
-        'uuid',
-        'form_sendat',
-        'transaction_id'
+        'observacoes',
     ];
-
+ 
+    protected $casts = [
+        'subtotal'         => 'float',
+        'desconto'         => 'float',
+        'total'            => 'float',
+        'gateway_response' => 'array',
+        'pago_em'          => 'datetime',
+    ];
+ 
     /**
-     * Relacionamentos
-    */
-    public function getEmpresa()
-    {
-        return $this->hasOne(Empresa::class, 'id', 'empresa');
-    }
-
-    public function getProduto()
-    {
-        return $this->hasOne(Produto::class, 'id', 'produto');
-    }
-
-    public function service()
-    {
-        return $this->hasOne(Servico::class, 'id', 'servico');
-    }
-
+     * Relationships
+     */
     public function itens()
     {
-        return $this->hasMany(ItemPedido::class, 'pedido', 'id');
+        return $this->hasMany(PedidoItem::class, 'pedido_id');
     }
-
-    public function faturas()
+ 
+    public function licencas()
     {
-        return $this->hasMany(Fatura::class, 'pedido', 'id');
+        return $this->hasMany(Licenca::class, 'pedido_id');
     }
-
-    /**
-     * Accerssors and Mutators
-    */
-    public function getStatus() {
-        if($this->status == 'processing'){
-            return '<small class="badge badge-warning">Em Análise</small>';
-        }elseif($this->status == 'pending'){
-            return '<small class="badge badge-primary">Aguardando Pagamento</small>';
-        }elseif($this->status == 'canceled'){
-            return '<small class="badge badge-danger">Cancelado</small>';
-        }elseif($this->status == 'paid'){
-            return '<small class="badge badge-success">Pago</small>';
-        }elseif($this->status == 'completed'){
-            return '<small class="badge badge-info">Pago/Finalizado</small>'; 
-        }else{
-            return '<small class="badge badge-warning">Em Análise</small>'; 
-        }
-    }
-
-    // public function setVencimentoAttribute($value)
-    // {
-    //     $this->attributes['vencimento'] = (!empty($value) ? $this->convertStringToDate($value) : null);
-    // }
-
-    public function setValorAttribute($value)
-    {
-        $this->attributes['valor'] = (!empty($value) ? floatval($this->convertStringToDouble($value)) : null);
-    }
-
-    public function getValorAttribute($value)
-    {
-        if (empty($value)) {
-            return null;
-        }
-
-        return number_format($value / 100, 2, ',', '');
-    }
-
+ 
     /**
      * Scopes
-    */
-    public function itensTotalValor()
+     */
+    public function scopePendente($query)
     {
-        return $this->hasMany(ItemPedido::class, 'pedido', 'id')->sum('valor');
+        return $query->where('status', 'pendente');
     }
-
-    private function convertStringToDate(?string $param)
+ 
+    public function scopeConfirmado($query)
     {
-        if (empty($param)) {
-            return null;
-        }
-        list($day, $month, $year) = explode('/', $param);
-        return (new \DateTime($year . '-' . $month . '-' . $day))->format('Y-m-d');
+        return $query->where('status', 'confirmado');
     }
-
-    private function convertStringToDouble($param)
+ 
+    public function scopePago($query)
     {
-        if(empty($param)){
-            return null;
-        }
-        return str_replace(',', '.', str_replace('.', '', $param));
+        return $query->where('status_pagamento', 'pago');
     }
-
-    private function clearField(?string $param)
+ 
+    /**
+     * Booted
+     */
+    protected static function booted(): void
     {
-        if (empty($param)) {
-            return null;
-        }
-        return str_replace(['.', '-', '/', '(', ')', ' '], '', $param);
+        static::creating(function (Pedido $pedido) {
+            $pedido->codigo = $pedido->codigo ?? self::gerarCodigo();
+        });
+    }
+ 
+    private static function gerarCodigo(): string
+    {
+        $ano    = date('Y');
+        $ultimo = self::whereYear('created_at', $ano)->count() + 1;
+ 
+        return 'PED-' . $ano . '-' . str_pad($ultimo, 5, '0', STR_PAD_LEFT);
+    }
+ 
+    /**
+     * Accessors
+     */
+    public function getStatusLabelAttribute(): string
+    {
+        return match($this->status) {
+            'pendente'    => 'Pendente',
+            'confirmado'  => 'Confirmado',
+            'cancelado'   => 'Cancelado',
+            'reembolsado' => 'Reembolsado',
+            default       => 'Desconhecido',
+        };
+    }
+ 
+    public function getStatusColorAttribute(): string
+    {
+        return match($this->status) {
+            'pendente'    => 'warning',
+            'confirmado'  => 'success',
+            'cancelado'   => 'danger',
+            'reembolsado' => 'info',
+            default       => 'secondary',
+        };
+    }
+ 
+    public function getStatusPagamentoLabelAttribute(): string
+    {
+        return match($this->status_pagamento) {
+            'pendente'  => 'Aguardando pagamento',
+            'pago'      => 'Pago',
+            'cancelado' => 'Cancelado',
+            'estornado' => 'Estornado',
+            default     => 'Desconhecido',
+        };
+    }
+ 
+    public function getTotalFormatadoAttribute(): string
+    {
+        return 'R$ ' . number_format($this->total, 2, ',', '.');
     }
 }

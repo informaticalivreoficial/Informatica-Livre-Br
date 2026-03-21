@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\Cropper;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\File;
@@ -16,24 +17,50 @@ class Post extends Model
 
     protected $fillable = [
         'autor',
-        'tipo',
-        'titulo',
+        'type',
+        'title',
         'content',
         'slug',
         'tags',
         'views',
-        'categoria',
-        'comentarios',
+        'category',
+        'comments',
+        'highlight',
         'cat_pai',        
         'status',
-        'thumb_legenda',
+        'menu',
+        'thumb_caption',
         'publish_at'
     ];
+
+    protected $casts = [
+        'status' => 'boolean',
+        'coments' => 'boolean',
+    ];
+
+    protected static function boot()
+    {
+        parent::boot();        
+    }
+
+    protected static function booted()
+    {
+        static::saving(function ($post) {
+            $post->setSlug();
+        });
+
+        static::deleting(function ($post) {
+            // Deleta a pasta inteira com todas as imagens
+            Storage::disk('public')->deleteDirectory("posts/{$post->id}");
+
+            // Deleta os registros do banco
+            $post->images()->delete();
+        });
+    }
 
     /**
      * Scopes
      */
-
     public function scopePostson($query)
     {
         return $query->where('status', 1);
@@ -52,20 +79,30 @@ class Post extends Model
     {
         return $this->belongsTo(User::class, 'autor', 'id');
     }
-    
-    public function categoriaObject()
+
+    public function category()
     {
-        return $this->hasOne(CatPost::class, 'id', 'categoria');
+        return $this->hasOne(CatPost::class, 'id', 'category');
+    }
+    
+    public function categoryObject()
+    {
+        return $this->hasOne(CatPost::class, 'id', 'category');
     }
     
     public function userObject()
     {
-        return $this->hasOne(User::class, 'id', 'autor');
+        return $this->hasOne(User::class, 'id', 'category');
     }
     
     public function images()
     {
         return $this->hasMany(PostGb::class, 'post', 'id')->orderBy('cover', 'ASC');
+    }
+
+    public function countimages()
+    {
+        return $this->hasMany(PostGb::class, 'post', 'id')->count();
     }
 
     /**
@@ -76,41 +113,34 @@ class Post extends Model
     {
         return Str::words($this->content, '20', ' ...');
     }
-        
+
     public function cover()
     {
         $images = $this->images();
-        $cover = $images->where('cover', 1)->first(['path']);
+        $cover = $images->where('cover', 1)->first(['path']) ??
+                $images->first(['path']);
 
-        if(!$cover) {
-            $images = $this->images();
-            $cover = $images->first(['path']);
+        if (!$cover || empty($cover->path)) {
+            return asset('theme/images/image.jpg');
         }
 
-        if(empty($cover['path']) || !Storage::disk()->exists(env('AWS_PASTA') . $cover['path'])) {
-            return url(asset('backend/assets/images/image.jpg'));
-        }
-
-        //return Storage::url(Cropper::thumb($cover['path'], 720, 480));
-        return Storage::url($cover['path']);
-    }
+        return Storage::url(Cropper::thumb($cover['path'], 720, 480));
+    }    
 
     public function nocover()
     {
         $images = $this->images();
-        $cover = $images->where('cover', 1)->first(['path']);
 
-        if(!$cover) {
-            $images = $this->images();
-            $cover = $images->first(['path']);
+        // Pega capa, se não existir usa a primeira imagem
+        $cover = $images->where('cover', 1)->first(['path'])
+            ?? $images->first(['path']);
+
+        if (empty($cover['path']) || !Storage::disk()->exists($cover['path'])) {
+            return asset('theme/images/image.jpg');
         }
-
-        if(empty($cover['path']) || !Storage::disk()->exists(env('AWS_PASTA') . $cover['path'])) {
-            return url(asset('backend/assets/images/image.jpg'));
-        }
-
+        
         return Storage::url($cover['path']);
-    }
+    } 
     
     public function setStatusAttribute($value)
     {
@@ -122,24 +152,25 @@ class Post extends Model
         $this->attributes['publish_at'] = (!empty($value) ? $this->convertStringToDate($value) : null);
     }
     
-    public function getPublishAtAttribute($value)
-    {
-        if (empty($value)) {
-            return null;
-        }
-        return date('d/m/Y', strtotime($value));
-    }
-    
+        
     public function setSlug()
     {
-        if(!empty($this->titulo)){
-            $post = Post::where('titulo', $this->titulo)->first(); 
-            if(!empty($post) && $post->id != $this->id){
-                $this->attributes['slug'] = Str::slug($this->titulo) . '-' . $this->id;
-            }else{
-                $this->attributes['slug'] = Str::slug($this->titulo);
-            }            
-            $this->save();
+        if (!empty($this->title)) {
+    
+            $baseSlug = Str::slug($this->title);
+            $slug = $baseSlug;
+            $count = 1;
+    
+            while (
+                Post::where('slug', $slug)
+                    ->where('id', '!=', $this->id)
+                    ->exists()
+            ) {
+                $slug = $baseSlug . '-' . str_pad($count, 2, '0', STR_PAD_LEFT);
+                $count++;
+            }
+    
+            $this->attributes['slug'] = $slug;
         }
     }
     

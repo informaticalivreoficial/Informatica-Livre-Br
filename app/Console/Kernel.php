@@ -24,7 +24,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $schedule->command('sitemap:generate')->everyMinute()->withoutOverlapping();
         $schedule->command('CheckOrcamentoClient:create')->everyMinute()->withoutOverlapping();
+        $schedule->command('companies:generate-tokens')->everyMinute()->withoutOverlapping();
+        $schedule->command('invoices:process-recurring')->everyMinute()->withoutOverlapping();
     }
 
     /**

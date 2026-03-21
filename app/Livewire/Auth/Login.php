@@ -3,10 +3,11 @@
 namespace App\Livewire\Auth;
 
 use App\Models\User;
+use App\Traits\WithToastr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Validator;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -15,28 +16,42 @@ use Livewire\Component;
 #[Layout('components.layouts.guest')]
 class Login extends Component
 {
+    use WithToastr;
+
     public $email = "";
     public $password = "";
     public $config;
 
     public function mount()
     {
-        $this->config = \App\Models\Config::first();
+        $this->config = \App\Models\Config::first();        
     }
 
     // Log the user in
     public function login()
     {
-        $this->validate([
-            'email' => 'required|string|email|exists:users,email',
-            'password' => 'required|string|min:6',
-        ]);
+        $validator = Validator::make(
+            [
+                'email' => $this->email,
+                'password' => $this->password,
+            ],
+            [
+                'email' => 'required|email',
+                'password' => 'required|min:6',
+            ]
+        ); 
+
+        if ($validator->fails()) {
+            $this->setErrorBag($validator->errors());
+            $this->toastError('Preencha e-mail e senha corretamente.');
+            return;
+        }
 
         // Check if the user has too many login attempts
         if (RateLimiter::tooManyAttempts(request()->ip(), 10)) {
             $seconds = RateLimiter::availableIn(request()->ip(), 10);
-
-            throw ValidationException::withMessages(['login_failed' => "Too many login attempts. Please try again in $seconds seconds."]);
+            $this->toastError("Muitas tentativas. Aguarde {$seconds} segundos.");
+            return;
         }
 
         // Get user by email
@@ -46,8 +61,14 @@ class Login extends Component
         if (!$user || !Hash::check($this->password, $user->password)) {
             RateLimiter::hit(request()->ip());
 
-            // Set validation error to be viewed in blade
-            throw ValidationException::withMessages(['login_failed' => 'Invalid email or password. Please try again.']);
+            $this->toastError('E-mail ou senha inválidos.');
+            return;            
+        }
+
+        // ✅ Verificar status
+        if ($user->status != 1) {
+            $this->toastError('Seu usuário está inativo. Entre em contato com o administrador.');
+            return;            
         }
 
         // Clear login attempts
@@ -56,10 +77,10 @@ class Login extends Component
         // Login the user
         Auth::login($user);
 
-        session()->flash('toastr', [
+        // ✅ Toast pós-login (via session)
+        session()->flash('toast', [
             'type' => 'success',
             'message' => 'Bem-vindo de volta, ' . \App\Helpers\Renato::getPrimeiroNome($user->name) . '!',
-            'title' => 'Login realizado'
         ]);
 
         return redirect()->route('admin');

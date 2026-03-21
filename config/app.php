@@ -28,6 +28,10 @@ return [
 
     'env' => env('APP_ENV', 'production'),
 
+    'desenvolvedor_url' => env('DESENVOLVEDOR_URL', 'https://informaticalivre.com.br'),
+    'desenvolvedor_email' => env('DESENVOLVEDOR_EMAIL', 'suporte@informaticalivre.com.br'),
+    'desenvolvedor_nome' => env('DESENVOLVEDOR', 'Informática Livre'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode

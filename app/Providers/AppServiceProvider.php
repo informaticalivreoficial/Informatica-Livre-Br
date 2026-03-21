@@ -27,19 +27,27 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-	    // Schema::defaultStringLength(191);
-        // Blade::aliasComponent('admin.components.message', 'message');
+        Schema::defaultStringLength(191);
 
-        $configuracoes = \App\Models\Config::find(1); 
-        View()->share('configuracoes', $configuracoes);
+        try {
+            // //Páginas no menu frontend
+            // $servicos = Post::orderBy('created_at', 'ASC')
+            //                 ->postson()
+            //                 ->where('categoria', 9)
+            //                 ->get();
+            // View()->share('menu_servicos', $servicos);
 
-        // //Páginas no menu frontend
-        // $servicos = Post::orderBy('created_at', 'ASC')
-        //                 ->postson()
-        //                 ->where('categoria', 9)
-        //                 ->get();
-        // View()->share('menu_servicos', $servicos);
+            $configuracoes = \App\Models\Config::find(1); 
+            View()->share('configuracoes', $configuracoes);
+        } catch (\Exception $e) {
+            View()->share('Links', collect());
+            View()->share('configuracoes', null);
+        }
 
-        // Paginator::useBootstrap();
+        if (request()->is('admin/*') || request()->is('dashboard*')) {
+            Paginator::useBootstrap();
+        } else {
+            Paginator::useTailwind();
+        }	    
     }
 }

@@ -14,7 +14,7 @@ class CreateConfigTable extends Migration
     public function up()
     {
         Schema::create('config', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
             $table->string('app_name')->unique();
             $table->string('social_name')->nullable();
             $table->string('alias_name')->nullable();
@@ -64,6 +64,7 @@ class CreateConfigTable extends Migration
             /** seo */
             $table->text('information')->nullable();
             $table->text('privacy_policy')->nullable();
+            $table->text('terms_condicions')->nullable();
             $table->text('maps_google')->nullable();
             $table->text('metatags')->nullable();
             $table->string('analytics_id')->nullable();

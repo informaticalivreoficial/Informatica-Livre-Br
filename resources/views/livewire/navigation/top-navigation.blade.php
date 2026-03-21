@@ -145,6 +145,17 @@
                 <i class="fas fa-expand-arrows-alt"></i>
             </a>
         </li>
+
+        <li class="nav-item dropdown">
+            <a 
+                href="#"
+                wire:click.prevent="$dispatch('open-support-modal')"
+                title="Suporte"
+                class="nav-link"
+            >
+                <i class="fas fa-life-ring text-red-500"></i>
+            </a>
+        </li>
         
         @auth
             <livewire:auth.button-logout />

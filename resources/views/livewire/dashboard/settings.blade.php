@@ -192,11 +192,23 @@
                         </div>
                     </div>
                     <div class="row mb-2">
-                        <div class="col-12" wire:ignore>   
+                        <div class="col-12 pt-4" wire:ignore>   
                             <label class="labelforms text-muted"><b>Política de Privacidade</b></label>
-                            <textarea id="privacy_policy" wire:model="configData.privacy_policy">{{ $configData['privacy_policy'] ?? '' }}</textarea>                                                                                     
+                            <x-editor-quill 
+                                :value="$configData['privacy_policy']" 
+                                model="configData.privacy_policy" 
+                            />                                                                                     
                         </div>                                    
                     </div>                                       
+                    <div class="row mb-2">
+                        <div class="col-12 pt-4" wire:ignore>   
+                            <label class="labelforms text-muted"><b>Termos e Condições</b></label>
+                            <x-editor-quill 
+                                :value="$configData['terms_condicions']" 
+                                model="configData.terms_condicions" 
+                            />                                                                                     
+                        </div>                                    
+                    </div>                                        
                 </div> 
 
                 <!-- Conteúdo da aba Seo -->

@@ -18,24 +18,14 @@ class CompanyFactory extends Factory
     public function definition(): array
     {
         return [
-            'user' => User::factory(),
-            'social_name' => fake()->company,
-            'alias_name' => fake()->company,
-            'document_company' => fake()->cnpj,
-            'information' => fake()->text(200),
-            'zipcode' => fake()->postcode,
-            'street' => fake()->streetName,
-            'number' => fake()->buildingNumber,
-            'complement' => fake()->secondaryAddress,
-            'neighborhood' => fake()->streetName,
-            'state' => fake()->stateAbbr,
-            'city' => fake()->city,
-            'status' => $this->faker->boolean(),
-            'phone' => '(12)' . fake()->phoneNumber,
-            'cell_phone' => '(12)' . fake()->cellphone,
-            'whatsapp' => '(12)' . fake()->cellphone,
-            'email' => fake()->unique()->safeEmail(),
-            'additional_email' => fake()->safeEmail()
+            'responsable_name' => $this->faker->name(),
+            'responsable_email' => $this->faker->email,
+            'social_name' => $this->faker->company,
+            'alias_name' => $this->faker->companySuffix,
+            'document_company' => $this->faker->cnpj(false),
+            'email' => $this->faker->companyEmail,
+            'phone' => $this->faker->phoneNumber,
+            'status' => true,
         ];
     }
 }
