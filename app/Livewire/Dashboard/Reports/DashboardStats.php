@@ -11,48 +11,100 @@ class DashboardStats extends Component
 {
     public $barChartData = [];
     public $donutChartData = [];
+    public $topPagesChart = [];
 
     public function mount()
     {
-        // ---------- BAR CHART (últimos 6 meses)
-        $analyticsData = Analytics::get(
-            Period::months(6),
-            metrics: ['totalUsers', 'sessions'],
-            dimensions: ['month']
-        );
+        try {
 
-        $sorted = collect($analyticsData)->sortBy('month');
+            $topPages = Analytics::get(
+                Period::months(1),
+                metrics: ['screenPageViews'],
+                dimensions: ['pageTitle']
+            );
 
-        $currentYear = now()->year;
-        $currentMonth = now()->month;
+            $topPages = collect($topPages)
+                ->sortByDesc('screenPageViews')
+                ->take(5);
 
-        $labels = [];
-        $users = [];
-        $sessions = [];
+            $this->topPagesChart = [
+                'labels' => $topPages
+                    ->pluck('pageTitle')
+                    ->map(fn($t) => \Illuminate\Support\Str::limit($t, 40)),
 
-        foreach ($sorted as $row) {
-            $month = intval($row['month']);
+                'values' => $topPages
+                    ->pluck('screenPageViews')
+                    ->map(fn($v) => (int) $v),
+            ];
 
-            $year = $month > $currentMonth ? $currentYear - 1 : $currentYear;
+            $analyticsData = cache()->remember('dashboard_6_months', 60, function () {
+                return Analytics::get(
+                    Period::months(6),
+                    metrics: ['totalUsers', 'sessions'],
+                    dimensions: ['yearMonth']
+                );
+            });
 
-            $labels[] = Carbon::createFromDate($year, $month)->translatedFormat('M/Y');
-            $users[] = intval($row['totalUsers']);
-            $sessions[] = intval($row['sessions']);
+            $sorted = collect($analyticsData)->sortBy('yearMonth');
+
+            $labels = [];
+            $users = [];
+            $sessions = [];
+
+            foreach ($sorted as $row) {
+
+                if (!isset($row['yearMonth'])) continue;
+
+                $date = Carbon::createFromFormat('Ym', $row['yearMonth']);
+
+                $labels[] = $date->translatedFormat('M/Y');
+                $users[] = (int) $row['totalUsers'];
+                $sessions[] = (int) $row['sessions'];
+            }
+
+            $this->barChartData = compact('labels', 'users', 'sessions');
+
+            // 📊 dispositivos (melhor que browser)
+            $devices = Analytics::get(
+                Period::months(6),
+                metrics: ['sessions'],
+                dimensions: ['deviceCategory']
+            );
+
+            $this->donutChartData = [
+                'labels' => collect($devices)->pluck('deviceCategory'),
+                'values' => collect($devices)->pluck('sessions'),
+            ];
+
+            // 📈 stats
+            $totalSessions = array_sum($sessions);
+            $totalUsers = array_sum($users);
+
+            $growth = 0;
+            if (count($sessions) >= 2) {
+                $last = end($sessions);
+                $prev = prev($sessions);
+                if ($prev > 0) {
+                    $growth = (($last - $prev) / $prev) * 100;
+                }
+            }
+
+            $this->stats = [
+                'sessions' => $totalSessions,
+                'users' => $totalUsers,
+                'growth' => round($growth, 1),
+            ];
+
+        } catch (\Exception $e) {
+
+            $this->barChartData = ['labels' => [], 'users' => [], 'sessions' => []];
+            $this->donutChartData = ['labels' => [], 'values' => []];
+            $this->stats = ['sessions' => 0, 'users' => 0, 'growth' => 0];
+            $this->topPagesChart = [
+                'labels' => [],
+                'values' => [],
+            ];
         }
-
-        $this->barChartData = [
-            'labels' => $labels,
-            'users' => $users,
-            'sessions' => $sessions,
-        ];
-
-        // ---------- DONUT (Top browsers últimos 5 meses)
-        $topBrowser = Analytics::fetchTopBrowsers(Period::months(5), 5);
-
-        $this->donutChartData = [
-            'labels' => collect($topBrowser)->pluck('browser'),
-            'values' => collect($topBrowser)->pluck('screenPageViews'),
-        ];
     }
     
     public function render()
