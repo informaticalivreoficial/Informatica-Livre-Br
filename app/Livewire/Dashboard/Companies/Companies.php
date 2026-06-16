@@ -27,7 +27,7 @@ class Companies extends Component
 
     public function viewCompany($id)
     {
-        $this->companySelected = Company::with(['users', 'ocorrencias'])->find($id);
+        $this->companySelected = Company::find($id);
         $this->showCompanyModal = true;
     }
 

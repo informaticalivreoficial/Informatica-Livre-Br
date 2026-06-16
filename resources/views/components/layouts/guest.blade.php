@@ -22,6 +22,8 @@
 
     {{-- Componente Toastr Global --}}
     <livewire:components.toastr-notification /> 
+
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 </body>
 
 </html>

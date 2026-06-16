@@ -142,12 +142,12 @@
 
             <div class="space-y-2">
                 <p><strong>Nome Fantasia:</strong> {{ $companySelected->alias_name }}</p>
-                <p><strong>Razão Social:</strong> {{ $companySelected->corporate_name }}</p>
+                <p><strong>Razão Social:</strong> {{ $companySelected->social_name }}</p>
                 <p><strong>CNPJ:</strong> {{ $companySelected->cnpj }}</p>
                 <p><strong>Status:</strong> {{ $companySelected->status ? 'Ativa' : 'Inativa' }}</p>
 
-                <p><strong>Ocorrências:</strong> {{ $companySelected->ocorrencias->count() }}</p>
-                <p><strong>Colaboradores:</strong> {{ $companySelected->users->count() }}</p>
+                <p><strong>Pedidos:</strong> {{ $companySelected->subscriptions()->count() }}</p>
+                <p><strong>Faturas:</strong> {{ $companySelected->invoices()->count() }}</p>
             </div>
 
             <div class="mt-4 text-right">
