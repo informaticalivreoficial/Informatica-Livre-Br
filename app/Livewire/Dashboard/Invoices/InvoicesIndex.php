@@ -34,28 +34,35 @@ class InvoicesIndex extends Component
             ->consultTransaction($invoice->gateway_reference);
 
         if (!$response) {
-
             $this->toastError('Não foi possível consultar a fatura.');
+            return;
+        }
 
+        $status = data_get($response, 'status_request.status');
+
+        if (!$status) {
+            $this->toastError('Status não encontrado na resposta do PagHiper.');
             return;
         }
 
         $oldStatus = $invoice->status;
 
         $invoice->update([
-            'status' => $response['status'],
+            'status' => $status,
         ]);
 
         if (
             $oldStatus !== 'paid' &&
-            $response['status'] === 'paid'
+            $status === 'paid'
         ) {
             $invoice->update([
-                'paid_at' => now(),
+                'paid_at' => data_get($response, 'status_request.status_date', now()),
             ]);
         }
 
-        $this->toastSuccess('Status atualizado com sucesso.');
+        $this->toastSuccess(
+            "Status atualizado para: {$status}"
+        );
     }
 
     public function render()

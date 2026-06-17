@@ -86,4 +86,54 @@ class PagHiperService
 
         return $response->json();
     }
+
+    public function syncInvoice(Invoice $invoice): Invoice
+    {
+        if (!$invoice->gateway_reference) {
+            throw new \Exception('A fatura não possui transaction_id.');
+        }
+
+        $response = $this->consultTransaction(
+            $invoice->gateway_reference
+        );
+
+        if (!$response) {
+            throw new \Exception('Falha ao consultar PagHiper.');
+        }
+
+        $payload = $response['status_request'] ?? null;
+
+        if (!$payload) {
+            throw new \Exception('Resposta inválida do PagHiper.');
+        }
+
+        $status = $payload['status'] ?? null;
+
+        if (!$status) {
+            throw new \Exception('Status não informado pelo PagHiper.');
+        }
+
+        $oldStatus = $invoice->status;
+
+        $invoice->update([
+            'status' => $status,
+        ]);
+
+        if (
+            $oldStatus !== 'paid' &&
+            $status === 'paid'
+        ) {
+            $invoice->update([
+                'paid_at' => $payload['status_date'] ?? now(),
+            ]);
+        }
+
+        Log::info('Invoice sincronizada com PagHiper', [
+            'invoice_id' => $invoice->id,
+            'old_status' => $oldStatus,
+            'new_status' => $status,
+        ]);
+
+        return $invoice->fresh();
+    }
 }
