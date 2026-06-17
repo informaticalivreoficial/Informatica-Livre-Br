@@ -68,4 +68,22 @@ class PagHiperService
 
         return $data['create_request'];
     }
+
+    public function consultTransaction(string $transactionId): ?array
+    {
+        $response = Http::post(
+            'https://api.paghiper.com/transaction/status/',
+            [
+                'apiKey' => config('services.paghiper.api_key'),
+                'token'  => config('services.paghiper.token'),
+                'transaction_id' => $transactionId,
+            ]
+        );
+
+        if (!$response->successful()) {
+            return null;
+        }
+
+        return $response->json();
+    }
 }
