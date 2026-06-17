@@ -88,16 +88,18 @@
                             </td>
 
                             <td class="text-right space-x-2">
-                                <button
-                                    wire:click="syncInvoice({{ $invoice->id }})"
-                                    wire:loading.attr="disabled"
-                                    class="btn btn-sm btn-outline-primary"
-                                    title="Atualizar Status"
-                                >
-                                    <i class="fas fa-sync"></i>
-                                </button>
+                                @if($invoice->gateway_reference)
+                                    <button
+                                        wire:click="syncInvoice({{ $invoice->id }})"
+                                        wire:loading.attr="disabled"
+                                        class="btn btn-sm btn-outline-primary"
+                                        title="Atualizar Status"
+                                    >
+                                        <i class="fas fa-sync"></i>
+                                    </button>
+                                @endif
 
-                                @if ($invoice->status !== 'paid')
+                                @if ($invoice->status !== 'paid' && $invoice->due_date->isFuture())
                                     <button
                                         wire:click="generateBoleto({{ $invoice->id }})"
                                         wire:loading.attr="disabled"
