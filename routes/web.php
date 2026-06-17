@@ -5,7 +5,8 @@ use App\Livewire\Auth\Register;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Dashboard\{
     Settings,
-    Dashboard
+    Dashboard,
+    NotificationsList
 };
 use App\Livewire\Dashboard\Users\{
     Time,
@@ -28,6 +29,8 @@ use App\Livewire\Dashboard\Permissions\Index as PermissionIndex;
 use App\Livewire\Dashboard\Roles\Index as RoleIndex;
 use App\Livewire\Dashboard\Companies\Companies;
 use App\Livewire\Dashboard\Companies\CompanyForm;
+use App\Livewire\Dashboard\Invoices\InvoicesIndex;
+use App\Livewire\Dashboard\Invoices\InvoicesShow;
 use App\Livewire\Dashboard\Portifolio\PortifolioCategories;
 use App\Livewire\Dashboard\Portifolio\PortifolioForm;
 use App\Livewire\Dashboard\Portifolio\PortifolioIndex;
@@ -40,6 +43,19 @@ use App\Livewire\Dashboard\Service\SubscriptionForm;
 use App\Livewire\Dashboard\Service\SubscriptionIndex;
 use App\Livewire\Dashboard\Service\SubscriptionShow;
 use App\Livewire\Dashboard\Sitemap\SitemapGenerator;
+
+// Route::get('/test-notification/{status}', function ($status) {
+
+//     $admin = \App\Models\User::role('super-admin')->first();
+
+//     $invoice = \App\Models\Invoice::latest()->first();
+
+//     $admin->notify(
+//         new \App\Notifications\InvoiceStatusNotification($invoice, $status)
+//     );
+
+//     return "Notificação {$status} enviada com sucesso!";
+// });
 
 Route::prefix('cliente')->name('cliente.')->group(function () {
     // Acesso público
@@ -82,6 +98,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
     Route::get('/', Dashboard::class)->name('admin');
     Route::get('configuracoes', Settings::class)->name('settings');
     Route::get('sitemap-generator', SitemapGenerator::class)->name('sitemap.generator');
+    Route::get('notificacoes', NotificationsList::class)->name('notifications.index');
 
     // Somente Super Admin
     Route::middleware('role:super-admin')->group(function () {
@@ -107,6 +124,10 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
     Route::get('/pedidos/{subscription}/edit', SubscriptionForm::class)->name('services.subscriptions.edit');
     Route::get('/pedido/{subscription}/show', SubscriptionShow::class)->name('services.subscriptions.show');
     Route::get('/pedidos/{subscription}/faturas', InvoiceIndex::class)->name('services.invoices.index');
+
+    //*********************** Invoices *********************************************/
+    Route::get('/faturas', InvoicesIndex::class)->name('invoices.index');
+    Route::get('/faturas/{invoice}/visualizar', InvoicesShow::class)->name('invoices.show');
 
     Route::get('/cargos', RoleIndex::class)->name('admin.roles');
     Route::get('/permissoes', PermissionIndex::class)->name('admin.permissions');

@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Webhooks;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Invoice;
+use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
+use App\Notifications\InvoiceStatusNotification;
+use Illuminate\Support\Facades\Notification;
 
 class PagHiperWebhookController extends Controller
 {
@@ -117,8 +120,10 @@ class PagHiperWebhookController extends Controller
             'paid_amount' => $request->input('value_cents') / 100,
         ]);
 
-        // 🔔 Aqui você pode disparar eventos, emails, notificações, etc
-        // event(new InvoicePaid($invoice));
+        Notification::send(
+            User::role('super-admin')->get(),
+            new InvoiceStatusNotification($invoice, 'paid')
+        );
     }
 
     protected function markAsCanceled(Invoice $invoice): void
@@ -134,9 +139,13 @@ class PagHiperWebhookController extends Controller
             'status' => 'canceled',
         ]);
 
-        Log::info('Invoice cancelada', [
-            'invoice_id' => $invoice->id
-        ]);
+        // Log::info('Invoice cancelada', [
+        //     'invoice_id' => $invoice->id
+        // ]);
+        Notification::send(
+            User::role('super-admin')->get(),
+            new InvoiceStatusNotification($invoice, 'canceled')
+        );
     }
 
     protected function markAsRefunded(Invoice $invoice): void
@@ -146,8 +155,12 @@ class PagHiperWebhookController extends Controller
             'refunded_at' => now(),
         ]);
 
-        Log::info('Invoice estornada', [
-            'invoice_id' => $invoice->id
-        ]);
+        // Log::info('Invoice estornada', [
+        //     'invoice_id' => $invoice->id
+        // ]);
+        Notification::send(
+            User::role('super-admin')->get(),
+            new InvoiceStatusNotification($invoice, 'refunded')
+        );
     }
 }
