@@ -49,10 +49,14 @@ class Users extends Component
     #[Title('Clientes')]
     public function render()
     {
-        $users = \App\Models\User::query()->when($this->search, function($query){
-                        $query->orWhere('name', 'LIKE', "%{$this->search}%");
-                        $query->orWhere('email', "%{$this->search}%");
-                    })->where('client', 1)->orderBy($this->sortField, $this->sortDirection)->paginate(35);
+        $users = User::query()
+            ->role('employee')
+            ->when($this->search, function($query){
+                $query->orWhere('name', 'LIKE', "%{$this->search}%");
+                $query->orWhere('email', "%{$this->search}%");
+            })
+            ->orderBy($this->sortField, $this->sortDirection)
+            ->paginate(35);
         return view('livewire.dashboard.users.users',[
             'users' => $users
         ]);

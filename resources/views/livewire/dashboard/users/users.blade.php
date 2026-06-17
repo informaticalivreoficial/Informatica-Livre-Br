@@ -31,7 +31,7 @@
                       </div>
                 </div>
                 <div class="col-12 col-sm-6 my-2 text-right">
-                    <a wire:navigate href="cadastrar-cliente" class="btn btn-sm btn-default"><i class="fas fa-plus mr-2"></i> Cadastrar Novo</a>
+                    <a href="{{ route('users.create') }}" class="btn btn-sm btn-default"><i class="fas fa-plus mr-2"></i> Cadastrar Novo</a>
                 </div>
             </div>
         </div>        
@@ -81,10 +81,13 @@
                             <td>{{$user->name}}</td>
                             <td>{{$user->cpf}}</td>
                             <td class="text-center">
-                                <label class="switch" wire:model="active">
-                                    <input type="checkbox" value="{{$user->status}}"  wire:change="toggleStatus({{$user->id}})" wire:loading.attr="disabled" {{$user->status ? 'checked': ''}}>
-                                    <span class="slider round"></span>
-                                </label>
+                                <x-forms.switch-toggle
+                                    wire:key="safe-switch-{{ $user->id }}"
+                                    wire:click="toggleStatus({{ $user->id }})"
+                                    :checked="$user->status"
+                                    size="sm"
+                                    color="green"
+                                />
                             </td>
                             <td>
                                 
@@ -100,7 +103,7 @@
                                 </form> 
                                 <a wire:navigate href="visualizar/{{$user->id}}" class="btn btn-xs btn-info text-white"><i class="fas fa-search"></i></a>
                                 <a wire:navigate href="{{ route('users.edit', [ 'userId' => $user->id ]) }}" class="btn btn-xs btn-default"><i class="fas fa-pen"></i></a>
-                                <button type="button" class="btn btn-xs btn-danger text-white" wire:click="setDeleteId({{$user->id}})">
+                                <button type="button" class="btn btn-xs bg-danger text-white" wire:click="setDeleteId({{$user->id}})">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </td>
@@ -128,31 +131,6 @@
 
 <script>
     
-    document.addEventListener('livewire:initialized', () => {
-        @this.on('swal', (event) => {
-            const data = event
-            swal.fire({
-                icon:data[0]['icon'],
-                title:data[0]['title'],
-                text:data[0]['text'],
-            })
-        })
-
-        @this.on('delete-prompt', (event) => {
-            swal.fire({
-                icon: 'warning',
-                title: 'Atenção',
-                text: 'Você tem certeza que deseja excluir este Cliente?',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Sim, excluir!',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    @this.dispatch('goOn-Delete')
-                }
-            })
-        })
-    });
+    
 
 </script>

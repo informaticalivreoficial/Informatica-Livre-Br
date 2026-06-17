@@ -34,6 +34,9 @@ use App\Livewire\Dashboard\Invoices\InvoicesShow;
 use App\Livewire\Dashboard\Portifolio\PortifolioCategories;
 use App\Livewire\Dashboard\Portifolio\PortifolioForm;
 use App\Livewire\Dashboard\Portifolio\PortifolioIndex;
+use App\Livewire\Dashboard\Reports\InvoiceReport;
+use App\Livewire\Dashboard\Reports\ReportIndex;
+use App\Livewire\Dashboard\Reports\SubscriptionReport;
 use App\Livewire\Dashboard\Safe\Safe;
 use App\Livewire\Dashboard\Safe\SafeForm;
 use App\Livewire\Dashboard\Service\InvoiceIndex;
@@ -147,68 +150,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
     Route::get('/portifolio/cadastrar', PortifolioForm::class)->name('portifolio.create');
     Route::get('/portifolio/{portifolio}/editar', PortifolioForm::class)->name('portifolio.edit');
 
-    // Route::match(['get', 'post'], 'portifolio/pesquisa', [PortifolioController::class, 'search'])->name('portifolio.search');
-    // Route::get('portifolio/set-status', [PortifolioController::class, 'portifolioSetStatus'])->name('portifolio.portifolioSetStatus');
-    // Route::post('portifolio/image-set-cover', [PortifolioController::class, 'imageSetCover'])->name('portifolio.imageSetCover');
-    // Route::delete('portifolio/image-remove', [PortifolioController::class, 'imageRemove'])->name('portifolio.imageRemove');
-    // Route::delete('portifolio/deleteon', [PortifolioController::class, 'deleteon'])->name('portifolio.deleteon');
-    // Route::get('portifolio/delete', [PortifolioController::class, 'delete'])->name('portifolio.delete');
-    // Route::put('portifolio/{id}', [PortifolioController::class, 'update'])->name('portifolio.update');
-    // Route::get('portifolio/{id}/edit', [PortifolioController::class, 'edit'])->name('portifolio.edit');
-    // Route::get('portifolio/create', [PortifolioController::class, 'create'])->name('portifolio.create');
-    // Route::post('portifolio/store', [PortifolioController::class, 'store'])->name('portifolio.store');
-    // Route::get('portifolio', [PortifolioController::class, 'index'])->name('portifolio.index');
-
     
-    //****************************** Empresas *******************************************/
-    // Route::match(['post', 'get'], 'empresas/fetchCity', [EmpresaController::class, 'fetchCity'])->name('empresas.fetchCity');
-    // Route::get('empresas/set-status', [EmpresaController::class, 'empresaSetStatus'])->name('empresas.empresaSetStatus');
-    // Route::delete('empresas/deleteon', [EmpresaController::class, 'deleteon'])->name('empresas.deleteon');
-    // Route::get('empresas/delete', [EmpresaController::class, 'delete'])->name('empresas.delete');
-    // Route::put('empresas/{id}', [EmpresaController::class, 'update'])->name('empresas.update');
-    // Route::get('empresas/{id}/edit', [EmpresaController::class, 'edit'])->name('empresas.edit');
-    // Route::get('empresas/create', [EmpresaController::class, 'create'])->name('empresas.create');
-    // Route::post('empresas/store', [EmpresaController::class, 'store'])->name('empresas.store');
-    // Route::get('/empresas', [EmpresaController::class, 'index'])->name('empresas.index');
-
-    //******************** Sitemap *********************************************/
-    //Route::get('gerarxml', [SitemapController::class, 'gerarxml'])->name('admin.gerarxml');
-
-    //******************** Configurações ***************************************/
-    //Route::match(['post', 'get'], 'configuracoes/fetchCity', [ConfigController::class, 'fetchCity'])->name('configuracoes.fetchCity');
-    //Route::put('configuracoes/{config}', [ConfigController::class, 'update'])->name('configuracoes.update');
-    //Route::get('configuracoes', [ConfigController::class, 'editar'])->name('configuracoes.editar');
-
-    //********************* Categorias para Posts *******************************/
-    // Route::get('categorias/delete', [CatPostController::class, 'delete'])->name('categorias.delete');
-    // Route::delete('categorias/deleteon', [CatPostController::class, 'deleteon'])->name('categorias.deleteon');
-    // Route::put('categorias/posts/{id}', [CatPostController::class, 'update'])->name('categorias.update');
-    // Route::get('categorias/{id}/edit', [CatPostController::class, 'edit'])->name('categorias.edit');
-    // Route::match(['post', 'get'],'posts/categorias/create/{catpai}', [CatPostController::class, 'create'])->name('categorias.create');
-    // Route::post('posts/categorias/store', [CatPostController::class, 'store'])->name('categorias.store');
-    // Route::get('posts/categorias', [CatPostController::class, 'index'])->name('categorias.index');
-
-    //********************** Blog ************************************************/
-    // Route::get('posts/set-status', [PostController::class, 'postSetStatus'])->name('posts.postSetStatus');
-    // Route::get('posts/delete', [PostController::class, 'delete'])->name('posts.delete');
-    // Route::delete('posts/deleteon', [PostController::class, 'deleteon'])->name('posts.deleteon');
-    // Route::post('posts/image-set-cover', [PostController::class, 'imageSetCover'])->name('posts.imageSetCover');
-    // Route::delete('posts/image-remove', [PostController::class, 'imageRemove'])->name('posts.imageRemove');
-    // Route::put('posts/{id}', [PostController::class, 'update'])->name('posts.update');
-    // Route::get('posts/{id}/edit', [PostController::class, 'edit'])->name('posts.edit');
-    // Route::get('posts/create', [PostController::class, 'create'])->name('posts.create');
-    // Route::post('posts/store', [PostController::class, 'store'])->name('posts.store');
-    // Route::post('posts/categoriaList', [PostController::class, 'categoriaList'])->name('posts.categoriaList');
-    // Route::get('posts/artigos', [PostController::class, 'index'])->name('posts.artigos');
-    // Route::get('posts/noticias', [PostController::class, 'index'])->name('posts.noticias');
-    // Route::get('posts/paginas', [PostController::class, 'index'])->name('posts.paginas');
-
-    //*********************** Email **********************************************/
-    // Route::get('email/suporte', [EmailController::class, 'suporte'])->name('email.suporte');
-    // Route::match(['post', 'get'], 'email/enviar-email', [EmailController::class, 'send'])->name('email.send');
-    // Route::post('email/sendEmail', [EmailController::class, 'sendEmail'])->name('email.sendEmail');
-    // Route::match(['post', 'get'], 'email/success', [EmailController::class, 'success'])->name('email.success');
-
     //*********************** Usuários **********************************************/
     Route::get('usuarios/clientes', Users::class)->name('users.index');
     Route::get('usuarios/time', Time::class)->name('users.time');
@@ -221,24 +163,9 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
     Route::get('slides/cadastrar', SlideForm::class)->name('slides.create');
     Route::get('slides', Slides::class)->name('slides.index');
 
-    
-
-    // Route::get('/notifications', [NotificationController::class, 'notifications'])->name('notifications');
-    // Route::put('/notification-all-read', [NotificationController::class, 'markAllAsRead']);
-    // Route::put('/notification-read', [NotificationController::class, 'markAsRead']);
-
-    //********************************* Cofre *******************************************/
-    // Route::get('Senhas-Informatica-Livre.txt', [CofreController::class, 'setTxt'])->name('setTxt');
-    // Route::get('cofre/set-status', [CofreController::class, 'itemSetStatus'])->name('cofre.itemSetStatus');
-    // Route::delete('cofre/deleteon', [CofreController::class, 'deleteon'])->name('cofre.deleteon');
-    // Route::get('cofre/delete', [CofreController::class, 'delete'])->name('cofre.delete');
-    // Route::put('cofre/{id}', [CofreController::class, 'update'])->name('cofre.update');
-    // Route::get('cofre/{id}/edit', [CofreController::class, 'edit'])->name('cofre.edit');
-    // Route::get('cofre/create', [CofreController::class, 'create'])->name('cofre.create');
-    // Route::post('cofre/store', [CofreController::class, 'store'])->name('cofre.store');
-    // Route::get('/cofre', [CofreController::class, 'index'])->name('cofre.index');
-
-    //Route::get('/', [AdminController::class, 'home'])->name('home');
+    Route::get('relatorios/pedidos', SubscriptionReport::class)->name('reports.subscriptions');
+    Route::get('relatorios/faturas', InvoiceReport::class)->name('reports.invoices');    
+    Route::get('relatorios', ReportIndex::class)->name('reports.index');
 });
 
 // Authentication routes

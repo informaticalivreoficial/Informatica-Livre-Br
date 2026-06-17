@@ -105,7 +105,7 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>{{$subscription->interval}}</td>
+                                        <td>{{$subscription->interval?->label()}}</td>
                                         <td>{{$subscription->service->name}}</td>
                                         <td>R$ {{number_format($subscription->amount, 2, ',', '.')}}</td>    
                                     </tr>                                                            

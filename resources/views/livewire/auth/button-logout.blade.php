@@ -1,7 +1,5 @@
 <div>
-    <li class="nav-item">
-        <a href="#" class="nav-link" wire:click="logout">
-            <i class="fa fa-fw fa-power-off text-red"></i>                
-        </a>            
-    </li>
+    <a href="#" class="nav-link" wire:click="logout" title="Sair">
+        <i class="fa fa-fw fa-power-off text-red"></i>  Sair              
+    </a>
 </div>

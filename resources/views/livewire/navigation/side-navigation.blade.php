@@ -160,29 +160,11 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="{{route('reports.index')}}" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Relatório de Viagens</p>
+                                <p>Relatório de vendas</p>
                             </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{--route('manifestReport.index')--}}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Relatório de Manifestos</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Relatório de Clientes</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{--route('companyReport.index')--}}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Relatório de Empresas</p>
-                            </a>
-                        </li>
+                        </li>                     
                     </ul>
                 </li>
                 <li class="nav-item">

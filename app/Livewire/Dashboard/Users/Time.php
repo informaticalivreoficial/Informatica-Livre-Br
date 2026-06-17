@@ -21,29 +21,7 @@ class Time extends Component
 
     public string $sortDirection = 'asc';
 
-    public bool $active;
-
-    public function render()
-    {
-        $title = 'Time de Usuários';
-
-        $users = User::query()
-            ->where(function($query) {
-                $query->where('editor', 1)->orWhere('admin', 1);
-            })
-            ->when($this->search, function($query) {
-                $query->where(function($q) {
-                    $q->where('name', 'LIKE', "%{$this->search}%")
-                    ->orWhere('email', 'LIKE', "%{$this->search}%");
-                });
-            })
-            ->orderBy($this->sortField, $this->sortDirection)
-            ->paginate(15);
-
-        return view('livewire.dashboard.users.time', [
-            'users' => $users
-        ])->with('title', $title);
-    }
+    public bool $active;    
 
     #{Url}
     public function updatingSearch(): void
@@ -65,29 +43,58 @@ class Time extends Component
 
     public function toggleStatus($id)
     {              
-        $user = User::find($id);
-        $user->status = !$this->active;        
+        $user = User::findOrFail($id);
+        $user->status = !$user->status;        
         $user->save();
-        $this->active = $user->status;
     }
 
     public function setDeleteId($id)
     {
-        $this->delete_id = $id;
-        $this->dispatch('delete-prompt');        
+        $this->dispatch('swal:confirm', [
+            'title' => 'Excluir Usuário?',
+            'text' => 'Essa ação não pode ser desfeita.!',
+            'showConfirmButton' => false,
+            'icon' => 'warning',
+            'confirmButtonText' => 'Sim, excluir',
+            'cancelButtonText' => 'Cancelar',
+            'confirmEvent' => 'deleteUser',
+            'confirmParams' => [$id],
+        ]);        
     }
-    #[On('goOn-Delete')]
-    public function delete()
+    
+    #[On('deleteUser')]
+    public function deleteUser($id): void
     {
-        $user = \App\Models\User::where('id', $this->delete_id)->first();
+        $user = User::where('id', $id)->first();
         if(!empty($user)){
+            $this->authorize('delete', $user);
             $user->delete();
-            
-            $this->dispatch('swal', [
-                'title' =>  'Success!',
-                'icon' => 'success',
-                'text' => 'Cliente removido com sucesso!'
+
+            $this->dispatch('swal:success', [
+                'title' => 'Excluído!',
+                'text' => 'Usuário removido com sucesso!',
+                'timer' => 2000,
+                'showConfirmButton' => false
             ]);
         }
+    }
+
+    public function render()
+    {
+        $title = 'Time de Usuários';
+
+        $users = User::role(['manager', 'super-admin']) // Filtra por roles
+            ->when($this->search, function($query) {
+                $query->where(function($q) {
+                    $q->where('name', 'LIKE', "%{$this->search}%")
+                    ->orWhere('email', 'LIKE', "%{$this->search}%");
+                });
+            })
+            ->orderBy($this->sortField, $this->sortDirection)
+            ->paginate(15);
+
+        return view('livewire.dashboard.users.time', [
+            'users' => $users
+        ])->with('title', $title);        
     }
 }

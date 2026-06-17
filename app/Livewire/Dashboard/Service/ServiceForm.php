@@ -41,7 +41,7 @@ class ServiceForm extends Component
                 'category_id'  => $this->service->category_id,
                 'description'  => $this->service->description,
                 'price'        => $this->service->price,
-                'billing_type' => $this->service->billing_type,
+                'billing_type' => $this->service->billing_type?->value,
                 'interval'     => $this->service->interval,
                 'is_public'    => $this->service->is_public,
                 'status'       => (int) $this->service->status,
