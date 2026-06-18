@@ -147,7 +147,7 @@
                             <h3 class="text-lg font-bold text-gray-800 mb-4">Posts Recentes</h3>
                             <div class="space-y-4">
                                 @foreach($recentes as $recente)
-                                    <a href="{{ route('site.blog.single', $recente->slug) }}"
+                                    <a href="{{ route('web.blog.artigo', $recente->slug) }}"
                                         class="flex gap-3 group">
                                         @if($recente->cover)
                                             <img
@@ -178,7 +178,7 @@
                     @if($post->categoryRelation)
                         <div class="bg-white rounded-2xl shadow-sm p-6">
                             <h3 class="text-lg font-bold text-gray-800 mb-4">Categoria</h3>
-                            <a href="{{ route('site.blog.categoria', $post->categoryRelation->slug) }}"
+                            <a href="{{ route('web.site.blog.categoria', $post->categoryRelation->slug) }}"
                                 class="inline-flex items-center gap-2 bg-teal-50 text-teal-700 px-4 py-2 rounded-full text-sm hover:bg-teal-100 transition">
                                 <i class="fas fa-tag"></i>
                                 {{ $post->categoryRelation->title }}
