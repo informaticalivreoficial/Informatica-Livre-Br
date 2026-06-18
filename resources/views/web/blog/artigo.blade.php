@@ -149,17 +149,11 @@
                                 @foreach($recentes as $recente)
                                     <a href="{{ route('web.blog.artigo', $recente->slug) }}"
                                         class="flex gap-3 group">
-                                        @if($recente->cover)
-                                            <img
-                                                src="{{ Storage::url($recente->cover->path) }}"
-                                                alt="{{ $recente->title }}"
-                                                class="w-16 h-16 object-cover rounded-lg flex-shrink-0"
-                                            >
-                                        @else
-                                            <div class="w-16 h-16 bg-teal-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                                                <i class="fas fa-newspaper text-teal-300"></i>
-                                            </div>
-                                        @endif
+                                        <img
+                                            src="{{ $recente->cover() }}"
+                                            alt="{{ $recente->title }}"
+                                            class="w-16 h-16 object-cover rounded-lg flex-shrink-0"
+                                        >
                                         <div>
                                             <p class="text-sm font-medium text-gray-700 group-hover:text-teal-600 transition line-clamp-2">
                                                 {{ $recente->title }}
