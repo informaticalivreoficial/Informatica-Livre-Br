@@ -2,27 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
     <url>
         <loc>http://laravel.test</loc>
-        <lastmod>2026-03-20T23:08:38-03:00</lastmod>
+        <lastmod>2026-06-18T15:06:49-03:00</lastmod>
 
             </url>
     <url>
         <loc>http://laravel.test/atendimento</loc>
-        <lastmod>2026-03-20T23:08:38-03:00</lastmod>
+        <lastmod>2026-06-18T15:06:49-03:00</lastmod>
 
             </url>
     <url>
         <loc>http://laravel.test/portifolio</loc>
-        <lastmod>2026-03-20T23:08:38-03:00</lastmod>
+        <lastmod>2026-06-18T15:06:49-03:00</lastmod>
 
             </url>
     <url>
         <loc>http://laravel.test/termos-e-condicoes</loc>
-        <lastmod>2026-03-20T23:08:38-03:00</lastmod>
+        <lastmod>2026-06-18T15:06:49-03:00</lastmod>
 
             </url>
     <url>
         <loc>http://laravel.test/politica-de-privacidade</loc>
-        <lastmod>2026-03-20T23:08:38-03:00</lastmod>
+        <lastmod>2026-06-18T15:06:49-03:00</lastmod>
 
             </url>
     <url>
@@ -101,8 +101,8 @@
 
             </url>
     <url>
-        <loc>http://laravel.test/blog/como-a-tecnologia-pode-facilitar-a-gestao-da-sua-empresa</loc>
-        <lastmod>2026-03-20T18:09:21-03:00</lastmod>
+        <loc>http://laravel.test/blog/artigo/como-a-tecnologia-pode-facilitar-a-gestao-da-sua-empresa</loc>
+        <lastmod>2026-06-17T23:01:37-03:00</lastmod>
 
             </url>
 </urlset>

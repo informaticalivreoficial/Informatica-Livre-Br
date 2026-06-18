@@ -9,6 +9,9 @@ use App\Models\Post;
 use App\Models\PostGb;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Typography\FontFactory;
 
 class PostController extends Controller
 {
@@ -73,17 +76,17 @@ class PostController extends Controller
         }
 
         return response()->json([
-            'success'      => true,
-            'post_id'      => $post->id,
-            'url'          => url('/blog/artigo/' . $post->slug),
-            'image'        => $image,
-            'category'     => $categoryName,
-            'title'        => $post->title,
-            'readingTime' => $post->reading_time,
-            'metaDescription' => $post->meta_description,
-            'excerpt'      => $post->excerpt,
-            'slug'         => $post->slug,
-            'tags' => $post->tags
+            'success'         => true,
+            'post_id'         => $post->id,
+            'url'             => url('/blog/artigo/' . $post->slug),
+            'image'           => $image,
+            'category'        => $categoryName,
+            'title'           => $post->title,
+            'readingTime'     => $post->readingTime,
+            'metaDescription' => $post->metaDescription,
+            'excerpt'         => $post->excerpt,
+            'slug'            => $post->slug,
+            'tags'            => $post->tags
                 ? collect(explode(',', $post->tags))
                     ->map(fn ($tag) => trim($tag))
                     ->filter()
@@ -117,9 +120,54 @@ class PostController extends Controller
             $name = Str::slug($post->title) . '.' . $extension;
             $path = $dir . '/' . $name;
  
-            Storage::disk('public')->makeDirectory($dir);
-            Storage::disk('public')->put($path, $response->body());
- 
+            Storage::makeDirectory($dir);
+            
+            //logger('1 - download ok');
+            $manager = new ImageManager(new Driver());
+
+            //logger('2 - manager ok');
+            $image = $manager->read($response->body());
+
+            //logger('3 - image read ok');
+            // cria uma faixa escura
+            $overlay = $manager->create($image->width(), $image->height())
+                ->fill('rgba(0,0,0,0.45)');
+
+            $image->place($overlay);
+
+            //logger('4 - overlay ok');            
+
+            // quebra o título em múltiplas linhas
+            $lines = explode("\n", wordwrap($post->title, 25, "\n"));
+
+            $totalHeight = count($lines) * 60;
+            $startY = ($image->height() / 2) - ($totalHeight / 2);
+
+            foreach ($lines as $line) {
+
+                $image->text(
+                    $line,
+                    $image->width() / 2,
+                    $startY,
+                    function (FontFactory $font) {
+                        $font->filename(public_path('fonts/Montserrat-Bold.ttf'));
+                        $font->size(48);
+                        $font->color('#ffffff');
+                        $font->align('center');
+                        $font->valign('top');
+                    }
+                );
+
+                $startY += 60;
+            }
+            
+            //logger('5 - text ok');
+            // salva a imagem processada
+            Storage::put(
+                $path,
+                (string) $image->toWebp(85)
+            );
+            //logger('6 - save ok');
             // 🗂️ registra no banco
             PostGb::create([
                 'post'  => $post->id,
@@ -127,7 +175,7 @@ class PostController extends Controller
                 'path'  => $path,
             ]);
  
-            return Storage::disk('public')->url($path);
+            return Storage::url($path);
  
         } catch (\Exception $e) {
             logger()->error('Erro ao salvar imagem do SD', [
