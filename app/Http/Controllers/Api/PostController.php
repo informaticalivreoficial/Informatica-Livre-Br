@@ -52,10 +52,10 @@ class PostController extends Controller
             'status'           => 0,
             'category'         => $categoryData['id'],
             'cat_pai'          => $categoryData['pai'],
-            'meta_description' => $data['metaDescription'] ?? Str::limit(strip_tags($data['content']), 160),
+            'metaDescription' => $data['metaDescription'] ?? Str::limit(strip_tags($data['content']), 160),
             'excerpt'          => $data['excerpt'] ?? null,
             'tags'             => $data['tags'] ?? null,
-            'reading_time'     => $data['readingTime'] ?? null,
+            'readingTime'     => $data['readingTime'] ?? null,
         ];        
 
         // 💾 cria post
@@ -78,7 +78,16 @@ class PostController extends Controller
             'url'          => url('/blog/artigo/' . $post->slug),
             'image'        => $image,
             'category'     => $categoryName,
-            'reading_time' => $post->reading_time,
+            'title'        => $post->title,
+            'readingTime' => $post->reading_time,
+            'metaDescription' => $post->meta_description,
+            'excerpt'      => $post->excerpt,
+            'tags' => $post->tags
+                ? collect(explode(',', $post->tags))
+                    ->map(fn ($tag) => '#' . trim($tag))
+                    ->filter()
+                    ->values()
+                : [],
         ]);
     }
 
