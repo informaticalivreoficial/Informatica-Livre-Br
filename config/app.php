@@ -4,7 +4,12 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
-    'api_token' => env('API_TOKEN', 'your-default-api-token-here'),
+    'api_token' => env('API_TOKEN', 'your-default-api-token-here'),    
+
+     /**
+     * Baixa a imagem do SD, processa e salva localmente.
+     * Retorna a URL da imagem ou null em caso de falha.
+     */
 
     /*
     |--------------------------------------------------------------------------

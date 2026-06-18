@@ -122,23 +122,18 @@ class PostController extends Controller
  
             Storage::makeDirectory($dir);
             
-            //logger('1 - download ok');
             $manager = new ImageManager(new Driver());
 
-            //logger('2 - manager ok');
             $image = $manager->read($response->body());
 
-            //logger('3 - image read ok');
             // cria uma faixa escura
             $overlay = $manager->create($image->width(), $image->height())
                 ->fill('rgba(0,0,0,0.45)');
 
-            $image->place($overlay);
-
-            //logger('4 - overlay ok');            
+            $image->place($overlay);          
 
             // quebra o título em múltiplas linhas
-            $lines = explode("\n", wordwrap($post->title, 25, "\n"));
+            $lines = explode("\n", wordwrap(Str::limit($post->title, 90), 28, "\n"));
 
             $totalHeight = count($lines) * 60;
             $startY = ($image->height() / 2) - ($totalHeight / 2);
@@ -159,15 +154,14 @@ class PostController extends Controller
                 );
 
                 $startY += 60;
-            }
+            }            
             
-            //logger('5 - text ok');
             // salva a imagem processada
             Storage::put(
                 $path,
                 (string) $image->toWebp(85)
             );
-            //logger('6 - save ok');
+            
             // 🗂️ registra no banco
             PostGb::create([
                 'post'  => $post->id,
