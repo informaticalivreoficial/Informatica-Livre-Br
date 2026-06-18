@@ -34,7 +34,7 @@ class PostController extends Controller
             'content'         => 'required|string',
             'type'            => 'required|string',
             'category'        => 'nullable|string',
-            'metaDescription' => 'nullable|string|max:160',
+            'metaDescription' => 'nullable|string|max:255',
             'excerpt'         => 'nullable|string',
             'tags'            => 'nullable|array',
             'tags.*'          => 'string',
