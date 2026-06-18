@@ -82,7 +82,7 @@ Route::group(['as' => 'web.'], function () {
     Route::get('/portifolio', [SiteController::class, 'portifolio'])->name('portifolio');
     Route::get('/portifolio/{slug}', [SiteController::class, 'portifolioSingle'])->name('portifolio.single');
     Route::get('/blog', [SiteController::class, 'blog'])->name('blog.artigos');
-    Route::get('/blog/{slug}', [SiteController::class, 'blogSingle'])->name('blog.artigo');
+    Route::get('/blog/artigo/{slug}', [SiteController::class, 'blogSingle'])->name('blog.artigo');
     Route::get('/blog/categoria/{slug}', [SiteController::class, 'blogCategoria'])->name('site.blog.categoria');
     Route::get('/atendimento', [SiteController::class, 'contact'])->name('contact');
     Route::get('/pagina/{slug}', [SiteController::class, 'page'])->name('page');
