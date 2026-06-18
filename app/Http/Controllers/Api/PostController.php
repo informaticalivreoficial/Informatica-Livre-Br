@@ -82,10 +82,12 @@ class PostController extends Controller
             'readingTime' => $post->reading_time,
             'metaDescription' => $post->meta_description,
             'excerpt'      => $post->excerpt,
+            'slug'         => $post->slug,
             'tags' => $post->tags
                 ? collect(explode(',', $post->tags))
-                    ->map(fn ($tag) => '#' . trim($tag))
+                    ->map(fn ($tag) => trim($tag))
                     ->filter()
+                    ->map(fn ($tag) => '#' . Str::slug($tag, ' '))
                     ->values()
                 : [],
         ]);
