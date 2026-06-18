@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\InvoiceController;
-use App\Http\Controllers\Api\v1\PostController;
+use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Webhooks\PagHiperWebhookController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;

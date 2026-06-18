@@ -13,13 +13,13 @@ use Illuminate\Support\Facades\Http;
 class PostController extends Controller
 {
     private array $categoryMap = [
-        'Gestão'                      => ['id' => 10, 'pai' => 3],
-        'Segurança Digital'           => ['id' => 11, 'pai' => 3],
-        'Desenvolvimento de Software' => ['id' => 12, 'pai' => 3],
-        'Negócios'                    => ['id' => 13, 'pai' => 3],
-        'Vendas Online'               => ['id' => 14, 'pai' => 3],
-        'Marketing'                   => ['id' => 15, 'pai' => 3],
-        'Geral'                       => ['id' => 26, 'pai' => 3],
+        'Gestão'                      => ['id' => 2, 'pai' => 1],
+        'Segurança Digital'           => ['id' => 5, 'pai' => 1],
+        'Desenvolvimento de Software' => ['id' => 6, 'pai' => 1],
+        'Negócios'                    => ['id' => 7, 'pai' => 1],
+        'Vendas Online'               => ['id' => 8, 'pai' => 1],
+        'Marketing'                   => ['id' => 9, 'pai' => 1],
+        'Geral'                       => ['id' => 10, 'pai' => 1],
     ];
 
     public function store(Request $request)
