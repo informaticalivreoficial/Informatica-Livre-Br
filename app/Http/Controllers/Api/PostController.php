@@ -87,7 +87,7 @@ class PostController extends Controller
                 ? collect(explode(',', $post->tags))
                     ->map(fn ($tag) => trim($tag))
                     ->filter()
-                    ->map(fn ($tag) => '#' . Str::slug($tag, ' '))
+                    ->map(fn ($tag) => '#' . Str::slug($tag))
                     ->values()
                 : [],
         ]);
