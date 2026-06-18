@@ -36,10 +36,9 @@ class PostController extends Controller
             'category'        => 'nullable|string',
             'metaDescription' => 'nullable|string|max:255',
             'excerpt'         => 'nullable|string',
-            'tags'            => 'nullable|array',
-            'tags.*'          => 'string',
+            'tags'            => 'nullable|string',
             'readingTime'     => 'nullable|integer',
-            'imageUrl'        => 'nullable|url',   // URL temporária do Stable Diffusion
+            'imageUrl'        => 'nullable|string',
         ]);
 
         $categoryName = $data['category'] ?? 'Geral';
@@ -55,17 +54,23 @@ class PostController extends Controller
             'cat_pai'          => $categoryData['pai'],
             'meta_description' => $data['metaDescription'] ?? Str::limit(strip_tags($data['content']), 160),
             'excerpt'          => $data['excerpt'] ?? null,
-            'tags'             => !empty($data['tags']) ? implode(',', $data['tags']) : null,
+            'tags'             => $data['tags'] ?? null,
             'reading_time'     => $data['readingTime'] ?? null,
         ];        
 
         // 💾 cria post
         $post = Post::create($payload);
 
+        $image = null;
+
         // 🖼️ baixa e salva a imagem do Stable Diffusion
-        $image = !empty($data['imageUrl'])
-            ? $this->saveImageFromUrl($post, $data['imageUrl'])
-            : null;
+        if (!empty($data['imageUrl'])) {
+
+            $imageUrl = 'https://image.pollinations.ai/prompt/' .
+                urlencode($data['imageUrl']);
+
+            $image = $this->saveImageFromUrl($post, $imageUrl);
+        }
 
         return response()->json([
             'success'      => true,
