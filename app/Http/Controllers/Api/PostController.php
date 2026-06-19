@@ -7,14 +7,48 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\Post;
 use App\Models\PostGb;
+use App\Models\User;
+use App\Notifications\MakePostArticle;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\Typography\FontFactory;
+use Illuminate\Support\Facades\Notification;
 
 class PostController extends Controller
 {
+     /**
+     * Paleta de cores que se destacam bem sobre o overlay escuro.
+     * Uma é sorteada por imagem.
+     */
+    private const TEXT_COLOR_PALETTE = [
+        '#FFFFFF', // branco clássico
+        '#FFD60A', // amarelo vibrante
+        '#00E5FF', // ciano elétrico
+        '#7CFF6B', // verde lima
+        '#FF6B6B', // vermelho coral
+        '#C792FF', // lilás
+    ];
+
+    /**
+     * Paleta de fontes (precisam existir em public/fonts/).
+     * Uma é sorteada por imagem, junto com a cor.
+     */
+    private const FONT_PALETTE = [
+        'fonts/Montserrat-Bold.ttf',
+        'fonts/Poppins-Bold.ttf',
+        'fonts/Inter-Bold.ttf',
+        'fonts/Roboto-Bold.ttf',
+    ];
+
+    private const THUMB_WIDTH    = 1200;
+    private const THUMB_HEIGHT   = 630;
+    private const FONT_SIZE      = 48;
+    private const LINE_HEIGHT    = 60;
+    private const OVERLAY_PAD    = 30;
+    private const OVERLAY_ALPHA  = 0.45;
+
     private array $categoryMap = [
         'Gestão'                      => ['id' => 2, 'pai' => 1],
         'Segurança Digital'           => ['id' => 5, 'pai' => 1],
@@ -75,6 +109,11 @@ class PostController extends Controller
             $image = $this->saveImageFromUrl($post, $imageUrl);
         }
 
+        Notification::send(
+            User::role('super-admin')->get(),
+            new MakePostArticle($post)
+        );
+
         return response()->json([
             'success'         => true,
             'post_id'         => $post->id,
@@ -86,13 +125,7 @@ class PostController extends Controller
             'metaDescription' => $post->metaDescription,
             'excerpt'         => $post->excerpt,
             'slug'            => $post->slug,
-            'tags'            => $post->tags
-                ? collect(explode(',', $post->tags))
-                    ->map(fn ($tag) => trim($tag))
-                    ->filter()
-                    ->map(fn ($tag) => '#' . Str::slug($tag))
-                    ->values()
-                : [],
+            'tags'            => $this->formatTagsAsHashtags($post->tags),
         ]);
     }
 
@@ -126,34 +159,40 @@ class PostController extends Controller
 
             $image = $manager->read($response->body());
 
-            // cria uma faixa escura
-            $overlay = $manager->create($image->width(), $image->height())
-                ->fill('rgba(0,0,0,0.45)');
+            // 📐 padroniza tamanho para thumb de blog / Open Graph
+            $image->cover(self::THUMB_WIDTH, self::THUMB_HEIGHT);
 
-            $image->place($overlay);          
-
-            // quebra o título em múltiplas linhas
+            // 📝 quebra o título em múltiplas linhas
             $lines = explode("\n", wordwrap(Str::limit($post->title, 90), 28, "\n"));
 
-            $totalHeight = count($lines) * 60;
+            $totalHeight = count($lines) * self::LINE_HEIGHT;
             $startY = ($image->height() / 2) - ($totalHeight / 2);
 
+            // 🌑 faixa escura só na altura do texto, com uma margem de respiro
+            $overlayY = (int) ($startY - self::OVERLAY_PAD);
+            $overlayH = (int) ($totalHeight + (self::OVERLAY_PAD * 2));
+ 
+            $overlay = $manager->create($image->width(), $overlayH)
+                        ->fill('rgba(0,0,0,' . self::OVERLAY_ALPHA . ')');
+ 
+            $image->place($overlay, 'top-left', 0, $overlayY);   
+
+            // 🎨 sorteia uma cor da paleta para o texto
+            $textColor = self::TEXT_COLOR_PALETTE[array_rand(self::TEXT_COLOR_PALETTE)];
+
+            $fontFile  = self::FONT_PALETTE[array_rand(self::FONT_PALETTE)];
+
+            $fontCallback = function (FontFactory $font) use ($textColor, $fontFile) {
+                $font->filename(public_path($fontFile));
+                $font->size(self::FONT_SIZE);
+                $font->color($textColor);
+                $font->align('center');
+                $font->valign('top');
+            };
+
             foreach ($lines as $line) {
-
-                $image->text(
-                    $line,
-                    $image->width() / 2,
-                    $startY,
-                    function (FontFactory $font) {
-                        $font->filename(public_path('fonts/Montserrat-Bold.ttf'));
-                        $font->size(48);
-                        $font->color('#ffffff');
-                        $font->align('center');
-                        $font->valign('top');
-                    }
-                );
-
-                $startY += 60;
+                $image->text($line, $image->width() / 2, $startY, $fontCallback);
+                $startY += self::LINE_HEIGHT;
             }            
             
             // salva a imagem processada
@@ -195,5 +234,18 @@ class PostController extends Controller
             str_contains($contentType, 'gif')  => 'gif',
             default                            => 'webp',
         };
+    }
+
+    private function formatTagsAsHashtags(?string $tags)
+    {
+        if (empty($tags)) {
+            return [];
+        }
+ 
+        return collect(explode(',', $tags))
+            ->map(fn ($tag) => trim($tag))
+            ->filter()
+            ->map(fn ($tag) => '#' . Str::lower(preg_replace('/[^\p{L}\p{N}]+/u', '', $tag)))
+            ->values();
     }
 }

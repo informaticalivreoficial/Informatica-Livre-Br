@@ -45,6 +45,7 @@
                         'reservation_created'=> 'fas fa-calendar-check',
                         'support_ticket'     => 'fas fa-life-ring',
                         'subscription'       => 'fas fa-credit-card',
+                        'ArticleCreated' => 'fas fa-file-alt',
                         default              => 'fas fa-bell',
                     };
 
