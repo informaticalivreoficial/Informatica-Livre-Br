@@ -43,6 +43,7 @@ class SocialPostService
     {
         return [
             'type'        => $type, // facebook | instagram | x
+            'title'       => $data['title'] ?? '',
             'message'     => $data['message'] ?? '',
             'image'       => $data['image'] ?? null,
             'link'        => $data['link'] ?? null,

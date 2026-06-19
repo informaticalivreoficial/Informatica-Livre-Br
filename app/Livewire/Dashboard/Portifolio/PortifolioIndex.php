@@ -67,6 +67,7 @@ class PortifolioIndex extends Component
 
         $response = app(SocialPostService::class)
             ->post($rede, [
+                'title'   => $portifolio->name,
                 'message' => $portifolio->headline ?? $portifolio->name,
                 'image'   => $portifolio->cover(),
                 'link'    => route('web.portifolio.single', $portifolio->slug),
