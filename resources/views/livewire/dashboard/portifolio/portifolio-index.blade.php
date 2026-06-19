@@ -92,7 +92,21 @@
                                     />
                                     <button
                                         x-data
-                                        @click="if(confirm('Deseja postar no Facebook?')) $wire.postar({{ $portifolio->id }}, 'facebook')"
+                                        @click="
+                                            Swal.fire({
+                                                title: 'Postar no Facebook?',
+                                                text: 'Deseja publicar este portfólio no Facebook?',
+                                                icon: 'question',
+                                                showCancelButton: true,
+                                                confirmButtonText: 'Sim, postar',
+                                                cancelButtonText: 'Cancelar',
+                                                confirmButtonColor: '#2563eb'
+                                            }).then((result) => {
+                                                if (result.isConfirmed) {
+                                                    $wire.postar({{ $portifolio->id }}, 'facebook')
+                                                }
+                                            })
+                                        "
                                         class="btn btn-xs bg-blue-600 text-white"
                                         title="Postar no Facebook"
                                     >
@@ -101,13 +115,27 @@
 
                                     <button
                                         x-data
-                                        @click="if(confirm('Deseja postar no Instagram?')) $wire.postar({{ $portifolio->id }}, 'instagram')"
+                                        @click="
+                                            Swal.fire({
+                                                title: 'Postar no Instagram?',
+                                                text: 'Deseja publicar este portfólio no Instagram?',
+                                                icon: 'question',
+                                                showCancelButton: true,
+                                                confirmButtonText: 'Sim, postar',
+                                                cancelButtonText: 'Cancelar',
+                                                confirmButtonColor: '#ec4899'
+                                            }).then((result) => {
+                                                if (result.isConfirmed) {
+                                                    $wire.postar({{ $portifolio->id }}, 'instagram')
+                                                }
+                                            })
+                                        "
                                         class="btn btn-xs bg-pink-500 text-white"
                                         title="Postar no Instagram"
                                     >
                                         <i class="fab fa-instagram"></i>
                                     </button>
-
+                                    {{--     
                                     <button
                                         x-data
                                         @click="if(confirm('Deseja postar no X?')) $wire.postar({{ $portifolio->id }}, 'x')"
@@ -116,6 +144,7 @@
                                     >
                                         <i class="fab fa-twitter"></i>
                                     </button>
+                                    --}} 
                                     <a target="_blank" href="{{ route('web.portifolio.single', [ 'slug' => $portifolio->slug]) }}" 
                                         class="btn btn-xs btn-info" 
                                         title="Visualizar">
