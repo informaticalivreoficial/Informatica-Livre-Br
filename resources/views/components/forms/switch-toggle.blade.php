@@ -29,7 +29,7 @@
         ];
     @endphp
 
-    <label class="relative inline-flex items-center cursor-pointer {{ $disabled ? 'opacity-50 cursor-not-allowed' : '' }}">
+    <label title="Ativar/Desativar" class="relative inline-flex items-center cursor-pointer {{ $disabled ? 'opacity-50 cursor-not-allowed' : '' }}">
         <input
             type="checkbox"
             class="sr-only peer"

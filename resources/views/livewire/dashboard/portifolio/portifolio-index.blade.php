@@ -83,19 +83,45 @@
                             </td>
                             <td class="px-4 py-3">
                                 <div class="flex items-center justify-center gap-2">
-                                        <x-forms.switch-toggle
+                                    <x-forms.switch-toggle
                                         wire:key="safe-switch-{{ $portifolio->id }}"
                                         wire:click="toggleStatus({{ $portifolio->id }})"
                                         :checked="$portifolio->status"
                                         size="sm"
                                         color="green"
                                     />
+                                    <button
+                                        x-data
+                                        @click="if(confirm('Deseja postar no Facebook?')) $wire.postar({{ $portifolio->id }}, 'facebook')"
+                                        class="btn btn-xs bg-blue-600 text-white"
+                                        title="Postar no Facebook"
+                                    >
+                                        <i class="fab fa-facebook"></i>
+                                    </button>
+
+                                    <button
+                                        x-data
+                                        @click="if(confirm('Deseja postar no Instagram?')) $wire.postar({{ $portifolio->id }}, 'instagram')"
+                                        class="btn btn-xs bg-pink-500 text-white"
+                                        title="Postar no Instagram"
+                                    >
+                                        <i class="fab fa-instagram"></i>
+                                    </button>
+
+                                    <button
+                                        x-data
+                                        @click="if(confirm('Deseja postar no X?')) $wire.postar({{ $portifolio->id }}, 'x')"
+                                        class="btn btn-xs bg-black text-white"
+                                        title="Postar no X"
+                                    >
+                                        <i class="fab fa-twitter"></i>
+                                    </button>
                                     <a target="_blank" href="{{ route('web.portifolio.single', [ 'slug' => $portifolio->slug]) }}" 
                                         class="btn btn-xs btn-info" 
                                         title="Visualizar">
                                         <i class="fas fa-search"></i>
                                     </a>
-                                    <a href="{{ route('portifolio.edit', $portifolio) }}" class="btn btn-xs btn-default">
+                                    <a href="{{ route('portifolio.edit', $portifolio) }}" class="btn btn-xs btn-default" title="Editar">
                                         <i class="fas fa-pen"></i>
                                     </a>
                                     <button type="button" 

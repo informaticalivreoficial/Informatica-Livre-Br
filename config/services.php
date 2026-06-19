@@ -40,4 +40,8 @@ return [
         'zone_id' => env('CLOUDFLARE_ZONE_ID'),
     ],
 
+    'social' => [
+        'webhook_url' => env('MAKE_SOCIAL_WEBHOOK_URL'),
+    ],
+
 ];

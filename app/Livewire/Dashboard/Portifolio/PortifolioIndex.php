@@ -3,13 +3,17 @@
 namespace App\Livewire\Dashboard\Portifolio;
 
 use App\Models\Portifolio;
+use App\Services\SocialPostService;
 use Livewire\Component;
 use Livewire\Attributes\On;
 use Livewire\WithPagination;
+use App\Traits\WithToastr;
+use Illuminate\Support\Str;
 
 class PortifolioIndex extends Component
 {
     use WithPagination;
+    use WithToastr;
 
     public int $perPage = 25;
 
@@ -55,6 +59,38 @@ class PortifolioIndex extends Component
         $trabalhos = Portifolio::findOrFail($id);
         $trabalhos->status = !$trabalhos->status;        
         $trabalhos->save();
+    }
+
+    public function postar(int $id, string $rede): void
+    {
+        $portifolio = Portifolio::findOrFail($id);
+
+        $response = app(SocialPostService::class)
+            ->post($rede, [
+                'message' => $portifolio->content ?? $portifolio->name,
+                'image'   => $portifolio->cover(),
+                'link'    => route('web.portifolio.single', $portifolio->slug),
+                'tags'    => $this->formatTagsAsHashtags($portifolio->tags),
+            ]);
+
+        if ($response['success']) { 
+            $this->toastSuccess("Post enviado para {$rede}!");
+        } else {
+            $this->toastError("Falha ao postar no {$rede}.");
+        }
+    }
+
+    private function formatTagsAsHashtags(?string $tags)
+    {
+        if (empty($tags)) {
+            return [];
+        }
+ 
+        return collect(explode(',', $tags))
+            ->map(fn ($tag) => trim($tag))
+            ->filter()
+            ->map(fn ($tag) => '#' . Str::lower(preg_replace('/[^\p{L}\p{N}]+/u', '', $tag)))
+            ->values();
     }
 
     public function setDeleteId($id)
