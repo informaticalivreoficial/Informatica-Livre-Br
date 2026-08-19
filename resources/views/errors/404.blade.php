@@ -1,36 +1,7 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <title>Página não encontrada</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            background: #f8fafc;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
+@extends('errors.layout')
 
-        .box {
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 80px;
-            margin-bottom: 0;
-        }
-    </style>
-</head>
-<body>
-    <div class="box">
-        <h1>404</h1>
-        <p>Página não encontrada</p>
-
-        <a href="{{ url('/') }}">
-            Voltar ao início
-        </a>
-    </div>
-</body>
-</html>
+@section('code', '404')
+@section('title', 'Página não encontrada')
+@section('message', 'O endereço que você tentou acessar não existe, foi movido ou removido. Verifique o link e tente novamente.')
+@section('icon', 'fas fa-map-signs')
+@section('iconBg', 'bg-blue-50 text-blue-600')
