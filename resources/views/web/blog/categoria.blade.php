@@ -6,8 +6,10 @@
 @section('content')
 
     {{-- HERO --}}
-    <section class="bg-gradient-to-r from-teal-700 to-teal-500 py-16">
-        <div class="max-w-7xl mx-auto px-4 text-center text-white">
+    <section class="relative bg-gradient-to-br from-teal-800 via-teal-700 to-blue-800 py-20 overflow-hidden">
+        <div class="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto px-4 text-center text-white relative">
             <div class="flex items-center justify-center gap-2 text-teal-200 text-sm mb-4">
                 <a href="{{ route('site.home') }}" class="hover:text-white transition">Home</a>
                 <i class="fas fa-chevron-right text-xs"></i>
@@ -27,9 +29,12 @@
         <div class="max-w-7xl mx-auto px-4">
             @if($posts->count() > 0)
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    @foreach($posts as $post)
+                    @foreach($posts as $i => $post)
                         <a href="{{ route('site.blog.single', $post->slug) }}"
-                            class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition">
+                            x-data="reveal"
+                            :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'"
+                            class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border border-gray-100 block"
+                            style="transition-delay: {{ $i % 3 * 100 }}ms">
 
                             {{-- Imagem --}}
                             <div class="overflow-hidden h-52">
@@ -37,7 +42,7 @@
                                     <img
                                         src="{{ Storage::url($post->cover->path) }}"
                                         alt="{{ $post->title }}"
-                                        class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                                        class="w-full h-full object-cover group-hover:scale-110 transition duration-700"
                                     >
                                 @else
                                     <div class="w-full h-full bg-gradient-to-br from-teal-50 to-teal-100 flex items-center justify-center">
@@ -94,13 +99,15 @@
     </section>
 
     {{-- CTA --}}
-    <section class="py-20 bg-gradient-to-r from-teal-700 to-teal-500">
-        <div class="max-w-4xl mx-auto px-4 text-center text-white">
+    <section class="py-20 bg-gradient-to-r from-teal-800 via-teal-700 to-blue-800 relative overflow-hidden">
+        <div class="absolute -top-24 -left-24 w-72 h-72 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -right-24 w-72 h-72 bg-blue-400/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="max-w-4xl mx-auto px-4 text-center text-white relative">
             <h2 class="text-3xl md:text-4xl font-bold mb-4">Precisa de um site?</h2>
             <p class="text-teal-100 text-lg mb-8">Entre em contato e solicite um orçamento sem compromisso.</p>
             <a href="{{ route('site.contato') }}"
-                class="bg-white text-teal-700 hover:bg-teal-50 px-10 py-4 rounded-lg font-bold text-lg transition inline-block">
-                Solicitar Orçamento
+                class="inline-flex items-center gap-2 bg-white text-teal-700 hover:bg-teal-50 px-10 py-4 rounded-lg font-bold text-lg transition shadow-xl hover:-translate-y-1">
+                Solicitar Orçamento <i class="fas fa-arrow-right"></i>
             </a>
         </div>
     </section>

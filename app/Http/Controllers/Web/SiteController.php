@@ -40,12 +40,20 @@ class SiteController extends Controller
             $this->config->getmetaimg() ?? url(asset('theme/images/image.jpg'))
         );
 
+        $stats = [
+            'projetos' => Portifolio::active()->public()->count(),
+            'clientes' => Company::available()->count(),
+            'posts'    => Post::postson()->count(),
+            'anos'     => 10,
+        ];
+
         return view('web.home', [
             'head' => $head,
             'slides' => $slides,
             'clientes' => $clientes,
             'trabalhos' => $trabalhos,
-            'posts' => $posts
+            'posts' => $posts,
+            'stats' => $stats,
         ]);
     }
 

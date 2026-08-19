@@ -3,8 +3,11 @@
 @section('content')
 
     {{-- HERO --}}
-    <section class="bg-gradient-to-r from-teal-700 to-teal-500 py-16">
-        <div class="max-w-7xl mx-auto px-4 text-center">
+    <section class="relative bg-gradient-to-br from-teal-800 via-teal-700 to-blue-800 py-20 overflow-hidden">
+        <div class="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto px-4 text-center relative">
+            <span class="inline-block bg-white/10 text-teal-100 text-xs font-semibold px-4 py-1.5 rounded-full uppercase tracking-wider mb-4 backdrop-blur">Sistemas</span>
             <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4">Nossos Sistemas</h1>
             <p class="text-teal-100 text-lg max-w-2xl mx-auto">
                 Sistemas prontos para uso, desenvolvidos com tecnologia moderna e instalados por nossa equipe.
@@ -16,17 +19,19 @@
     <section class="py-20 bg-white">
         <div class="max-w-7xl mx-auto px-4">
 
-            @forelse($produtos as $produto)
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-24 last:mb-0
-                    {{ $loop->even ? 'lg:flex-row-reverse' : '' }}">
+            @forelse($produtos as $i => $produto)
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-24 last:mb-0"
+                    x-data="reveal"
+                    :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'"
+                    class="transition-all duration-700">
 
                     {{-- Imagem --}}
                     <div class="{{ $loop->even ? 'lg:order-2' : '' }}">
-                        <div class="rounded-2xl overflow-hidden shadow-xl">
+                        <div class="rounded-2xl overflow-hidden shadow-xl group relative">
                             <img
                                 src="{{ $produto->cover_url }}"
                                 alt="{{ $produto->nome }}"
-                                class="w-full object-cover"
+                                class="w-full object-cover group-hover:scale-105 transition duration-700"
                             >
                         </div>
                     </div>
@@ -59,14 +64,14 @@
                             @if($produto->menor_preco)
                                 <div>
                                     <span class="text-xs text-gray-400">A partir de</span>
-                                    <p class="text-3xl font-extrabold text-teal-600">
+                                    <p class="text-3xl font-extrabold text-gradient">
                                         R$ {{ number_format($produto->menor_preco, 2, ',', '.') }}
                                     </p>
                                 </div>
                             @endif
                             <a
                                 href="{{ route('web.produto', $produto->slug) }}"
-                                class="bg-teal-600 hover:bg-teal-700 text-white px-8 py-3 rounded-lg font-semibold transition"
+                                class="bg-teal-600 hover:bg-teal-700 text-white px-8 py-3 rounded-lg font-semibold transition shadow-lg shadow-teal-600/25 hover:-translate-y-0.5"
                             >
                                 Ver detalhes
                             </a>
@@ -74,7 +79,7 @@
                                 <a
                                     href="{{ $produto->demo_url }}"
                                     target="_blank"
-                                    class="border border-teal-600 text-teal-600 hover:bg-teal-50 px-6 py-3 rounded-lg font-semibold transition"
+                                    class="border-2 border-teal-600 text-teal-600 hover:bg-teal-50 px-6 py-3 rounded-lg font-semibold transition"
                                 >
                                     <i class="fas fa-external-link-alt mr-2"></i>Ver demo
                                 </a>
@@ -100,13 +105,15 @@
     </section>
 
     {{-- CTA --}}
-    <section class="py-20 bg-gradient-to-r from-teal-700 to-teal-500">
-        <div class="max-w-4xl mx-auto px-4 text-center text-white">
+    <section class="py-20 bg-gradient-to-r from-teal-800 via-teal-700 to-blue-800 relative overflow-hidden">
+        <div class="absolute -top-24 -left-24 w-72 h-72 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -right-24 w-72 h-72 bg-blue-400/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="max-w-4xl mx-auto px-4 text-center text-white relative">
             <h2 class="text-3xl md:text-4xl font-bold mb-4">Precisa de algo personalizado?</h2>
             <p class="text-teal-100 text-lg mb-8">Desenvolvemos sistemas sob medida para o seu negócio.</p>
             <a href="{{ route('web.contact') }}"
-                class="bg-white text-teal-700 hover:bg-teal-50 px-10 py-4 rounded-lg font-bold text-lg transition inline-block">
-                Solicitar orçamento
+                class="inline-flex items-center gap-2 bg-white text-teal-700 hover:bg-teal-50 px-10 py-4 rounded-lg font-bold text-lg transition shadow-xl hover:-translate-y-1">
+                Solicitar orçamento <i class="fas fa-arrow-right"></i>
             </a>
         </div>
     </section>

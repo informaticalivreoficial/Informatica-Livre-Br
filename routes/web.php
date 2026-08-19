@@ -91,8 +91,8 @@ Route::group(['as' => 'web.'], function () {
     Route::get('/politica-de-privacidade', [SiteController::class, 'privacy'])->name('privacy');
     Route::get('/termos-e-condicoes', [SiteController::class, 'terms'])->name('terms');
 
-    Route::get('/sistemas', [ProdutoController::class, 'index'])->name('web.produtos');
-    Route::get('/sistemas/{slug}', [ProdutoController::class, 'show'])->name('web.produto');
+    Route::get('/sistemas', [ProdutoController::class, 'index'])->name('produtos');
+    Route::get('/sistemas/{slug}', [ProdutoController::class, 'show'])->name('produto');
     //Route::get('/checkout/{produto}/{plano}', ...)->name('web.checkout'); // próximo passo
 });
 

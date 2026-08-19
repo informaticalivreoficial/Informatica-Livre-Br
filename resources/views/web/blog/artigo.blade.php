@@ -6,8 +6,10 @@
 @section('content')
 
     {{-- HERO --}}
-    <section class="bg-gradient-to-r from-teal-700 to-teal-500 py-16">
-        <div class="max-w-7xl mx-auto px-4">
+    <section class="relative bg-gradient-to-br from-teal-800 via-teal-700 to-blue-800 py-20 overflow-hidden">
+        <div class="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto px-4 relative">
             <div class="flex items-center gap-2 text-teal-200 text-sm mb-4">
                 <a href="{{ route('web.home') }}" class="hover:text-white transition">Home</a>
                 <i class="fas fa-chevron-right text-xs"></i>
@@ -17,14 +19,14 @@
             </div>
             <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-3 max-w-4xl">{{ $post->title }}</h1>
             <div class="flex items-center gap-4 text-teal-100 text-sm mt-4">
-                <span>
-                    <i class="fas fa-calendar mr-1"></i>
+                <span class="inline-flex items-center gap-2 bg-white/10 rounded-full px-3 py-1.5 backdrop-blur">
+                    <i class="fas fa-calendar"></i>
                     {{ $post->publish_at
                         ? \Carbon\Carbon::parse($post->publish_at)->format('d/m/Y')
                         : $post->created_at->format('d/m/Y') }}
                 </span>
-                <span>
-                    <i class="fas fa-eye mr-1"></i>
+                <span class="inline-flex items-center gap-2 bg-white/10 rounded-full px-3 py-1.5 backdrop-blur">
+                    <i class="fas fa-eye"></i>
                     {{ $post->views }} visualizações
                 </span>
             </div>
@@ -39,14 +41,14 @@
                 {{-- Artigo --}}
                 <article class="lg:col-span-2">
 
-                    {{-- Imagem de capa --}}                   
-                    <div class="rounded-2xl overflow-hidden mb-8 shadow-md">
+                    {{-- Imagem de capa --}}
+                    <div class="rounded-2xl overflow-hidden mb-8 shadow-lg">
                         <img
                             src="{{ $post->cover() }}"
                             alt="{{ $post->title }}"
                             class="w-full object-cover"
                         >
-                    </div>                    
+                    </div>
 
                     {{-- Conteúdo --}}
                     <div class="prose prose-gray prose-lg max-w-none text-gray-700 leading-relaxed">
@@ -74,41 +76,37 @@
                     @endphp
                     <div class="mt-10 pt-6 border-t">
                         <p class="text-sm font-medium text-gray-600 mb-3">Compartilhar:</p>
-                        <div class="flex gap-3">
+                        <div class="flex flex-wrap gap-3">
                             <a href="https://www.facebook.com/sharer/sharer.php?u={{ $url }}"
                                 target="_blank"
-                                class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition flex items-center gap-2">
+                                class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition flex items-center gap-2 hover:-translate-y-0.5">
                                 <i class="fab fa-facebook-f"></i>
                             </a>
-                            <a 
-                                onclick="shareWhatsApp(event)"                            
+                            <a
+                                onclick="shareWhatsApp(event)"
                                 target="_blank"
-                                class="
-                                bg-green-500 
-                                text-white px-4 py-2 rounded-lg 
-                                text-sm hover:bg-green-600 transition 
-                                flex items-center gap-2 cursor-pointer"
+                                class="bg-green-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-600 transition flex items-center gap-2 hover:-translate-y-0.5 cursor-pointer"
                             >
                                 <i class="fab fa-whatsapp"></i>
                             </a>
                             <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ $url }}&title={{ $title }}"
                                 target="_blank"
-                                class="bg-blue-700 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-800 transition flex items-center gap-2">
+                                class="bg-blue-700 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-800 transition flex items-center gap-2 hover:-translate-y-0.5">
                                 <i class="fab fa-linkedin-in"></i>
                             </a>
                             <a href="https://twitter.com/intent/tweet?url={{ $url }}&text={{ $title }}"
                                 target="_blank"
-                                class="bg-blue-400 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-500 transition flex items-center gap-2">
+                                class="bg-blue-400 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-500 transition flex items-center gap-2 hover:-translate-y-0.5">
                                 <i class="fab fa-twitter"></i>
                             </a>
                             <a href="https://telegram.me/share/url?url={{ $url }}&text={{ $title }}"
                                 target="_blank"
-                                class="bg-blue-800 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-900 transition flex items-center gap-2">
+                                class="bg-blue-800 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-900 transition flex items-center gap-2 hover:-translate-y-0.5">
                                 <i class="fab fa-telegram-plane"></i>
                             </a>
                             <a href="mailto:?subject={{ $title }}&body={{ $url }}"
                                 target="_blank"
-                                class="bg-gray-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-gray-600 transition flex items-center gap-2">
+                                class="bg-gray-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-gray-600 transition flex items-center gap-2 hover:-translate-y-0.5">
                                 <i class="fas fa-envelope"></i>
                             </a>
                         </div>
@@ -126,8 +124,11 @@
                 <aside class="lg:col-span-1 space-y-8">
 
                     {{-- Busca --}}
-                    <div class="bg-gray-50 rounded-2xl p-6">
-                        <h3 class="text-lg font-bold text-gray-800 mb-4">Pesquisar</h3>
+                    <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <i class="fas fa-search text-teal-600"></i>
+                            Pesquisar
+                        </h3>
                         <form method="GET" action="{{ route('web.blog.artigos') }}" class="flex gap-2">
                             <input
                                 type="text"
@@ -141,10 +142,13 @@
                         </form>
                     </div>
 
-                    {{-- Posts recentes --}}  
+                    {{-- Posts recentes --}}
                     @if($recentes->count() > 0)
-                        <div class="bg-gray-50 rounded-2xl p-6">
-                            <h3 class="text-lg font-bold text-gray-800 mb-4">Posts Recentes</h3>
+                        <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                <i class="fas fa-clock text-teal-600"></i>
+                                Posts Recentes
+                            </h3>
                             <div class="space-y-4">
                                 @foreach($recentes as $recente)
                                     <a href="{{ route('web.blog.artigo', $recente->slug) }}"
@@ -152,7 +156,7 @@
                                         <img
                                             src="{{ $recente->cover() }}"
                                             alt="{{ $recente->title }}"
-                                            class="w-16 h-16 object-cover rounded-lg flex-shrink-0"
+                                            class="w-16 h-16 object-cover rounded-lg flex-shrink-0 group-hover:scale-105 transition duration-300"
                                         >
                                         <div>
                                             <p class="text-sm font-medium text-gray-700 group-hover:text-teal-600 transition line-clamp-2">
@@ -168,10 +172,13 @@
                         </div>
                     @endif
 
-                    {{-- No sidebar, após posts recentes --}}
+                    {{-- Categoria --}}
                     @if($post->categoryRelation)
-                        <div class="bg-white rounded-2xl shadow-sm p-6">
-                            <h3 class="text-lg font-bold text-gray-800 mb-4">Categoria</h3>
+                        <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                <i class="fas fa-tag text-teal-600"></i>
+                                Categoria
+                            </h3>
                             <a href="{{ route('web.site.blog.categoria', $post->categoryRelation->slug) }}"
                                 class="inline-flex items-center gap-2 bg-teal-50 text-teal-700 px-4 py-2 rounded-full text-sm hover:bg-teal-100 transition">
                                 <i class="fas fa-tag"></i>
@@ -181,7 +188,8 @@
                     @endif
 
                     {{-- CTA sidebar --}}
-                    <div class="bg-gradient-to-br from-teal-600 to-teal-800 rounded-2xl p-6 text-white text-center">
+                    <div class="bg-gradient-to-br from-teal-600 to-blue-800 rounded-2xl p-6 text-white text-center relative overflow-hidden">
+                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
                         <i class="fas fa-laptop-code text-4xl mb-3 text-teal-200"></i>
                         <h3 class="font-bold text-lg mb-2">Precisa de um site?</h3>
                         <p class="text-teal-100 text-sm mb-4">Entre em contato e solicite um orçamento.</p>
@@ -208,8 +216,8 @@
             const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
 
             const whatsappUrl = isMobile
-                ? `https://api.whatsapp.com{title}%20${url}`
-                : `https://web.whatsapp.com{title}%20${url}`;
+                ? `https://api.whatsapp.com/send?text=${title}%20${url}`
+                : `https://web.whatsapp.com/send?text=${title}%20${url}`;
 
             window.open(whatsappUrl, '_blank');
         }

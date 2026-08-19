@@ -50,6 +50,25 @@
     {{-- Footer --}}
     @include('web.components.footer')
 
+    {{-- Back to top --}}
+    <div x-data="backToTop">
+        <button
+            x-show="visible"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 translate-y-4"
+            x-transition:enter-end="opacity-100 translate-y-0"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100 translate-y-0"
+            x-transition:leave-end="opacity-0 translate-y-4"
+            x-cloak
+            @click="scrollTop()"
+            class="fixed bottom-6 right-6 w-12 h-12 rounded-full bg-teal-600 text-white shadow-lg shadow-teal-600/30 flex items-center justify-center hover:bg-teal-700 hover:-translate-y-1 transition z-40"
+            title="Voltar ao topo"
+        >
+            <i class="fas fa-arrow-up"></i>
+        </button>
+    </div>
+
     {{-- BANNER --}}
     <div 
         x-cloak

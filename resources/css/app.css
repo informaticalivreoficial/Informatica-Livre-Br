@@ -41,6 +41,42 @@
   .btn-danger {
     @apply bg-red-600 text-white px-3 py-2 rounded hover:bg-red-700 transition;
   }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-teal-600 via-teal-500 to-blue-600 bg-clip-text text-transparent;
+  }
+
+  .animate-marquee {
+    animation: marquee 30s linear infinite;
+  }
+
+  .animate-marquee:hover {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.4); }
+  70% { box-shadow: 0 0 0 14px rgba(13, 148, 136, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0); }
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 2s infinite;
 }
 
 .notifications-scroll::-webkit-scrollbar {

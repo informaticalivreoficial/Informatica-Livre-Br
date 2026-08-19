@@ -3,26 +3,29 @@
 @section('content')
 
     {{-- HERO --}}
-    <section class="bg-gradient-to-r from-teal-700 to-teal-500 py-16">
-        <div class="max-w-7xl mx-auto px-4 text-center text-white">
+    <section class="relative bg-gradient-to-br from-teal-800 via-teal-700 to-blue-800 py-20 overflow-hidden">
+        <div class="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto px-4 text-center text-white relative">
+            <span class="inline-block bg-white/10 text-teal-100 text-xs font-semibold px-4 py-1.5 rounded-full uppercase tracking-wider mb-4 backdrop-blur">Portfólio</span>
             <h1 class="text-4xl md:text-5xl font-extrabold mb-4">Nosso Portfólio</h1>
             <p class="text-teal-100 text-lg max-w-xl mx-auto">Conheça alguns dos projetos que desenvolvemos para nossos clientes.</p>
         </div>
     </section>
 
     {{-- FILTROS --}}
-    <section class="bg-white border-b sticky top-[73px] z-40">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap gap-3 items-center">
+    <section class="bg-white border-b sticky top-[73px] z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap gap-3 items-center justify-center">
             <a href="{{ route('web.portifolio') }}"
                 class="px-4 py-2 rounded-full text-sm font-medium transition
-                    {{ !request('categoria') ? 'bg-teal-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-teal-50 hover:text-teal-600' }}">
+                    {{ !request('categoria') ? 'bg-teal-600 text-white shadow-lg shadow-teal-600/25' : 'bg-gray-100 text-gray-600 hover:bg-teal-50 hover:text-teal-600' }}">
                 Todos
             </a>
             @foreach($categorias as $cat)
                 @foreach($cat->children as $sub)
                     <a href="{{ route('web.portifolio', ['categoria' => $sub->id]) }}"
                         class="px-4 py-2 rounded-full text-sm font-medium transition
-                            {{ request('categoria') == $sub->id ? 'bg-teal-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-teal-50 hover:text-teal-600' }}">
+                            {{ request('categoria') == $sub->id ? 'bg-teal-600 text-white shadow-lg shadow-teal-600/25' : 'bg-gray-100 text-gray-600 hover:bg-teal-50 hover:text-teal-600' }}">
                         {{ $sub->title }}
                     </a>
                 @endforeach
@@ -35,15 +38,19 @@
         <div class="max-w-7xl mx-auto px-4">
             @if($trabalhos->count() > 0)
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    @foreach($trabalhos as $trabalho)
+                    @foreach($trabalhos as $i => $trabalho)
                         <a href="{{ route('web.portifolio.single', $trabalho->slug) }}"
-                            class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition">
-                            <div class="overflow-hidden h-56">                                
+                            x-data="reveal"
+                            :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'"
+                            class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border border-gray-100 block"
+                            style="transition-delay: {{ $i % 3 * 100 }}ms">
+                            <div class="overflow-hidden h-56 relative">
                                 <img
                                     src="{{ $trabalho->cover() }}"
                                     alt="{{ $trabalho->name }}"
-                                    class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                                >                                
+                                    class="w-full h-full object-cover group-hover:scale-110 transition duration-700"
+                                >
+                                <div class="absolute inset-0 bg-teal-600/0 group-hover:bg-teal-600/20 transition duration-300"></div>
                             </div>
                             <div class="p-6">
                                 <span class="text-xs text-teal-600 font-medium uppercase tracking-wide">
@@ -86,13 +93,15 @@
     </section>
 
     {{-- CTA --}}
-    <section class="py-20 bg-gradient-to-r from-teal-700 to-teal-500">
-        <div class="max-w-4xl mx-auto px-4 text-center text-white">
+    <section class="py-20 bg-gradient-to-r from-teal-800 via-teal-700 to-blue-800 relative overflow-hidden">
+        <div class="absolute -top-24 -left-24 w-72 h-72 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -right-24 w-72 h-72 bg-blue-400/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="max-w-4xl mx-auto px-4 text-center text-white relative">
             <h2 class="text-3xl md:text-4xl font-bold mb-4">Gostou do que viu?</h2>
             <p class="text-teal-100 text-lg mb-8">Entre em contato e vamos criar algo incrível juntos.</p>
             <a href="{{ route('web.contact') }}"
-                class="bg-white text-teal-700 hover:bg-teal-50 px-10 py-4 rounded-lg font-bold text-lg transition inline-block">
-                Solicitar Orçamento
+                class="inline-flex items-center gap-2 bg-white text-teal-700 hover:bg-teal-50 px-10 py-4 rounded-lg font-bold text-lg transition shadow-xl hover:-translate-y-1">
+                Solicitar Orçamento <i class="fas fa-arrow-right"></i>
             </a>
         </div>
     </section>

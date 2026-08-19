@@ -3,8 +3,10 @@
 @section('content')
 
     {{-- HERO --}}
-    <section class="bg-gradient-to-r from-teal-700 to-teal-500 py-16">
-        <div class="max-w-7xl mx-auto px-4">
+    <section class="relative bg-gradient-to-br from-teal-800 via-teal-700 to-blue-800 py-20 overflow-hidden">
+        <div class="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto px-4 relative">
             <div class="flex items-center gap-2 text-teal-200 text-sm mb-4">
                 <a href="{{ route('web.home') }}" class="hover:text-white transition">Home</a>
                 <i class="fas fa-chevron-right text-xs"></i>
@@ -14,13 +16,14 @@
             </div>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div>
+                    <span class="inline-block bg-white/10 text-teal-100 text-xs font-semibold px-4 py-1.5 rounded-full uppercase tracking-wider mb-4 backdrop-blur">Sistema Completo</span>
                     <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4">{{ $produto->nome }}</h1>
                     @if($produto->headline)
                         <p class="text-teal-100 text-lg mb-6">{{ $produto->headline }}</p>
                     @endif
                     <div class="flex gap-3 flex-wrap">
                         @if($produto->menor_preco)
-                            <div class="bg-white/10 rounded-xl px-5 py-3">
+                            <div class="bg-white/10 rounded-xl px-5 py-3 backdrop-blur">
                                 <span class="text-teal-200 text-xs block">A partir de</span>
                                 <span class="text-white text-2xl font-extrabold">
                                     R$ {{ number_format($produto->menor_preco, 2, ',', '.') }}
@@ -60,12 +63,15 @@
                     {{-- Funcionalidades --}}
                     @if($produto->features)
                         <div>
-                            <h2 class="text-2xl font-bold text-gray-800 mb-8">O que está incluso</h2>
+                            <h2 class="text-2xl font-bold text-gray-800 mb-8 flex items-center gap-3">
+                                <span class="w-1.5 h-6 bg-teal-500 rounded-full inline-block"></span>
+                                O que está incluso
+                            </h2>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 @foreach($produto->features as $feature)
-                                    <div class="flex items-start gap-3 p-4 rounded-xl bg-gray-50 border border-gray-100">
-                                        <div class="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                            <i class="fas fa-check text-teal-600 text-xs"></i>
+                                    <div class="flex items-start gap-3 p-4 rounded-xl bg-gray-50 border border-gray-100 hover:border-teal-200 hover:bg-teal-50/50 transition group">
+                                        <div class="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-teal-600 group-hover:scale-110 transition-all duration-300">
+                                            <i class="fas fa-check text-teal-600 text-xs group-hover:text-white transition-colors"></i>
                                         </div>
                                         <span class="text-gray-700 text-sm">{{ $feature }}</span>
                                     </div>
@@ -77,19 +83,25 @@
                     {{-- Screenshots --}}
                     @if($produto->images->count() > 0)
                         <div>
-                            <h2 class="text-2xl font-bold text-gray-800 mb-8">Screenshots do sistema</h2>
+                            <h2 class="text-2xl font-bold text-gray-800 mb-8 flex items-center gap-3">
+                                <span class="w-1.5 h-6 bg-teal-500 rounded-full inline-block"></span>
+                                Screenshots do sistema
+                            </h2>
                             <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                                 @foreach($produto->images as $image)
                                     <div
-                                        class="overflow-hidden rounded-xl cursor-pointer group"
+                                        class="overflow-hidden rounded-xl cursor-pointer group relative"
                                         x-data
                                         @click="$dispatch('open-gallery', { index: {{ $loop->index }} })"
                                     >
                                         <img
                                             src="{{ $image->url }}"
                                             alt="{{ $produto->nome }}"
-                                            class="w-full h-40 object-cover group-hover:scale-105 transition duration-500"
+                                            class="w-full h-40 object-cover group-hover:scale-110 transition duration-500"
                                         >
+                                        <div class="absolute inset-0 bg-teal-600/0 group-hover:bg-teal-600/30 flex items-center justify-center transition duration-300">
+                                            <i class="fas fa-expand text-white text-xl opacity-0 group-hover:opacity-100 transition duration-300"></i>
+                                        </div>
                                     </div>
                                 @endforeach
                             </div>
@@ -105,7 +117,10 @@
                 {{-- Sidebar: Planos --}}
                 <div class="lg:col-span-1">
                     <div class="sticky top-24">
-                        <h2 class="text-xl font-bold text-gray-800 mb-6">Escolha seu plano</h2>
+                        <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                            <i class="fas fa-crown text-teal-600"></i>
+                            Escolha seu plano
+                        </h2>
 
                         @livewire('web.selecionar-plano', ['produto' => $produto])
                     </div>
@@ -116,13 +131,15 @@
     </section>
 
     {{-- CTA --}}
-    <section class="py-20 bg-gradient-to-r from-teal-700 to-teal-500">
-        <div class="max-w-4xl mx-auto px-4 text-center text-white">
+    <section class="py-20 bg-gradient-to-r from-teal-800 via-teal-700 to-blue-800 relative overflow-hidden">
+        <div class="absolute -top-24 -left-24 w-72 h-72 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -right-24 w-72 h-72 bg-blue-400/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="max-w-4xl mx-auto px-4 text-center text-white relative">
             <h2 class="text-3xl font-bold mb-4">Tem alguma dúvida?</h2>
             <p class="text-teal-100 text-lg mb-8">Fale com nossa equipe antes de comprar.</p>
             <a href="{{ route('web.contact') }}"
-                class="bg-white text-teal-700 hover:bg-teal-50 px-10 py-4 rounded-lg font-bold text-lg transition inline-block">
-                Entrar em contato
+                class="inline-flex items-center gap-2 bg-white text-teal-700 hover:bg-teal-50 px-10 py-4 rounded-lg font-bold text-lg transition shadow-xl hover:-translate-y-1">
+                Entrar em contato <i class="fas fa-arrow-right"></i>
             </a>
         </div>
     </section>
