@@ -3,9 +3,11 @@
 namespace App\Livewire\Dashboard\Service;
 
 use App\Enums\BillingInterval;
+use App\Enums\BillingType;
 use App\Models\Company;
 use App\Models\Service;
 use App\Models\Subscription;
+use App\Models\SubscriptionItem;
 use Carbon\Carbon;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
@@ -20,6 +22,10 @@ class SubscriptionForm extends Component
     public $amount = 0;
     public $start_date;
     public $status = 'active';
+
+    public $items = [];
+
+    public bool $isOneTime = false;
 
     public $companies = [];
     public $services = [];
@@ -36,13 +42,22 @@ class SubscriptionForm extends Component
         if ($subscription) {
             $this->company_id = $subscription->company_id;
             $this->service_id = $subscription->service_id;
-            $this->interval   = $subscription->interval?->value; // ✅
+            $this->interval   = $subscription->interval?->value;
             $this->amount     = $subscription->amount;
             $this->start_date = $subscription->start_date?->toDateString();
-            $this->status     = $subscription->status->value; 
-            
-            // 👈 Próxima cobrança já salva no banco
-        $this->next_billing_at = $subscription->next_billing_at?->format('d/m/Y');
+            $this->status     = $subscription->status->value;
+
+            $this->isOneTime = $subscription->service->billing_type === BillingType::ONE_TIME;
+
+            $this->items = $subscription->items()
+                ->get()
+                ->map(fn ($item) => [
+                    'description' => $item->description,
+                    'amount'      => $item->amount,
+                ])
+                ->toArray();
+
+            $this->next_billing_at = $subscription->next_billing_at?->format('d/m/Y');
 
             $this->dispatch('reinitPlugins', amount: $this->amount ?? 0);
         } else {
@@ -52,17 +67,21 @@ class SubscriptionForm extends Component
 
     public function updatedServiceId()
     {
-        
         $service = Service::find($this->service_id);
 
         if (!$service) {
             return;
         }
-        
+
         $this->amount = $service->price;
         $this->interval = $service->interval?->value;
 
-        // 👈 Calcula previsão se já tiver start_date
+        $this->isOneTime = $service->billing_type === BillingType::ONE_TIME;
+
+        if ($service->billing_type === BillingType::ONE_TIME) {
+            $this->interval = null;
+        }
+
         if ($this->start_date && $this->interval) {
             $intervalEnum = BillingInterval::from($this->interval);
             $this->next_billing_at = Carbon::parse($this->start_date)
@@ -83,6 +102,20 @@ class SubscriptionForm extends Component
         }
     }
 
+    public function addItem(): void
+    {
+        $this->items[] = [
+            'description' => '',
+            'amount'      => 0,
+        ];
+    }
+
+    public function removeItem(int $index): void
+    {
+        unset($this->items[$index]);
+        $this->items = array_values($this->items);
+    }
+
     protected function rules()
     {
         return [
@@ -91,15 +124,23 @@ class SubscriptionForm extends Component
             'amount'     => ['required', 'numeric', 'min:0'],
             'interval'   => ['nullable', 'string'],
             'start_date' => ['required', 'date'],
-            'status'     => ['required', 'in:active,paused,canceled'], // ✅
+            'status'     => ['required', 'in:active,paused,canceled'],
+            'items.*.description' => ['required', 'string', 'max:255'],
+            'items.*.amount'      => ['required', 'numeric', 'min:0'],
         ];
     }
 
     public function save()
     {
+        $this->amount = $this->parsePrice($this->amount);
+
+        foreach ($this->items as &$item) {
+            $item['amount'] = $this->parsePrice($item['amount']);
+        }
+        unset($item);
+
         $this->validate();
 
-        // ❌ Impede duplicidade
         $exists = Subscription::where('company_id', $this->company_id)
             ->where('service_id', $this->service_id)
             ->active()
@@ -116,7 +157,7 @@ class SubscriptionForm extends Component
         $nextBillingAt = null;
 
         if ($service->billing_type === 'recurring' && $this->interval) {
-            $intervalEnum = BillingInterval::from($this->interval); // ✅
+            $intervalEnum = BillingInterval::from($this->interval);
 
             $nextBillingAt = Carbon::parse($this->start_date)
                 ->addMonths($intervalEnum->months());
@@ -127,24 +168,43 @@ class SubscriptionForm extends Component
             [
                 'company_id'      => $this->company_id,
                 'service_id'      => $this->service_id,
-                'interval'        => $this->interval, // string → cast resolve
+                'interval'        => $this->interval,
                 'amount'          => $this->amount,
                 'start_date'      => $this->start_date,
                 'next_billing_at' => $nextBillingAt,
-                'status'          => $this->status,   // string
+                'status'          => $this->status,
             ]
         );
 
-        // 🧾 Gera invoices apenas na criação
+        $subscription->items()->delete();
+
+        foreach ($this->items as $item) {
+            if (empty($item['description'])) {
+                continue;
+            }
+
+            SubscriptionItem::create([
+                'subscription_id' => $subscription->id,
+                'description'     => $item['description'],
+                'amount'          => $item['amount'],
+            ]);
+        }
+
         if (!$this->subscription) {
             $startDate = Carbon::parse($this->start_date);
 
-            // 1ª invoice — vence 10 dias após o início
-            $subscription->generateInvoice(due_date: $startDate->copy()->addDays(10));
+            $total = (float) $this->amount + collect($this->items)->sum('amount');
 
-            // 2ª invoice — próximo ciclo + 10 dias
+            $subscription->generateInvoice(
+                due_date: $startDate->copy()->addDays(10),
+                amount: $total
+            );
+
             if ($nextBillingAt) {
-                $subscription->generateInvoice(due_date: $nextBillingAt->copy());
+                $subscription->generateInvoice(
+                    due_date: $nextBillingAt->copy(),
+                    amount: $total
+                );
             }
         }
 
@@ -155,7 +215,19 @@ class SubscriptionForm extends Component
                 : 'Pedido atualizado com sucesso!',
             'timer' => 2000,
             'showConfirmButton' => false,
-        ]);        
+        ]);
+    }
+
+    private function parsePrice($value): float
+    {
+        if (is_numeric($value)) {
+            return (float) $value;
+        }
+
+        $value = str_replace('.', '', (string) $value);
+        $value = str_replace(',', '.', $value);
+
+        return (float) $value;
     }
 
     public function render()

@@ -1,16 +1,16 @@
 {
-  "_index-1lfuMtFk.js": {
-    "file": "assets/index-1lfuMtFk.js",
+  "_index-DblWm61r.js": {
+    "file": "assets/index-DblWm61r.js",
     "name": "index"
   },
   "node_modules/alpinejs/dist/module.esm.js": {
-    "file": "assets/module.esm-CrphvaCR.js",
+    "file": "assets/module.esm-CNRiYABx.js",
     "name": "module.esm",
     "src": "node_modules/alpinejs/dist/module.esm.js",
     "isDynamicEntry": true
   },
   "resources/css/app.css": {
-    "file": "assets/app-CaI5Gpwl.css",
+    "file": "assets/app-BsO1sYFn.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "name": "app",
@@ -19,21 +19,21 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-Bn0JgqJv.js",
+    "file": "assets/app-Dtra4QwB.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
     "imports": [
-      "_index-1lfuMtFk.js"
+      "_index-DblWm61r.js"
     ]
   },
   "resources/js/front.js": {
-    "file": "assets/front-DJYQSGtH.js",
+    "file": "assets/front-Qk8E0xgN.js",
     "name": "front",
     "src": "resources/js/front.js",
     "isEntry": true,
     "imports": [
-      "_index-1lfuMtFk.js"
+      "_index-DblWm61r.js"
     ],
     "dynamicImports": [
       "node_modules/alpinejs/dist/module.esm.js"

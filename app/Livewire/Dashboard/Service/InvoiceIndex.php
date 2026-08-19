@@ -133,6 +133,38 @@ class InvoiceIndex extends Component
         }
     }
 
+    public function syncInvoice(int $invoiceId): void
+    {
+        $invoice = Invoice::findOrFail($invoiceId);
+
+        if (!$invoice->gateway_reference) {
+            $this->dispatch('swal:error', [
+                'title' => 'Sem cobrança no gateway',
+                'text'  => 'Esta fatura ainda não foi gerada no PagHiper.',
+            ]);
+            return;
+        }
+
+        try {
+            $pagHiper = new PagHiperService();
+            $invoice = $pagHiper->syncInvoice($invoice);
+
+            $this->subscription->load('invoices');
+
+            $this->dispatch('swal:success', [
+                'title' => 'Status atualizado',
+                'text'  => 'Status atual: ' . ucfirst($invoice->status) . '.',
+                'timer' => 2500,
+                'showConfirmButton' => false,
+            ]);
+        } catch (\Exception $e) {
+            $this->dispatch('swal:error', [
+                'title' => 'Erro ao consultar PagHiper',
+                'text'  => $e->getMessage(),
+            ]);
+        }
+    }
+
     public function markAsPaid(int $id): void
     {
         $invoice = Invoice::findOrFail($id);

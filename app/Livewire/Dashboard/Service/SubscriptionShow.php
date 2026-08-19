@@ -14,7 +14,8 @@ class SubscriptionShow extends Component
         $this->subscription = $subscription->load([
             'company',
             'service',
-            'invoices'
+            'invoices',
+            'items',
         ]);
     }
     public function render()

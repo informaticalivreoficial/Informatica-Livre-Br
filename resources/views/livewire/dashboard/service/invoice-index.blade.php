@@ -74,6 +74,23 @@
                             </td>
 
                             <td class="text-right space-x-2">
+                                @if ($invoice->gateway_reference)
+                                    <button
+                                        wire:click="syncInvoice({{ $invoice->id }})"
+                                        wire:loading.attr="disabled"
+                                        wire:target="syncInvoice({{ $invoice->id }})"
+                                        class="btn btn-xs btn-outline-primary"
+                                        title="Atualizar status no PagHiper"
+                                    >
+                                        <span wire:loading.remove wire:target="syncInvoice({{ $invoice->id }})">
+                                            <i class="fas fa-sync mr-1"></i> Atualizar
+                                        </span>
+                                        <span wire:loading wire:target="syncInvoice({{ $invoice->id }})">
+                                            <i class="fas fa-spinner fa-spin mr-1"></i> Aguarde...
+                                        </span>
+                                    </button>
+                                @endif
+
                                 @if ($invoice->status !== 'paid')
                                     <button
                                         wire:click="generateBoleto({{ $invoice->id }})"
@@ -136,7 +153,14 @@
 
                 <div>
                     <label class="label">Valor</label>
-                    <input type="number" step="0.01" wire:model="amount" class="input">
+                    <input
+                        type="text"
+                        x-data="moneyMask(@entangle('amount'))"
+                        x-ref="input"
+                        class="input"
+                        inputmode="decimal"
+                        autocomplete="off"
+                    >
                     @error('amount') <span class="text-red-500">{{ $message }}</span> @enderror
                 </div>
 
@@ -170,6 +194,40 @@
 
 @push('scripts')
     <script>
+        function moneyMask(model) {
+            return {
+                model: model,
+                mask: null,
+
+                init() {
+                    this.mask = IMask(this.$refs.input, {
+                        mask: Number,
+                        scale: 2,
+                        signed: false,
+                        thousandsSeparator: '.',
+                        padFractionalZeros: true,
+                        normalizeZeros: true,
+                        radix: ',',
+                        mapToRadix: ['.'],
+                    });
+
+                    if (this.model) {
+                        this.mask.typedValue = this.model;
+                    }
+
+                    this.mask.on('accept', () => {
+                        this.model = this.mask.typedValue;
+                    });
+
+                    this.$watch('model', (value) => {
+                        if (this.mask.typedValue !== value) {
+                            this.mask.typedValue = value || 0;
+                        }
+                    });
+                }
+            }
+        }
+
         document.addEventListener('livewire:initialized', () => {
             Livewire.on('openUrl', ({ url }) => {
                 window.open(url, '_blank');

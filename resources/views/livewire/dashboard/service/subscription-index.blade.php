@@ -80,7 +80,12 @@
                             </td>
 
                             <td>
-                                R$ {{ number_format($subscription->amount, 2, ',', '.') }}
+                                R$ {{ number_format($subscription->totalAmount(), 2, ',', '.') }}
+                                @if ($subscription->items->count() > 0)
+                                    <small class="d-block text-muted">
+                                        + {{ $subscription->items->count() }} item(ns) extra(s)
+                                    </small>
+                                @endif
                             </td>
 
                             <td>

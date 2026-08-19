@@ -39,6 +39,8 @@ class CompaniServiceForm extends Component
 
     public function save()
     {
+        $this->amount = $this->parsePrice($this->amount);
+
         $this->validate();
 
         CompanyService::updateOrCreate(
@@ -61,6 +63,18 @@ class CompaniServiceForm extends Component
             'timer' => 2000,
             'showConfirmButton' => false,
         ]);
+    }
+
+    private function parsePrice($value): float
+    {
+        if (is_numeric($value)) {
+            return (float) $value;
+        }
+
+        $value = str_replace('.', '', (string) $value);
+        $value = str_replace(',', '.', $value);
+
+        return (float) $value;
     }
     public function render()
     {

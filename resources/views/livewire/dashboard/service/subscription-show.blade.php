@@ -105,11 +105,24 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>{{$subscription->interval?->label()}}</td>
+                                        <td>{{$subscription->interval?->label() ?? 'Único'}}</td>
                                         <td>{{$subscription->service->name}}</td>
-                                        <td>R$ {{number_format($subscription->amount, 2, ',', '.')}}</td>    
-                                    </tr>                                                            
+                                        <td>R$ {{number_format($subscription->amount, 2, ',', '.')}}</td>
+                                    </tr>
+                                    @foreach ($subscription->items as $item)
+                                        <tr>
+                                            <td>Item extra</td>
+                                            <td>{{ $item->description }}</td>
+                                            <td>R$ {{ number_format($item->amount, 2, ',', '.') }}</td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
+                                <tfoot>
+                                    <tr class="font-weight-bold">
+                                        <td colspan="2" class="text-right">Total:</td>
+                                        <td>R$ {{ number_format($subscription->totalAmount(), 2, ',', '.') }}</td>
+                                    </tr>
+                                </tfoot>
                                 </table>
                             </div>
                         </div>

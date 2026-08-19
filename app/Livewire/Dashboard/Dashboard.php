@@ -4,6 +4,7 @@ namespace App\Livewire\Dashboard;
 
 use App\Models\Company;
 use App\Models\Invoice;
+use App\Models\Post;
 use App\Models\Subscription;
 use Livewire\Component;
 
@@ -25,6 +26,9 @@ class Dashboard extends Component
 
             'subscriptionsCount' => Subscription::count(),
             'subscriptionsYearCount' => Subscription::whereYear('created_at', now()->year)->count(),
+
+            'postsCount' => Post::count(),
+            'postsYearCount' => Post::whereYear('created_at', now()->year)->count(),
 
             // Financeiro
             'receivedThisMonth' => Invoice::query()

@@ -71,6 +71,16 @@ class Subscription extends Model
         return $this->hasMany(Invoice::class);
     }
 
+    public function items()
+    {
+        return $this->hasMany(SubscriptionItem::class);
+    }
+
+    public function totalAmount(): float
+    {
+        return (float) $this->amount + (float) $this->items->sum('amount');
+    }
+
     public function scopeActive($query)
     {
         return $query->where('status', SubscriptionStatus::ACTIVE);
@@ -113,11 +123,11 @@ class Subscription extends Model
         ]);
     }
 
-    public function generateInvoice(?Carbon $due_date = null): Invoice
+    public function generateInvoice(?Carbon $due_date = null, ?float $amount = null): Invoice
     {
         return $this->invoices()->create([
             'company_id' => $this->company_id,
-            'amount'     => $this->amount,
+            'amount'     => $amount ?? $this->totalAmount(),
             'due_date'   => $due_date ?? $this->next_billing_at ?? $this->start_date,
             'status'     => 'pending',
         ]);

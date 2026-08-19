@@ -51,10 +51,12 @@ class ServiceForm extends Component
 
     public function save()
     {
+        $this->price = $this->parsePrice($this->price);
+
         $this->validate();
 
         $data = [
-            'user_id'      => auth()->id(), // ✅ obrigatório
+            'user_id'      => auth()->id(),
             'name'         => $this->name,
             'category_id'  => $this->category_id,
             'description'  => $this->description,
@@ -81,6 +83,18 @@ class ServiceForm extends Component
         ]);
 
         return redirect()->route('services.index');
+    }
+
+    private function parsePrice($value): float
+    {
+        if (is_numeric($value)) {
+            return (float) $value;
+        }
+
+        $value = str_replace('.', '', (string) $value);
+        $value = str_replace(',', '.', $value);
+
+        return (float) $value;
     }
 
     public function render()

@@ -99,6 +99,14 @@
                                     </button>
                                 @endif
 
+                                <a
+                                    href="{{ route('invoices.show', $invoice) }}"
+                                    class="btn btn-sm btn-info text-white"
+                                    title="Visualizar"
+                                >
+                                    <i class="fas fa-search"></i>
+                                </a>
+
                                 @if ($invoice->status !== 'paid' && $invoice->due_date->isFuture())
                                     <button
                                         wire:click="generateBoleto({{ $invoice->id }})"

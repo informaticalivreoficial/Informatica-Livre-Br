@@ -29,7 +29,7 @@ class SubscriptionIndex extends Component
     public function render()
     {
         $subscriptions = Subscription::query()
-            ->with(['company', 'service'])
+            ->with(['company', 'service', 'items'])
             ->when($this->searchCompany, fn ($q) =>
                 $q->whereHas('company', fn ($q) =>
                     $q->where('alias_name', 'like', "%{$this->searchCompany}%")

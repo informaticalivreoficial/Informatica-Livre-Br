@@ -113,6 +113,12 @@ class PagHiperService
             throw new \Exception('Status não informado pelo PagHiper.');
         }
 
+        $status = match ($status) {
+            'processing' => 'pending',
+            'cancelled'  => 'canceled',
+            default      => $status,
+        };
+
         $oldStatus = $invoice->status;
 
         $invoice->update([
