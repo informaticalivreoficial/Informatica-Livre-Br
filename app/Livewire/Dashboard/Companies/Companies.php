@@ -98,8 +98,16 @@ class Companies extends Component
             $query->orWhere('social_name', 'LIKE', "%{$this->search}%");
             $query->orWhere('email', 'LIKE', "%{$this->search}%");
         })->orderBy($this->sortField, $this->sortDirection)->paginate(35);
+
+        $stats = [
+            'total'   => Company::count(),
+            'active'  => Company::where('status', true)->count(),
+            'inactive' => Company::where('status', false)->count(),
+        ];
+
         return view('livewire.dashboard.companies.companies',[
-            'companies' => $companies
+            'companies' => $companies,
+            'stats'     => $stats,
         ])->with('title', $title);
     }
 }

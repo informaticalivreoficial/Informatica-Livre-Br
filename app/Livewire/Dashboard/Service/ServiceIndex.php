@@ -26,7 +26,13 @@ class ServiceIndex extends Component
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate(15);
 
-        return view('livewire.dashboard.service.service-index', compact('services'))
+        $stats = [
+            'total'     => Service::count(),
+            'recurring' => Service::where('billing_type', 'recurring')->count(),
+            'one_time'  => Service::where('billing_type', 'one_time')->count(),
+        ];
+
+        return view('livewire.dashboard.service.service-index', compact('services', 'stats'))
             ->with('title', 'Serviços');
     }
 

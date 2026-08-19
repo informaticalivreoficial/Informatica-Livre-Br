@@ -14,8 +14,7 @@ class SubscriptionIndex extends Component
     protected $paginationTheme = 'tailwind';
 
     public ?int $subscriptionIdToDelete = null;
-    
-    // 🔍 filtros
+
     public $searchCompany = '';
     public $searchService = '';
     public $status = '';
@@ -25,6 +24,21 @@ class SubscriptionIndex extends Component
         'searchService' => ['except' => ''],
         'status'        => ['except' => ''],
     ];
+
+    public function updatingSearchCompany(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingSearchService(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingStatus(): void
+    {
+        $this->resetPage();
+    }
 
     public function render()
     {
@@ -46,7 +60,17 @@ class SubscriptionIndex extends Component
             ->latest()
             ->paginate(10);
 
-        return view('livewire.dashboard.service.subscription-index', compact('subscriptions'))->with('title', 'Pedidos');
+        $stats = [
+            'total'    => Subscription::count(),
+            'active'   => Subscription::where('status', 'active')->count(),
+            'paused'   => Subscription::where('status', 'paused')->count(),
+            'canceled' => Subscription::where('status', 'canceled')->count(),
+        ];
+
+        return view('livewire.dashboard.service.subscription-index', [
+            'subscriptions' => $subscriptions,
+            'stats'         => $stats,
+        ])->with('title', 'Pedidos');
     }
 
     public function confirmDelete(int $id): void
@@ -55,7 +79,6 @@ class SubscriptionIndex extends Component
 
         $this->authorize('delete', $subscription);
 
-        // Verificar ANTES de pedir confirmação
         if ($subscription->invoices()->exists()) {
             $this->dispatch('swal:error', [
                 'title' => 'Ação não permitida',
@@ -95,7 +118,7 @@ class SubscriptionIndex extends Component
         } catch (\Throwable $e) {
             $this->dispatch('swal:error', [
                 'title' => 'Erro',
-                'text'  => $e->getMessage(), // Agora vai mostrar a mensagem correta
+                'text'  => $e->getMessage(),
             ]);
         }
 

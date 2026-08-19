@@ -43,8 +43,16 @@ class Safe extends Component
             })
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
+
+        $stats = [
+            'total'  => ModelsSafe::count(),
+            'active' => ModelsSafe::where('status', true)->count(),
+            'inactive' => ModelsSafe::where('status', false)->count(),
+        ];
+
         return view('livewire.dashboard.safe.safe', [
-            'safes' => $safes
+            'safes' => $safes,
+            'stats' => $stats,
         ])->with('title', $title);
     }
 

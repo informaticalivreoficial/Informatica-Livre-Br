@@ -60,9 +60,17 @@ class Posts extends Component
             })
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
+
+        $stats = [
+            'total'  => Post::count(),
+            'active' => Post::where('status', true)->count(),
+            'draft'  => Post::where('status', false)->count(),
+        ];
+
         return view('livewire.dashboard.posts.posts',[
             'title' => $title,
             'posts' => $posts,
+            'stats' => $stats,
         ]);
     }
 

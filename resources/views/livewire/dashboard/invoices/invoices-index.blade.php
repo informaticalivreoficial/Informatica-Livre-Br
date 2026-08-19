@@ -1,158 +1,184 @@
 <div>
-    @section('title', $title) 
+    @section('title', $title)
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1><i class="fas fa-store mr-2"></i> Faturas</h1>
+                    <h1><i class="fas fa-money-check mr-2"></i> Faturas</h1>
                 </div>
                 <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">                    
-                        <li class="breadcrumb-item"><a href="{{route('admin')}}">Painel de Controle</a></li>
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{{ route('admin') }}">Painel de Controle</a></li>
                         <li class="breadcrumb-item"><a href="{{ route('services.subscriptions.index') }}">Pedidos</a></li>
                         <li class="breadcrumb-item active">Faturas</li>
                     </ol>
                 </div>
             </div>
-        </div>    
+        </div>
     </div>
 
-    <div class="card">
-        <div class="card-header">
-            <div class="row">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
 
-                <div class="col-md-6">
-                    <input
-                        type="text"
-                        class="form-control"
-                        placeholder="Buscar empresa ou ID da fatura..."
-                        wire:model.live.debounce.500ms="search"
-                    >
-                </div>
-
-                <div class="col-md-3">
-                    <select
-                        class="form-control"
-                        wire:model.live="status"
-                    >
-                        <option value="">Todos os status</option>
-                        <option value="pending">Pendente</option>
-                        <option value="paid">Pago</option>
-                        <option value="canceled">Cancelado</option>
-                        <option value="refunded">Estornado</option>
-                    </select>
-                </div>
-
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex items-center gap-4">
+            <div class="w-11 h-11 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                <i class="fas fa-file-invoice text-lg"></i>
+            </div>
+            <div>
+                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Total</p>
+                <p class="text-xl font-bold text-gray-800 leading-tight">{{ $stats['total'] }}</p>
             </div>
         </div>
 
-        <div class="card-body p-0">
-            <table class="table table-hover table-striped">
-                <thead>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex items-center gap-4">
+            <div class="w-11 h-11 rounded-lg bg-green-50 text-green-600 flex items-center justify-center shrink-0">
+                <i class="fas fa-check-circle text-lg"></i>
+            </div>
+            <div>
+                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Pagas</p>
+                <p class="text-xl font-bold text-gray-800 leading-tight">{{ $stats['paid'] }}</p>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex items-center gap-4">
+            <div class="w-11 h-11 rounded-lg bg-yellow-50 text-yellow-600 flex items-center justify-center shrink-0">
+                <i class="fas fa-clock text-lg"></i>
+            </div>
+            <div>
+                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Pendentes</p>
+                <p class="text-xl font-bold text-gray-800 leading-tight">{{ $stats['pending'] }}</p>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex items-center gap-4">
+            <div class="w-11 h-11 rounded-lg bg-red-50 text-red-600 flex items-center justify-center shrink-0">
+                <i class="fas fa-exclamation-triangle text-lg"></i>
+            </div>
+            <div>
+                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Em atraso</p>
+                <p class="text-xl font-bold text-gray-800 leading-tight">{{ $stats['overdue'] }}</p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="p-4 border-b border-gray-100 flex flex-col lg:flex-row lg:items-center gap-3">
+            <div class="relative flex-1">
+                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                <input
+                    type="text"
+                    wire:model.live.debounce.500ms="search"
+                    placeholder="Buscar empresa ou ID da fatura..."
+                    class="w-full border border-gray-200 rounded-lg pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400"
+                >
+            </div>
+            <select wire:model.live="status" class="w-full lg:w-56 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400">
+                <option value="">Todos os status</option>
+                <option value="pending">Pendente</option>
+                <option value="paid">Pago</option>
+                <option value="canceled">Cancelado</option>
+                <option value="refunded">Estornado</option>
+            </select>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-100">
+                <thead class="bg-gray-50">
                     <tr>
-                        <th>#</th>
-                        <th>Empresa</th>
-                        <th>Vencimento</th>
-                        <th>Valor</th>
-                        <th>Status</th>
-                        <th class="text-right">Ações</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">#</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Empresa</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Vencimento</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Valor</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
+                        <th class="px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wide">Ações</th>
                     </tr>
                 </thead>
-
-                <tbody>
+                <tbody class="divide-y divide-gray-50">
                     @forelse ($invoices as $invoice)
-                        <tr>
-                            <td>#{{ $invoice->id }}</td>
-
-                            <td>
-                                {{ $invoice->company->alias_name }}
-                            </td>
-
-                            <td>
-                                {{ $invoice->due_date->format('d/m/Y') }}
-                            </td>
-
-                            <td>
-                                R$ {{ number_format($invoice->amount, 2, ',', '.') }}
-                            </td>
-
-                            <td>
-                                <span class="badge
-                                    @if($invoice->status === 'paid') badge-success
-                                    @elseif($invoice->status === 'pending') badge-warning
-                                    @elseif($invoice->status === 'canceled') badge-danger
+                        <tr class="hover:bg-gray-50 transition">
+                            <td class="px-4 py-3 text-sm text-gray-500">#{{ $invoice->id }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-700">{{ $invoice->company->alias_name }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-500">{{ $invoice->due_date->format('d/m/Y') }}</td>
+                            <td class="px-4 py-3 text-sm font-medium text-gray-800">R$ {{ number_format($invoice->amount, 2, ',', '.') }}</td>
+                            <td class="px-4 py-3">
+                                <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-medium
+                                    @if($invoice->status === 'paid') bg-green-100 text-green-700
+                                    @elseif($invoice->status === 'pending') bg-yellow-100 text-yellow-700
+                                    @elseif($invoice->status === 'canceled') bg-red-100 text-red-700
+                                    @elseif($invoice->status === 'refunded') bg-gray-100 text-gray-600
                                     @endif
                                 ">
                                     {{ ucfirst($invoice->status) }}
                                 </span>
                             </td>
+                            <td class="px-4 py-3">
+                                <div class="flex items-center justify-end gap-1.5">
+                                    @if($invoice->gateway_reference)
+                                        <button
+                                            wire:click="syncInvoice({{ $invoice->id }})"
+                                            wire:loading.attr="disabled"
+                                            class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white transition"
+                                            title="Atualizar Status"
+                                        >
+                                            <i class="fas fa-sync text-xs"></i>
+                                        </button>
+                                    @endif
 
-                            <td class="text-right space-x-2">
-                                @if($invoice->gateway_reference)
+                                    <a
+                                        href="{{ route('invoices.show', $invoice) }}"
+                                        class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition"
+                                        title="Visualizar"
+                                    >
+                                        <i class="fas fa-search text-xs"></i>
+                                    </a>
+
+                                    @if ($invoice->status !== 'paid' && $invoice->due_date->isFuture())
+                                        <button
+                                            wire:click="generateBoleto({{ $invoice->id }})"
+                                            wire:loading.attr="disabled"
+                                            wire:target="generateBoleto({{ $invoice->id }})"
+                                            class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-600 hover:text-white transition"
+                                            title="Gerar Boleto"
+                                        >
+                                            <span wire:loading.remove wire:target="generateBoleto({{ $invoice->id }})">
+                                                <i class="fas fa-barcode text-xs"></i>
+                                            </span>
+                                            <span wire:loading wire:target="generateBoleto({{ $invoice->id }})">
+                                                <i class="fas fa-spinner fa-spin text-xs"></i>
+                                            </span>
+                                        </button>
+                                    @endif
+
+                                    @if (
+                                        $invoice->status === 'pending' ||
+                                        $invoice->status === 'canceled' ||
+                                        $invoice->status === 'failed')
+                                        <button
+                                            wire:click="markAsPaid({{ $invoice->id }})"
+                                            wire:confirm="Confirmar pagamento da fatura #{{ $invoice->id }}?"
+                                            class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-green-50 text-green-600 hover:bg-green-600 hover:text-white transition"
+                                            title="Marcar como Pago"
+                                        >
+                                            <i class="fas fa-check text-xs"></i>
+                                        </button>
+                                    @endif
+
                                     <button
-                                        wire:click="syncInvoice({{ $invoice->id }})"
-                                        wire:loading.attr="disabled"
-                                        class="btn btn-sm btn-outline-primary"
-                                        title="Atualizar Status"
+                                        wire:click="confirmDelete({{ $invoice->id }})"
+                                        type="button"
+                                        title="Excluir"
+                                        class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition"
                                     >
-                                        <i class="fas fa-sync"></i>
+                                        <i class="fas fa-trash text-xs"></i>
                                     </button>
-                                @endif
-
-                                <a
-                                    href="{{ route('invoices.show', $invoice) }}"
-                                    class="btn btn-sm btn-info text-white"
-                                    title="Visualizar"
-                                >
-                                    <i class="fas fa-search"></i>
-                                </a>
-
-                                @if ($invoice->status !== 'paid' && $invoice->due_date->isFuture())
-                                    <button
-                                        wire:click="generateBoleto({{ $invoice->id }})"
-                                        wire:loading.attr="disabled"
-                                        wire:target="generateBoleto({{ $invoice->id }})"
-                                        class="btn btn-xs btn-outline"
-                                        title="Gerar Boleto"
-                                    >
-                                        <span wire:loading.remove wire:target="generateBoleto({{ $invoice->id }})">
-                                            <i class="fas fa-barcode mr-1"></i>
-                                            {{ $invoice->payment_url ? 'Ver Boleto' : 'Gerar Boleto' }}
-                                        </span>
-                                        <span wire:loading wire:target="generateBoleto({{ $invoice->id }})">
-                                            <i class="fas fa-spinner fa-spin mr-1"></i> Aguarde...
-                                        </span>
-                                    </button>
-                                @endif                                
-
-                                @if (
-                                    $invoice->status === 'pending' || 
-                                    $invoice->status === 'canceled' || 
-                                    $invoice->status === 'failed')
-                                    <button
-                                        wire:click="markAsPaid({{ $invoice->id }})"
-                                        wire:confirm="Confirmar pagamento da fatura #{{ $invoice->id }}?"
-                                        class="btn btn-xs btn-success"
-                                        title="Marcar como Pago"
-                                    >
-                                        <i class="fas fa-check mr-1"></i> Marcar paga
-                                    </button>
-                                @endif
-
-                                <button 
-                                    wire:click="confirmDelete({{ $invoice->id }})"
-                                    type="button" title="Excluir"
-                                    class="btn btn-xs bg-danger text-white"
-                                    title="Excluir Fatura"
-                                    >
-                                    <i class="fas fa-trash"></i>
-                                </button>
+                                </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="text-center text-gray-500">
-                                Nenhuma fatura encontrada.
+                            <td colspan="6" class="px-4 py-12 text-center">
+                                <i class="fas fa-inbox text-3xl text-gray-300 mb-3"></i>
+                                <p class="text-sm text-gray-400">Nenhuma fatura encontrada</p>
                             </td>
                         </tr>
                     @endforelse
@@ -160,15 +186,12 @@
             </table>
         </div>
 
-        @if($invoices->hasPages())
-            <div class="card-footer clearfix">
+        @if ($invoices->hasPages())
+            <div class="px-4 py-3 border-t border-gray-100">
                 {{ $invoices->links() }}
             </div>
         @endif
     </div>
-
-    
-
 </div>
 
 @push('scripts')

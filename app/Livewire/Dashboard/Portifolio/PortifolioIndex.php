@@ -139,9 +139,16 @@ class PortifolioIndex extends Component
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
+        $stats = [
+            'total'  => Portifolio::count(),
+            'active' => Portifolio::where('status', true)->count(),
+            'draft'  => Portifolio::where('status', false)->count(),
+        ];
+
         return view('livewire.dashboard.portifolio.portifolio-index', [
             'title' => $title,
-            'trabalhos' => $trabalhos
+            'trabalhos' => $trabalhos,
+            'stats' => $stats,
         ]);
     }
 }

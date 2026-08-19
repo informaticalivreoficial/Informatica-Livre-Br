@@ -57,8 +57,16 @@ class Users extends Component
             })
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate(35);
+
+        $stats = [
+            'total'    => User::role('employee')->count(),
+            'active'   => User::role('employee')->where('status', true)->count(),
+            'inactive' => User::role('employee')->where('status', false)->count(),
+        ];
+
         return view('livewire.dashboard.users.users',[
-            'users' => $users
+            'users' => $users,
+            'stats' => $stats,
         ]);
     }
 

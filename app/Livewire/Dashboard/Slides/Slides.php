@@ -93,9 +93,17 @@ class Slides extends Component
             })
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
+
+        $stats = [
+            'total'  => Slide::count(),
+            'active' => Slide::where('status', true)->count(),
+            'inactive' => Slide::where('status', false)->count(),
+        ];
+
         return view('livewire.dashboard.slides.slides',[
             'title' => $title,
-            'slides' => $slides
+            'slides' => $slides,
+            'stats' => $stats,
         ]);
     }
 }

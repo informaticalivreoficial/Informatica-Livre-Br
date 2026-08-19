@@ -81,8 +81,16 @@ class InvoicesIndex extends Component
             ->latest()
             ->paginate(15);
 
+        $stats = [
+            'total'    => Invoice::count(),
+            'paid'     => Invoice::where('status', 'paid')->count(),
+            'pending'  => Invoice::where('status', 'pending')->count(),
+            'overdue'  => Invoice::where('status', 'pending')->whereDate('due_date', '<', today())->count(),
+        ];
+
         return view('livewire.dashboard.invoices.invoices-index', [
             'invoices' => $invoices,
+            'stats'    => $stats,
             'title'    => 'Faturas',
         ]);
     }
