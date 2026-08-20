@@ -31,7 +31,7 @@ class AdminSend extends Mailable
     public function build()
     {
         $this->replyTo($this->data['reply_email'], $this->data['reply_name']);
-        $this->to($this->data['destinatario_email'], $this->data['reply_name']);
+        $this->to($this->data['destinatario_email'], $this->data['destinatario_nome'] ?? $this->data['reply_name']);
         $this->from($this->data['reply_email'], $this->data['reply_name']);
         $this->subject($this->data['assunto']);
         if(!empty($this->data['copiapara'])){

@@ -2,6 +2,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import './matrix.css';
 
 .flatpickr-calendar * {
     box-sizing: border-box;
@@ -100,4 +101,22 @@
 .notifications-scroll {
     scrollbar-width: thin;
     scrollbar-color: #cbd5e1 transparent;
+}
+
+/* Dark mode scrollbar */
+.dark .notifications-scroll::-webkit-scrollbar-thumb {
+    background: #475569;
+}
+
+.dark .notifications-scroll::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+}
+
+.dark .notifications-scroll {
+    scrollbar-color: #475569 transparent;
+}
+
+/* Transição suave ao alternar tema */
+body {
+    transition: background-color .2s ease, color .2s ease;
 }

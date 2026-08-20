@@ -3,7 +3,10 @@
 namespace App\Livewire\Web;
 
 use App\Mail\Atendimento;
+use App\Models\User;
+use App\Notifications\NewContactMessage;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use Livewire\Component;
 
 class ContactForm extends Component
@@ -48,6 +51,12 @@ class ContactForm extends Component
         $validated = $this->validate();
         
         Mail::send(new Atendimento($validated));
+
+        Notification::send(
+            User::role('super-admin')->get(),
+            new NewContactMessage($validated)
+        );
+
         $this->reset(['name', 'email', 'phone', 'subject', 'message']);
         $this->sent = true;        
     }

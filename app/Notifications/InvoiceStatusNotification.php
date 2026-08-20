@@ -19,7 +19,14 @@ class InvoiceStatusNotification extends Notification
 
     public function via(object $notifiable): array
     {
-        return ['database', 'mail'];
+        return ['database', 'mail', 'telegram'];
+    }
+
+    public function toTelegram(object $notifiable): string
+    {
+        $data = $this->toArray($notifiable);
+
+        return "🔔 {$data['title']}\n{$data['message']}\n{$data['description']}";
     }
 
     public function toArray(object $notifiable): array

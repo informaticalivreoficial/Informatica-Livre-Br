@@ -1,6 +1,6 @@
 {
-  "_index-DblWm61r.js": {
-    "file": "assets/index-DblWm61r.js",
+  "_index-B41IefAe.js": {
+    "file": "assets/index-B41IefAe.js",
     "name": "index"
   },
   "node_modules/alpinejs/dist/module.esm.js": {
@@ -10,7 +10,7 @@
     "isDynamicEntry": true
   },
   "resources/css/app.css": {
-    "file": "assets/app-dLUxUCEl.css",
+    "file": "assets/app-CEW1IHE6.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "name": "app",
@@ -18,22 +18,31 @@
       "app.css"
     ]
   },
+  "resources/css/matrix.css": {
+    "file": "assets/matrix-BrevI2xu.css",
+    "src": "resources/css/matrix.css",
+    "isEntry": true,
+    "name": "matrix",
+    "names": [
+      "matrix.css"
+    ]
+  },
   "resources/js/app.js": {
-    "file": "assets/app-Dtra4QwB.js",
+    "file": "assets/app-518lYVQX.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
     "imports": [
-      "_index-DblWm61r.js"
+      "_index-B41IefAe.js"
     ]
   },
   "resources/js/front.js": {
-    "file": "assets/front-lQ3GyHWv.js",
+    "file": "assets/front-C2Zs9pnS.js",
     "name": "front",
     "src": "resources/js/front.js",
     "isEntry": true,
     "imports": [
-      "_index-DblWm61r.js"
+      "_index-B41IefAe.js"
     ],
     "dynamicImports": [
       "node_modules/alpinejs/dist/module.esm.js"

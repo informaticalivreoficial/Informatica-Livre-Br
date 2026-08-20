@@ -120,9 +120,9 @@
                                             <i class="fab fa-whatsapp text-xs"></i>
                                         </a>
                                     @endif
-                                    <a href="mailto:{{ $user->email }}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-teal-50 text-teal-600 hover:bg-teal-600 hover:text-white transition" title="Enviar Email">
+                                    <button type="button" wire:click="$dispatch('open-email-modal', { recipient: '{{ $user->email }}', recipientName: '{{ $user->name }}' })" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-teal-50 text-teal-600 hover:bg-teal-600 hover:text-white transition" title="Enviar Email">
                                         <i class="fas fa-envelope text-xs"></i>
-                                    </a>
+                                    </button>
                                     <a wire:navigate href="visualizar/{{ $user->id }}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition" title="Visualizar">
                                         <i class="fas fa-search text-xs"></i>
                                     </a>

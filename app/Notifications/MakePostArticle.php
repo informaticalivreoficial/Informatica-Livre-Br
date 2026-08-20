@@ -16,7 +16,12 @@ class MakePostArticle extends Notification
 
     public function via(object $notifiable): array
     {
-        return ['database', 'mail'];
+        return ['database', 'mail', 'telegram'];
+    }
+
+    public function toTelegram(object $notifiable): string
+    {
+        return "📝 Novo artigo gerado\n{$this->post->title}\nAguardando revisão: " . url('/admin/posts/' . $this->post->id . '/edit');
     }
 
     public function toMail(object $notifiable): MailMessage

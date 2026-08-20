@@ -26,7 +26,7 @@ class User extends Authenticatable
         //Address      
         'zipcode', 'street', 'number', 'complement', 'neighborhood', 'state', 'city',
         //Contact
-        'phone', 'cell_phone', 'whatsapp', 'skype', 'telegram', 'email', 'additional_email',
+        'phone', 'cell_phone', 'whatsapp', 'telegram', 'email', 'additional_email',
         //Social
         'facebook', 'twitter', 'instagram', 'linkedin',        
         'status',
@@ -41,9 +41,6 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
-        'client' => 'boolean',
-        'admin' => 'boolean',
-        'superadmin' => 'boolean',
     ];
 
     protected static function booted()
@@ -143,26 +140,6 @@ class User extends Authenticatable
             return null;
         }
         return \Carbon\Carbon::parse($value)->format('d/m/Y');
-    }
-
-    public function setAdminAttribute($value)
-    {
-        $this->attributes['admin'] = ($value === true || $value === 'on' ? 1 : 0);
-    }
-
-    public function setEditorAttribute($value)
-    {
-        $this->attributes['editor'] = ($value === true || $value === 'on' ? 1 : 0);
-    }
-
-    public function setClientAttribute($value)
-    {
-        $this->attributes['client'] = ($value === true || $value === 'on' ? 1 : 0);
-    }
-    
-    public function setSuperAdminAttribute($value)
-    {
-        $this->attributes['superadmin'] = ($value === true || $value === 'on' ? 1 : 0);
     }
 
     public function setZipcodeAttribute($value)

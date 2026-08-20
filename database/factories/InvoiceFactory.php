@@ -17,7 +17,9 @@ class InvoiceFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'amount' => $this->faker->randomFloat(2, 100, 3000),
+            'due_date' => $this->faker->dateTimeBetween('now', '+30 days')->format('Y-m-d'),
+            'status' => 'pending',
         ];
     }
 }

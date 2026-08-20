@@ -19,60 +19,60 @@
 
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
 
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex items-center gap-4">
-            <div class="w-11 h-11 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-4 flex items-center gap-4">
+            <div class="w-11 h-11 rounded-lg bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
                 <i class="fas fa-file-invoice text-lg"></i>
             </div>
             <div>
-                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Total</p>
-                <p class="text-xl font-bold text-gray-800 leading-tight">{{ $stats['total'] }}</p>
+                <p class="text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wide">Total</p>
+                <p class="text-xl font-bold text-gray-800 dark:text-slate-100 leading-tight">{{ $stats['total'] }}</p>
             </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex items-center gap-4">
-            <div class="w-11 h-11 rounded-lg bg-green-50 text-green-600 flex items-center justify-center shrink-0">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-4 flex items-center gap-4">
+            <div class="w-11 h-11 rounded-lg bg-green-50 dark:bg-green-900/40 text-green-600 dark:text-green-400 flex items-center justify-center shrink-0">
                 <i class="fas fa-check-circle text-lg"></i>
             </div>
             <div>
-                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Pagas</p>
-                <p class="text-xl font-bold text-gray-800 leading-tight">{{ $stats['paid'] }}</p>
+                <p class="text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wide">Pagas</p>
+                <p class="text-xl font-bold text-gray-800 dark:text-slate-100 leading-tight">{{ $stats['paid'] }}</p>
             </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex items-center gap-4">
-            <div class="w-11 h-11 rounded-lg bg-yellow-50 text-yellow-600 flex items-center justify-center shrink-0">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-4 flex items-center gap-4">
+            <div class="w-11 h-11 rounded-lg bg-yellow-50 dark:bg-yellow-900/40 text-yellow-600 dark:text-yellow-400 flex items-center justify-center shrink-0">
                 <i class="fas fa-clock text-lg"></i>
             </div>
             <div>
-                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Pendentes</p>
-                <p class="text-xl font-bold text-gray-800 leading-tight">{{ $stats['pending'] }}</p>
+                <p class="text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wide">Pendentes</p>
+                <p class="text-xl font-bold text-gray-800 dark:text-slate-100 leading-tight">{{ $stats['pending'] }}</p>
             </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex items-center gap-4">
-            <div class="w-11 h-11 rounded-lg bg-red-50 text-red-600 flex items-center justify-center shrink-0">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-4 flex items-center gap-4">
+            <div class="w-11 h-11 rounded-lg bg-red-50 dark:bg-red-900/40 text-red-600 dark:text-red-400 flex items-center justify-center shrink-0">
                 <i class="fas fa-exclamation-triangle text-lg"></i>
             </div>
             <div>
-                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Em atraso</p>
-                <p class="text-xl font-bold text-gray-800 leading-tight">{{ $stats['overdue'] }}</p>
+                <p class="text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wide">Em atraso</p>
+                <p class="text-xl font-bold text-gray-800 dark:text-slate-100 leading-tight">{{ $stats['overdue'] }}</p>
             </div>
         </div>
 
     </div>
 
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div class="p-4 border-b border-gray-100 flex flex-col lg:flex-row lg:items-center gap-3">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden">
+        <div class="p-4 border-b border-gray-100 dark:border-slate-700 flex flex-col lg:flex-row lg:items-center gap-3">
             <div class="relative flex-1">
                 <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
                 <input
                     type="text"
                     wire:model.live.debounce.500ms="search"
                     placeholder="Buscar empresa ou ID da fatura..."
-                    class="w-full border border-gray-200 rounded-lg pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400"
+                    class="w-full border border-gray-200 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 rounded-lg pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400"
                 >
             </div>
-            <select wire:model.live="status" class="w-full lg:w-56 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400">
+            <select wire:model.live="status" class="w-full lg:w-56 border border-gray-200 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400">
                 <option value="">Todos os status</option>
                 <option value="pending">Pendente</option>
                 <option value="paid">Pago</option>
@@ -82,30 +82,30 @@
         </div>
 
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-100">
-                <thead class="bg-gray-50">
+            <table class="min-w-full divide-y divide-gray-100 dark:divide-slate-700">
+                <thead class="bg-gray-50 dark:bg-slate-700/50">
                     <tr>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">#</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Empresa</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Vencimento</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Valor</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
-                        <th class="px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wide">Ações</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wide">#</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wide">Empresa</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wide">Vencimento</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wide">Valor</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wide">Status</th>
+                        <th class="px-4 py-3 text-right text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wide">Ações</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-50">
+                <tbody class="divide-y divide-gray-50 dark:divide-slate-700">
                     @forelse ($invoices as $invoice)
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="px-4 py-3 text-sm text-gray-500">#{{ $invoice->id }}</td>
-                            <td class="px-4 py-3 text-sm text-gray-700">{{ $invoice->company->alias_name }}</td>
-                            <td class="px-4 py-3 text-sm text-gray-500">{{ $invoice->due_date->format('d/m/Y') }}</td>
-                            <td class="px-4 py-3 text-sm font-medium text-gray-800">R$ {{ number_format($invoice->amount, 2, ',', '.') }}</td>
+                        <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/50 transition">
+                            <td class="px-4 py-3 text-sm text-gray-500 dark:text-slate-400">#{{ $invoice->id }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-700 dark:text-slate-200">{{ $invoice->company->alias_name }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-500 dark:text-slate-400">{{ $invoice->due_date->format('d/m/Y') }}</td>
+                            <td class="px-4 py-3 text-sm font-medium text-gray-800 dark:text-slate-100">R$ {{ number_format($invoice->amount, 2, ',', '.') }}</td>
                             <td class="px-4 py-3">
                                 <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-medium
-                                    @if($invoice->status === 'paid') bg-green-100 text-green-700
-                                    @elseif($invoice->status === 'pending') bg-yellow-100 text-yellow-700
-                                    @elseif($invoice->status === 'canceled') bg-red-100 text-red-700
-                                    @elseif($invoice->status === 'refunded') bg-gray-100 text-gray-600
+                                    @if($invoice->status === 'paid') bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400
+                                    @elseif($invoice->status === 'pending') bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-400
+                                    @elseif($invoice->status === 'canceled') bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400
+                                    @elseif($invoice->status === 'refunded') bg-gray-100 text-gray-600 dark:bg-slate-700 dark:text-slate-300
                                     @endif
                                 ">
                                     {{ ucfirst($invoice->status) }}
@@ -177,8 +177,8 @@
                     @empty
                         <tr>
                             <td colspan="6" class="px-4 py-12 text-center">
-                                <i class="fas fa-inbox text-3xl text-gray-300 mb-3"></i>
-                                <p class="text-sm text-gray-400">Nenhuma fatura encontrada</p>
+                                <i class="fas fa-inbox text-3xl text-gray-300 dark:text-slate-600 mb-3"></i>
+                                <p class="text-sm text-gray-400 dark:text-slate-500">Nenhuma fatura encontrada</p>
                             </td>
                         </tr>
                     @endforelse
@@ -187,7 +187,7 @@
         </div>
 
         @if ($invoices->hasPages())
-            <div class="px-4 py-3 border-t border-gray-100">
+            <div class="px-4 py-3 border-t border-gray-100 dark:border-slate-700">
                 {{ $invoices->links() }}
             </div>
         @endif

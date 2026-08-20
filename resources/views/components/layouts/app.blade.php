@@ -11,6 +11,11 @@
 
     {{-- FontAwesome --}}
     <link rel="stylesheet" href="{{ asset('theme/plugins/fontawesome-free/css/all.min.css') }}">
+
+    {{-- Matrix font --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     {{-- Bootstrap 4 --}}
     <link rel="stylesheet" href="{{ asset('theme/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
 
@@ -47,11 +52,24 @@
             z-index: 9999 !important;
         }
     </style>
+
+    <script>
+        const savedTheme = localStorage.getItem('admin-theme');
+        const isDark = savedTheme ? savedTheme === 'dark' : true;
+        if (isDark) {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
     
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/css/matrix.css', 'resources/js/app.js'])
 </head>
 
 <body class="hold-transition sidebar-mini text-sm">
+    <script>
+        if (document.documentElement.classList.contains('dark')) {
+            document.body.classList.add('dark-mode');
+        }
+    </script>
     <div class="wrapper">
         <livewire:navigation.top-navigation />
 
@@ -87,6 +105,7 @@
 
     @auth
         <livewire:components.support-modal />
+        <livewire:components.email-modal />
         <livewire:components.toastr-notification />
     @endauth
 
@@ -136,47 +155,17 @@
     @stack('scripts') 
 
     <script>
-        // Listener genérico para todos os tipos de SweetAlert
-        ['swal', 'swal:error', 'swal:success', 'swal:info', 'swal:warning'].forEach(eventName => {
-            window.addEventListener(eventName, (event) => {
-                const data = event.detail?.[0] ?? {};
-
-                // Define o ícone baseado no tipo de evento
-                let defaultIcon = 'info';
-                if (eventName === 'swal:error') defaultIcon = 'error';
-                if (eventName === 'swal:success') defaultIcon = 'success';
-                if (eventName === 'swal:warning') defaultIcon = 'warning';
-
-                Swal.fire({
-                    title: data.title ?? 'Aviso',
-                    text: data.text ?? '',
-                    icon: data.icon ?? defaultIcon,
-                    timer: data.timer ?? null,
-                    showConfirmButton: data.showConfirmButton ?? true,
-                    confirmButtonText: data.confirmButtonText ?? 'OK',
-                });
-            });
-        });
-
-        // Listener para confirmação (precisa de lógica especial)
-        window.addEventListener('swal:confirm', (event) => {
-            const data = event.detail?.[0] ?? {};
-
-            Swal.fire({
-                title: data.title ?? 'Tem certeza?',
-                text: data.text ?? '',
-                icon: data.icon ?? 'warning',
-                showCancelButton: true,
-                confirmButtonText: data.confirmButtonText ?? 'Confirmar',
-                cancelButtonText: data.cancelButtonText ?? 'Cancelar',
-            }).then((result) => {
-                if (result.isConfirmed && data.confirmEvent) {
-                    Livewire.dispatch(data.confirmEvent, data.confirmParams ?? []);
+        document.addEventListener('alpine:init', () => {
+            Alpine.store('theme', {
+                dark: document.documentElement.classList.contains('dark'),
+                toggle() {
+                    this.dark = !this.dark;
+                    document.documentElement.classList.toggle('dark', this.dark);
+                    document.body.classList.toggle('dark-mode', this.dark);
+                    localStorage.setItem('admin-theme', this.dark ? 'dark' : 'light');
                 }
             });
-        });
 
-        document.addEventListener('alpine:init', () => {
             Alpine.data('quillEditor', ({ value, model }) => ({
                 quill: null,
 

@@ -1,4 +1,4 @@
-<aside class="main-sidebar sidebar-light-teal elevation-4">
+<aside class="main-sidebar elevation-4" :class="$store.theme.dark ? 'sidebar-dark-teal' : 'sidebar-light-teal'">
     <!-- Brand Logo -->
     <a class="pt-3 d-flex justify-content-center cursor-pointer">
         <img src="{{$config->getlogoadmin()}}" alt="{{$config->app_name}}"
@@ -103,6 +103,13 @@
                         </li>                        
                     </ul>
                 </li>  
+                <li class="nav-item">
+                    <a href="{{route('invoices.index')}}" class="nav-link {{ Route::is('invoices.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-money-check-alt"></i>
+                        <p>Faturas</p>
+                    </a>
+                </li>
+
                 <li class="nav-item {{ Route::is('portifolio.*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ Route::is('portifolio.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-project-diagram"></i>

@@ -82,7 +82,7 @@
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6 col-sm-6 col-lg-6 mb-2">
-                                    @if(\Illuminate\Support\Facades\Auth::user()->superadmin == 1)
+                                    @if(\Illuminate\Support\Facades\Auth::user()->isSuperAdmin())
                                         <div class="form-group">
                                             <label class="labelforms"><b>URL do site</b></label>
                                             <div class="input-group">
@@ -833,39 +833,6 @@
 </div>
 
 <script>
-
-    document.addEventListener('atualizado', function() {
-        Swal.fire({
-            title: 'Sucesso!',
-            text: "Configurações atualizadas com sucesso!",
-            icon: 'success',
-            timerProgressBar: true,
-            showConfirmButton: false,
-            timer: 3000 // Fecha automaticamente após 3 segundos
-        });
-    });
-    
-    document.addEventListener("livewire:navigated", () => {
-        $('#privacy_policy').summernote({
-            height: 300,
-            toolbar: [
-                ['style', ['bold', 'italic', 'underline', 'clear']],
-                ['font', ['strikethrough', 'superscript', 'subscript']],
-                ['fontsize', ['fontsize']],
-                ['color', ['color']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['height', ['height']],
-                ['insert', ['link', 'picture', 'video']],
-                ['view', ['fullscreen', 'codeview']]
-            ],
-            callbacks: {
-                onChange: function(contents, $editable) {
-                    Livewire.dispatch('updatePrivacyPolicy', { value: contents });
-                }
-            }
-        });
-    });
-
     function tagInputComponent(tagsBinding) {
         return {
             tags: tagsBinding,
@@ -882,7 +849,4 @@
             }
         };
     }
-
-    
-    
 </script>

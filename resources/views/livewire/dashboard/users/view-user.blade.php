@@ -111,7 +111,7 @@
                         </div>
                         
                         <div class="col-md-3 col-xl-2">
-                            <p><b>Cep:</b> {{$user->postcode}}</p>
+                            <p><b>Cep:</b> {{$user->zipcode}}</p>
                         </div>
                         <div class="col-md-3 col-xl-4">
                             <p><b>Complemento:</b> {{$user->complement}}</p>

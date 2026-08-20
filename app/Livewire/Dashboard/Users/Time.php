@@ -17,13 +17,8 @@ class Time extends Component
 
     public string $sortField = 'name';
 
-    public $delete_id;
-
     public string $sortDirection = 'asc';
 
-    public bool $active;    
-
-    #{Url}
     public function updatingSearch(): void
     {
         $this->resetPage();
@@ -42,39 +37,47 @@ class Time extends Component
     }
 
     public function toggleStatus($id)
-    {              
+    {
         $user = User::findOrFail($id);
-        $user->status = !$user->status;        
+        $user->status = !$user->status;
         $user->save();
+
+        $this->dispatch('swal', [
+            'title' => $user->status ? 'Ativado!' : 'Desativado!',
+            'text' => $user->status ? 'Usuário ativado com sucesso.' : 'Usuário desativado.',
+            'icon' => 'success',
+            'timer' => 2000,
+            'showConfirmButton' => false,
+        ]);
     }
 
     public function setDeleteId($id)
     {
         $this->dispatch('swal:confirm', [
             'title' => 'Excluir Usuário?',
-            'text' => 'Essa ação não pode ser desfeita.!',
-            'showConfirmButton' => false,
+            'text' => 'Essa ação não pode ser desfeita.',
             'icon' => 'warning',
             'confirmButtonText' => 'Sim, excluir',
             'cancelButtonText' => 'Cancelar',
             'confirmEvent' => 'deleteUser',
             'confirmParams' => [$id],
-        ]);        
+        ]);
     }
-    
+
     #[On('deleteUser')]
     public function deleteUser($id): void
     {
         $user = User::where('id', $id)->first();
-        if(!empty($user)){
+        if (!empty($user)) {
             $this->authorize('delete', $user);
             $user->delete();
 
-            $this->dispatch('swal:success', [
+            $this->dispatch('swal', [
                 'title' => 'Excluído!',
                 'text' => 'Usuário removido com sucesso!',
+                'icon' => 'success',
                 'timer' => 2000,
-                'showConfirmButton' => false
+                'showConfirmButton' => false,
             ]);
         }
     }
@@ -83,18 +86,26 @@ class Time extends Component
     {
         $title = 'Time de Usuários';
 
-        $users = User::role(['manager', 'super-admin']) // Filtra por roles
-            ->when($this->search, function($query) {
-                $query->where(function($q) {
+        $users = User::with('roles')
+            ->role(['manager', 'super-admin'])
+            ->when($this->search, function ($query) {
+                $query->where(function ($q) {
                     $q->where('name', 'LIKE', "%{$this->search}%")
-                    ->orWhere('email', 'LIKE', "%{$this->search}%");
+                        ->orWhere('email', 'LIKE', "%{$this->search}%");
                 });
             })
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate(15);
 
+        $stats = [
+            'total' => User::role(['manager', 'super-admin'])->count(),
+            'active' => User::role(['manager', 'super-admin'])->where('status', true)->count(),
+            'inactive' => User::role(['manager', 'super-admin'])->where('status', false)->count(),
+        ];
+
         return view('livewire.dashboard.users.time', [
-            'users' => $users
-        ])->with('title', $title);        
+            'users' => $users,
+            'stats' => $stats,
+        ])->with('title', $title);
     }
 }
