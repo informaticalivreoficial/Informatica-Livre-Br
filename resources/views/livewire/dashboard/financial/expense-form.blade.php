@@ -52,19 +52,26 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-12 col-md-6">
+                    <div class="col-12 col-md-6 col-lg-3">
                         <div class="form-group">
-                            <label class="labelforms"><b>Observações</b></label>
-                            <textarea class="form-control" rows="4" wire:model.defer="notes" placeholder="Observações sobre esta despesa..."></textarea>
+                            <label class="labelforms"><b>*Valor</b></label>
+                            <input type="text" inputmode="decimal" class="form-control @error('amount') is-invalid @enderror" wire:model.defer="amount" placeholder="Ex.: 150,00">
+                            @error('amount') <span class="invalid-feedback">{{ $message }}</span> @enderror
                         </div>
                     </div>
-                    <div class="col-12 col-md-6">
+                    <div class="col-12 col-md-6 col-lg-3">
                         <div class="form-group">
                             <label class="labelforms"><b>Status</b></label>
                             <select wire:model.defer="active" class="form-control">
                                 <option value="1">Ativa</option>
                                 <option value="0">Inativa</option>
                             </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="form-group">
+                            <label class="labelforms"><b>Observações</b></label>
+                            <textarea class="form-control" rows="4" wire:model.defer="notes" placeholder="Observações sobre esta despesa..."></textarea>
                         </div>
                     </div>
                 </div>

@@ -17,12 +17,14 @@ class FinancialExpense extends Model
         'category_id',
         'description',
         'due_day',
+        'amount',
         'notes',
         'active',
     ];
 
     protected $casts = [
         'due_day' => 'integer',
+        'amount' => 'decimal:2',
         'active' => 'boolean',
     ];
 
@@ -34,5 +36,10 @@ class FinancialExpense extends Model
     public function transactions(): HasMany
     {
         return $this->hasMany(FinancialTransaction::class, 'expense_id');
+    }
+
+    public function transactionFor(int $year, int $month): ?FinancialTransaction
+    {
+        return $this->transactions()->where('year', $year)->where('month', $month)->first();
     }
 }

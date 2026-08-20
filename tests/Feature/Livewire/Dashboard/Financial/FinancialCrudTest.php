@@ -33,6 +33,7 @@ class FinancialCrudTest extends TestCase
             ->set('description', 'Energia elétrica')
             ->set('category_id', $category->id)
             ->set('due_day', 15)
+            ->set('amount', '150,00')
             ->call('save');
 
         $this->assertDatabaseHas('financial_expenses', [
@@ -40,6 +41,7 @@ class FinancialCrudTest extends TestCase
             'description' => 'Energia elétrica',
             'category_id' => $category->id,
             'due_day' => 15,
+            'amount' => 150.00,
             'active' => true,
         ]);
     }
@@ -49,6 +51,7 @@ class FinancialCrudTest extends TestCase
         Livewire::test(ExpenseForm::class)
             ->set('description', 'Água')
             ->set('due_day', 10)
+            ->set('amount', '100,00')
             ->call('save')
             ->assertHasErrors(['category_id' => 'required']);
 
@@ -63,6 +66,7 @@ class FinancialCrudTest extends TestCase
             ->set('description', 'Salário')
             ->set('category_id', $category->id)
             ->set('receive_day', 5)
+            ->set('amount', '5.000,00')
             ->call('save');
 
         $this->assertDatabaseHas('financial_incomes', [
@@ -70,6 +74,7 @@ class FinancialCrudTest extends TestCase
             'description' => 'Salário',
             'category_id' => $category->id,
             'receive_day' => 5,
+            'amount' => 5000.00,
             'active' => true,
         ]);
     }
@@ -103,12 +108,14 @@ class FinancialCrudTest extends TestCase
         Livewire::test(ExpenseForm::class, ['expense' => $expense])
             ->set('description', 'Internet Fibra')
             ->set('due_day', 22)
+            ->set('amount', '120,00')
             ->call('save');
 
         $this->assertDatabaseHas('financial_expenses', [
             'id' => $expense->id,
             'description' => 'Internet Fibra',
             'due_day' => 22,
+            'amount' => 120.00,
         ]);
     }
 }

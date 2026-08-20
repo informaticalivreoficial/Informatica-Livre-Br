@@ -152,6 +152,12 @@
                                 <p>Visão Anual</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{route('financial.report')}}" class="nav-link {{ Route::is('financial.report') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Relatórios</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
 

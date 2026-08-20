@@ -50,7 +50,7 @@ class AnnualView extends Component
             $monthly = array_fill(1, 12, 0.0);
 
             foreach ($items as $item) {
-                if ($item->status === FinancialStatus::CANCELLED->value) {
+                if ($item->status === FinancialStatus::CANCELLED) {
                     continue;
                 }
                 $monthly[$item->month] = (float) $item->amount;

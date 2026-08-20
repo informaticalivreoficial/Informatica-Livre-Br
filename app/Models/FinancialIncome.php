@@ -17,12 +17,14 @@ class FinancialIncome extends Model
         'category_id',
         'description',
         'receive_day',
+        'amount',
         'notes',
         'active',
     ];
 
     protected $casts = [
         'receive_day' => 'integer',
+        'amount' => 'decimal:2',
         'active' => 'boolean',
     ];
 
@@ -34,5 +36,10 @@ class FinancialIncome extends Model
     public function transactions(): HasMany
     {
         return $this->hasMany(FinancialTransaction::class, 'income_id');
+    }
+
+    public function transactionFor(int $year, int $month): ?FinancialTransaction
+    {
+        return $this->transactions()->where('year', $year)->where('month', $month)->first();
     }
 }

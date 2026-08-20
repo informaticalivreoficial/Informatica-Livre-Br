@@ -121,6 +121,24 @@
                             </td>
                             <td class="px-4 py-3">
                                 <div class="flex items-center justify-end gap-1.5">
+                                    @php $currentTx = $currentTransactions->get($expense->id); @endphp
+                                    @if($currentTx && $currentTx->status->value === 'paid')
+                                        <button
+                                            wire:click="undoCurrentPayment({{ $expense->id }})"
+                                            class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-yellow-50 text-yellow-600 hover:bg-yellow-600 hover:text-white transition"
+                                            title="Desfazer pagamento do mês atual"
+                                        >
+                                            <i class="fas fa-undo text-xs"></i>
+                                        </button>
+                                    @elseif(!$currentTx || $currentTx->status->value === 'pending')
+                                        <button
+                                            wire:click="markCurrentPaid({{ $expense->id }})"
+                                            class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-green-50 text-green-600 hover:bg-green-600 hover:text-white transition"
+                                            title="Marcar como pago (mês atual)"
+                                        >
+                                            <i class="fas fa-check text-xs"></i>
+                                        </button>
+                                    @endif
                                     <a
                                         href="{{ route('financial.expenses.edit', $expense) }}"
                                         class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-600 hover:text-white transition"

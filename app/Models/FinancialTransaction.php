@@ -20,6 +20,7 @@ class FinancialTransaction extends Model
         'category_id',
         'expense_id',
         'income_id',
+        'invoice_id',
         'year',
         'month',
         'amount',
@@ -27,6 +28,11 @@ class FinancialTransaction extends Model
         'paid_at',
         'received_at',
         'notes',
+        'description',
+        'payment_method',
+        'due_date',
+        'attachment_path',
+        'due_notified_at',
     ];
 
     protected $casts = [
@@ -37,6 +43,8 @@ class FinancialTransaction extends Model
         'amount' => 'decimal:2',
         'paid_at' => 'datetime',
         'received_at' => 'datetime',
+        'due_date' => 'date',
+        'due_notified_at' => 'datetime',
     ];
 
     public function category(): BelongsTo
@@ -52,6 +60,11 @@ class FinancialTransaction extends Model
     public function income(): BelongsTo
     {
         return $this->belongsTo(FinancialIncome::class, 'income_id');
+    }
+
+    public function invoice(): BelongsTo
+    {
+        return $this->belongsTo(Invoice::class, 'invoice_id');
     }
 
     public function scopeExpenses(Builder $query): Builder
@@ -102,7 +115,15 @@ class FinancialTransaction extends Model
 
     public function dueDate(): ?\Carbon\Carbon
     {
-        if (!$this->isExpense() || !$this->expense) {
+        if (!$this->isExpense()) {
+            return null;
+        }
+
+        if ($this->due_date) {
+            return $this->due_date;
+        }
+
+        if (!$this->expense) {
             return null;
         }
 
@@ -111,11 +132,55 @@ class FinancialTransaction extends Model
 
     public function receiveDate(): ?\Carbon\Carbon
     {
-        if (!$this->isIncome() || !$this->income) {
+        if (!$this->isIncome()) {
+            return null;
+        }
+
+        if ($this->due_date) {
+            return $this->due_date;
+        }
+
+        if (!$this->income) {
             return null;
         }
 
         return \Carbon\Carbon::create($this->year, $this->month, min($this->income->receive_day, 28));
+    }
+
+    public function descriptionText(): string
+    {
+        return $this->description
+            ?? $this->expense?->description
+            ?? $this->income?->description
+            ?? '—';
+    }
+
+    public function isAdHoc(): bool
+    {
+        return !$this->expense_id && !$this->income_id && !$this->invoice_id;
+    }
+
+    public function daysUntilDue(): ?int
+    {
+        $dueDate = $this->dueDate();
+
+        if (!$dueDate) {
+            return null;
+        }
+
+        return (int) today()->diffInDays($dueDate, false);
+    }
+
+    public function paymentMethodLabel(): string
+    {
+        return match ($this->payment_method) {
+            'pix' => 'Pix',
+            'boleto' => 'Boleto',
+            'cartao' => 'Cartão',
+            'transferencia' => 'Transferência',
+            'dinheiro' => 'Dinheiro',
+            default => '—',
+        };
     }
 
     public function markAsPaid(): void
@@ -174,6 +239,19 @@ class FinancialTransaction extends Model
         ]);
     }
 
+    public function cancelTransaction(): void
+    {
+        if ($this->status === FinancialStatus::CANCELLED) {
+            return;
+        }
+
+        $this->update([
+            'status' => FinancialStatus::CANCELLED,
+            'paid_at' => null,
+            'received_at' => null,
+        ]);
+    }
+
     public static function generateForYear(int $year): array
     {
         $userId = auth()->id();
@@ -212,7 +290,7 @@ class FinancialTransaction extends Model
                     'expense_id' => $expense->id,
                     'year' => $year,
                     'month' => $month,
-                    'amount' => 0,
+                    'amount' => $expense->amount,
                     'status' => FinancialStatus::PENDING->value,
                 ]);
 
@@ -241,12 +319,86 @@ class FinancialTransaction extends Model
                     'income_id' => $income->id,
                     'year' => $year,
                     'month' => $month,
-                    'amount' => 0,
+                    'amount' => $income->amount,
                     'status' => FinancialStatus::PENDING->value,
                 ]);
 
                 $created++;
             }
+        }
+
+        return ['created' => $created, 'skipped' => $skipped];
+    }
+
+    public static function generateForMonth(int $year, int $month): array
+    {
+        $userId = auth()->id();
+
+        $expenses = FinancialExpense::query()
+            ->where('active', true)
+            ->with('category')
+            ->get();
+
+        $incomes = FinancialIncome::query()
+            ->where('active', true)
+            ->with('category')
+            ->get();
+
+        $created = 0;
+        $skipped = 0;
+
+        foreach ($expenses as $expense) {
+            $exists = self::query()
+                ->where('type', FinancialType::EXPENSE->value)
+                ->where('year', $year)
+                ->where('month', $month)
+                ->where('expense_id', $expense->id)
+                ->exists();
+
+            if ($exists) {
+                $skipped++;
+                continue;
+            }
+
+            self::create([
+                'user_id' => $userId,
+                'type' => FinancialType::EXPENSE->value,
+                'category_id' => $expense->category_id,
+                'expense_id' => $expense->id,
+                'year' => $year,
+                'month' => $month,
+                'amount' => $expense->amount,
+                'status' => FinancialStatus::PENDING->value,
+            ]);
+
+            $created++;
+        }
+
+        foreach ($incomes as $income) {
+            $exists = self::query()
+                ->where('type', FinancialType::INCOME->value)
+                ->where('year', $year)
+                ->where('month', $month)
+                ->where('income_id', $income->id)
+                ->exists();
+
+            if ($exists) {
+                $skipped++;
+                continue;
+            }
+
+            self::create([
+                'user_id' => $userId,
+                'type' => FinancialType::INCOME->value,
+                'category_id' => $income->category_id,
+                'income_id' => $income->id,
+                'year' => $year,
+                'month' => $month,
+                'amount' => $income->amount,
+                'status' => FinancialStatus::PENDING->value,
+            ]);
+
+            $created++;
         }
 
         return ['created' => $created, 'skipped' => $skipped];

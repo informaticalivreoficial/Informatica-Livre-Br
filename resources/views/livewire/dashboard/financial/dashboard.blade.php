@@ -101,6 +101,144 @@
         </div>
     </div>
 
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-100 flex items-center justify-between gap-2">
+                <h3 class="text-sm font-semibold text-gray-800">
+                    <i class="fas fa-clock text-yellow-500 mr-2"></i> Despesas pendentes do mês
+                </h3>
+                @if($pendingExpenses->isNotEmpty())
+                    <button
+                        wire:click="markAllExpensesPaid"
+                        wire:confirm="Marcar todas as despesas pendentes deste mês como pagas?"
+                        class="text-xs text-teal-600 hover:text-teal-700 font-medium shrink-0"
+                    >
+                        <i class="fas fa-check-double mr-1"></i> Marcar todas como pagas
+                    </button>
+                @endif
+            </div>
+            <ul class="divide-y divide-gray-50">
+                @forelse($pendingExpenses as $transaction)
+                    <li class="px-4 py-2.5 flex items-center justify-between gap-3">
+                        <div class="min-w-0">
+                            <p class="text-sm font-medium text-gray-800 truncate">{{ $transaction->descriptionText() }}</p>
+                            <p class="text-xs text-gray-400">{{ $transaction->category?->name }} · Venc. {{ $transaction->dueDate()?->format('d/m') }}</p>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <span class="text-sm font-semibold text-gray-800">R$ {{ number_format($transaction->amount, 2, ',', '.') }}</span>
+                            <button
+                                wire:click="markExpensePaid({{ $transaction->id }})"
+                                class="w-7 h-7 inline-flex items-center justify-center rounded-lg bg-green-50 text-green-600 hover:bg-green-600 hover:text-white transition"
+                                title="Marcar como pago"
+                            >
+                                <i class="fas fa-check text-xs"></i>
+                            </button>
+                        </div>
+                    </li>
+                @empty
+                    <li class="px-4 py-8 text-center text-sm text-gray-400">Nenhuma despesa pendente neste mês.</li>
+                @endforelse
+            </ul>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-100 flex items-center justify-between gap-2">
+                <h3 class="text-sm font-semibold text-gray-800">
+                    <i class="fas fa-hourglass-half text-yellow-500 mr-2"></i> Receitas esperadas do mês
+                </h3>
+                @if($pendingIncomes->isNotEmpty())
+                    <button
+                        wire:click="markAllIncomesReceived"
+                        wire:confirm="Marcar todas as receitas esperadas deste mês como recebidas?"
+                        class="text-xs text-teal-600 hover:text-teal-700 font-medium shrink-0"
+                    >
+                        <i class="fas fa-check-double mr-1"></i> Marcar todas como recebidas
+                    </button>
+                @endif
+            </div>
+            <ul class="divide-y divide-gray-50">
+                @forelse($pendingIncomes as $transaction)
+                    <li class="px-4 py-2.5 flex items-center justify-between gap-3">
+                        <div class="min-w-0">
+                            <p class="text-sm font-medium text-gray-800 truncate">{{ $transaction->descriptionText() }}</p>
+                            <p class="text-xs text-gray-400">{{ $transaction->category?->name }} · Receb. {{ $transaction->receiveDate()?->format('d/m') }}</p>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <span class="text-sm font-semibold text-gray-800">R$ {{ number_format($transaction->amount, 2, ',', '.') }}</span>
+                            <button
+                                wire:click="markIncomeReceived({{ $transaction->id }})"
+                                class="w-7 h-7 inline-flex items-center justify-center rounded-lg bg-green-50 text-green-600 hover:bg-green-600 hover:text-white transition"
+                                title="Marcar como recebido"
+                            >
+                                <i class="fas fa-check text-xs"></i>
+                            </button>
+                        </div>
+                    </li>
+                @empty
+                    <li class="px-4 py-8 text-center text-sm text-gray-400">Nenhuma receita esperada neste mês.</li>
+                @endforelse
+            </ul>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+        @php
+            $chartMonthly = collect($annualComparison)->map(fn ($data, $m) => [
+                'label' => \Carbon\Carbon::create()->month($m)->translatedFormat('M'),
+                'income' => $data['income'],
+                'expense' => $data['expense'],
+            ])->values()->all();
+        @endphp
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+            <h3 class="text-sm font-semibold text-gray-800 mb-4">
+                <i class="fas fa-chart-line text-teal-600 mr-2"></i> Receitas x Despesas — {{ $year }}
+            </h3>
+            <div x-data="financialCharts(@js($chartMonthly), 'bar')" x-init="init()" wire:key="monthly-chart-{{ $year }}">
+                <canvas id="monthlyChart" height="120"></canvas>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+            <h3 class="text-sm font-semibold text-gray-800 mb-4">
+                <i class="fas fa-chart-pie text-teal-600 mr-2"></i> Despesas por categoria — {{ \Carbon\Carbon::create()->month(now()->month)->translatedFormat('F') }}
+            </h3>
+            <div x-data="financialCharts(@js($categoryChart), 'doughnut')" x-init="init()" wire:key="category-chart-{{ $year }}">
+                <canvas id="categoryChart" height="120"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-4">
+        <div class="px-4 py-3 border-b border-gray-100">
+            <h3 class="text-sm font-semibold text-gray-800">
+                <i class="fas fa-chart-line text-teal-600 mr-2"></i> Fluxo de caixa projetado — próximos 6 meses
+            </h3>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-100 text-sm">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Mês</th>
+                        <th class="px-4 py-3 text-right text-xs font-semibold text-green-600 uppercase tracking-wide">Receitas esperadas</th>
+                        <th class="px-4 py-3 text-right text-xs font-semibold text-red-600 uppercase tracking-wide">Despesas previstas</th>
+                        <th class="px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wide">Saldo projetado</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                    @foreach($projection as $item)
+                        <tr class="hover:bg-gray-50 transition">
+                            <td class="px-4 py-2.5 font-medium text-gray-800">{{ $item['label'] }}</td>
+                            <td class="px-4 py-2.5 text-right text-green-600">R$ {{ number_format($item['income'], 2, ',', '.') }}</td>
+                            <td class="px-4 py-2.5 text-right text-red-600">R$ {{ number_format($item['expense'], 2, ',', '.') }}</td>
+                            <td class="px-4 py-2.5 text-right font-semibold {{ $item['balance'] >= 0 ? 'text-gray-800' : 'text-red-600' }}">
+                                R$ {{ number_format($item['balance'], 2, ',', '.') }}
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="px-4 py-3 border-b border-gray-100">
             <h3 class="text-sm font-semibold text-gray-800">
@@ -133,3 +271,46 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+    function financialCharts(data, type) {
+        return {
+            chart: null,
+            init() {
+                this.render();
+            },
+            render() {
+                const canvas = this.$el.querySelector('canvas');
+                if (!canvas) return;
+                if (this.chart) this.chart.destroy();
+
+                const isBar = type === 'bar';
+
+                this.chart = new Chart(canvas, {
+                    type: type,
+                    data: {
+                        labels: data.map(item => item.label),
+                        datasets: isBar ? [
+                            { label: 'Receitas', data: data.map(item => item.income), backgroundColor: '#10b981', borderRadius: 4 },
+                            { label: 'Despesas', data: data.map(item => item.expense), backgroundColor: '#ef4444', borderRadius: 4 },
+                        ] : [
+                            { label: 'Despesas', data: data.map(item => item.value), backgroundColor: data.map(item => item.color), borderWidth: 0 },
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } },
+                        },
+                        scales: isBar ? {
+                            y: { beginAtZero: true, ticks: { callback: value => 'R$ ' + value.toLocaleString('pt-BR', { minimumFractionDigits: 0 }) } },
+                        } : {},
+                    },
+                });
+            },
+        };
+    }
+</script>
+@endpush

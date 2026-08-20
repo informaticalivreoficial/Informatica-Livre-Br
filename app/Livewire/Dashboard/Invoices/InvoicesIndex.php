@@ -56,9 +56,18 @@ class InvoicesIndex extends Component
             $oldStatus !== 'paid' &&
             $status === 'paid'
         ) {
+            $payload = $response['status_request'] ?? [];
+            $valueCents = (int) data_get($payload, 'value_cents', 0);
+            $feeCents = (int) data_get($payload, 'value_fee_cents', 0);
+            $paidCents = (int) data_get($payload, 'value_cents_paid', $valueCents);
+
             $invoice->update([
-                'paid_at' => data_get($response, 'status_request.status_date', now()),
+                'paid_at' => data_get($payload, 'status_date', now()),
+                'gateway_fee' => $feeCents ? $feeCents / 100 : null,
+                'gateway_net_amount' => $paidCents ? max(0, $paidCents - $feeCents) / 100 : null,
             ]);
+
+            $invoice->registerFinancialIncome();
         }
 
         $this->toastSuccess(
@@ -111,7 +120,10 @@ class InvoicesIndex extends Component
         $invoice->update([
             'status'  => 'paid',
             'paid_at' => now(),
+            'gateway_net_amount' => $invoice->amount,
         ]);
+
+        $invoice->registerFinancialIncome();
 
         $this->dispatch('swal:success', [
             'title' => 'Pago!',

@@ -54,8 +54,10 @@ use App\Livewire\Dashboard\Financial\{
     Expenses,
     IncomeForm,
     Incomes,
+    Report,
     Transactions,
 };
+use App\Http\Controllers\Dashboard\FinancialReportController;
 
 // Route::get('/test-notification/{status}', function ($status) {
 
@@ -153,6 +155,8 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
     Route::get('/financeiro/receitas/{income}/editar', IncomeForm::class)->name('financial.incomes.edit');
     Route::get('/financeiro/lancamentos', Transactions::class)->name('financial.transactions');
     Route::get('/financeiro/anual', AnnualView::class)->name('financial.annual');
+    Route::get('/financeiro/relatorios', Report::class)->name('financial.report');
+    Route::get('/financeiro/relatorios/exportar', [FinancialReportController::class, 'export'])->name('financial.report.export');
 
     Route::get('/cargos', RoleIndex::class)->name('admin.roles');
     Route::get('/permissoes', PermissionIndex::class)->name('admin.permissions');

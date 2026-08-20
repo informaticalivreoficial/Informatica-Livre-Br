@@ -87,6 +87,34 @@ class PagHiperService
         return $response->json();
     }
 
+    public function getNotification(string $notificationId, string $transactionId, string $operation = 'api'): ?array
+    {
+        $base = $operation === 'pix' ? 'https://pix.paghiper.com' : 'https://api.paghiper.com';
+        $endpoint = $operation === 'pix' ? '/invoice/notification/' : '/transaction/notification/';
+
+        $response = Http::post(
+            $base . $endpoint,
+            [
+                'apiKey' => config('services.paghiper.api_key'),
+                'token' => config('services.paghiper.token'),
+                'notification_id' => $notificationId,
+                'transaction_id' => $transactionId,
+            ]
+        );
+
+        if (!$response->successful()) {
+            return null;
+        }
+
+        $payload = $response->json('status_request');
+
+        if (!$payload || ($payload['result'] ?? '') === 'reject') {
+            return null;
+        }
+
+        return $payload;
+    }
+
     public function syncInvoice(Invoice $invoice): Invoice
     {
         if (!$invoice->gateway_reference) {
@@ -129,9 +157,17 @@ class PagHiperService
             $oldStatus !== 'paid' &&
             $status === 'paid'
         ) {
+            $valueCents = (int) data_get($payload, 'value_cents', 0);
+            $feeCents = (int) data_get($payload, 'value_fee_cents', 0);
+            $paidCents = (int) data_get($payload, 'value_cents_paid', $valueCents);
+
             $invoice->update([
                 'paid_at' => $payload['status_date'] ?? now(),
+                'gateway_fee' => $feeCents ? $feeCents / 100 : null,
+                'gateway_net_amount' => $paidCents ? max(0, $paidCents - $feeCents) / 100 : null,
             ]);
+
+            $invoice->registerFinancialIncome();
         }
 
         Log::info('Invoice sincronizada com PagHiper', [

@@ -15,6 +15,7 @@ class FinancialIncomeFactory extends Factory
         return [
             'description' => $this->faker->words(2, true),
             'receive_day' => $this->faker->numberBetween(1, 28),
+            'amount' => $this->faker->randomFloat(2, 50, 5000),
             'notes' => null,
             'active' => true,
         ];
