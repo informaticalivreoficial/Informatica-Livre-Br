@@ -61,6 +61,33 @@ class Transactions extends Component
         ];
     }
 
+    public function confirmGenerateMonth(): void
+    {
+        $this->dispatch('swal:confirm', [
+            'title' => 'Gerar lançamentos do mês?',
+            'text' => "Gerar os lançamentos de {$this->months()[$this->month]}/{$this->year}? Lançamentos já existentes não serão duplicados.",
+            'icon' => 'question',
+            'confirmButtonText' => 'Sim, gerar',
+            'cancelButtonText' => 'Cancelar',
+            'confirmEvent' => 'generateMonth',
+            'confirmParams' => [],
+        ]);
+    }
+
+    public function confirmGenerateYear(): void
+    {
+        $this->dispatch('swal:confirm', [
+            'title' => 'Gerar lançamentos do ano?',
+            'text' => "Gerar os lançamentos de {$this->year}? Lançamentos já existentes não serão duplicados.",
+            'icon' => 'question',
+            'confirmButtonText' => 'Sim, gerar',
+            'cancelButtonText' => 'Cancelar',
+            'confirmEvent' => 'generateYear',
+            'confirmParams' => [],
+        ]);
+    }
+
+    #[On('generateYear')]
     public function generateYear(): void
     {
         $result = FinancialTransaction::generateForYear($this->year);
@@ -74,6 +101,7 @@ class Transactions extends Component
         ]);
     }
 
+    #[On('generateMonth')]
     public function generateMonth(): void
     {
         $result = FinancialTransaction::generateForMonth($this->year, $this->month);

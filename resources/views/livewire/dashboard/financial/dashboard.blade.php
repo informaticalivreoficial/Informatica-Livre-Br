@@ -109,8 +109,7 @@
                 </h3>
                 @if($pendingExpenses->isNotEmpty())
                     <button
-                        wire:click="markAllExpensesPaid"
-                        wire:confirm="Marcar todas as despesas pendentes deste mês como pagas?"
+                        wire:click="confirmMarkAllExpensesPaid"
                         class="text-xs text-teal-600 hover:text-teal-700 font-medium shrink-0"
                     >
                         <i class="fas fa-check-double mr-1"></i> Marcar todas como pagas
@@ -148,8 +147,7 @@
                 </h3>
                 @if($pendingIncomes->isNotEmpty())
                     <button
-                        wire:click="markAllIncomesReceived"
-                        wire:confirm="Marcar todas as receitas esperadas deste mês como recebidas?"
+                        wire:click="confirmMarkAllIncomesReceived"
                         class="text-xs text-teal-600 hover:text-teal-700 font-medium shrink-0"
                     >
                         <i class="fas fa-check-double mr-1"></i> Marcar todas como recebidas

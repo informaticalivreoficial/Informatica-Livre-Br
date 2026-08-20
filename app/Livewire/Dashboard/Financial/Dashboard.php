@@ -4,6 +4,7 @@ namespace App\Livewire\Dashboard\Financial;
 
 use App\Enums\FinancialStatus;
 use App\Models\FinancialTransaction;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class Dashboard extends Component
@@ -13,6 +14,32 @@ class Dashboard extends Component
     public function mount()
     {
         $this->year = now()->year;
+    }
+
+    public function confirmMarkAllExpensesPaid(): void
+    {
+        $this->dispatch('swal:confirm', [
+            'title' => 'Marcar todas como pagas?',
+            'text' => 'Todas as despesas pendentes deste mês serão marcadas como pagas.',
+            'icon' => 'question',
+            'confirmButtonText' => 'Sim, marcar',
+            'cancelButtonText' => 'Cancelar',
+            'confirmEvent' => 'markAllExpensesPaid',
+            'confirmParams' => [],
+        ]);
+    }
+
+    public function confirmMarkAllIncomesReceived(): void
+    {
+        $this->dispatch('swal:confirm', [
+            'title' => 'Marcar todas como recebidas?',
+            'text' => 'Todas as receitas esperadas deste mês serão marcadas como recebidas.',
+            'icon' => 'question',
+            'confirmButtonText' => 'Sim, marcar',
+            'cancelButtonText' => 'Cancelar',
+            'confirmEvent' => 'markAllIncomesReceived',
+            'confirmParams' => [],
+        ]);
     }
 
     public function markExpensePaid(int $id): void
@@ -47,6 +74,7 @@ class Dashboard extends Component
         }
     }
 
+    #[On('markAllExpensesPaid')]
     public function markAllExpensesPaid(): void
     {
         $count = FinancialTransaction::expenses()
@@ -65,6 +93,7 @@ class Dashboard extends Component
         ]);
     }
 
+    #[On('markAllIncomesReceived')]
     public function markAllIncomesReceived(): void
     {
         $count = FinancialTransaction::incomes()

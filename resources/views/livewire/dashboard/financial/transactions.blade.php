@@ -40,15 +40,13 @@
         </div>
         <div class="flex-1"></div>
         <button
-            wire:click="generateMonth"
-            wire:confirm="Gerar os lançamentos de {{ $months[$month] }}/{{ $year }}? Lançamentos já existentes não serão duplicados."
+            wire:click="confirmGenerateMonth"
             class="inline-flex items-center justify-center bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition shrink-0"
         >
             <i class="fas fa-magic mr-2"></i> Gerar mês
         </button>
         <button
-            wire:click="generateYear"
-            wire:confirm="Gerar os lançamentos de {{ $year }}? Lançamentos já existentes não serão duplicados."
+            wire:click="confirmGenerateYear"
             class="inline-flex items-center justify-center bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition shrink-0"
         >
             <i class="fas fa-calendar-plus mr-2"></i> Gerar {{ $year }}
@@ -231,7 +229,7 @@
                                 <td colspan="5" class="px-4 py-10 text-center">
                                     <i class="fas fa-inbox text-3xl text-gray-300 mb-3"></i>
                                     <p class="text-sm text-gray-400">Nenhuma despesa para este mês</p>
-                                    <button wire:click="generateMonth" class="inline-block mt-3 text-sm text-teal-600 hover:text-teal-700 font-medium">
+                                    <button wire:click="confirmGenerateMonth" class="inline-block mt-3 text-sm text-teal-600 hover:text-teal-700 font-medium">
                                         <i class="fas fa-magic mr-1"></i> Gerar lançamentos de {{ $months[$month] }}
                                     </button>
                                 </td>
@@ -355,7 +353,7 @@
                                 <td colspan="5" class="px-4 py-10 text-center">
                                     <i class="fas fa-inbox text-3xl text-gray-300 mb-3"></i>
                                     <p class="text-sm text-gray-400">Nenhuma receita para este mês</p>
-                                    <button wire:click="generateMonth" class="inline-block mt-3 text-sm text-teal-600 hover:text-teal-700 font-medium">
+                                    <button wire:click="confirmGenerateMonth" class="inline-block mt-3 text-sm text-teal-600 hover:text-teal-700 font-medium">
                                         <i class="fas fa-magic mr-1"></i> Gerar lançamentos de {{ $months[$month] }}
                                     </button>
                                 </td>
