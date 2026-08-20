@@ -22,7 +22,7 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
 
-                <a href="{{ route('companies.index') }}" class="group bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex items-center gap-4 hover:shadow-md hover:border-blue-200 transition">
+                <a href="{{ route('companies.index') }}" class="group matrix-card bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex items-center gap-4 hover:shadow-md hover:border-blue-200 transition">
                     <div class="w-11 h-11 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition">
                         <i class="fas fa-industry text-lg"></i>
                     </div>
@@ -33,7 +33,7 @@
                     </div>
                 </a>
 
-                <a href="{{ route('services.subscriptions.index') }}" class="group bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex items-center gap-4 hover:shadow-md hover:border-indigo-200 transition">
+                <a href="{{ route('services.subscriptions.index') }}" class="group matrix-card bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex items-center gap-4 hover:shadow-md hover:border-indigo-200 transition">
                     <div class="w-11 h-11 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 group-hover:bg-indigo-600 group-hover:text-white transition">
                         <i class="fas fa-shopping-cart text-lg"></i>
                     </div>
@@ -44,7 +44,7 @@
                     </div>
                 </a>
 
-                <a href="{{ route('invoices.index') }}" class="group bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex items-center gap-4 hover:shadow-md hover:border-green-200 transition">
+                <a href="{{ route('invoices.index') }}" class="group matrix-card bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex items-center gap-4 hover:shadow-md hover:border-green-200 transition">
                     <div class="w-11 h-11 rounded-lg bg-green-50 text-green-600 flex items-center justify-center shrink-0 group-hover:bg-green-600 group-hover:text-white transition">
                         <i class="fas fa-money-check text-lg"></i>
                     </div>
@@ -55,7 +55,7 @@
                     </div>
                 </a>
 
-                <a href="{{ route('posts.index') }}" class="group bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex items-center gap-4 hover:shadow-md hover:border-teal-200 transition">
+                <a href="{{ route('posts.index') }}" class="group matrix-card bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex items-center gap-4 hover:shadow-md hover:border-teal-200 transition">
                     <div class="w-11 h-11 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center shrink-0 group-hover:bg-teal-600 group-hover:text-white transition">
                         <i class="fas fa-pencil-alt text-lg"></i>
                     </div>
@@ -114,8 +114,8 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
 
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div class="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+                <div class="matrix-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="matrix-card-header px-4 py-3 border-b border-gray-100 flex items-center justify-between">
                         <h3 class="text-sm font-semibold text-gray-700">
                             <i class="fas fa-check-circle text-green-500 mr-2"></i>
                             Últimos Pagamentos
@@ -157,8 +157,8 @@
                     </div>
                 </div>
 
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div class="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+                <div class="matrix-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="matrix-card-header px-4 py-3 border-b border-gray-100 flex items-center justify-between">
                         <h3 class="text-sm font-semibold text-gray-700">
                             <i class="fas fa-calendar-alt text-amber-500 mr-2"></i>
                             Próximos Vencimentos

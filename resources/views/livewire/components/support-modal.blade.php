@@ -17,14 +17,14 @@
             <div
                 @click.stop
                 x-transition.scale
-                class="relative bg-white dark:bg-slate-800 rounded-xl shadow-xl w-full max-w-lg p-6"
+                class="relative bg-white rounded-xl shadow-xl w-full max-w-lg p-6"
             >
-                <h2 class="text-lg font-semibold mb-4 text-slate-800 dark:text-slate-100">Suporte</h2>
+                <h2 class="text-lg font-semibold mb-4 text-slate-800">Suporte</h2>
 
                 <textarea
                     wire:model.defer="message"
                     rows="6"
-                    class="w-full p-2 rounded-lg border border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 focus:ring-2 focus:ring-green-500"
+                    class="w-full p-2 rounded-lg border border-gray-300 bg-slate-700 text-slate-100 focus:ring-2 focus:ring-green-500"
                     placeholder="Descreva sua solicitação..."
                 ></textarea>
 
@@ -36,7 +36,7 @@
                     <button
                         type="button"
                         wire:click="$set('showSupport', false)"
-                        class="px-4 py-2 bg-gray-200 dark:bg-slate-700 dark:text-slate-200 rounded"
+                        class="px-4 py-2 bg-gray-200 text-slate-200 rounded"
                     >
                         Cancelar
                     </button>

@@ -950,6 +950,27 @@
     filter: drop-shadow(0 0 6px rgba(0, 255, 65, 0.4));
 }
 
+/* ---------- Matrix cards (dashboard home) ---------- */
+
+.dark .matrix-card {
+    border-color: var(--matrix-border-strong);
+    box-shadow: 0 0 0 1px rgba(0, 255, 65, 0.05), var(--matrix-glow);
+}
+
+.dark .matrix-card:hover {
+    border-color: var(--matrix-green);
+    box-shadow: var(--matrix-glow-strong);
+}
+
+.dark .matrix-card .matrix-card-header {
+    border-bottom-color: var(--matrix-border);
+}
+
+.dark .matrix-card .matrix-card-header h3 {
+    color: var(--matrix-green);
+    text-shadow: var(--matrix-glow);
+}
+
 /* ---------- Login / auth pages ---------- */
 
 .dark-mode .login-page,

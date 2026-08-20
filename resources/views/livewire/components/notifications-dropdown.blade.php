@@ -3,9 +3,9 @@
     {{-- Sino --}}
     <button
         @click="open = !open"
-        class="relative w-10 h-10 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition"
+        class="relative w-10 h-10 flex items-center justify-center rounded-lg hover:bg-slate-100 transition"
     >
-        <i class="far fa-bell text-lg text-slate-600 dark:text-slate-200"></i>
+        <i class="far fa-bell text-lg text-slate-600"></i>
 
         @if($unreadNotificationsCount > 0)
             <span
@@ -20,19 +20,19 @@
         x-show="open"
         @click.outside="open = false"
         x-transition
-        class="absolute right-0 mt-3 w-[420px] bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden z-50"
+        class="absolute right-0 mt-3 w-[420px] bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden z-50"
         style="display: none;"
     >
 
         {{-- Header --}}
-        <div class="flex items-center justify-between px-4 py-3 bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700">
+        <div class="flex items-center justify-between px-4 py-3 bg-slate-50 border-b border-slate-200">
 
             <div>
-                <h3 class="text-sm font-semibold text-slate-800 dark:text-slate-100">
+                <h3 class="text-sm font-semibold text-slate-800">
                     🔔 Notificações
                 </h3>
 
-                <p class="text-xs text-slate-500 dark:text-slate-400">
+                <p class="text-xs text-slate-500">
                     {{ $unreadNotificationsCount }}
                     {{ Str::plural('notificação', $unreadNotificationsCount) }}
                 </p>
@@ -78,7 +78,7 @@
                     href="{{ $notification->data['url'] ?? '#' }}"
                     target="_blank"
                     wire:click.prevent="openNotification('{{ $notification->id }}')"
-                    class="flex items-start gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700 transition border-b border-slate-100 dark:border-slate-700"
+                    class="flex items-start gap-3 px-4 py-3 hover:bg-slate-50 transition border-b border-slate-100"
                 >
 
                     <div class="flex-shrink-0">
@@ -88,17 +88,17 @@
                     </div>
 
                     <div class="flex-1 min-w-0">
-                        <p class="font-semibold text-slate-800 dark:text-slate-100 text-sm">
+                        <p class="font-semibold text-slate-800 text-sm">
                             {{ $notification->data['title'] ?? 'Nova notificação' }}
                         </p>
 
                         @if(!empty($notification->data['message']))
-                            <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">
+                            <p class="text-sm text-slate-600 mt-1">
                                 {{ $notification->data['message'] }}
                             </p>
                         @endif
 
-                        <div class="flex items-center mt-2 text-xs text-slate-400 dark:text-slate-500">
+                        <div class="flex items-center mt-2 text-xs text-slate-400">
                             <i class="far fa-clock mr-1"></i>
                             {{ $notification->created_at->diffForHumans() }}
                         </div>
@@ -112,8 +112,8 @@
 
             @empty
 
-                <div class="py-10 text-center text-slate-500 dark:text-slate-400">
-                    <i class="far fa-bell-slash text-4xl text-slate-300 dark:text-slate-600"></i>
+                <div class="py-10 text-center text-slate-500">
+                    <i class="far fa-bell-slash text-4xl text-slate-300"></i>
                     <p class="mt-2 text-sm">Nenhuma notificação</p>
                 </div>
 
@@ -122,10 +122,10 @@
         </div>
 
         {{-- Footer --}}
-        <div class="border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/50">
+        <div class="border-t border-slate-200 bg-slate-50">
             <a
                 href="{{ route('notifications.index') }}"
-                class="block text-center py-3 text-sm font-semibold text-blue-600 dark:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition"
+                class="block text-center py-3 text-sm font-semibold text-blue-600 hover:bg-slate-100 transition"
             >
                 Ver todas as notificações
             </a>
