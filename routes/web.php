@@ -46,6 +46,16 @@ use App\Livewire\Dashboard\Service\SubscriptionForm;
 use App\Livewire\Dashboard\Service\SubscriptionIndex;
 use App\Livewire\Dashboard\Service\SubscriptionShow;
 use App\Livewire\Dashboard\Sitemap\SitemapGenerator;
+use App\Livewire\Dashboard\Financial\{
+    AnnualView,
+    Categories,
+    Dashboard as FinancialDashboard,
+    ExpenseForm,
+    Expenses,
+    IncomeForm,
+    Incomes,
+    Transactions,
+};
 
 // Route::get('/test-notification/{status}', function ($status) {
 
@@ -131,6 +141,18 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
     //*********************** Invoices *********************************************/
     Route::get('/faturas', InvoicesIndex::class)->name('invoices.index');
     Route::get('/faturas/{invoice}/visualizar', InvoicesShow::class)->name('invoices.show');
+
+    //*********************** Financeiro Pessoal *******************************************/
+    Route::get('/financeiro', FinancialDashboard::class)->name('financial.dashboard');
+    Route::get('/financeiro/categorias', Categories::class)->name('financial.categories');
+    Route::get('/financeiro/despesas', Expenses::class)->name('financial.expenses');
+    Route::get('/financeiro/despesas/cadastrar', ExpenseForm::class)->name('financial.expenses.create');
+    Route::get('/financeiro/despesas/{expense}/editar', ExpenseForm::class)->name('financial.expenses.edit');
+    Route::get('/financeiro/receitas', Incomes::class)->name('financial.incomes');
+    Route::get('/financeiro/receitas/cadastrar', IncomeForm::class)->name('financial.incomes.create');
+    Route::get('/financeiro/receitas/{income}/editar', IncomeForm::class)->name('financial.incomes.edit');
+    Route::get('/financeiro/lancamentos', Transactions::class)->name('financial.transactions');
+    Route::get('/financeiro/anual', AnnualView::class)->name('financial.annual');
 
     Route::get('/cargos', RoleIndex::class)->name('admin.roles');
     Route::get('/permissoes', PermissionIndex::class)->name('admin.permissions');

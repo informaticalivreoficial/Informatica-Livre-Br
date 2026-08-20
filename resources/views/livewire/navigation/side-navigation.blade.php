@@ -110,6 +110,51 @@
                     </a>
                 </li>
 
+                <li class="nav-item {{ Route::is('financial.*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ Route::is('financial.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-wallet"></i>
+                        <p> Financeiro <i class="fas fa-angle-left right"></i></p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{route('financial.dashboard')}}" class="nav-link {{ Route::is('financial.dashboard') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Dashboard</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{route('financial.transactions')}}" class="nav-link {{ Route::is('financial.transactions') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Lançamentos</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{route('financial.expenses')}}" class="nav-link {{ Route::is('financial.expenses.*') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Despesas</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{route('financial.incomes')}}" class="nav-link {{ Route::is('financial.incomes.*') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Receitas</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{route('financial.categories')}}" class="nav-link {{ Route::is('financial.categories') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Categorias</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{route('financial.annual')}}" class="nav-link {{ Route::is('financial.annual') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Visão Anual</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
                 <li class="nav-item {{ Route::is('portifolio.*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ Route::is('portifolio.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-project-diagram"></i>

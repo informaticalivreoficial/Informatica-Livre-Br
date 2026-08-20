@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             CompanySeeder::class,
             SubscriptionSeeder::class,
             PortifolioSeeder::class,
+            FinancialCategorySeeder::class,
         ]);
     }
 }
