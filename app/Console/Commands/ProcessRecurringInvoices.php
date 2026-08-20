@@ -40,46 +40,31 @@ class ProcessRecurringInvoices extends Command
     }
 
     private function processSubscription($subscription): void
-{
-    $exists = $subscription->invoices()
-        ->whereIn('status', ['pending', 'paid'])
-        ->whereMonth('due_date', $subscription->next_billing_at->month)
-        ->whereYear('due_date', $subscription->next_billing_at->year)
-        ->exists();
-
-    if ($exists) {
-        // Já tem invoice para este período — avança o ciclo
-        $subscription->calculateNextBilling();
-        $subscription->save();
-
+    {
         $dueDate = $subscription->next_billing_at->copy();
-    } else {
-        $dueDate = $subscription->next_billing_at->copy();
+
+        $exists = $subscription->invoices()
+            ->whereIn('status', ['pending', 'paid'])
+            ->whereMonth('due_date', $dueDate->month)
+            ->whereYear('due_date', $dueDate->year)
+            ->exists();
+
+        if ($exists) {
+            $subscription->calculateNextBilling();
+            $subscription->save();
+            $this->line("Subscription #{$subscription->id} já possui invoice para este período.");
+            return;
+        }
+
+        $invoice = $subscription->generateInvoice(due_date: $dueDate);
+
+        $this->line("✅ Invoice #{$invoice->id} criada para subscription #{$subscription->id}");
+
+        Log::info('Invoice recorrente gerada', [
+            'subscription_id' => $subscription->id,
+            'invoice_id'      => $invoice->id,
+            'due_date'        => $invoice->due_date,
+            'next_billing_at' => $subscription->next_billing_at,
+        ]);
     }
-
-    // Verifica se já tem invoice para o novo período
-    $alreadyExists = $subscription->invoices()
-        ->whereIn('status', ['pending', 'paid'])
-        ->whereMonth('due_date', $dueDate->month)
-        ->whereYear('due_date', $dueDate->year)
-        ->exists();
-
-    if ($alreadyExists) {
-        $this->line("Subscription #{$subscription->id} já possui invoice para este período.");
-        return;
-    }
-
-    // Cria invoice com a data correta
-    $invoice = $subscription->generateInvoice(due_date: $dueDate);
-
-    // 👈 NÃO avança o ciclo aqui — já foi avançado acima
-    $this->line("✅ Invoice #{$invoice->id} criada para subscription #{$subscription->id}");
-
-    Log::info('Invoice recorrente gerada', [
-        'subscription_id' => $subscription->id,
-        'invoice_id'      => $invoice->id,
-        'due_date'        => $invoice->due_date,
-        'next_billing_at' => $subscription->next_billing_at,
-    ]);
-}
 }
