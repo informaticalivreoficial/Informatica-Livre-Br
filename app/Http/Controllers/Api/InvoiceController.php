@@ -27,7 +27,8 @@ class InvoiceController extends Controller
         return response()->json([
             'data' => $invoices->map(fn($invoice) => [
                 'id'          => $invoice->id,
-                'service'     => $invoice->subscription->service->name ?? null,
+                'service'     => $invoice->subscription?->service?->name,
+                'description' => $invoice->description,
                 'amount'      => number_format($invoice->amount, 2, ',', '.'),
                 'due_date'    => $invoice->due_date->format('d/m/Y'),
                 'status'      => $invoice->status,

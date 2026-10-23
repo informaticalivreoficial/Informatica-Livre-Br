@@ -19,6 +19,18 @@ class Invoice extends Model
     protected $fillable = [
         'subscription_id',
         'company_id',
+        'description',
+        'payer_name',
+        'payer_document',
+        'payer_email',
+        'payer_phone',
+        'payer_zipcode',
+        'payer_street',
+        'payer_number',
+        'payer_complement',
+        'payer_neighborhood',
+        'payer_city',
+        'payer_state',
         'amount',
         'due_date',
         'status',
@@ -54,6 +66,38 @@ class Invoice extends Model
     public function financialTransaction(): HasOne
     {
         return $this->hasOne(FinancialTransaction::class, 'invoice_id');
+    }
+
+    public function isCustomPayer(): bool
+    {
+        return is_null($this->company_id);
+    }
+
+    public function payerLabel(): string
+    {
+        return $this->company?->alias_name ?? ($this->payer_name ?: 'Pagador não informado');
+    }
+
+    public function payerData(): array
+    {
+        $company = $this->company;
+
+        $document = $company?->document_company ?? $this->payer_document;
+        $zipcode = $company?->zipcode ?? $this->payer_zipcode;
+
+        return [
+            'name'         => $company?->alias_name ?? $this->payer_name,
+            'document'     => $document ? preg_replace('/\D/', '', $document) : null,
+            'email'        => $company?->email ?? $this->payer_email,
+            'phone'        => $company ? ($company->phone ?: $company->cell_phone) : $this->payer_phone,
+            'zipcode'      => $zipcode ? preg_replace('/\D/', '', $zipcode) : null,
+            'street'       => $company?->street ?? $this->payer_street,
+            'number'       => $company?->number ?? $this->payer_number,
+            'complement'   => $company?->complement ?? $this->payer_complement,
+            'neighborhood' => $company?->neighborhood ?? $this->payer_neighborhood,
+            'city'         => $company?->city ?? $this->payer_city,
+            'state'        => $company?->state ?? $this->payer_state,
+        ];
     }
 
     public function registerFinancialIncome(): ?FinancialTransaction

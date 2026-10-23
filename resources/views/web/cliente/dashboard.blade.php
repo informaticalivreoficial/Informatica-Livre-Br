@@ -90,7 +90,7 @@
                         @foreach($ultimasFaturas as $fatura)
                             <tr class="border-b last:border-0">
                                 <td class="py-3 text-gray-700">
-                                    {{ $fatura->subscription->service->name ?? '—' }}
+                                    {{ $fatura->description ?: ($fatura->subscription?->service?->name ?? '—') }}
                                 </td>
                                 <td class="py-3 text-center text-gray-600">
                                     {{ $fatura->due_date->format('d/m/Y') }}

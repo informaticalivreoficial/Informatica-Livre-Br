@@ -101,4 +101,37 @@ class InvoicesIndexTest extends TestCase
 
         $this->assertDatabaseMissing('invoices', ['id' => $invoice->id]);
     }
+
+    public function test_renders_custom_payer_invoice_without_company(): void
+    {
+        Invoice::factory()->create([
+            'company_id'      => null,
+            'subscription_id' => null,
+            'payer_name'      => 'Maria Souza',
+            'payer_document'  => '123.456.789-01',
+            'description'     => 'Consultoria avulsa',
+        ]);
+
+        Livewire::test(InvoicesIndex::class)
+            ->assertOk()
+            ->assertSee('Maria Souza')
+            ->assertSee('Avulso')
+            ->assertSee('Consultoria avulsa');
+    }
+
+    public function test_searches_custom_payer_invoice_by_name(): void
+    {
+        Invoice::factory()->create([
+            'company_id'      => null,
+            'subscription_id' => null,
+            'payer_name'      => 'João Avulso',
+            'payer_document'  => '123.456.789-01',
+            'description'     => 'Serviço particular',
+        ]);
+
+        Livewire::test(InvoicesIndex::class)
+            ->set('search', 'João Avulso')
+            ->assertSee('João Avulso')
+            ->assertDontSee('Maria Souza');
+    }
 }

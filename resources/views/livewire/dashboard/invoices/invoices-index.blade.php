@@ -79,6 +79,12 @@
                 <option value="canceled">Cancelado</option>
                 <option value="refunded">Estornado</option>
             </select>
+            <a
+                href="{{ route('invoices.create') }}"
+                class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-teal-600 text-white text-sm font-medium hover:bg-teal-700 transition"
+            >
+                <i class="fas fa-plus text-xs"></i> Nova fatura
+            </a>
         </div>
 
         <div class="overflow-x-auto">
@@ -97,7 +103,17 @@
                     @forelse ($invoices as $invoice)
                         <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/50 transition">
                             <td class="px-4 py-3 text-sm text-gray-500 dark:text-slate-400">#{{ $invoice->id }}</td>
-                            <td class="px-4 py-3 text-sm text-gray-700 dark:text-slate-200">{{ $invoice->company->alias_name }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-700 dark:text-slate-200">
+                                <div>
+                                    {{ $invoice->company?->alias_name ?? $invoice->payer_name ?? '—' }}
+                                    @if ($invoice->isCustomPayer())
+                                        <span class="ml-1 px-2 py-0.5 rounded text-[10px] font-semibold uppercase bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300">Avulso</span>
+                                    @endif
+                                </div>
+                                @if ($invoice->description)
+                                    <div class="text-xs text-gray-400 dark:text-slate-500 truncate max-w-[240px]">{{ $invoice->description }}</div>
+                                @endif
+                            </td>
                             <td class="px-4 py-3 text-sm text-gray-500 dark:text-slate-400">{{ $invoice->due_date->format('d/m/Y') }}</td>
                             <td class="px-4 py-3 text-sm font-medium text-gray-800 dark:text-slate-100">R$ {{ number_format($invoice->amount, 2, ',', '.') }}</td>
                             <td class="px-4 py-3">
@@ -130,6 +146,14 @@
                                         title="Visualizar"
                                     >
                                         <i class="fas fa-search text-xs"></i>
+                                    </a>
+
+                                    <a
+                                        href="{{ route('invoices.duplicate', $invoice) }}"
+                                        class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-amber-50 text-amber-600 hover:bg-amber-600 hover:text-white transition"
+                                        title="Duplicar fatura"
+                                    >
+                                        <i class="fas fa-copy text-xs"></i>
                                     </a>
 
                                     @if ($invoice->status !== 'paid' && $invoice->due_date->isFuture())

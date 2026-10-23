@@ -50,12 +50,29 @@
                             <table class="table table-sm table-borderless">
                                 <tbody>
                                     <tr>
-                                        <th class="text-muted" style="width: 40%;">Empresa</th>
-                                        <td>{{ $invoice->company->alias_name }}</td>
+                                        <th class="text-muted" style="width: 40%;">Pagador</th>
+                                        <td>
+                                            {{ $invoice->payerLabel() }}
+                                            @if ($invoice->isCustomPayer())
+                                                <span class="badge badge-warning ml-1">Avulso</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-muted">CPF/CNPJ</th>
+                                        <td>{{ $invoice->company?->document_company ?: ($invoice->payer_document ?: '-') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-muted">E-mail</th>
+                                        <td>{{ $invoice->company?->email ?: ($invoice->payer_email ?: '-') }}</td>
                                     </tr>
                                     <tr>
                                         <th class="text-muted">Serviço</th>
                                         <td>{{ $invoice->subscription?->service?->name ?? '-' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-muted">Descrição</th>
+                                        <td>{{ $invoice->description ?: ($invoice->subscription?->service?->name ?? '-') }}</td>
                                     </tr>
                                     <tr>
                                         <th class="text-muted">Valor</th>
@@ -109,6 +126,22 @@
                     <a href="{{ route('invoices.index') }}" class="btn btn-default">
                         <i class="fas fa-arrow-left mr-1"></i> Voltar
                     </a>
+
+                    @if ($invoice->status === 'pending' && !$invoice->gateway_reference)
+                        <button
+                            wire:click="generateCharge"
+                            wire:loading.attr="disabled"
+                            wire:target="generateCharge"
+                            class="btn btn-outline-info"
+                        >
+                            <span wire:loading.remove wire:target="generateCharge">
+                                <i class="fas fa-barcode mr-1"></i> Gerar cobrança
+                            </span>
+                            <span wire:loading wire:target="generateCharge">
+                                <i class="fas fa-spinner fa-spin mr-1"></i> Gerando...
+                            </span>
+                        </button>
+                    @endif
 
                     @if ($invoice->payment_url)
                         <a href="{{ $invoice->payment_url }}" target="_blank" class="btn btn-outline-primary">

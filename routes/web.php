@@ -29,6 +29,7 @@ use App\Livewire\Dashboard\Permissions\Index as PermissionIndex;
 use App\Livewire\Dashboard\Roles\Index as RoleIndex;
 use App\Livewire\Dashboard\Companies\Companies;
 use App\Livewire\Dashboard\Companies\CompanyForm;
+use App\Livewire\Dashboard\Invoices\InvoiceForm;
 use App\Livewire\Dashboard\Invoices\InvoicesIndex;
 use App\Livewire\Dashboard\Invoices\InvoicesShow;
 use App\Livewire\Dashboard\Portifolio\PortifolioCategories;
@@ -142,6 +143,8 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
 
     //*********************** Invoices *********************************************/
     Route::get('/faturas', InvoicesIndex::class)->name('invoices.index');
+    Route::get('/faturas/cadastrar', InvoiceForm::class)->name('invoices.create');
+    Route::get('/faturas/{invoice}/duplicar', InvoiceForm::class)->name('invoices.duplicate');
     Route::get('/faturas/{invoice}/visualizar', InvoicesShow::class)->name('invoices.show');
 
     //*********************** Financeiro Pessoal *******************************************/

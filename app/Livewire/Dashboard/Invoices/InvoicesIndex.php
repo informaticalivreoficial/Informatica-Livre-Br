@@ -167,10 +167,16 @@ class InvoicesIndex extends Component
         $invoices = Invoice::query()
             ->with(['company', 'subscription'])
             ->when($this->search, function ($query) {
-                $query->where('id', $this->search)
-                    ->orWhereHas('company', function ($company) {
-                        $company->where('alias_name', 'like', "%{$this->search}%");
-                    });
+                $term = $this->search;
+
+                $query->where(function ($query) use ($term) {
+                    $query->where('id', $term)
+                        ->orWhereHas('company', function ($company) use ($term) {
+                            $company->where('alias_name', 'like', "%{$term}%");
+                        })
+                        ->orWhere('payer_name', 'like', "%{$term}%")
+                        ->orWhere('description', 'like', "%{$term}%");
+                });
             })
             ->when($this->status, function ($query) {
                 $query->where('status', $this->status);

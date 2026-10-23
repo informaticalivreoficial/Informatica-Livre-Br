@@ -53,7 +53,7 @@
                             <tr class="border-b last:border-0 hover:bg-gray-50 transition">
                                 <td class="px-6 py-4 text-gray-400">#{{ $fatura->id }}</td>
                                 <td class="px-6 py-4 text-gray-700 font-medium">
-                                    {{ $fatura->subscription->service->name ?? '—' }}
+                                    {{ $fatura->description ?: ($fatura->subscription?->service?->name ?? '—') }}
                                 </td>
                                 <td class="px-6 py-4 text-center text-gray-600">
                                     {{ $fatura->due_date->format('d/m/Y') }}

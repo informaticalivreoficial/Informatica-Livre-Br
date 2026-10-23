@@ -13,32 +13,48 @@ class PagHiperService
     public function createInvoice(Invoice $invoice): array
     {
         // Calcula dias até vencimento (mínimo 3 dias)
-        $daysUntilDue = max(3, now()->diffInDays($invoice->due_date, false));
-        
-        // Remove pontuação do CPF/CNPJ
-        $document = $invoice->company->document_company 
-            ? preg_replace('/\D/', '', $invoice->company->document_company)
-            : null;
+        $daysUntilDue = max(3, (int) now()->diffInDays($invoice->due_date, false));
+
+        $payer = $invoice->payerData();
+
+        if (!$payer['name'] || !$payer['document']) {
+            throw new \Exception('Dados do pagador incompletos: informe nome e CPF/CNPJ para gerar a cobrança.');
+        }
+
+        $description = $invoice->description
+            ?: $invoice->subscription?->service?->name
+            ?: 'Serviços prestados';
 
         $payload = [
             'apiKey'        => config('services.paghiper.api_key'), // 👈 Corrigido
             'token'          => config('services.paghiper.token'),    // 👈 Adicionado
             'order_id'       => 'INV-' . $invoice->id,
-            'payer_email'    => $invoice->company->email ?? 'financeiro@empresa.com',
-            'payer_name'     => $invoice->company->alias_name,
-            'payer_cpf_cnpj' => $document, // 👈 Sem pontuação
+            'payer_email'    => $payer['email'] ?: 'financeiro@empresa.com',
+            'payer_name'     => $payer['name'],
+            'payer_cpf_cnpj' => $payer['document'], // 👈 Sem pontuação
             'days_due_date'  => $daysUntilDue, // 👈 Corrigido
             'type_bank_slip' => 'boletoA4', // ou 'boletoPix'
             'items' => [
                 [
                     'item_id'     => (string) $invoice->id,
-                    'description' => $invoice->subscription->service->name,
+                    'description' => $description,
                     'quantity'    => 1,
                     'price_cents' => (int) bcmul($invoice->amount, '100', 0), // 👈 Corrigido
                 ]
             ],
             'notification_url' => route('webhooks.paghiper'),
         ];
+
+        $payload = array_merge($payload, array_filter([
+            'payer_phone'      => $payer['phone'],
+            'payer_zip_code'   => $payer['zipcode'],
+            'payer_street'     => $payer['street'],
+            'payer_number'     => $payer['number'],
+            'payer_complement' => $payer['complement'],
+            'payer_district'   => $payer['neighborhood'],
+            'payer_city'       => $payer['city'],
+            'payer_state'      => $payer['state'] ? strtoupper(substr($payer['state'], 0, 2)) : null,
+        ], fn ($value) => filled($value)));
 
         Log::info('PagHiper create invoice request', ['payload' => $payload]);
 

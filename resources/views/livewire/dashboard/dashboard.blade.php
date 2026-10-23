@@ -137,7 +137,7 @@
                             <tbody class="divide-y divide-gray-50">
                                 @forelse($latestPayments as $invoice)
                                     <tr class="hover:bg-gray-50 transition">
-                                        <td class="px-4 py-2.5 text-sm text-gray-700">{{ $invoice->company->alias_name }}</td>
+                                        <td class="px-4 py-2.5 text-sm text-gray-700">{{ $invoice->payerLabel() }}</td>
                                         <td class="px-4 py-2.5 text-sm font-medium text-green-600">
                                             R$ {{ number_format($invoice->amount, 2, ',', '.') }}
                                         </td>
@@ -180,7 +180,7 @@
                             <tbody class="divide-y divide-gray-50">
                                 @forelse($upcomingInvoices as $invoice)
                                     <tr class="hover:bg-gray-50 transition">
-                                        <td class="px-4 py-2.5 text-sm text-gray-700">{{ $invoice->company->alias_name }}</td>
+                                        <td class="px-4 py-2.5 text-sm text-gray-700">{{ $invoice->payerLabel() }}</td>
                                         <td class="px-4 py-2.5 text-sm font-medium text-gray-800">
                                             R$ {{ number_format($invoice->amount, 2, ',', '.') }}
                                         </td>

@@ -31,12 +31,14 @@ class InvoiceStatusNotification extends Notification
 
     public function toArray(object $notifiable): array
     {
+        $payer = $this->invoice->payerLabel();
+
         return match ($this->status) {
 
             'paid' => [
                 'type' => 'invoice_paid',
                 'title' => 'Pagamento recebido',
-                'message' => "{$this->invoice->company?->alias_name} realizou um pagamento.",
+                'message' => "{$payer} realizou um pagamento.",
                 'description' => "Fatura #{$this->invoice->id} • R$ " . number_format($this->invoice->amount, 2, ',', '.'),
                 'color' => 'success',
                 'url' => route('invoices.show', $this->invoice),
@@ -45,7 +47,7 @@ class InvoiceStatusNotification extends Notification
             'canceled' => [
                 'type' => 'invoice_canceled',
                 'title' => 'Fatura cancelada',
-                'message' => "{$this->invoice->company?->alias_name} teve uma fatura cancelada.",
+                'message' => "{$payer} teve uma fatura cancelada.",
                 'description' => "Fatura #{$this->invoice->id}",
                 'color' => 'danger',
                 'url' => route('invoices.show', $this->invoice),
@@ -54,7 +56,7 @@ class InvoiceStatusNotification extends Notification
             'refunded' => [
                 'type' => 'invoice_refunded',
                 'title' => 'Pagamento estornado',
-                'message' => "{$this->invoice->company?->alias_name} teve um pagamento estornado.",
+                'message' => "{$payer} teve um pagamento estornado.",
                 'description' => "Fatura #{$this->invoice->id}",
                 'color' => 'warning',
                 'url' => route('invoices.show', $this->invoice),
