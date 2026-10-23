@@ -72,11 +72,11 @@ class CompanyForm extends Component
 
             // 🗑 Apaga logo antigo (se existir)
             if ($this->company->exists && $this->logoPath) {
-                Storage::disk('public')->delete($this->logoPath);
+                Storage::disk()->delete($this->logoPath);
             }
 
             // 📦 Salva novo logo
-            $this->logoPath = $this->logo->store('company', 'public');
+            $this->logoPath = $this->logo->store('company', config('filesystems.default'));
         }
 
         $data = [
@@ -167,8 +167,8 @@ class CompanyForm extends Component
             return $this->logo->temporaryUrl();
         }
 
-        if ($this->logoPath && Storage::disk('public')->exists($this->logoPath)) {
-            return Storage::disk('public')->url($this->logoPath);
+        if ($this->logoPath && Storage::disk()->exists($this->logoPath)) {
+            return Storage::disk()->url($this->logoPath);
         }
 
         return asset('theme/images/image.jpg');

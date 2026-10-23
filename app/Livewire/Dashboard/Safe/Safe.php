@@ -119,8 +119,8 @@ class Safe extends Component
             return;
         }
 
-        if ($safe->logo && Storage::disk('public')->exists($safe->logo)) {
-            Storage::disk('public')->delete($safe->logo);
+        if ($safe->logo && Storage::disk()->exists($safe->logo)) {
+            Storage::disk()->delete($safe->logo);
         }
 
         $safe->delete();

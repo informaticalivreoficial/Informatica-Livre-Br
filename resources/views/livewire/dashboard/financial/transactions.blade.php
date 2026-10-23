@@ -133,7 +133,7 @@
                                             <span class="ml-1 text-xs text-gray-400"><i class="fas fa-credit-card mr-0.5"></i>{{ $transaction->paymentMethodLabel() }}</span>
                                         @endif
                                         @if($transaction->attachment_path)
-                                            <a href="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($transaction->attachment_path) }}" target="_blank" class="ml-1 text-teal-600 hover:text-teal-700" title="Comprovante">
+                                            <a href="{{ \Illuminate\Support\Facades\Storage::url($transaction->attachment_path) }}" target="_blank" class="ml-1 text-teal-600 hover:text-teal-700" title="Comprovante">
                                                 <i class="fas fa-paperclip text-xs"></i>
                                             </a>
                                         @endif
@@ -269,7 +269,7 @@
                                             <span class="ml-1 text-xs text-gray-400"><i class="fas fa-credit-card mr-0.5"></i>{{ $transaction->paymentMethodLabel() }}</span>
                                         @endif
                                         @if($transaction->attachment_path)
-                                            <a href="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($transaction->attachment_path) }}" target="_blank" class="ml-1 text-teal-600 hover:text-teal-700" title="Comprovante">
+                                            <a href="{{ \Illuminate\Support\Facades\Storage::url($transaction->attachment_path) }}" target="_blank" class="ml-1 text-teal-600 hover:text-teal-700" title="Comprovante">
                                                 <i class="fas fa-paperclip text-xs"></i>
                                             </a>
                                         @endif

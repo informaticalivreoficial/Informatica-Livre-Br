@@ -119,7 +119,7 @@ class Form extends Component
 
         $caminhoFoto = null;
         if ($this->foto) {
-            $caminhoFoto = $this->foto->store('client', 'public');
+            $caminhoFoto = $this->foto->store('client', config('filesystems.default'));
         }
 
         $user = User::create([
@@ -170,11 +170,11 @@ class Form extends Component
         $validated = $this->validate();
 
         if ($this->foto) {
-            if ($this->avatar && Storage::disk('public')->exists($this->avatar)) {
-                Storage::disk('public')->delete($this->avatar);
+            if ($this->avatar && Storage::disk()->exists($this->avatar)) {
+                Storage::disk()->delete($this->avatar);
             }
 
-            $user->update(['avatar' => $this->foto->store('client', 'public')]);
+            $user->update(['avatar' => $this->foto->store('client', config('filesystems.default'))]);
         }
 
         $user->update([

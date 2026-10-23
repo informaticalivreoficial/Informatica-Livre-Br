@@ -197,10 +197,10 @@ class Transactions extends Component
 
         if ($this->attachment) {
             if ($this->attachmentPath) {
-                Storage::disk('public')->delete($this->attachmentPath);
+                Storage::disk()->delete($this->attachmentPath);
             }
 
-            $this->attachmentPath = $this->attachment->store('financial/attachments', 'public');
+            $this->attachmentPath = $this->attachment->store('financial/attachments', config('filesystems.default'));
         }
 
         $status = FinancialStatus::PENDING;
@@ -279,7 +279,7 @@ class Transactions extends Component
         }
 
         if ($transaction->attachment_path) {
-            Storage::disk('public')->delete($transaction->attachment_path);
+            Storage::disk()->delete($transaction->attachment_path);
         }
 
         $transaction->delete();

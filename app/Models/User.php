@@ -46,8 +46,8 @@ class User extends Authenticatable
     protected static function booted()
     {
         static::deleting(function ($user) {
-            if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
-                Storage::disk('public')->delete($user->avatar);
+            if ($user->avatar && Storage::disk()->exists($user->avatar)) {
+                Storage::disk()->delete($user->avatar);
             }
         });
     }

@@ -69,8 +69,8 @@ class Companies extends Component
             $company = Company::findOrFail($this->delete_id);
 
             $logoPath = $company->logo;
-            if ($logoPath && Storage::disk('public')->exists($logoPath)) {
-                Storage::disk('public')->delete($logoPath);
+            if ($logoPath && Storage::disk()->exists($logoPath)) {
+                Storage::disk()->delete($logoPath);
             }
 
             $company->delete();

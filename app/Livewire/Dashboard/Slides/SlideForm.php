@@ -55,7 +55,7 @@ class SlideForm extends Component
 
         if ($this->image) {
             if ($this->slide?->exists && $this->logoPath) {
-                Storage::disk('public')->delete($this->logoPath);
+                Storage::disk()->delete($this->logoPath);
             }
 
             $filename = uniqid() . '.webp';
@@ -66,7 +66,7 @@ class SlideForm extends Component
             $img->scaleDown(width: 1920);
             $encoded = $img->toWebp(85);
 
-            Storage::disk('public')->put($path, $encoded);
+            Storage::disk()->put($path, (string) $encoded);
             $this->logoPath = $path;
         }        
 

@@ -28,7 +28,7 @@
                                 <span class="error">{{ $message }}</span>
                             @enderror
                             @php
-                                if (!empty($avatar) && \Illuminate\Support\Facades\Storage::disk('public')->exists($avatar)) {
+                                if (!empty($avatar) && \Illuminate\Support\Facades\Storage::disk()->exists($avatar)) {
                                     $cover = \Illuminate\Support\Facades\Storage::url($avatar);
                                 } else {
                                     $cover = url(asset('theme/images/image.jpg'));

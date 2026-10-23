@@ -64,8 +64,8 @@ class Slides extends Component
         $slide = Slide::findOrFail($id);
 
         $logoPath = $slide->image;
-        if ($logoPath && Storage::disk('public')->exists($logoPath)) {
-            Storage::disk('public')->delete($logoPath);
+        if ($logoPath && Storage::disk()->exists($logoPath)) {
+            Storage::disk()->delete($logoPath);
         }
 
         $slide->delete();

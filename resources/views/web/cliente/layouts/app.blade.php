@@ -16,7 +16,7 @@
 
             {{-- Logo --}}
             <a href="{{ route('cliente.dashboard') }}">
-                <img src="{{ asset('storage/configuracoes/logomarca-informatica-livre.png') }}" alt="Informática Livre" class="h-10">
+                <img src="{{ $configuracoes?->getlogo() ?? asset('theme/images/image.jpg') }}" alt="Informática Livre" class="h-10">
             </a>
 
             {{-- Menu Desktop --}}

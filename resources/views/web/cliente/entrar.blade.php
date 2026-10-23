@@ -11,7 +11,7 @@
 
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
         <div class="text-center mb-8">
-            <img src="{{ asset('storage/configuracoes/logomarca-informatica-livre.png') }}" alt="Informática Livre" class="h-14 mx-auto mb-4">
+            <img src="{{ $configuracoes?->getlogo() ?? asset('theme/images/image.jpg') }}" alt="Informática Livre" class="h-14 mx-auto mb-4">
             <h1 class="text-2xl font-bold text-gray-800">Painel do Cliente</h1>
             <p class="text-gray-500 text-sm mt-1">Informe seu e-mail para receber o link de acesso</p>
         </div>

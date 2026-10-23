@@ -53,10 +53,12 @@ class Post extends Model
         });
 
         static::deleting(function ($post) {
-            // Deleta a pasta inteira com todas as imagens
-            Storage::disk('public')->deleteDirectory("posts/{$post->id}");
+            foreach ($post->images()->pluck('path') as $path) {
+                Cropper::flush($path);
+            }
 
-            // Deleta os registros do banco
+            Storage::disk()->deleteDirectory("posts/{$post->id}");
+
             $post->images()->delete();
         });
     }
@@ -127,7 +129,13 @@ class Post extends Model
             return asset('theme/images/image.jpg');
         }
 
-        return Storage::url(Cropper::thumb($cover['path'], 720, 480));
+        $thumb = Cropper::thumb($cover['path'], 720, 480);
+
+        if (empty($thumb)) {
+            return asset('theme/images/image.jpg');
+        }
+
+        return Storage::url($thumb);
     }    
 
     public function nocover()

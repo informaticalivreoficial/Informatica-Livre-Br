@@ -80,7 +80,13 @@ class Portifolio extends Model
             return asset('theme/images/image.jpg');
         }
 
-        return Storage::url(Cropper::thumb($cover['path'], 1366, 768));
+        $thumb = Cropper::thumb($cover['path'], 1366, 768);
+
+        if (empty($thumb)) {
+            return asset('theme/images/image.jpg');
+        }
+
+        return Storage::url($thumb);
     } 
 
     public function thumb()
@@ -93,6 +99,12 @@ class Portifolio extends Model
             return asset('theme/images/image.jpg');
         }
 
-        return Storage::url(Cropper::thumb($cover['path'], 200, 200));
+        $thumb = Cropper::thumb($cover['path'], 200, 200);
+
+        if (empty($thumb)) {
+            return asset('theme/images/image.jpg');
+        }
+
+        return Storage::url($thumb);
     }
 }

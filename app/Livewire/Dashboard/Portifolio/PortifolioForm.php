@@ -7,6 +7,7 @@ use App\Models\Company;
 use App\Models\Config;
 use App\Models\Portifolio;
 use App\Models\PortifolioGB;
+use App\Support\Cropper;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\Attributes\On;
@@ -153,7 +154,7 @@ class PortifolioForm extends Component
                 $img->scaleDown(width: 1920);
                 $encoded = $img->toWebp(85);
 
-                Storage::disk('public')->put($path, $encoded);
+                Storage::disk()->put($path, (string) $encoded);
 
                 $hasCover = PortifolioGB::where('portifolio', $this->portifolio->id)
                     ->where('cover', true)
@@ -197,10 +198,11 @@ class PortifolioForm extends Component
     {
         $image = PortifolioGB::find($id);
         if ($image) {
-            Storage::disk('public')->delete($image->path);
+            Storage::disk()->delete($image->path);
+            Cropper::flush($image->path);
             $image->delete();
             $this->savedImages = collect($this->savedImages)->filter(fn ($img) => $img->id !== $id);
-            $this->property->refresh(); // Para garantir que os dados estejam atualizados
+            $this->portifolio->refresh();
         }
     }
 
@@ -234,12 +236,12 @@ class PortifolioForm extends Component
         try {
             foreach ($order as $item) {
                 PortifolioGB::where('id', $item['id'])
-                    ->where('portifolio', $this->property->id)
+                    ->where('portifolio', $this->portifolio->id)
                     ->update(['order_img' => $item['position']]);
             }
             
             // Atualiza a propriedade para refletir a nova ordem
-            $this->property->refresh();
+            $this->portifolio->refresh();
             
         } catch (\Exception $e) {
             $this->toastError('Erro ao atualizar ordem das imagens: ' . $e->getMessage());
@@ -254,15 +256,28 @@ class PortifolioForm extends Component
             return;
         }
 
-        $config = Config::first();
+        $config  = Config::first();
+        $storage = Storage::disk();
+
+        if (! $storage->exists($image->path) || empty($config?->watermark) || ! $storage->exists($config->watermark)) {
+            $this->dispatch('swal', [
+                'title' => 'Erro',
+                'text' => 'Não foi possível localizar a imagem ou a marca d’água.',
+                'icon' => 'error',
+            ]);
+
+            return;
+        }
 
         $manager = new ImageManager(new Driver());
 
-        $img = $manager->read(storage_path('app/public/'.$image->path));
-        $watermark = $manager->read(storage_path('app/public/'.$config->watermark));
+        $img = $manager->read($storage->get($image->path));
+        $watermark = $manager->read($storage->get($config->watermark));
 
         $img->place($watermark, 'bottom-right', 30, 30);
-        $img->save();
+
+        $storage->put($image->path, (string) $img->toWebp(85));
+        Cropper::flush($image->path);
 
         $image->update([
             'watermark' => true

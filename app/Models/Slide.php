@@ -38,14 +38,16 @@ class Slide extends Model
         // 👈 Deleta imagem antiga ao atualizar
         static::updating(function ($slide) {
             if ($slide->isDirty('image') && $slide->getOriginal('image')) {
-                Storage::disk('public')->delete($slide->getOriginal('image'));
+                Storage::disk()->delete($slide->getOriginal('image'));
+                Cropper::flush($slide->getOriginal('image'));
             }
         });
 
         // 👈 Deleta imagem ao excluir registro
         static::deleting(function ($slide) {
             if ($slide->image) {
-                Storage::disk('public')->delete($slide->image);
+                Storage::disk()->delete($slide->image);
+                Cropper::flush($slide->image);
             }
         });
     }
@@ -68,11 +70,17 @@ class Slide extends Model
     */
     public function getimagem()
     {
-        if (empty($this->image) || !Storage::disk('public')->exists($this->image)) {
+        if (empty($this->image) || !Storage::disk()->exists($this->image)) {
             return asset('theme/images/image.jpg');
         }
 
-        return Storage::url(Cropper::thumb($this->image, 2200, 1200));
+        $thumb = Cropper::thumb($this->image, 2200, 1200);
+
+        if (empty($thumb)) {
+            return asset('theme/images/image.jpg');
+        }
+
+        return Storage::url($thumb);
     }
 
     public function setExpiredAtAttribute($value)

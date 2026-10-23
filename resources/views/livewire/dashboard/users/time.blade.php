@@ -73,7 +73,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
                 @forelse($users as $user)
                     @php
-                        if (!empty($user->avatar) && \Illuminate\Support\Facades\Storage::disk('public')->exists($user->avatar)) {
+                        if (!empty($user->avatar) && \Illuminate\Support\Facades\Storage::disk()->exists($user->avatar)) {
                             $cover = \Illuminate\Support\Facades\Storage::url($user->avatar);
                         } else {
                             if ($user->gender == 'masculino') {

@@ -114,11 +114,24 @@ class Company extends Model
 
     public function logoPathForPdf(): string
     {
-        if ($this->logo && file_exists(storage_path('app/public/' . $this->logo))) {
-            return storage_path('app/public/' . $this->logo);
+        if (empty($this->logo) || !Storage::disk()->exists($this->logo)) {
+            return public_path('theme/images/image.jpg');
         }
 
-        return public_path('theme/images/image.jpg');
+        $directory = storage_path('app/tmp');
+
+        if (!is_dir($directory)) {
+            mkdir($directory, 0755, true);
+        }
+
+        $extension = pathinfo($this->logo, PATHINFO_EXTENSION);
+        $localPath = $directory . '/' . md5($this->logo) . ($extension ? '.' . $extension : '');
+
+        if (!file_exists($localPath)) {
+            file_put_contents($localPath, Storage::disk()->get($this->logo));
+        }
+
+        return $localPath;
     }
 
     public function setZipcodeAttribute($value)

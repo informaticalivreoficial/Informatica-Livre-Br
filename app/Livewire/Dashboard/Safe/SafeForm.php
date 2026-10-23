@@ -61,11 +61,11 @@ class SafeForm extends Component
 
             // 🗑 Apaga logo antigo (se existir)
             if ($this->safeId && $this->logoPath) {
-                Storage::disk('public')->delete($this->logoPath);
+                Storage::disk()->delete($this->logoPath);
             }
 
             // 📦 Salva novo logo
-            $this->logoPath = $this->logo->store('safe', 'public');
+            $this->logoPath = $this->logo->store('safe', config('filesystems.default'));
         }
 
         $data = [
@@ -127,8 +127,8 @@ class SafeForm extends Component
             return $this->logo->temporaryUrl();
         }
 
-        if ($this->logoPath && Storage::disk('public')->exists($this->logoPath)) {
-            return Storage::disk('public')->url($this->logoPath);
+        if ($this->logoPath && Storage::disk()->exists($this->logoPath)) {
+            return Storage::disk()->url($this->logoPath);
         }
 
         return asset('theme/images/image.jpg');

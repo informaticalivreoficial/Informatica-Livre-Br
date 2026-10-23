@@ -2,61 +2,61 @@
 
 namespace App\Support;
 
-use Intervention\Image\ImageManager;
+use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManager;
 
 class Cropper
 {
     public static function thumb(string $uri, int $width, ?int $height = null): string
     {
-        $cachePath  = public_path('storage/cache');
-        $sourcePath = config('filesystems.disks.public.root') . '/' . $uri;
-        $filename   = md5($uri . $width . $height) . '.webp';
-        $cachedFile = $cachePath . '/' . $filename;
-
-        // ✅ retorna cache se já existir
-        if (file_exists($cachedFile)) {
-            return 'cache/' . $filename;
+        if (empty($uri)) {
+            return '';
         }
 
-        if (!file_exists($cachePath)) {
-            mkdir($cachePath, 0755, true);
+        $storage    = Storage::disk();
+        $filename   = md5($uri) . '-' . $width . 'x' . ($height ?? 0) . '.webp';
+        $cachedPath = 'cache/' . $filename;
+
+        if ($storage->exists($cachedPath)) {
+            return $cachedPath;
         }
 
-        if (!file_exists($sourcePath)) {
+        if (! $storage->exists($uri)) {
             return '';
         }
 
         $manager = new ImageManager(new Driver());
-        $image   = $manager->read($sourcePath);
+        $image   = $manager->read($storage->get($uri));
 
-        // ✅ crop centralizado (igual ao Cropper) ou só redimensiona largura
         if ($height) {
             $image->cover($width, $height);
         } else {
             $image->scale(width: $width);
         }
 
-        $image->toWebp(80)->save($cachedFile);
+        $storage->put($cachedPath, (string) $image->toWebp(80));
 
-        return 'cache/' . $filename;
+        return $cachedPath;
     }
 
     public static function flush(?string $path = null): void
     {
-        $cachePath = public_path('storage/cache');
+        $storage = Storage::disk();
+        $files   = $storage->files('cache');
 
-        if (!empty($path)) {
-            // ✅ limpa apenas as miniaturas da imagem específica
-            $hash = md5($path);
-            foreach (glob($cachePath . '/' . $hash . '*.webp') as $file) {
-                if (is_file($file)) unlink($file);
+        if (empty($files)) {
+            return;
+        }
+
+        $prefix = $path ? md5($path) : null;
+
+        foreach ($files as $file) {
+            if ($prefix && ! str_starts_with(basename($file), $prefix)) {
+                continue;
             }
-        } else {
-            // ✅ limpa todo o cache
-            foreach (glob($cachePath . '/*.webp') as $file) {
-                if (is_file($file)) unlink($file);
-            }
+
+            $storage->delete($file);
         }
     }
 }
