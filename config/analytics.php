@@ -1,5 +1,7 @@
 <?php
 
+$credentials = env('ANALYTICS_CREDENTIALS_BASE64');
+
 return [
 
     /*
@@ -12,7 +14,9 @@ return [
      * to learn how to get this file. You can also pass the credentials as an array
      * instead of a file path.
      */
-    'service_account_credentials_json' => storage_path('app/analytics/service-account-credentials.json'),
+    'service_account_credentials_json' => $credentials
+        ? json_decode(base64_decode($credentials), true)
+        : storage_path('app/analytics/service-account-credentials.json'),
 
     /*
      * The amount of minutes the Google API responses will be cached.
