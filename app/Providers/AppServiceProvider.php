@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 
@@ -20,7 +21,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->singleton('site.view.data', function (): array {
+            try {
+                return ['configuracoes' => \App\Models\Config::find(1)];
+            } catch (\Throwable $e) {
+                return ['Links' => collect(), 'configuracoes' => null];
+            }
+        });
     }
 
     /**
@@ -40,20 +47,16 @@ class AppServiceProvider extends ServiceProvider
             return $app->make(TelegramChannel::class);
         });
 
-        try {
-            // //Páginas no menu frontend
-            // $servicos = Post::orderBy('created_at', 'ASC')
-            //                 ->postson()
-            //                 ->where('categoria', 9)
-            //                 ->get();
-            // View()->share('menu_servicos', $servicos);
+        // //Páginas no menu frontend
+        // $servicos = Post::orderBy('created_at', 'ASC')
+        //                 ->postson()
+        //                 ->where('categoria', 9)
+        //                 ->get();
+        // View()->share('menu_servicos', $servicos);
 
-            $configuracoes = \App\Models\Config::find(1); 
-            View()->share('configuracoes', $configuracoes);
-        } catch (\Exception $e) {
-            View()->share('Links', collect());
-            View()->share('configuracoes', null);
-        }
+        View::composer('*', function ($view) {
+            $view->with(app('site.view.data'));
+        });
 
         if (request()->is('admin/*') || request()->is('dashboard*')) {
             Paginator::useBootstrap();
