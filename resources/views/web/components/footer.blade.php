@@ -72,6 +72,7 @@
                 </h4>
                 <ul class="space-y-2.5 text-sm">
                     <li><a href="{{ route('web.home') }}" class="hover:text-teal-400 transition flex items-center gap-2 group"><i class="fas fa-chevron-right text-[10px] text-teal-500 group-hover:translate-x-1 transition"></i>Início</a></li>
+                    <li><a href="{{ route('cliente.dashboard') }}" class="hover:text-teal-400 transition flex items-center gap-2 group"><i class="fas fa-chevron-right text-[10px] text-teal-500 group-hover:translate-x-1 transition"></i>Área do Cliente</a></li>
                     <li><a href="{{ route('web.portifolio') }}" class="hover:text-teal-400 transition flex items-center gap-2 group"><i class="fas fa-chevron-right text-[10px] text-teal-500 group-hover:translate-x-1 transition"></i>Nossos Trabalhos</a></li>
                     <li><a href="{{ route('web.blog.artigos') }}" class="hover:text-teal-400 transition flex items-center gap-2 group"><i class="fas fa-chevron-right text-[10px] text-teal-500 group-hover:translate-x-1 transition"></i>Blog</a></li>
                     <li><a href="{{ route('web.produtos') }}" class="hover:text-teal-400 transition flex items-center gap-2 group"><i class="fas fa-chevron-right text-[10px] text-teal-500 group-hover:translate-x-1 transition"></i>Sistemas</a></li>
