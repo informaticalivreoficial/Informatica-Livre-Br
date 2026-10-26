@@ -26,12 +26,6 @@
             <div class="bg-teal-50 border border-teal-200 text-teal-700 px-4 py-3 rounded-lg mb-6 text-sm">
                 <i class="fas fa-check-circle mr-2"></i> {{ session('success') }}
             </div>
-            @if(session('whatsapp_link'))
-                <a href="{{ session('whatsapp_link') }}" target="_blank"
-                    class="w-full bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-medium transition flex items-center justify-center gap-2 mb-4">
-                    <i class="fab fa-whatsapp text-lg"></i> Abrir link no WhatsApp
-                </a>
-            @endif
         @endif
 
         @if(session('error'))

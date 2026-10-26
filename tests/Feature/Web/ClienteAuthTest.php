@@ -5,6 +5,7 @@ namespace Tests\Feature\Web;
 use App\Models\Company;
 use App\Models\Config;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class ClienteAuthTest extends TestCase
@@ -71,6 +72,20 @@ class ClienteAuthTest extends TestCase
 
         $this->get(route('cliente.pedidos'))
             ->assertRedirect(route('cliente.entrar'));
+    }
+
+    public function test_envio_de_link_nao_cria_link_whatsapp(): void
+    {
+        $company = $this->company();
+
+        Mail::fake();
+
+        $this->post(route('cliente.enviar-link'), ['email' => 'maria@example.com'])
+            ->assertRedirect()
+            ->assertSessionHas('success', 'Link enviado! Verifique seu e-mail.')
+            ->assertSessionMissing('whatsapp_link');
+
+        $this->assertNotNull($company->fresh()->magic_token);
     }
 
     public function test_cliente_atualiza_dados_basicos(): void

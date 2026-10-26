@@ -53,15 +53,7 @@ class ClienteController extends Controller
             }
         );
 
-        // Envia por WhatsApp via link
-        $whatsapp = preg_replace('/\D/', '', $company->whatsapp ?? $company->cell_phone);
-        if ($whatsapp) {
-            $mensagem = urlencode("Olá, {$company->alias_name}! Acesse seu painel pelo link: {$link} (válido por 15 minutos)");
-            // Armazena o link do WhatsApp na sessão para exibir na view
-            session(['whatsapp_link' => "https://api.whatsapp.com/send?phone=55{$whatsapp}&text={$mensagem}"]);
-        }
-
-        return back()->with('success', 'Link enviado! Verifique seu e-mail e WhatsApp.');
+        return back()->with('success', 'Link enviado! Verifique seu e-mail.');
     }
 
     public function autenticar(string $token)
