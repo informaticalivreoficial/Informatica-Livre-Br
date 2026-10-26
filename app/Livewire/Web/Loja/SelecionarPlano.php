@@ -36,6 +36,13 @@ class SelecionarPlano extends Component
 
     public function render()
     {
-        return view('livewire.web.loja.selecionar-plano');
+        $planos = $this->produto->planos()
+            ->where('status', true)
+            ->orderBy('ordem')
+            ->get();
+
+        return view('livewire.web.loja.selecionar-plano', [
+            'planos' => $planos,
+        ]);
     }
 }

@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\Invoice;
+use App\Models\Pedido;
+use App\Support\Money;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -79,6 +81,67 @@ class PagHiperService
                 'response' => $data,
             ]);
             
+            throw new \Exception($errorMessage);
+        }
+
+        return $data['create_request'];
+    }
+
+    public function createPedidoCharge(Pedido $pedido): array
+    {
+        $document = preg_replace('/\D/', '', (string) $pedido->cpf_cnpj);
+
+        if (! $pedido->nome || ! $document) {
+            throw new \Exception('Dados do comprador incompletos: informe nome e CPF/CNPJ para gerar a cobrança.');
+        }
+
+        $pedido->loadMissing('itens');
+
+        $items = $pedido->itens->map(fn ($item) => [
+            'item_id'     => (string) $item->id,
+            'description' => $item->produto_nome . ' — ' . $item->plano_nome,
+            'quantity'    => 1,
+            'price_cents' => Money::cents($item->preco),
+        ])->values()->all();
+
+        $payload = [
+            'apiKey'           => config('services.paghiper.api_key'),
+            'token'            => config('services.paghiper.token'),
+            'order_id'         => 'PED-' . $pedido->id,
+            'payer_email'      => $pedido->email,
+            'payer_name'       => $pedido->nome,
+            'payer_cpf_cnpj'   => $document,
+            'days_due_date'    => 3,
+            'type_bank_slip'   => $pedido->metodo_pagamento === 'pix' ? 'boletoPix' : 'boletoA4',
+            'items'            => $items,
+            'notification_url' => route('webhooks.paghiper-pedidos'),
+        ];
+
+        $phone = preg_replace('/\D/', '', (string) $pedido->telefone);
+
+        if ($phone !== '') {
+            $payload['payer_phone'] = $phone;
+        }
+
+        Log::info('PagHiper create pedido charge request', [
+            'pedido_id' => $pedido->id,
+            'payload' => $payload,
+        ]);
+
+        $response = Http::post($this->endpoint, $payload);
+
+        $data = $response->json();
+
+        if ($response->failed() || ! ($data['create_request']['result'] ?? false)) {
+            $errorMessage = $data['create_request']['response_message'] ?? 'Erro ao gerar cobrança no PagHiper';
+
+            Log::error('PagHiper pedido error', [
+                'pedido_id' => $pedido->id,
+                'status' => $response->status(),
+                'error' => $errorMessage,
+                'response' => $data,
+            ]);
+
             throw new \Exception($errorMessage);
         }
 

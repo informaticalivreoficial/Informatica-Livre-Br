@@ -44,6 +44,7 @@
 
     {{-- Conteúdo --}}
     <main>
+        {{ $slot ?? '' }}
         @yield('content')
     </main>
 

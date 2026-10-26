@@ -11,7 +11,10 @@ class ProdutoController extends Controller
 {
     public function index(): View
     {
-        $produtos = Produto::with(['planos' => fn($q) => $q->where('status', true)->orderBy('ordem')])
+        $produtos = Produto::with([
+                'images',
+                'planos' => fn($q) => $q->where('status', true)->orderBy('ordem'),
+            ])
             ->ativo()
             ->orderBy('ordem')
             ->get();

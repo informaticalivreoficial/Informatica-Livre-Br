@@ -16,8 +16,9 @@ class PaghiperController extends Controller
         $notificationId = $request->input('notification_id');
         $transactionId = $request->input('transaction_id');
 
-        if (!$notificationId || !$transactionId) {
+        if (! $notificationId || ! $transactionId) {
             Log::warning('PagHiper webhook de pedido sem notification_id/transaction_id', $request->all());
+
             return response()->json(['error' => 'Bad request'], Response::HTTP_BAD_REQUEST);
         }
 
@@ -27,42 +28,42 @@ class PaghiperController extends Controller
         $payload = app(PagHiperService::class)
             ->getNotification($notificationId, $transactionId, $operation);
 
-        if (!$payload) {
+        if (! $payload) {
             Log::error('Falha ao obter notificação completa do PagHiper', [
                 'notification_id' => $notificationId,
                 'transaction_id' => $transactionId,
             ]);
+
             return response()->json(['error' => 'Notification not found'], Response::HTTP_NOT_FOUND);
         }
 
         $pedido = Pedido::where('gateway_id', $transactionId)->first();
 
-        if (!$pedido) {
+        if (! $pedido) {
             Log::warning('Pedido não encontrado', ['transaction_id' => $transactionId]);
+
             return response()->json(['error' => 'Pedido not found'], Response::HTTP_NOT_FOUND);
         }
 
         $status = $payload['status'] ?? null;
 
         $pedido->gateway_response = $payload;
-        $pedido->status_pagamento = match ($status) {
-            'paid', 'completed' => 'pago',
-            'canceled'          => 'cancelado',
-            'refunded'          => 'estornado',
-            default             => 'pendente',
-        };
-        $pedido->status = match ($status) {
-            'paid', 'completed' => 'confirmado',
-            'canceled'          => 'cancelado',
-            'refunded'          => 'reembolsado',
-            default             => 'pendente',
-        };
-
-        if (in_array($status, ['paid', 'completed'])) {
-            $pedido->pago_em = now();
-        }
-
         $pedido->save();
+
+        try {
+            match ($status) {
+                'paid', 'completed' => $pedido->markAsPaid(),
+                'canceled', 'cancelled' => $pedido->markAsCanceled(),
+                'refunded' => $pedido->markAsRefunded(),
+                default => null,
+            };
+        } catch (\Exception $e) {
+            Log::warning('Não foi possível atualizar o pedido pelo webhook', [
+                'pedido_id' => $pedido->id,
+                'status' => $status,
+                'error' => $e->getMessage(),
+            ]);
+        }
 
         Log::info('Pedido atualizado via webhook PagHiper', [
             'pedido_id' => $pedido->id,

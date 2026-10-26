@@ -37,9 +37,14 @@
                     @if($plano->tem_desconto)
                         <p class="text-xs text-gray-400 line-through">{{ $plano->preco_de_formatado }}</p>
                     @endif
-                    <p class="text-xl font-extrabold text-teal-600">{{ $plano->preco_formatado }}</p>
+                    <p class="text-xl font-extrabold text-teal-600">{{ $plano->preco_com_periodo }}</p>
                     @if($plano->tem_desconto)
                         <span class="text-xs font-bold text-green-600">-{{ $plano->percentual_desconto }}%</span>
+                    @endif
+                    @if($plano->isRecurring())
+                        <span class="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-blue-50 text-blue-600">
+                            <i class="fas fa-sync-alt text-[9px]"></i> {{ $plano->billingLabel() }}
+                        </span>
                     @endif
                 </div>
             </div>

@@ -103,6 +103,32 @@
                         </li>                        
                     </ul>
                 </li>  
+                <li class="nav-item {{ Route::is('loja.*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ Route::is('loja.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-shopping-cart"></i>
+                        <p> Loja <i class="fas fa-angle-left right"></i></p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{route('loja.produtos.index')}}" class="nav-link {{ Route::is('loja.produtos.*') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Produtos</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{route('loja.pedidos.index')}}" class="nav-link {{ Route::is('loja.pedidos.*') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Pedidos</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{route('loja.licencas.index')}}" class="nav-link {{ Route::is('loja.licencas.*') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Licenças</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 <li class="nav-item">
                     <a href="{{route('invoices.index')}}" class="nav-link {{ Route::is('invoices.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-money-check-alt"></i>

@@ -32,6 +32,10 @@ use App\Livewire\Dashboard\Companies\CompanyForm;
 use App\Livewire\Dashboard\Invoices\InvoiceForm;
 use App\Livewire\Dashboard\Invoices\InvoicesIndex;
 use App\Livewire\Dashboard\Invoices\InvoicesShow;
+use App\Livewire\Dashboard\Loja\Licencas;
+use App\Livewire\Dashboard\Loja\Pedidos;
+use App\Livewire\Dashboard\Loja\ProdutoForm;
+use App\Livewire\Dashboard\Loja\Produtos;
 use App\Livewire\Dashboard\Portifolio\PortifolioCategories;
 use App\Livewire\Dashboard\Portifolio\PortifolioForm;
 use App\Livewire\Dashboard\Portifolio\PortifolioIndex;
@@ -47,6 +51,7 @@ use App\Livewire\Dashboard\Service\SubscriptionForm;
 use App\Livewire\Dashboard\Service\SubscriptionIndex;
 use App\Livewire\Dashboard\Service\SubscriptionShow;
 use App\Livewire\Dashboard\Sitemap\SitemapGenerator;
+use App\Livewire\Web\Loja\Checkout;
 use App\Livewire\Dashboard\Financial\{
     AnnualView,
     Categories,
@@ -106,7 +111,7 @@ Route::group(['as' => 'web.'], function () {
 
     Route::get('/sistemas', [ProdutoController::class, 'index'])->name('produtos');
     Route::get('/sistemas/{slug}', [ProdutoController::class, 'show'])->name('produto');
-    //Route::get('/checkout/{produto}/{plano}', ...)->name('web.checkout'); // próximo passo
+    Route::get('/checkout/{produto}/{plano}', Checkout::class)->name('checkout');
 });
 
 Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], function () {
@@ -140,6 +145,13 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
     Route::get('/pedidos/{subscription}/edit', SubscriptionForm::class)->name('services.subscriptions.edit');
     Route::get('/pedido/{subscription}/show', SubscriptionShow::class)->name('services.subscriptions.show');
     Route::get('/pedidos/{subscription}/faturas', InvoiceIndex::class)->name('services.invoices.index');
+
+    //****************************** Loja *******************************************/
+    Route::get('loja/produtos', Produtos::class)->name('loja.produtos.index');
+    Route::get('loja/produtos/cadastrar', ProdutoForm::class)->name('loja.produtos.create');
+    Route::get('loja/produtos/{produto}/editar', ProdutoForm::class)->name('loja.produtos.edit');
+    Route::get('loja/pedidos', Pedidos::class)->name('loja.pedidos.index');
+    Route::get('loja/licencas', Licencas::class)->name('loja.licencas.index');
 
     //*********************** Invoices *********************************************/
     Route::get('/faturas', InvoicesIndex::class)->name('invoices.index');

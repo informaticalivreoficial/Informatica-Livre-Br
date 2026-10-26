@@ -21,7 +21,7 @@ class PedidoItem extends Model
     ];
  
     protected $casts = [
-        'preco' => 'float',
+        'preco' => 'decimal:2',
     ];
  
     /**
@@ -52,6 +52,6 @@ class PedidoItem extends Model
      */
     public function getPrecoFormatadoAttribute(): string
     {
-        return 'R$ ' . number_format($this->preco, 2, ',', '.');
+        return 'R$ ' . number_format((float) $this->preco, 2, ',', '.');
     }
 }

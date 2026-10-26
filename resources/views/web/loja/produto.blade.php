@@ -122,7 +122,7 @@
                             Escolha seu plano
                         </h2>
 
-                        @livewire('web.selecionar-plano', ['produto' => $produto])
+                        @livewire('web.loja.selecionar-plano', ['produto' => $produto])
                     </div>
                 </div>
 
