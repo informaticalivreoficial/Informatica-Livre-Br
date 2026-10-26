@@ -38,6 +38,7 @@ class Company extends Model
 
     protected $casts = [
         'status' => 'boolean',
+        'magic_token_expires_at' => 'datetime',
     ];
 
     protected static function booted()
