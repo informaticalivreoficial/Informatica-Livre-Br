@@ -14,10 +14,11 @@
         </a>
     </x-ui.page-header>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-5">
         <x-ui.stat-card label="Pedidos" :value="$stats['total']" icon="fas fa-shopping-bag" tone="teal" />
         <x-ui.stat-card label="Aguardando pagamento" :value="$stats['pendentes']" icon="fas fa-clock" tone="amber" />
         <x-ui.stat-card label="Pagos" :value="$stats['pagos']" icon="fas fa-check-circle" tone="green" />
+        <x-ui.stat-card label="Assinaturas ativas" :value="$stats['recorrentes']" icon="fas fa-sync-alt" tone="purple" />
         <x-ui.stat-card label="Receita confirmada" :value="$stats['receita']" icon="fas fa-coins" tone="blue" />
     </div>
 
@@ -76,6 +77,15 @@
                             <td class="px-4 py-3">
                                 <p class="text-sm font-semibold text-gray-800">{{ $pedido->codigo }}</p>
                                 <p class="text-xs text-gray-400">{{ $pedido->created_at->format('d/m/Y H:i') }}</p>
+                                @if ($pedido->recorrente)
+                                    <span class="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-blue-50 text-blue-600">
+                                        <i class="fas fa-sync-alt text-[9px]"></i> {{ $pedido->billing_interval?->label() ?? 'Recorrente' }}
+                                    </span>
+                                @elseif ($pedido->isRenovacao())
+                                    <span class="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-gray-100 text-gray-500">
+                                        Renovação
+                                    </span>
+                                @endif
                             </td>
 
                             <td class="px-4 py-3">
@@ -266,6 +276,62 @@
                                 </p>
                             @endif
 
+                            @if($pedido->recorrente)
+                                <div class="rounded-xl border border-blue-100 bg-blue-50/50 p-4">
+                                    <div class="flex flex-wrap items-center justify-between gap-3">
+                                        <div>
+                                            <p class="text-xs font-semibold text-blue-700 uppercase tracking-wide">Assinatura</p>
+                                            <p class="text-sm text-gray-700 mt-1">
+                                                {{ $pedido->billing_interval?->label() ?? 'Recorrente' }}
+                                                · ciclo {{ $pedido->ciclo }}
+                                                @if($pedido->proximo_vencimento)
+                                                    · próxima cobrança em {{ $pedido->proximo_vencimento->format('d/m/Y') }}
+                                                @endif
+                                            </p>
+                                        </div>
+
+                                        <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-medium
+                                            {{ $pedido->recorrencia_status?->value === 'ativa' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600' }}">
+                                            {{ $pedido->recorrencia_label }}
+                                        </span>
+                                    </div>
+
+                                    <div class="flex flex-wrap items-center gap-2 mt-3">
+                                        @if($pedido->recorrencia_status?->value === 'ativa')
+                                            <button
+                                                wire:click="pausarRecorrencia({{ $pedido->id }})"
+                                                class="inline-flex items-center gap-1.5 border border-gray-200 bg-white text-gray-600 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-gray-50 transition"
+                                            >
+                                                <i class="fas fa-pause text-[10px]"></i> Pausar
+                                            </button>
+                                        @elseif($pedido->recorrencia_status?->value === 'pausada')
+                                            <button
+                                                wire:click="retomarRecorrencia({{ $pedido->id }})"
+                                                class="inline-flex items-center gap-1.5 border border-green-200 bg-white text-green-600 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-green-50 transition"
+                                            >
+                                                <i class="fas fa-play text-[10px]"></i> Retomar
+                                            </button>
+                                        @endif
+
+                                        @if($pedido->recorrencia_status?->value !== 'cancelada')
+                                            <button
+                                                wire:click="cancelarRecorrencia({{ $pedido->id }})"
+                                                class="inline-flex items-center gap-1.5 border border-red-200 bg-white text-red-600 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-red-50 transition"
+                                            >
+                                                <i class="fas fa-times text-[10px]"></i> Cancelar assinatura
+                                            </button>
+                                        @endif
+                                    </div>
+                                </div>
+                            @elseif($pedido->isRenovacao())
+                                <p class="text-xs text-gray-400">
+                                    Renovação do pedido
+                                    <a href="#" wire:click.prevent="open({{ $pedido->pedido_pai_id }})" class="text-teal-600 hover:underline">
+                                        {{ $pedido->pai?->codigo }}
+                                    </a>
+                                </p>
+                            @endif
+
                             @if($pedido->licencas->isNotEmpty())
                                 <div>
                                     <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Licenças</p>
@@ -298,6 +364,14 @@
 
                         <div class="px-6 py-4 border-t border-gray-100 flex flex-wrap items-center justify-end gap-2">
                             @if($pedido->status_pagamento !== 'pago')
+                                <button
+                                    wire:click="gerarLinkPagamento({{ $pedido->id }})"
+                                    wire:loading.attr="disabled"
+                                    class="inline-flex items-center gap-2 border border-teal-200 text-teal-600 px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-teal-50 transition"
+                                >
+                                    <i class="fas fa-link text-xs"></i> Gerar link PagBank
+                                </button>
+
                                 <button
                                     wire:click="confirmPaid({{ $pedido->id }})"
                                     class="inline-flex items-center gap-2 bg-teal-600 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-teal-700 transition"

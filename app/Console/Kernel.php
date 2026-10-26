@@ -27,6 +27,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('sitemap:generate')->everyMinute()->withoutOverlapping();
         $schedule->command('companies:generate-tokens')->everyMinute()->withoutOverlapping();
         $schedule->command('invoices:process-recurring')->everyMinute()->withoutOverlapping();
+        $schedule->command('loja:cobrar-recorrencias')->dailyAt('06:00')->withoutOverlapping();
         $schedule->command('financial:check-due')->everyMinute()->withoutOverlapping();
         $schedule->command('notifications:clean-old')->everyMinute()->withoutOverlapping();
         $schedule->command('app:clear-logs')->everyMinute()->withoutOverlapping(); 

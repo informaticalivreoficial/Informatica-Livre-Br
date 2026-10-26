@@ -40,7 +40,7 @@ class Pedidos extends Component
 
     public function open(int $id): void
     {
-        $this->pedido = Pedido::with(['itens.produto', 'itens.plano', 'licencas'])
+        $this->pedido = Pedido::with(['itens.produto', 'itens.plano', 'licencas', 'company', 'pai'])
             ->findOrFail($id);
 
         $this->showModal = true;
@@ -188,10 +188,81 @@ class Pedidos extends Component
         ]);
     }
 
+    public function gerarLinkPagamento(int $id): void
+    {
+        $pedido = Pedido::findOrFail($id);
+
+        try {
+            app(\App\Services\PagBankService::class)->createPedidoCheckout($pedido);
+        } catch (\Throwable $e) {
+            $this->dispatch('swal', [
+                'title' => 'Não foi possível gerar o link',
+                'text' => $e->getMessage(),
+                'icon' => 'error',
+            ]);
+
+            return;
+        }
+
+        app(\App\Services\LojaNotificacaoService::class)->pedidoRecebido($pedido->fresh());
+
+        $this->refreshPedido();
+
+        $this->dispatch('swal', [
+            'title' => 'Link de pagamento gerado',
+            'text' => 'O link do PagBank foi gerado e enviado para o e-mail do cliente.',
+            'icon' => 'success',
+            'timer' => 2500,
+            'showConfirmButton' => false,
+        ]);
+    }
+
+    public function pausarRecorrencia(int $id): void
+    {
+        $this->alterarRecorrencia($id, fn (Pedido $pedido) => $pedido->pausarRecorrencia(), 'Cobrança recorrente pausada.');
+    }
+
+    public function retomarRecorrencia(int $id): void
+    {
+        $this->alterarRecorrencia($id, fn (Pedido $pedido) => $pedido->retomarRecorrencia(), 'Cobrança recorrente reativada.');
+    }
+
+    public function cancelarRecorrencia(int $id): void
+    {
+        $this->alterarRecorrencia($id, fn (Pedido $pedido) => $pedido->cancelarRecorrencia(), 'Cobrança recorrente cancelada.');
+    }
+
+    private function alterarRecorrencia(int $id, callable $acao, string $mensagem): void
+    {
+        $pedido = Pedido::findOrFail($id);
+
+        try {
+            $acao($pedido);
+        } catch (\Throwable $e) {
+            $this->dispatch('swal', [
+                'title' => 'Não foi possível alterar a recorrência',
+                'text' => $e->getMessage(),
+                'icon' => 'error',
+            ]);
+
+            return;
+        }
+
+        $this->refreshPedido();
+
+        $this->dispatch('swal', [
+            'title' => 'Recorrência atualizada',
+            'text' => $mensagem,
+            'icon' => 'success',
+            'timer' => 2000,
+            'showConfirmButton' => false,
+        ]);
+    }
+
     private function refreshPedido(): void
     {
         if ($this->pedido) {
-            $this->pedido = $this->pedido->fresh(['itens.produto', 'itens.plano', 'licencas']);
+            $this->pedido = $this->pedido->fresh(['itens.produto', 'itens.plano', 'licencas', 'company', 'pai']);
         }
     }
 
@@ -214,6 +285,7 @@ class Pedidos extends Component
             'pendentes' => Pedido::where('status_pagamento', 'pendente')->count(),
             'pagos' => Pedido::where('status_pagamento', 'pago')->count(),
             'receita' => 'R$ ' . number_format((float) Pedido::where('status_pagamento', 'pago')->sum('total'), 2, ',', '.'),
+            'recorrentes' => Pedido::recorrentesAtivos()->count(),
         ];
 
         return view('livewire.dashboard.loja.pedidos', [

@@ -36,6 +36,16 @@
                         {{ request()->routeIs('cliente.servicos') ? 'text-teal-600' : 'text-gray-600 hover:text-teal-600' }}">
                     <i class="fas fa-box"></i> Serviços
                 </a>
+                <a href="{{ route('cliente.pedidos') }}"
+                    class="text-sm font-medium transition flex items-center gap-2
+                        {{ request()->routeIs('cliente.pedidos*') ? 'text-teal-600' : 'text-gray-600 hover:text-teal-600' }}">
+                    <i class="fas fa-shopping-bag"></i> Pedidos
+                </a>
+                <a href="{{ route('cliente.licencas') }}"
+                    class="text-sm font-medium transition flex items-center gap-2
+                        {{ request()->routeIs('cliente.licencas') ? 'text-teal-600' : 'text-gray-600 hover:text-teal-600' }}">
+                    <i class="fas fa-key"></i> Licenças
+                </a>
                 <a href="{{ route('cliente.empresa') }}"
                     class="text-sm font-medium transition flex items-center gap-2
                         {{ request()->routeIs('cliente.empresa') ? 'text-teal-600' : 'text-gray-600 hover:text-teal-600' }}">
@@ -108,6 +118,16 @@
                     class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition
                         {{ request()->routeIs('cliente.servicos') ? 'bg-teal-50 text-teal-600' : 'text-gray-600 hover:bg-gray-50' }}">
                     <i class="fas fa-box w-4"></i> Serviços
+                </a>
+                <a href="{{ route('cliente.pedidos') }}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition
+                        {{ request()->routeIs('cliente.pedidos*') ? 'bg-teal-50 text-teal-600' : 'text-gray-600 hover:bg-gray-50' }}">
+                    <i class="fas fa-shopping-bag w-4"></i> Pedidos
+                </a>
+                <a href="{{ route('cliente.licencas') }}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition
+                        {{ request()->routeIs('cliente.licencas') ? 'bg-teal-50 text-teal-600' : 'text-gray-600 hover:bg-gray-50' }}">
+                    <i class="fas fa-key w-4"></i> Licenças
                 </a>
                 <a href="{{ route('cliente.empresa') }}"
                     class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition

@@ -2,10 +2,14 @@
 
 namespace App\Livewire\Web\Loja;
 
+use App\Enums\BillingInterval;
+use App\Enums\RecorrenciaStatus;
+use App\Models\Company;
 use App\Models\Pedido;
 use App\Models\Produto;
 use App\Models\ProdutoPlano;
-use App\Services\PagHiperService;
+use App\Services\LojaNotificacaoService;
+use App\Services\PagBankService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Layout;
@@ -22,7 +26,7 @@ class Checkout extends Component
     public string $email = '';
     public string $telefone = '';
     public string $cpfCnpj = '';
-    public string $metodoPagamento = 'pix';
+    public string $metodoPagamento = 'cartao_credito';
     public string $observacoes = '';
 
     public ?Pedido $pedido = null;
@@ -43,11 +47,11 @@ class Checkout extends Component
     public function rules(): array
     {
         return [
-            'nome' => 'required|string|max:255',
+            'nome' => ['required', 'string', 'max:255', 'regex:/^\S+\s+.*\S$/'],
             'email' => 'required|email|max:255',
             'telefone' => 'required|string|max:20',
             'cpfCnpj' => 'required|string|min:11|max:20',
-            'metodoPagamento' => 'required|in:pix,boleto',
+            'metodoPagamento' => 'required|in:cartao_credito,pix,boleto',
             'observacoes' => 'nullable|string|max:1000',
         ];
     }
@@ -56,6 +60,7 @@ class Checkout extends Component
     {
         return [
             'nome.required' => 'Informe seu nome completo.',
+            'nome.regex' => 'Informe nome e sobrenome.',
             'email.required' => 'Informe seu e-mail.',
             'email.email' => 'Informe um e-mail válido.',
             'telefone.required' => 'Informe um telefone para contato.',
@@ -82,7 +87,22 @@ class Checkout extends Component
         }
 
         $pedido = DB::transaction(function () use ($documento) {
+            $recorrente = $this->planoSelecionado->isRecurring();
+            $intervalo = $this->planoSelecionado->billing_interval;
+
+            if ($recorrente && ! $intervalo) {
+                $intervalo = BillingInterval::Monthly;
+            }
+
+            $company = Company::query()
+                ->where(function ($query) {
+                    $query->where('email', $this->email)
+                        ->orWhere('responsable_email', $this->email);
+                })
+                ->first();
+
             $pedido = Pedido::create([
+                'company_id' => $company?->id,
                 'nome' => $this->nome,
                 'email' => $this->email,
                 'telefone' => $this->telefone,
@@ -93,6 +113,13 @@ class Checkout extends Component
                 'metodo_pagamento' => $this->metodoPagamento,
                 'status_pagamento' => 'pendente',
                 'status' => 'pendente',
+                'recorrente' => $recorrente,
+                'billing_interval' => $recorrente ? $intervalo?->value : null,
+                'recorrencia_status' => $recorrente ? RecorrenciaStatus::Ativa->value : null,
+                'proximo_vencimento' => $recorrente && $intervalo
+                    ? today()->addMonths($intervalo->months())
+                    : null,
+                'ciclo' => 1,
                 'observacoes' => $this->observacoes ?: null,
             ]);
 
@@ -107,43 +134,32 @@ class Checkout extends Component
             return $pedido;
         });
 
-        try {
-            $charge = app(PagHiperService::class)->createPedidoCharge($pedido);
+        $this->pedido = $pedido;
 
-            $pedido->update([
-                'gateway_id' => $charge['transaction_id'] ?? null,
-                'payment_url' => data_get($charge, 'bank_slip.url_slip')
-                    ?? data_get($charge, 'bank_slip.url_slip_pdf')
-                    ?? data_get($charge, 'pix.url')
-                    ?? null,
-                'gateway_response' => $charge,
-            ]);
+        $notificacoes = app(LojaNotificacaoService::class);
+
+        try {
+            $checkout = app(PagBankService::class)->createPedidoCheckout($pedido);
         } catch (\Throwable $e) {
-            Log::warning('Falha ao gerar cobrança do pedido', [
+            Log::warning('Falha ao gerar checkout do PagBank', [
                 'pedido_id' => $pedido->id,
                 'error' => $e->getMessage(),
             ]);
 
-            $this->pedido = $pedido;
+            $notificacoes->pedidoRecebido($pedido);
 
             $this->dispatch('swal', [
                 'title' => 'Pedido registrado',
-                'text' => 'Não foi possível gerar a cobrança automática. Nossa equipe enviará o link de pagamento para o seu e-mail.',
+                'text' => 'Não foi possível abrir o pagamento automático. Nossa equipe enviará o link de cobrança para o seu e-mail.',
                 'icon' => 'info',
             ]);
 
             return;
         }
 
-        $this->pedido = $pedido->fresh();
+        $notificacoes->pedidoRecebido($pedido->fresh());
 
-        $this->dispatch('swal', [
-            'title' => 'Pedido criado',
-            'text' => 'Pedido ' . $pedido->codigo . ' registrado com sucesso.',
-            'icon' => 'success',
-            'timer' => 3000,
-            'showConfirmButton' => false,
-        ]);
+        $this->redirect($checkout['url']);
     }
 
     public function render()

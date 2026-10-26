@@ -23,6 +23,12 @@ class Money
 
     public static function cents(float|int|string|null $value): int
     {
-        return (int) bcmul(number_format((float) $value, 2, '.', ''), '100', 0);
+        $normalized = number_format((float) $value, 2, '.', '');
+
+        if (function_exists('bcmul')) {
+            return (int) bcmul($normalized, '100', 0);
+        }
+
+        return (int) round((float) $normalized * 100);
     }
 }

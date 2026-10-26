@@ -19,6 +19,18 @@ return [
         'url' => env('PAGHIPER_API_URL'),
     ],
 
+    'pagbank' => [
+        'token' => env('PAGBANK_TOKEN'),
+        'webhook_token' => env('PAGBANK_WEBHOOK_TOKEN') ?: env('PAGBANK_TOKEN'),
+        'sandbox' => env('PAGBANK_SANDBOX', true),
+        'url' => env(
+            'PAGBANK_URL',
+            env('PAGBANK_SANDBOX', true)
+                ? 'https://sandbox.api.pagseguro.com'
+                : 'https://api.pagseguro.com'
+        ),
+    ],
+
     'mailgun' => [
         'domain' => env('MAILGUN_DOMAIN'),
         'secret' => env('MAILGUN_SECRET'),

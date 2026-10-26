@@ -20,6 +20,7 @@ use App\Livewire\Dashboard\Posts\Posts;
 use App\Livewire\Dashboard\Slides\SlideForm;
 use App\Livewire\Dashboard\Slides\Slides;
 use App\Http\Controllers\Web\{
+    CheckoutReturnController,
     ClienteController,
     ProdutoController,
     SiteController,
@@ -79,6 +80,8 @@ use App\Http\Controllers\Dashboard\FinancialReportController;
 // });
 
 Route::prefix('cliente')->name('cliente.')->group(function () {
+    Route::get('/', fn () => redirect()->route('cliente.dashboard'))->name('index');
+
     // Acesso público
     Route::get('/entrar', [ClienteController::class, 'entrar'])->name('entrar');
     Route::post('/enviar-link', [ClienteController::class, 'enviarLink'])->name('enviar-link');
@@ -90,6 +93,10 @@ Route::prefix('cliente')->name('cliente.')->group(function () {
         Route::get('/dashboard', [ClienteController::class, 'dashboard'])->name('dashboard');
         Route::get('/faturas', [ClienteController::class, 'faturas'])->name('faturas');
         Route::get('/servicos', [ClienteController::class, 'servicos'])->name('servicos');
+        Route::get('/pedidos', [ClienteController::class, 'pedidos'])->name('pedidos');
+        Route::get('/pedidos/{codigo}', [ClienteController::class, 'pedido'])->name('pedido');
+        Route::post('/pedidos/{codigo}/reenviar', [ClienteController::class, 'reenviarLink'])->name('pedido.reenviar');
+        Route::get('/licencas', [ClienteController::class, 'licencas'])->name('licencas');
         Route::get('/empresa', [ClienteController::class, 'empresa'])->name('empresa');
     });
 });
@@ -112,6 +119,7 @@ Route::group(['as' => 'web.'], function () {
     Route::get('/sistemas', [ProdutoController::class, 'index'])->name('produtos');
     Route::get('/sistemas/{slug}', [ProdutoController::class, 'show'])->name('produto');
     Route::get('/checkout/{produto}/{plano}', Checkout::class)->name('checkout');
+    Route::get('/checkout/retorno', CheckoutReturnController::class)->name('checkout.retorno');
 });
 
 Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], function () {

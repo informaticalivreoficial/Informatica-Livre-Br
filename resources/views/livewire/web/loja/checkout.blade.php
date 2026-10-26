@@ -16,7 +16,7 @@
             </div>
 
             <h1 class="text-3xl md:text-4xl font-extrabold text-white">Finalizar pedido</h1>
-            <p class="text-teal-100 mt-2">Confirme seus dados e escolha a forma de pagamento.</p>
+            <p class="text-teal-100 mt-2">Confirme seus dados e escolha como pagar. O processamento é feito pelo PagBank.</p>
         </div>
     </section>
 
@@ -67,7 +67,7 @@
                                 target="_blank"
                                 class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-xl font-semibold transition"
                             >
-                                <i class="fas fa-external-link-alt"></i> Abrir pagamento
+                                <i class="fas fa-external-link-alt"></i> Continuar pagamento
                             </a>
                         @else
                             <p class="text-sm text-gray-500">
@@ -161,7 +161,21 @@
                                     <h2 class="font-bold text-gray-800">Forma de pagamento</h2>
                                 </div>
 
-                                <div class="p-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="p-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                    <button
+                                        type="button"
+                                        wire:click="$set('metodoPagamento', 'cartao_credito')"
+                                        class="flex items-center gap-4 rounded-xl border-2 px-5 py-4 text-left transition {{ $metodoPagamento === 'cartao_credito' ? 'border-teal-500 bg-teal-50' : 'border-gray-200 hover:border-teal-300' }}"
+                                    >
+                                        <span class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0">
+                                            <i class="fas fa-credit-card"></i>
+                                        </span>
+                                        <span>
+                                            <span class="block text-sm font-semibold text-gray-800">Cartão de crédito</span>
+                                            <span class="block text-xs text-gray-500">Até 12x</span>
+                                        </span>
+                                    </button>
+
                                     <button
                                         type="button"
                                         wire:click="$set('metodoPagamento', 'pix')"
@@ -190,7 +204,12 @@
                                         </span>
                                     </button>
 
-                                    @error('metodoPagamento') <span class="text-red-500 text-xs block sm:col-span-2">{{ $message }}</span> @enderror
+                                    @error('metodoPagamento') <span class="text-red-500 text-xs block sm:col-span-3">{{ $message }}</span> @enderror
+
+                                    <p class="sm:col-span-3 text-xs text-gray-400">
+                                        <i class="fas fa-shield-alt mr-1"></i>
+                                        Você será redirecionado para o ambiente seguro do PagBank para concluir o pagamento.
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -265,15 +284,15 @@
                                         class="w-full inline-flex items-center justify-center gap-2 bg-teal-600 hover:bg-teal-700 disabled:bg-gray-300 text-white px-6 py-4 rounded-xl font-bold transition"
                                     >
                                         <span wire:loading.remove wire:target="finalizar">
-                                            <i class="fas fa-lock mr-1"></i> Confirmar pedido
+                                            <i class="fas fa-lock mr-1"></i> Ir para o pagamento
                                         </span>
                                         <span wire:loading wire:target="finalizar">
-                                            <i class="fas fa-spinner fa-spin mr-1"></i> Processando...
+                                            <i class="fas fa-spinner fa-spin mr-1"></i> Redirecionando...
                                         </span>
                                     </button>
 
                                     <p class="text-center text-[11px] text-gray-400">
-                                        <i class="fas fa-shield-alt mr-1"></i> Ambiente seguro · Dados criptografados
+                                        <i class="fas fa-shield-alt mr-1"></i> Pagamento processado pelo PagBank · Ambiente seguro
                                     </p>
                                 </div>
                             </div>

@@ -3,14 +3,13 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
-use App\Models\Fatura;
-use App\Models\Gateway;
-use App\Models\ItemPedido;
+use App\Models\Company;
+use App\Models\Licenca;
 use App\Models\Pedido;
-use Carbon\Carbon;
+use App\Services\LojaNotificacaoService;
+use App\Services\PagBankService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
-use WebMaster\PagHiper\PagHiper;
+use Illuminate\Support\Facades\Mail;
 
 class ClienteController extends Controller
 {
@@ -140,5 +139,75 @@ class ClienteController extends Controller
         return view('web.cliente.empresa', compact('company'));
     }
 
-    
+    public function pedidos(Request $request)
+    {
+        $company = $request->cliente_company;
+
+        $pedidos = $this->pedidosDaEmpresa($company)
+            ->with(['itens', 'licencas'])
+            ->when($request->status, fn ($query) => $query->where('status_pagamento', $request->status))
+            ->orderByDesc('created_at')
+            ->paginate(10);
+
+        return view('web.cliente.pedidos', compact('company', 'pedidos'));
+    }
+
+    public function pedido(Request $request, string $codigo)
+    {
+        $company = $request->cliente_company;
+
+        $pedido = $this->pedidosDaEmpresa($company)
+            ->with(['itens', 'licencas.produto', 'cobrancas'])
+            ->where('codigo', $codigo)
+            ->firstOrFail();
+
+        return view('web.cliente.pedido', compact('company', 'pedido'));
+    }
+
+    public function licencas(Request $request)
+    {
+        $company = $request->cliente_company;
+
+        $licencas = Licenca::query()
+            ->with(['produto', 'pedido'])
+            ->whereIn('pedido_id', $this->pedidosDaEmpresa($company)->select('id'))
+            ->latest()
+            ->paginate(15);
+
+        return view('web.cliente.licencas', compact('company', 'licencas'));
+    }
+
+    public function reenviarLink(Request $request, string $codigo)
+    {
+        $company = $request->cliente_company;
+
+        $pedido = $this->pedidosDaEmpresa($company)
+            ->where('codigo', $codigo)
+            ->firstOrFail();
+
+        if ($pedido->status_pagamento === 'pago') {
+            return back()->with('success', 'Este pedido já está pago. Consulte a aba de licenças para acessar seus dados.');
+        }
+
+        try {
+            app(PagBankService::class)->createPedidoCheckout($pedido);
+        } catch (\Throwable $e) {
+            return back()->with('error', 'Não foi possível gerar um novo link de pagamento: ' . $e->getMessage());
+        }
+
+        app(LojaNotificacaoService::class)->pedidoRecebido($pedido->fresh());
+
+        return back()->with('success', 'Novo link de pagamento gerado e enviado para o seu e-mail.');
+    }
+
+    private function pedidosDaEmpresa(Company $company)
+    {
+        return Pedido::query()->where(function ($query) use ($company) {
+            $query->where('company_id', $company->id);
+
+            foreach (array_filter([$company->email, $company->responsable_email]) as $email) {
+                $query->orWhere('email', $email);
+            }
+        });
+    }
 }

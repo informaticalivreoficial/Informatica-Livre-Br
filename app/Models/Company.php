@@ -96,6 +96,11 @@ class Company extends Model
         return $this->hasMany(Invoice::class);
     }
 
+    public function pedidos()
+    {
+        return $this->hasMany(Pedido::class);
+    }
+
     public function owner()
     {
         return $this->hasOne(User::class, 'id', 'user');
