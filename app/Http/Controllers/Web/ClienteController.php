@@ -10,6 +10,7 @@ use App\Services\LojaNotificacaoService;
 use App\Services\PagBankService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\Rule;
 
 class ClienteController extends Controller
 {
@@ -137,6 +138,53 @@ class ClienteController extends Controller
     {
         $company = $request->cliente_company;
         return view('web.cliente.empresa', compact('company'));
+    }
+
+    public function atualizarEmpresa(Request $request)
+    {
+        $company = $request->cliente_company;
+
+        $data = $request->validate([
+            'alias_name' => 'required|string|max:255',
+            'social_name' => 'nullable|string|max:255',
+            'document_company' => 'nullable|string|max:20',
+            'email' => [
+                'required',
+                'email',
+                'max:255',
+                Rule::unique('companies', 'email')->ignore($company->id),
+            ],
+            'phone' => 'nullable|string|max:20',
+            'whatsapp' => 'nullable|string|max:20',
+            'responsable_name' => 'required|string|max:255',
+            'responsable_email' => 'required|email|max:255',
+            'responsable_cpf' => 'nullable|string|max:20',
+            'zipcode' => 'nullable|string|max:9',
+            'street' => 'nullable|string|max:255',
+            'number' => 'nullable|string|max:20',
+            'complement' => 'nullable|string|max:255',
+            'neighborhood' => 'nullable|string|max:255',
+            'city' => 'nullable|string|max:255',
+            'state' => 'nullable|string|max:2',
+        ], [
+            'alias_name.required' => 'Informe o nome fantasia.',
+            'email.required' => 'Informe o e-mail principal.',
+            'email.email' => 'Informe um e-mail válido.',
+            'email.unique' => 'Este e-mail já está cadastrado em outra empresa.',
+            'responsable_name.required' => 'Informe o nome do responsável.',
+            'responsable_email.required' => 'Informe o e-mail do responsável.',
+            'responsable_email.email' => 'Informe um e-mail válido para o responsável.',
+            'state.max' => 'Informe a UF com 2 letras.',
+        ]);
+
+        if (! empty($data['state'])) {
+            $data['state'] = strtoupper($data['state']);
+        }
+
+        $company->update($data);
+
+        return redirect()->route('cliente.empresa')
+            ->with('success', 'Seus dados foram atualizados com sucesso.');
     }
 
     public function pedidos(Request $request)

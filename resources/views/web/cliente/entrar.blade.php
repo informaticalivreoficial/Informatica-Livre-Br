@@ -5,9 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acesso ao Painel - Informática Livre</title>
     <link rel="stylesheet" href="{{ asset('theme/plugins/fontawesome-free/css/all.min.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css'])
+    <style>
+        body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
+    </style>
 </head>
-<body class="font-['Inter'] bg-gradient-to-br from-teal-700 to-teal-500 min-h-screen flex items-center justify-center p-4">
+<body class="bg-gradient-to-br from-teal-700 to-teal-500 min-h-screen flex items-center justify-center p-4">
 
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
         <div class="text-center mb-8">

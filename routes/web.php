@@ -98,6 +98,7 @@ Route::prefix('cliente')->name('cliente.')->group(function () {
         Route::post('/pedidos/{codigo}/reenviar', [ClienteController::class, 'reenviarLink'])->name('pedido.reenviar');
         Route::get('/licencas', [ClienteController::class, 'licencas'])->name('licencas');
         Route::get('/empresa', [ClienteController::class, 'empresa'])->name('empresa');
+        Route::put('/empresa', [ClienteController::class, 'atualizarEmpresa'])->name('empresa.atualizar');
     });
 });
 
