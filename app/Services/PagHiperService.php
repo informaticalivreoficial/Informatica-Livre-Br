@@ -41,7 +41,7 @@ class PagHiperService
                     'item_id'     => (string) $invoice->id,
                     'description' => $description,
                     'quantity'    => 1,
-                    'price_cents' => (int) bcmul($invoice->amount, '100', 0), // 👈 Corrigido
+                    'price_cents' => Money::cents($invoice->amount),
                 ]
             ],
             'notification_url' => route('webhooks.paghiper'),

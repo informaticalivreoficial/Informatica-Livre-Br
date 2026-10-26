@@ -92,6 +92,7 @@ Route::prefix('cliente')->name('cliente.')->group(function () {
     Route::middleware('cliente.auth')->group(function () {
         Route::get('/dashboard', [ClienteController::class, 'dashboard'])->name('dashboard');
         Route::get('/faturas', [ClienteController::class, 'faturas'])->name('faturas');
+        Route::post('/faturas/{id}/pagar', [ClienteController::class, 'pagarFatura'])->name('faturas.pagar');
         Route::get('/servicos', [ClienteController::class, 'servicos'])->name('servicos');
         Route::get('/pedidos', [ClienteController::class, 'pedidos'])->name('pedidos');
         Route::get('/pedidos/{codigo}', [ClienteController::class, 'pedido'])->name('pedido');

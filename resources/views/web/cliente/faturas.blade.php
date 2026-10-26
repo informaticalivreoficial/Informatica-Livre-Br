@@ -74,15 +74,27 @@
                                     {{ $fatura->paid_at ? $fatura->paid_at->format('d/m/Y') : '—' }}
                                 </td>
                                 <td class="px-6 py-4 text-right">
-                                    @if($fatura->payment_url && $fatura->status === 'pending')
-                                        <a href="{{ $fatura->payment_url }}" target="_blank"
-                                            class="bg-teal-600 text-white px-4 py-2 rounded-lg text-xs hover:bg-teal-700 transition inline-flex items-center gap-1">
-                                            <i class="fas fa-barcode"></i> Pagar Boleto
-                                        </a>
+                                    @if($fatura->status === 'pending')
+                                        @if($fatura->payment_url)
+                                            <a href="{{ $fatura->payment_url }}" target="_blank" rel="noopener"
+                                                class="inline-flex items-center gap-1.5 bg-teal-600 text-white px-4 py-2 rounded-lg text-xs font-semibold hover:bg-teal-700 transition">
+                                                <i class="fas fa-credit-card"></i> Pagar
+                                            </a>
+                                        @else
+                                            <form method="POST" action="{{ route('cliente.faturas.pagar', $fatura->id) }}">
+                                                @csrf
+                                                <button type="submit"
+                                                    class="inline-flex items-center gap-1.5 bg-teal-600 text-white px-4 py-2 rounded-lg text-xs font-semibold hover:bg-teal-700 transition">
+                                                    <i class="fas fa-barcode"></i> Gerar pagamento
+                                                </button>
+                                            </form>
+                                        @endif
                                     @elseif($fatura->status === 'paid')
-                                        <span class="text-green-500 text-xs">
+                                        <span class="text-green-600 text-xs font-medium">
                                             <i class="fas fa-check-circle mr-1"></i> Pago
                                         </span>
+                                    @else
+                                        <span class="text-gray-400 text-xs">—</span>
                                     @endif
                                 </td>
                             </tr>

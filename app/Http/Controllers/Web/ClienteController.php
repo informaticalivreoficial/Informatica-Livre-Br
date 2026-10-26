@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\Company;
+use App\Models\Invoice;
 use App\Models\Licenca;
 use App\Models\Pedido;
 use App\Services\LojaNotificacaoService;
 use App\Services\PagBankService;
+use App\Services\PagHiperService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
@@ -112,6 +114,48 @@ class ClienteController extends Controller
             ->paginate(10);
 
         return view('web.cliente.faturas', compact('company', 'faturas'));
+    }
+
+    public function pagarFatura(Request $request, int $id)
+    {
+        $company = $request->cliente_company;
+
+        $invoice = $company->invoices()
+            ->with(['company', 'subscription.service'])
+            ->findOrFail($id);
+
+        if ($invoice->status === 'paid') {
+            return back()->with('success', 'Esta fatura já está paga.');
+        }
+
+        if ($invoice->status !== 'pending') {
+            return back()->with('error', 'Esta fatura não está disponível para pagamento.');
+        }
+
+        if (! $invoice->payment_url) {
+            try {
+                $response = app(PagHiperService::class)->createInvoice($invoice);
+            } catch (\Throwable $e) {
+                return back()->with('error', 'Não foi possível gerar a cobrança: ' . $e->getMessage());
+            }
+
+            $invoice->update([
+                'gateway' => 'paghiper',
+                'gateway_reference' => $response['transaction_id'] ?? null,
+                'payment_url' => $response['bank_slip']['url_slip']
+                    ?? $response['bank_slip']['url_slip_pdf']
+                    ?? data_get($response, 'pix.url')
+                    ?? null,
+                'pix_qrcode' => $response['pix']['qrcode_image'] ?? null,
+                'boleto_barcode' => $response['bank_slip']['digitable_line'] ?? null,
+            ]);
+        }
+
+        if (! $invoice->fresh()->payment_url) {
+            return back()->with('error', 'A cobrança foi gerada, mas o link de pagamento não está disponível. Tente novamente em instantes.');
+        }
+
+        return redirect()->away($invoice->fresh()->payment_url);
     }
 
     public function servicos(Request $request)
