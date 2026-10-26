@@ -88,6 +88,19 @@ class ClienteAuthTest extends TestCase
         $this->assertNotNull($company->fresh()->magic_token);
     }
 
+    public function test_falha_no_envio_do_email_retorna_erro_amigavel(): void
+    {
+        $company = $this->company();
+
+        Mail::shouldReceive('raw')->once()->andThrow(new \RuntimeException('SMTP timeout'));
+
+        $this->post(route('cliente.enviar-link'), ['email' => 'maria@example.com'])
+            ->assertRedirect()
+            ->assertSessionHas('error');
+
+        $this->assertNotNull($company->fresh()->magic_token);
+    }
+
     public function test_cliente_atualiza_dados_basicos(): void
     {
         $company = $this->company();

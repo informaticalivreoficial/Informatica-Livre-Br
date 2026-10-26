@@ -11,6 +11,7 @@ use App\Services\LojaNotificacaoService;
 use App\Services\PagBankService;
 use App\Services\PagHiperService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 
@@ -38,22 +39,41 @@ class ClienteController extends Controller
             ->orWhere('responsable_email', $request->email)
             ->first();
 
-        // Sempre mostra sucesso por segurança
         if (!$company) {
             return back()->with('success', 'Se o e-mail estiver cadastrado, você receberá o link em breve.');
         }
 
-        $token = $company->generateMagicToken();
-        $link  = route('cliente.auth', $token);
+        try {
+            $token = $company->generateMagicToken();
+        } catch (\Throwable $e) {
+            Log::error('Falha ao gerar token de acesso do cliente', [
+                'company_id' => $company->id,
+                'email' => $request->email,
+                'error' => $e->getMessage(),
+            ]);
 
-        // Envia por e-mail
-        Mail::raw(
-            "Olá, {$company->alias_name}!\n\nClique no link abaixo para acessar seu painel:\n\n{$link}\n\nEste link expira em 15 minutos.",
-            function ($mail) use ($company) {
-                $mail->to($company->email ?? $company->responsable_email)
-                    ->subject('Acesso ao Painel do Cliente - Informática Livre');
-            }
-        );
+            return back()->with('error', 'Não foi possível gerar o link de acesso agora. Tente novamente em instantes.');
+        }
+
+        $link = route('cliente.auth', $token);
+
+        try {
+            Mail::raw(
+                "Olá, {$company->alias_name}!\n\nClique no link abaixo para acessar seu painel:\n\n{$link}\n\nEste link expira em 15 minutos.",
+                function ($mail) use ($company) {
+                    $mail->to($company->email ?? $company->responsable_email)
+                        ->subject('Acesso ao Painel do Cliente - Informática Livre');
+                }
+            );
+        } catch (\Throwable $e) {
+            Log::error('Falha ao enviar link de acesso do cliente', [
+                'company_id' => $company->id,
+                'email' => $request->email,
+                'error' => $e->getMessage(),
+            ]);
+
+            return back()->with('error', 'Não foi possível enviar o e-mail de acesso agora. Tente novamente em instantes ou fale com o suporte.');
+        }
 
         return back()->with('success', 'Link enviado! Verifique seu e-mail.');
     }
