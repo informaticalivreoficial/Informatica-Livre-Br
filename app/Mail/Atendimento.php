@@ -31,12 +31,11 @@ class Atendimento extends Mailable
     {
         return new Envelope(
             subject: '✅ Contato via site',  
-            from: new Address(env('MAIL_FROM_ADDRESS'), env('APP_NAME')), // Remetente
-            to: [new Address(env('MAIL_FROM_ADDRESS'), env('APP_NAME'))], // Destinatário                
+            from: new Address(config('mail.from.address'), config('mail.from.name')),
+            to: [new Address(config('mail.from.address'), config('mail.from.name'))],
             replyTo: [
                 new Address($this->data['email'], $this->data['name']),
             ],
-            //bcc: env('MAIL_FROM_ADDRESS'), // Cópia oculta (opcional)
         );
     }
 

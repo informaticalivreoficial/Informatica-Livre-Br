@@ -27,10 +27,10 @@ class SupportRequestMail extends Mailable
     {
         return new Envelope(
             subject: '🆘 Nova solicitação de suporte',  
-            from: new Address(env('MAIL_FROM_ADDRESS'), config('app.name')), // Remetente
-            to: [new Address(config('app.desenvolvedor_email'), config('app.desenvolvedor_nome'))], // Destinatário                
+            from: new Address(config('mail.from.address'), config('mail.from.name')),
+            to: [new Address(config('app.desenvolvedor_email'), config('app.desenvolvedor_nome'))],
             replyTo: [
-                new Address(env('MAIL_FROM_ADDRESS'), config('app.name')),
+                new Address(config('mail.from.address'), config('mail.from.name')),
             ],
         );
     }
@@ -45,7 +45,7 @@ class SupportRequestMail extends Mailable
             with:[
                 'Cliente' => config('app.name'),
                 'nome' => auth()->user()->name,
-                'email' => env('MAIL_FROM_ADDRESS'),
+                'email' => config('mail.from.address'),
                 'mensagem' => $this->messageText
             ]
         );
