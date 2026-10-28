@@ -178,7 +178,13 @@ class Login extends Component
         } catch (\Throwable $e) {
             report($e);
 
-            $this->toastError('Não foi possível enviar o código de verificação. Tente novamente em instantes.');
+            \Illuminate\Support\Facades\Log::error('Falha ao enviar o código de verificação em duas etapas', [
+                'user_id' => $user->id,
+                'exception' => $e::class,
+                'message' => $e->getMessage(),
+            ]);
+
+            $this->toastError('Não foi possível enviar o código de verificação. Tente novamente ou use um código de recuperação.');
             return false;
         }
 

@@ -20,6 +20,13 @@ class TwoFactorService
 
     public function sendCode(User $user): void
     {
+        $code = $this->createCode($user);
+
+        $user->notify(new TwoFactorCodeNotification($code, self::CODE_TTL_MINUTES));
+    }
+
+    public function createCode(User $user): string
+    {
         $code = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
 
         $user->forceFill([
@@ -29,7 +36,7 @@ class TwoFactorService
             'two_factor_attempts' => 0,
         ])->save();
 
-        $user->notify(new TwoFactorCodeNotification($code, self::CODE_TTL_MINUTES));
+        return $code;
     }
 
     public function resendIn(User $user): int
