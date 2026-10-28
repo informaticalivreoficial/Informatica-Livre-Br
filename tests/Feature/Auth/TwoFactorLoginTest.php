@@ -52,7 +52,10 @@ class TwoFactorLoginTest extends TestCase
         $user = $this->makeUser();
 
         $component = $this->startLogin($user)
-            ->assertSet('awaitingCode', true);
+            ->assertSet('awaitingCode', true)
+            ->assertSee('Verificação em duas etapas')
+            ->assertSee('Reenviar código')
+            ->assertDontSee('Acessar painel');
 
         $this->assertStringContainsString('@', $component->get('maskedEmail'));
         $this->assertStringNotContainsString($user->email, $component->get('maskedEmail'));
@@ -163,7 +166,10 @@ class TwoFactorLoginTest extends TestCase
 
         $component->set('code', $code)->call('verify')
             ->assertSet('showingRecoveryCodes', true)
-            ->assertCount('recoveryCodes', TwoFactorService::RECOVERY_CODES_COUNT);
+            ->assertCount('recoveryCodes', TwoFactorService::RECOVERY_CODES_COUNT)
+            ->assertSee('Códigos de recuperação')
+            ->assertSee('Copiar códigos')
+            ->assertSee('Já salvei, continuar');
 
         $this->assertSame(TwoFactorService::RECOVERY_CODES_COUNT, $user->fresh()->twoFactorRecoveryCodes()->count());
     }

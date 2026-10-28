@@ -4,6 +4,10 @@
 @tailwind utilities;
 @import './matrix.css';
 
+[x-cloak] {
+    display: none !important;
+}
+
 .flatpickr-calendar * {
     box-sizing: border-box;
 }

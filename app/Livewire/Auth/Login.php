@@ -31,6 +31,7 @@ class Login extends Component
     public string $code = '';
     public string $maskedEmail = '';
     public array $recoveryCodes = [];
+    public int $resendIn = 0;
 
     public function mount()
     {
@@ -167,7 +168,7 @@ class Login extends Component
     {
         session()->forget(self::SESSION_KEY);
 
-        $this->reset('awaitingCode', 'showingRecoveryCodes', 'code', 'recoveryCodes', 'maskedEmail');
+        $this->reset('awaitingCode', 'showingRecoveryCodes', 'code', 'recoveryCodes', 'maskedEmail', 'resendIn');
     }
 
     private function sendCode(User $user): bool
@@ -187,6 +188,7 @@ class Login extends Component
         ]]);
 
         $this->maskedEmail = $this->maskEmail($user->email);
+        $this->resendIn = TwoFactorService::RESEND_SECONDS;
 
         return true;
     }
