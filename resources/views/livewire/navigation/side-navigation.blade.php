@@ -28,8 +28,8 @@
                     </a>                    
                 </li>
 
-                <li class="nav-item {{ Route::is(['settings','sitemap.generator']) ? 'menu-open' : '' }}">
-                    <a href="#" class="nav-link {{ Route::is(['settings','sitemap.generator']) ? 'active' : '' }}">
+                <li class="nav-item {{ Route::is(['settings','security.index','sitemap.generator']) ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ Route::is(['settings','security.index','sitemap.generator']) ? 'active' : '' }}">
                         <i class="nav-icon fas fa-cog"></i>
                         <p> Configurações <i class="fas fa-angle-left right"></i></p>
                     </a>
@@ -38,6 +38,12 @@
                             <a href="{{route('settings')}}" class="nav-link {{ Route::is('settings') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Sistema</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{route('security.index')}}" class="nav-link {{ Route::is('security.index') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Segurança</p>
                             </a>
                         </li>
                         <li class="nav-item">

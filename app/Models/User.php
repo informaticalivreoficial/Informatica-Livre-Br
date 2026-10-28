@@ -36,11 +36,15 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'two_factor_code',
     ];
 
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'two_factor_expires_at' => 'datetime',
+        'two_factor_sent_at' => 'datetime',
+        'two_factor_confirmed_at' => 'datetime',
     ];
 
     protected static function booted()
@@ -67,9 +71,19 @@ class User extends Authenticatable
         return $this->hasRole('employee');
     }
 
+    public function hasTwoFactorConfirmed(): bool
+    {
+        return $this->two_factor_confirmed_at !== null;
+    }
+
     /**
      * Relacionamentos
     */
+
+    public function twoFactorRecoveryCodes()
+    {
+        return $this->hasMany(TwoFactorRecoveryCode::class);
+    }
 
     /**
      * Scopes

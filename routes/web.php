@@ -6,7 +6,8 @@ use Illuminate\Support\Facades\Route;
 use App\Livewire\Dashboard\{
     Settings,
     Dashboard,
-    NotificationsList
+    NotificationsList,
+    SecuritySettings
 };
 use App\Livewire\Dashboard\Users\{
     Time,
@@ -128,6 +129,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
 
     Route::get('/', Dashboard::class)->name('admin');
     Route::get('configuracoes', Settings::class)->name('settings');
+    Route::get('seguranca', SecuritySettings::class)->name('security.index');
     Route::get('sitemap-generator', SitemapGenerator::class)->name('sitemap.generator');
     Route::get('notificacoes', NotificationsList::class)->name('notifications.index');
 
