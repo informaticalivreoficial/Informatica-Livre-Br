@@ -2,15 +2,16 @@
 
 namespace App\Providers;
 
-use App\Models\Post;
 use App\Notifications\Channels\TelegramChannel;
-use Illuminate\Support\Facades\Blade;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -45,6 +46,10 @@ class AppServiceProvider extends ServiceProvider
 
         Notification::extend('telegram', function ($app) {
             return $app->make(TelegramChannel::class);
+        });
+
+        RateLimiter::for('api', function (Request $request) {
+            return Limit::perMinute(60)->by(optional($request->user())->id ?: $request->ip());
         });
 
         // //Páginas no menu frontend
