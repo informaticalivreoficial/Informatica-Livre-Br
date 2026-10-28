@@ -175,6 +175,17 @@ class Login extends Component
     {
         try {
             app(TwoFactorService::class)->sendCode($user);
+        } catch (\Illuminate\Database\QueryException $e) {
+            report($e);
+
+            \Illuminate\Support\Facades\Log::error('Falha ao gravar o código de verificação em duas etapas', [
+                'user_id' => $user->id,
+                'exception' => $e::class,
+                'message' => $e->getMessage(),
+            ]);
+
+            $this->toastError('Verificação em duas etapas indisponível: as migrações do banco estão pendentes.');
+            return false;
         } catch (\Throwable $e) {
             report($e);
 
