@@ -1,6 +1,6 @@
 {
-  "_index-B41IefAe.js": {
-    "file": "assets/index-B41IefAe.js",
+  "_index-CRLO9KDp.js": {
+    "file": "assets/index-CRLO9KDp.js",
     "name": "index"
   },
   "node_modules/alpinejs/dist/module.esm.js": {
@@ -28,21 +28,21 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-518lYVQX.js",
+    "file": "assets/app-9ELBd8PI.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
     "imports": [
-      "_index-B41IefAe.js"
+      "_index-CRLO9KDp.js"
     ]
   },
   "resources/js/front.js": {
-    "file": "assets/front-C2Zs9pnS.js",
+    "file": "assets/front-_Gcbegnc.js",
     "name": "front",
     "src": "resources/js/front.js",
     "isEntry": true,
     "imports": [
-      "_index-B41IefAe.js"
+      "_index-CRLO9KDp.js"
     ],
     "dynamicImports": [
       "node_modules/alpinejs/dist/module.esm.js"
