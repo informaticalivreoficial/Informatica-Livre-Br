@@ -2,7 +2,7 @@
 
 Módulo de gestão financeira pessoal/empresarial: categorias, despesas e receitas fixas, lançamentos mensais (gerados e avulsos), orçamento por categoria, dashboard com gráficos, fluxo de caixa projetado, relatórios e alertas de vencimento via Telegram.
 
-> **Stack:** PHP 8.3 · Laravel 11 · Livewire 3 · TailwindCSS · AlpineJS · Chart.js (CDN) · spatie/laravel-permission · Font Awesome 5 (AdminLTE)
+> **Stack:** PHP 8.3 · Laravel 12 · Livewire 3 · TailwindCSS · AlpineJS · Chart.js (CDN) · spatie/laravel-permission · Font Awesome 5 (AdminLTE)
 
 ---
 
