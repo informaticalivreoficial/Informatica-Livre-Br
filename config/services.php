@@ -54,6 +54,11 @@ return [
 
     'social' => [
         'webhook_url' => env('MAKE_SOCIAL_WEBHOOK_URL'),
+        'facebook_page' => env('CLIENT_SOCIAL_FACEBOOK_PAGE'),
+        'facebook_author' => env('CLIENT_SOCIAL_FACEBOOK_AUTHOR'),
+        'facebook_app' => env('CLIENT_SOCIAL_FACEBOOK_APP'),
+        'twitter_creator' => env('CLIENT_SOCIAL_TWITTER_CREATOR'),
+        'twitter_publisher' => env('CLIENT_SOCIAL_TWITTER_PUBLISHER'),
     ],
 
     'telegram' => [
